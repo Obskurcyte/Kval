@@ -39,7 +39,6 @@ const MessageScreen = (props) => {
             ...documentSnapshot.data()
           }
         })
-
         setThreads(threads)
         console.log(threads)
         if (loading) {

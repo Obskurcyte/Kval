@@ -20,9 +20,19 @@ import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
 import * as usersActions from '../../store/actions/users';
 import {useDispatch, useSelector} from "react-redux";
+import * as Yup from 'yup';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+
+const uploadSchema = Yup.object().shape({
+  title: Yup.string()
+      .required('Veuillez rentrer un titre'),
+  description: Yup.string()
+      .required('Veuillez rentrer une description'),
+  price: Yup.string().required('Veuillez rentrer un prix'),
+});
 
 const VendreArticleScreen = (props) => {
 
@@ -91,6 +101,8 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate('EtatChoiceScreen')
   }
 
+  const [error, setError] = useState('');
+
   console.log(currentUser)
   console.log(isLoading)
   return (
@@ -109,6 +121,7 @@ const VendreArticleScreen = (props) => {
             <View>
               <Formik
                 initialValues={initialValues}
+                validationSchema={uploadSchema}
                 onSubmit={async (values) => {
                   let pushToken;
                   let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
@@ -123,207 +136,212 @@ const VendreArticleScreen = (props) => {
                   const id = Math.random() * 300000000
                   console.log(values)
 
-                  await firebase.firestore()
-                    .collection(`${categorie}`)
-                    .doc(`${id}`)
-                    .set({
-                      categorie,
-                      etat,
-                      id,
-                      title: values.title,
-                      description: values.description,
-                      prix: values.price,
-                      pushToken,
-                      idVendeur: firebase.auth().currentUser.uid,
-                      pseudoVendeur: currentUser.pseudo
-                    })
-                  await firebase.firestore()
-                    .collection('posts')
-                    .doc(firebase.auth().currentUser.uid)
-                    .collection("userPosts")
-                    .doc(`${id}`)
-                    .set({
-                      categorie,
-                      etat,
-                      title: values.title,
-                      description: values.description,
-                      prix: values.price,
-                    })
+                  if (imagesTableau.length === 0) {
+                    setError('Veuillez uploader des photos')
+                  } else {
+                    await firebase.firestore()
+                        .collection(`${categorie}`)
+                        .doc(`${id}`)
+                        .set({
+                          categorie,
+                          etat,
+                          id,
+                          title: values.title,
+                          description: values.description,
+                          prix: values.price,
+                          pushToken,
+                          idVendeur: firebase.auth().currentUser.uid,
+                          pseudoVendeur: currentUser.pseudo
+                        })
+                    await firebase.firestore()
+                        .collection('posts')
+                        .doc(firebase.auth().currentUser.uid)
+                        .collection("userPosts")
+                        .doc(`${id}`)
+                        .set({
+                          categorie,
+                          etat,
+                          title: values.title,
+                          description: values.description,
+                          prix: values.price,
+                        })
 
 
-                  const uploadImage = async () => {
-                    setIsLoading(true)
-                    const uri = imagesTableau[0];
-                    const response = await fetch(uri);
-                    const blob = await response.blob();
+                    const uploadImage = async () => {
+                      setIsLoading(true)
+                      const uri = imagesTableau[0];
+                      const response = await fetch(uri);
+                      const blob = await response.blob();
 
-                    const task = firebase
-                      .storage()
-                      .ref()
-                      .child(`${categorie}/${Math.random().toString(36)}`)
-                      .put(blob);
+                      const task = firebase
+                          .storage()
+                          .ref()
+                          .child(`${categorie}/${Math.random().toString(36)}`)
+                          .put(blob);
 
-                    const taskProgress = snapshot => {
-                      console.log(`transferred: ${snapshot.bytesTransferred}`)
-                    }
+                      const taskProgress = snapshot => {
+                        console.log(`transferred: ${snapshot.bytesTransferred}`)
+                      }
 
-                    const taskCompleted = snapshot => {
-                      if (imagesTableau && imagesTableau.length === 1) {
-                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                          saveImageData(snapshot)
-                          console.log('snapshot', snapshot)
-                        }).then(() => setIsLoading(false)).then(() => {
-                          etat = '';
-                          categorie = '';
-                          setImagesTableau([])
-                          setImage(null)
-                        }).then(() => props.navigation.navigate('ValidationScreen'))
-                      } else {
-                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                          saveImageData(snapshot)
-                          console.log('snapshot', snapshot)
-                      })}
-                    }
+                      const taskCompleted = snapshot => {
+                        if (imagesTableau && imagesTableau.length === 1) {
+                          task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                            saveImageData(snapshot)
+                            console.log('snapshot', snapshot)
+                          }).then(() => setIsLoading(false)).then(() => {
+                            etat = '';
+                            categorie = '';
+                            setImagesTableau([])
+                            setImage(null)
+                          }).then(() => props.navigation.navigate('ValidationScreen'))
+                        } else {
+                          task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                            saveImageData(snapshot)
+                            console.log('snapshot', snapshot)
+                          })}
+                      }
 
-                    const taskError = snapshot => {
-                      console.log(snapshot)
-                    }
-
-                    task.on("state_changed", taskProgress, taskError, taskCompleted)
-                  }
-
-                  const uploadImage1 = async () => {
-                    const uri = imagesTableau[1];
-                    const response = await fetch(uri);
-                    const blob = await response.blob();
-
-                    const task = firebase
-                      .storage()
-                      .ref()
-                      .child(`${categorie}/${Math.random().toString(36)}`)
-                      .put(blob);
-
-                    const taskProgress = snapshot => {
-                      console.log(`transferred: ${snapshot.bytesTransferred}`)
-                    }
-
-                    const taskCompleted = snapshot => {
-                      if (imagesTableau && imagesTableau.length === 2) {
-                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                          saveImageData1(snapshot)
-                          console.log('snapshot', snapshot)
-                        }).then(() => setIsLoading(false)).then(() => {
-                          etat = '';
-                          categorie = '';
-                          setImagesTableau([])
-                          setImage(null)
-                        }).then(() => props.navigation.navigate('ValidationScreen'))
-                      } else {
-                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                          saveImageData1(snapshot)
-                          console.log('snapshot', snapshot)
-                        })}
-                    }
-
-                    const taskError = snapshot => {
-                      console.log(snapshot)
-                    }
-
-                    task.on("state_changed", taskProgress, taskError, taskCompleted)
-                  }
-
-                  const uploadImage2 = async () => {
-                    const uri = imagesTableau[2];
-                    const response = await fetch(uri);
-                    const blob = await response.blob();
-
-                    const task = firebase
-                      .storage()
-                      .ref()
-                      .child(`${categorie}/${Math.random().toString(36)}`)
-                      .put(blob);
-
-                    const taskProgress = snapshot => {
-                      console.log(`transferred: ${snapshot.bytesTransferred}`)
-                    }
-                    const taskCompleted = snapshot => {
-                      task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                        saveImageData2(snapshot)
+                      const taskError = snapshot => {
                         console.log(snapshot)
-                      }).then(() => setIsLoading(false)).then(() => {
-                        etat = '';
-                        categorie = '';
-                        setImagesTableau([])
-                        setImage(null)
-                      }).then(() => props.navigation.navigate('ValidationScreen'))
+                      }
+
+                      task.on("state_changed", taskProgress, taskError, taskCompleted)
                     }
-                    const taskError = snapshot => {
-                      console.log(snapshot)
+
+                    const uploadImage1 = async () => {
+                      const uri = imagesTableau[1];
+                      const response = await fetch(uri);
+                      const blob = await response.blob();
+
+                      const task = firebase
+                          .storage()
+                          .ref()
+                          .child(`${categorie}/${Math.random().toString(36)}`)
+                          .put(blob);
+
+                      const taskProgress = snapshot => {
+                        console.log(`transferred: ${snapshot.bytesTransferred}`)
+                      }
+
+                      const taskCompleted = snapshot => {
+                        if (imagesTableau && imagesTableau.length === 2) {
+                          task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                            saveImageData1(snapshot)
+                            console.log('snapshot', snapshot)
+                          }).then(() => setIsLoading(false)).then(() => {
+                            etat = '';
+                            categorie = '';
+                            setImagesTableau([])
+                            setImage(null)
+                          }).then(() => props.navigation.navigate('ValidationScreen'))
+                        } else {
+                          task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                            saveImageData1(snapshot)
+                            console.log('snapshot', snapshot)
+                          })}
+                      }
+
+                      const taskError = snapshot => {
+                        console.log(snapshot)
+                      }
+
+                      task.on("state_changed", taskProgress, taskError, taskCompleted)
                     }
-                    task.on("state_changed", taskProgress, taskError, taskCompleted)
+
+                    const uploadImage2 = async () => {
+                      const uri = imagesTableau[2];
+                      const response = await fetch(uri);
+                      const blob = await response.blob();
+
+                      const task = firebase
+                          .storage()
+                          .ref()
+                          .child(`${categorie}/${Math.random().toString(36)}`)
+                          .put(blob);
+
+                      const taskProgress = snapshot => {
+                        console.log(`transferred: ${snapshot.bytesTransferred}`)
+                      }
+                      const taskCompleted = snapshot => {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                          saveImageData2(snapshot)
+                          console.log(snapshot)
+                        }).then(() => setIsLoading(false)).then(() => {
+                          etat = '';
+                          categorie = '';
+                          setImagesTableau([])
+                          setImage(null)
+                        }).then(() => props.navigation.navigate('ValidationScreen'))
+                      }
+                      const taskError = snapshot => {
+                        console.log(snapshot)
+                      }
+                      task.on("state_changed", taskProgress, taskError, taskCompleted)
+                    }
+
+                    const saveImageData = (downloadURL) => {
+                      firebase.firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL,
+                          })
+                      firebase.firestore()
+                          .collection('posts')
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL
+                          })
+
+                    }
+                    const saveImageData1 = (downloadURL1) => {
+                      firebase.firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL1,
+                          })
+                      firebase.firestore()
+                          .collection('posts')
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .add({
+                            downloadURL1
+                          })
+                    }
+
+                    const saveImageData2 = (downloadURL2) => {
+                      firebase.firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL2,
+                          })
+                      firebase.firestore()
+                          .collection('posts')
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .add({
+                            downloadURL2
+                          })
+                    }
+                    if (imagesTableau && imagesTableau.length === 1) {
+                      await uploadImage()
+                    }
+                    if (imagesTableau && imagesTableau.length === 2) {
+                      await uploadImage()
+                      await uploadImage1()
+                    }
+                    if (imagesTableau && imagesTableau.length === 3) {
+                      await uploadImage()
+                      await uploadImage1()
+                      await uploadImage2()
+                    }}}
                   }
 
-                  const saveImageData = (downloadURL) => {
-                    firebase.firestore()
-                      .collection(`${categorie}`)
-                      .doc(`${id}`)
-                      .update({
-                        downloadURL,
-                      })
-                    firebase.firestore()
-                      .collection('posts')
-                      .doc(firebase.auth().currentUser.uid)
-                      .collection("userPosts")
-                      .doc(`${id}`)
-                      .update({
-                        downloadURL
-                      })
 
-                  }
-                  const saveImageData1 = (downloadURL1) => {
-                    firebase.firestore()
-                      .collection(`${categorie}`)
-                      .doc(`${id}`)
-                      .update({
-                        downloadURL1,
-                      })
-                    firebase.firestore()
-                      .collection('posts')
-                      .doc(firebase.auth().currentUser.uid)
-                      .collection("userPosts")
-                      .add({
-                        downloadURL1
-                      })
-                  }
-
-                  const saveImageData2 = (downloadURL2) => {
-                    firebase.firestore()
-                      .collection(`${categorie}`)
-                      .doc(`${id}`)
-                      .update({
-                        downloadURL2,
-                      })
-                    firebase.firestore()
-                      .collection('posts')
-                      .doc(firebase.auth().currentUser.uid)
-                      .collection("userPosts")
-                      .add({
-                        downloadURL2
-                      })
-                  }
-
-                  if (imagesTableau && imagesTableau.length === 1) {
-                    await uploadImage()
-                  }
-                  if (imagesTableau && imagesTableau.length === 2) {
-                    await uploadImage()
-                    await uploadImage1()
-                  }
-                  if (imagesTableau && imagesTableau.length === 3) {
-                    await uploadImage()
-                    await uploadImage1()
-                    await uploadImage2()
-                }}}
               >
                 {props => (
                   <View style={styles.formContainer}>
@@ -336,6 +354,9 @@ const VendreArticleScreen = (props) => {
                         onChangeText={props.handleChange('title')}
                       />
                     </View>
+                    {props.errors.title && props.touched.title ? (
+                        <Text style={{color: '#D51317'}}>{props.errors.title}</Text>
+                    ) : null}
                     <TouchableOpacity style={styles.itemForm3} onPress={() => navigateCategories()}>
                       <Text style={styles.text}>Catégorie</Text>
                       {categorie ? <Text style={{color: 'black'}}>{categorie}</Text> : <Text/>}
@@ -357,7 +378,11 @@ const VendreArticleScreen = (props) => {
                         value={props.values.description}
                         onChangeText={props.handleChange('description')}
                       />
+
                     </View>
+                    {props.errors.description && props.touched.description ? (
+                        <Text style={{color: '#D51317'}}>{props.errors.description}</Text>
+                    ) : null}
                     <View style={styles.itemForm3}>
                       <Text>Prix</Text>
                       <TextInput
@@ -368,6 +393,9 @@ const VendreArticleScreen = (props) => {
                         onChangeText={props.handleChange('price')}
                       />
                     </View>
+                    {props.errors.price && props.touched.price ? (
+                        <Text style={{color: '#D51317'}}>{props.errors.price}</Text>
+                    ) : null}
                     {(imagesTableau && imagesTableau.length === 1) ? (
                       <View style={styles.imageList}>
                         <Image
@@ -411,6 +439,8 @@ const VendreArticleScreen = (props) => {
                         <AntDesign name="pluscircleo" size={24} color="#DADADA" />
                       </TouchableOpacity>
                     ): <Text/>}
+
+                    <Text style={{color: '#D51317'}}>{error}</Text>
                     <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
                       <Text style={styles.mettreEnVenteText}>Mettre en vente !</Text>
                     </TouchableOpacity>

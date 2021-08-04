@@ -35,14 +35,13 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     backgroundColor: 'white',
-    width: '65%',
-    height: '100%',
+    paddingHorizontal: '5%',
     marginTop: '5%'
   },
   imgContainer: {
-    height: '70%',
     alignItems: 'center',
-    paddingTop: '5%'
+    paddingTop: '5%',
+    marginBottom: 10
   },
   image: {
     height: 180,

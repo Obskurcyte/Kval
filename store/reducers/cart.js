@@ -6,15 +6,17 @@ const initialState = {
   totalAmount: 0
 };
 
-
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
-      const pushToken = addedProduct.pushToken
-      const prodImage = addedProduct.downloadURL
+      const pushToken = addedProduct.pushToken;
+      const prodImage = addedProduct.downloadURL;
+      const idVendeur = addedProduct.idVendeur;
+      const pseudoVendeur = addedProduct.pseudoVendeur;
+
       let updatedOrNewCartItem;
 
       if (state.items[addedProduct.id]) {
@@ -25,6 +27,8 @@ const cartReducer = (state = initialState, action) => {
           prodTitle,
           prodImage,
           pushToken,
+          idVendeur,
+          pseudoVendeur,
           state.items[addedProduct.id].quantity * prodPrice
         );
       } else {
@@ -34,7 +38,10 @@ const cartReducer = (state = initialState, action) => {
           prodTitle,
           prodImage,
           pushToken,
-          prodPrice
+            idVendeur,
+            pseudoVendeur,
+          prodPrice,
+
         )
       }
       return {

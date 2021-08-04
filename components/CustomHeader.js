@@ -4,7 +4,7 @@ import {AntDesign, Fontisto} from "@expo/vector-icons";
 import {SearchBar} from "react-native-elements";
 import { Searchbar } from 'react-native-paper';
 
-const CustomHeader = () => {
+const CustomHeader = (props) => {
 
   const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -24,10 +24,6 @@ const CustomHeader = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: '5%',
-    paddingLeft: '2%'
-  },
   searchBarContainer: {
     display: 'flex',
     flexDirection: 'row',

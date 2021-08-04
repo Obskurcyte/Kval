@@ -30,8 +30,10 @@ const ProfileScreen = (props) => {
   }
 
   const [image, setImage] = useState(null);
-  const [imagesTableau, setImagesTableau] = useState([]);
+  const [imagesTableau, setImagesTableau] = useState('');
 
+
+  let imageTrue = ''
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -43,7 +45,6 @@ const ProfileScreen = (props) => {
     })();
   }, []);
 
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -51,8 +52,7 @@ const ProfileScreen = (props) => {
       aspect: [4, 3],
       quality: 1,
     });
-    setImagesTableau(oldImage => [...oldImage, result.uri])
-    console.log(result);
+    imageTrue = result.uri
     if (!result.cancelled) {
       setImage(result.uri);
       await uploadImage()
@@ -60,18 +60,21 @@ const ProfileScreen = (props) => {
   };
 
   const uploadImage = async () => {
-    setIsLoading(true)
-    const uri = imagesTableau[0];
+   // setIsLoading(true)
+
+    const uri = imageTrue;
+    console.log('uri', uri)
     const response = await fetch(uri);
     const blob = await response.blob();
 
-    const task = firebase
+    const task = await firebase
       .storage()
       .ref()
       .child(`users/${Math.random().toString(36)}`)
       .put(blob);
 
-    const taskProgress = snapshot => {
+    console.log('task', task)
+   /* const taskProgress = snapshot => {
       console.log(`transferred: ${snapshot.bytesTransferred}`)
     }
 
@@ -85,17 +88,22 @@ const ProfileScreen = (props) => {
     const taskError = snapshot => {
       console.log(snapshot)
     }
-
     task.on("state_changed", taskProgress, taskError, taskCompleted)
+
+    */
   }
 
-  const saveImageData = (downloadURL) => {
-    firebase.firestore()
+
+
+
+  const saveImageData = async (downloadURL) => {
+    await firebase.firestore()
       .collection('users')
       .doc(firebase.auth().currentUser.uid)
       .update({
         downloadURL,
-      }).then(() => setIsLoading(false))
+      })
+    setIsLoading(false)
   }
   if (isLoading) {
     return (
@@ -141,6 +149,9 @@ const ProfileScreen = (props) => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.boutonList} onPress={() => props.navigation.navigate('InformationsScreen')}>
             <Text style={styles.text}>Mes informations</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.boutonList} onPress={() => props.navigation.navigate('PortefeuilleScreen')}>
+            <Text style={styles.text}>Mon portefeuille</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.boutonList}>
             <Text style={styles.text}>Vie privée</Text>

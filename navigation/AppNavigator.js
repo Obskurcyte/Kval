@@ -98,13 +98,17 @@ import HeaderRight from "../components/HeaderRight";
 import ArticlesEnVenteScreen from "../screens/profile/ArticlesEnVenteScreen";
 import BoosteVenteScreen from "../screens/profile/BoosteVenteScreen";
 import InformationsScreen from "../screens/profile/InformationsScreen";
-import ModifierInfosScreen from "../screens/profile/ModifierInfosScreen";
+import ModifierInfosScreen from "../screens/profile/ModifierEmailScreen";
 import BoosteVentePaiementScreen from "../screens/profile/BoosteVentePaiementScreen";
 import ChatScreen from "../screens/messages/ChatScreen";
 import SignalerUnLitigeScreen from "../screens/profile/SignalerUnLitigeScreen";
+import ModifierAdresseScreen from "../screens/profile/ModifierAdresseScreen";
+import ModifierEmailScreen from "../screens/profile/ModifierEmailScreen";
+import ModifierPseudoScreen from "../screens/profile/ModifierPseudoScreen";
+import LivraisonChoiceScreen from "../screens/achat/LivraisonChoiceScreen";
+import PortefeuilleScreen from "../screens/profile/PortefeuilleScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
-
 
 export const AuthNavigator = () => {
   return (
@@ -1488,6 +1492,19 @@ export const AchatNavigator = (props) => {
           headerTitle: "Panier"
         }}
       />
+        <AchatStackNavigator.Screen
+            name="LivraisonChoiceScreen"
+            component={LivraisonChoiceScreen}
+            options={{
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('CartScreen')}/>
+                ),
+                headerTitle: "Livraison"
+            }}
+        />
 
     </AchatStackNavigator.Navigator>
   )
@@ -1552,6 +1569,22 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil"
         }}
         />
+        <ProfileStackNavigator.Screen
+            name="PortefeuilleScreen"
+            component={PortefeuilleScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
+                ),
+                headerTitle: "Mon portefeuille"
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="ArticlesEnVenteScreen"
         component={ArticlesEnVenteScreen}
@@ -1611,14 +1644,14 @@ export const ProfileNavigator = (props) => {
             paddingLeft: 10
           },
           headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
           ),
           headerTitle: "Mes informations"
         }}
       />
       <ProfileStackNavigator.Screen
-        name="ModifierInfosScreen"
-        component={ModifierInfosScreen}
+        name="ModifierAdresseScreen"
+        component={ModifierAdresseScreen}
         options={{
           headerRightContainerStyle: {
             paddingRight: 10
@@ -1627,10 +1660,40 @@ export const ProfileNavigator = (props) => {
             paddingLeft: 10
           },
           headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
           ),
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="ModifierEmailScreen"
+            component={ModifierEmailScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
+                ),
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ModifierPseudoScreen"
+            component={ModifierPseudoScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
+                ),
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="SignalerUnLitigeScreen"
         component={SignalerUnLitigeScreen}
@@ -1695,10 +1758,6 @@ export const AccueilNavigator = (props) => {
               </View>
               <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('Shop', { screen: 'CartScreen' })}/>
             </View>
-          )
-          ,
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" style={{paddingLeft: '5%'}}/>
           ),
           headerTitle: props => <CustomHeader {...props}/>
 

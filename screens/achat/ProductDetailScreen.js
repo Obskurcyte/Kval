@@ -17,9 +17,35 @@ const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
-  console.log('wola', product)
+
 
   const [search, setSearch] = useState('');
+  const [errorAdded, setErrorAdded] = useState('');
+
+  const cartItems = useSelector(state => {
+    const transformedCartItems = [];
+    for (const key in state.cart.items) {
+
+      transformedCartItems.push({
+        productId: key,
+        productTitle: state.cart.items[key].productTitle,
+        productPrice: state.cart.items[key].productPrice,
+        quantity: state.cart.items[key].quantity,
+        image: state.cart.items[key].image,
+        idVendeur: state.cart.items[key].idVendeur,
+        pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        pushToken: state.cart.items[key].pushToken,
+        sum: state.cart.items[key].sum
+      })
+    }
+    return transformedCartItems
+  });
+
+
+
+
+  console.log('cartitems', cartItems)
+
 
   const updateSearch = (search) => {
     setSearch(search)
@@ -51,7 +77,7 @@ const ProductDetailScreen = (props) => {
     })
   }
 
-  console.log(product)
+
   const FourStar = () => {
     return (
       <View style={{display: 'flex', flexDirection: 'row'}}>
@@ -114,21 +140,33 @@ const ProductDetailScreen = (props) => {
             </TouchableOpacity>
           </View>
 
-
-
             <TouchableOpacity style={styles.envoyerMessageContainer} onPress={() => onMessagePressed()}>
               <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
             </TouchableOpacity>
 
-
             <TouchableOpacity
               style={styles.mettreEnVente}
               onPress={() => {
-                dispatch(cartActions.addToCart(product))
+                if (cartItems.length !== 0) {
+                  for (const key in cartItems) {
+                    console.log('wola')
+                    console.log('id1', product.id)
+                    console.log('id2', cartItems[key].productId)
+                    if (product.id == cartItems[key].productId) {
+                      setErrorAdded('Ce produit est déjà présent dans votre panier')
+                    } else {
+                      dispatch(cartActions.addToCart(product))
+                    }
+                  }
+                } else {
+                  dispatch(cartActions.addToCart(product))
+                }
+
               }}>
               <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
             </TouchableOpacity>
 
+            {errorAdded ? <Text style={{marginBottom: 12, textAlign: 'center', color: '#D51317'}}>{errorAdded}</Text> : <Text />}
         </ScrollView>
 
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList, Dimensions, ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Modal} from 'react-native';
 import {useSelector, useDispatch} from "react-redux";
 import CartItem from "../../components/CartItem";
@@ -8,18 +8,64 @@ import axios from 'axios';
 import {AntDesign} from "@expo/vector-icons";
 import {Feather} from "@expo/vector-icons";
 import firebase from "firebase";
+import * as userActions from "../../store/actions/users";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const CartScreen = (props) => {
 
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(userActions.getUser())
+  }, [dispatch]);
+
+
+  const userData = useSelector(state => state.user.userData);
+
+
+
+  let livraison;
+
+  if (props.route.params) {
+    livraison = props.route.params.livraison
+  }
+
+  let total = 0;
+  const cartItems = useSelector(state => {
+    const transformedCartItems = [];
+    for (const key in state.cart.items) {
+      transformedCartItems.push({
+        productId: key,
+        productTitle: state.cart.items[key].productTitle,
+        productPrice: state.cart.items[key].productPrice,
+        quantity: state.cart.items[key].quantity,
+        image: state.cart.items[key].image,
+        idVendeur: state.cart.items[key].idVendeur,
+        pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        pushToken: state.cart.items[key].pushToken,
+        sum: state.cart.items[key].sum
+      })
+
+    }
+
+    return transformedCartItems
+  });
+
+
+  let portefeuilleVendeur = 0
+
+  for (let data in cartItems) {
+    total += parseFloat(cartItems[data].quantity) * parseFloat(cartItems[data].productPrice)
+  }
 
   const cartInfo = {
     id: '5eruyt35eggr76476236523t3',
     description: 'T Shirt - With react Native Logo',
     amount: 1
   }
+
   const [response, setResponse] = useState()
   const [makePayment, setMakePayment] = useState(false)
   const [paymentStatus, setPaymentStatus] = useState('')
@@ -29,7 +75,7 @@ const CartScreen = (props) => {
     setResponse(paymentResponse)
 
     let jsonResponse = JSON.parse(paymentResponse);
-    console.log('paymentresponse', paymentResponse)
+
     // perform operation to check payment status
 
     try {
@@ -41,7 +87,6 @@ const CartScreen = (props) => {
         amount: 2
       })
 
-      console.log('TSRIPE RESPONSE', stripeResponse)
 
       if (stripeResponse) {
 
@@ -58,7 +103,6 @@ const CartScreen = (props) => {
                 notificationsTitle: 'Un article a été vendu !',
                 notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`
               })
-
             dispatch(cartActions.deleteCart())
             const pushToken = cartItem.pushToken;
             await fetch('https://exp.host/--/api/v2/push/send', {
@@ -74,57 +118,34 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`
               })
             })
-
+            const portefeuille = await firebase.firestore().collection('users')
+                .doc(cartItem.idVendeur)
+                .get().then((doc) => {
+                  portefeuilleVendeur = doc.data().portefeuille
+                  console.log('doc data', doc.data().portefeuille)
+                  console.log('portefeuille', portefeuilleVendeur)
+                }).then(() => {
+                  firebase.firestore().collection('users')
+                      .doc(cartItem.idVendeur)
+                      .update({
+                        portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
+                      })
+                })
           }
-
           setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
         } else {
           setPaymentStatus('Le paiement a échoué')
         }
-
       } else {
         setPaymentStatus('Le paiement a échoué')
       }
-
-
     } catch (error) {
-
       console.log(error)
       setPaymentStatus('Le paiement a échoué')
-
     }
-
   }
 
   const cartTotalAmount = useSelector(state => state.cart.items)
-  console.log(cartTotalAmount)
-
-  const dispatch = useDispatch()
-  let total = 0;
-  const cartItems = useSelector(state => {
-    const transformedCartItems = [];
-    for (const key in state.cart.items) {
-      console.log('woa', state.cart.items[key])
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
-        quantity: state.cart.items[key].quantity,
-        image: state.cart.items[key].image,
-        pushToken: state.cart.items[key].pushToken,
-        sum: state.cart.items[key].sum
-      })
-    }
-    return transformedCartItems
-  });
-
-  console.log('cart', cartItems)
-
-
-  for (let data in cartItems) {
-    total += parseFloat(cartItems[data].quantity) * parseFloat(cartItems[data].productPrice)
-  }
-
 
   const paymentUI = props => {
     console.log(makePayment)
@@ -134,6 +155,7 @@ const CartScreen = (props) => {
           <FlatList
             style={styles.list}
             data={cartItems}
+            horizontal={true}
             keyExtractor={item => item.productId}
             renderItem={itemData => {
               return (
@@ -142,7 +164,6 @@ const CartScreen = (props) => {
                   price={itemData.item.productPrice}
                   image={itemData.item.image}
                   onDelete={() => {
-                    console.log('wola')
                     dispatch(cartActions.removeFromCart(itemData.item.productId));
                   }}
                 />
@@ -151,6 +172,29 @@ const CartScreen = (props) => {
             }
           />
 
+
+          <View style={styles.itemForm3}>
+            <Text style={{fontSize: 18}}>Mode de livraison</Text>
+            <TouchableOpacity onPress={() => {
+              console.log('wola')
+              props.navigation.navigate('LivraisonChoiceScreen')
+            }}>
+              {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
+            </TouchableOpacity>
+          </View>
+
+
+          <View style={styles.itemForm3}>
+            <Text style={{fontSize: 18}}>Adresse</Text>
+            <View style={styles.adresseContainer}>
+            <Text style={styles.totalPrice}>{userData?.adresse}</Text>
+              <View style={{display: 'flex', flexDirection: 'row'}}>
+            <Text style={styles.totalPrice}>{userData?.postalCode}, </Text>
+            <Text style={styles.totalPrice}>{userData?.ville}</Text>
+              </View>
+            <Text style={styles.totalPrice}>{userData?.pays}</Text>
+            </View>
+          </View>
           <View style={styles.itemForm3}>
             <Text style={{fontSize: 18}}>Total</Text>
             <Text style={styles.totalPrice}>{total.toFixed(2)} €</Text>
@@ -223,16 +267,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#0d1b3d'
   },
-  list: {
-    height: '60%'
-  },
   itemForm3: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '90%',
     marginLeft: '5%',
-    height: windowHeight/14,
+    paddingVertical: '5%',
     alignItems: 'center',
     borderBottomColor: 'lightgrey',
     borderBottomWidth: 1
@@ -441,6 +482,10 @@ const styles = StyleSheet.create({
   modalTextContainer: {
     marginTop: '20%',
     textAlign: 'center',
+  },
+  adresseContainer: {
+    display: 'flex',
+    flexDirection: 'column'
   }
 })
 
