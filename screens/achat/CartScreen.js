@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList, Dimensions, ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Modal} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, FlatList, ScrollView, Dimensions, ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, Modal} from 'react-native';
 import {useSelector, useDispatch} from "react-redux";
 import CartItem from "../../components/CartItem";
 import * as cartActions from '../../store/actions/cart'
@@ -49,7 +49,6 @@ const CartScreen = (props) => {
       })
 
     }
-
     return transformedCartItems
   });
 
@@ -59,6 +58,7 @@ const CartScreen = (props) => {
   for (let data in cartItems) {
     total += parseFloat(cartItems[data].quantity) * parseFloat(cartItems[data].productPrice)
   }
+
 
   const cartInfo = {
     id: '5eruyt35eggr76476236523t3',
@@ -92,9 +92,20 @@ const CartScreen = (props) => {
 
         const {paid} = stripeResponse.data;
         if (paid === true) {
-
           for (const cartItem of cartItems) {
-
+            console.log(cartItem)
+            await firebase.firestore()
+                .collection('commandes')
+                .doc(firebase.auth().currentUser.uid)
+                .collection("userCommandes")
+                .doc(`${cartItem.productId}`)
+                .set({
+                  title: cartItem.productTitle,
+                  prix: cartItem.productPrice,
+                  image: cartItem.image,
+                  vendeur: cartItem.idVendeur,
+                  pseudoVendeur: cartItem.pseudoVendeur
+                })
             await firebase.firestore()
               .collection('notifications')
               .doc(firebase.auth().currentUser.uid)
@@ -118,20 +129,27 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`
               })
             })
-            const portefeuille = await firebase.firestore().collection('users')
-                .doc(cartItem.idVendeur)
-                .get().then((doc) => {
-                  portefeuilleVendeur = doc.data().portefeuille
-                  console.log('doc data', doc.data().portefeuille)
-                  console.log('portefeuille', portefeuilleVendeur)
-                }).then(() => {
-                  firebase.firestore().collection('users')
-                      .doc(cartItem.idVendeur)
-                      .update({
-                        portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
-                      })
-                })
+            try {
+              await firebase.firestore().collection('users')
+                  .doc(cartItem.idVendeur)
+                  .get().then((doc) => {
+
+                    portefeuilleVendeur = doc.data().portefeuille
+                    console.log('doc data', doc.data().portefeuille)
+                    console.log('portefeuille', portefeuilleVendeur)
+                  }).then(() => {
+                    firebase.firestore().collection('users')
+                        .doc(cartItem.idVendeur)
+                        .update({
+                          portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
+                        })
+                  })
+            } catch (err) {
+              console.log(err)
+            }
+
           }
+
           setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
         } else {
           setPaymentStatus('Le paiement a échoué')
@@ -147,11 +165,12 @@ const CartScreen = (props) => {
 
   const cartTotalAmount = useSelector(state => state.cart.items)
 
+  console.log(userData)
   const paymentUI = props => {
     console.log(makePayment)
     if (!makePayment) {
       return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
           <FlatList
             style={styles.list}
             data={cartItems}
@@ -176,7 +195,6 @@ const CartScreen = (props) => {
           <View style={styles.itemForm3}>
             <Text style={{fontSize: 18}}>Mode de livraison</Text>
             <TouchableOpacity onPress={() => {
-              console.log('wola')
               props.navigation.navigate('LivraisonChoiceScreen')
             }}>
               {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
@@ -195,27 +213,56 @@ const CartScreen = (props) => {
             <Text style={styles.totalPrice}>{userData?.pays}</Text>
             </View>
           </View>
-          <View style={styles.itemForm3}>
-            <Text style={{fontSize: 18}}>Total</Text>
-            <Text style={styles.totalPrice}>{total.toFixed(2)} €</Text>
+          <View style={styles.totalContainer}>
+            <View style={styles.itemForm3}>
+              <Text style={{fontSize: 18}}>Prix protection acheteur</Text>
+              <Text style={{fontSize: 18}}>{total * 0.095} €</Text>
+            </View>
+            <View style={styles.itemForm3}>
+              <Text style={{fontSize: 18}}>Portefeuille</Text>
+              <Text style={{fontSize: 18}}>{userData?.portefeuille.toFixed(2)} €</Text>
+            </View>
+            <View style={styles.itemForm3}>
+              <Text style={{fontSize: 18}}>Total</Text>
+              <Text style={styles.totalPrice}>{total.toFixed(2)} €</Text>
+            </View>
           </View>
 
           <TouchableOpacity
             style={styles.mettreEnVente}
-            onPress={() => {
-              setMakePayment(true)
+            onPress={async () => {
+              if (userData?.portefeuille >= total) {
+                for (const cartItem of cartItems) {
+                  await firebase.firestore().collection('users')
+                      .doc(cartItem.idVendeur)
+                      .get().then((doc) => {
+                        portefeuilleVendeur = doc.data().portefeuille
+                        console.log('doc data', doc.data().portefeuille)
+                        console.log('portefeuille', portefeuilleVendeur)
+                      }).then(() => {
+                        firebase.firestore().collection('users')
+                            .doc(cartItem.idVendeur)
+                            .update({
+                              portefeuille: portefeuilleVendeur - parseInt(total)
+                            })
+                      })
+                  props.navigation.navigate('')
+                }
+              } else {
+                setMakePayment(true)
+              }
+
             }}
           >
             <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
           </TouchableOpacity>
 
-        </View>
+        </ScrollView>
       )
     } else {
 
       if (response !== undefined) {
         console.log('paimentstatus', paymentStatus)
-        console.log(response)
         return <View style={{
           display: 'flex',
           flexDirection: 'column',
@@ -242,9 +289,8 @@ const CartScreen = (props) => {
         </View>
 
       } else {
-        console.log('wola')
         return (
-          <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
+          <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={total}/>
         )
 
       }
@@ -270,6 +316,17 @@ const styles = StyleSheet.create({
   itemForm3: {
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    marginLeft: '5%',
+    paddingVertical: '5%',
+    alignItems: 'center',
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1
+  },
+  totalContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     width: '90%',
     marginLeft: '5%',

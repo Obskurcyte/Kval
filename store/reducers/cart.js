@@ -10,6 +10,7 @@ const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
+      const categorie = addedProduct.categorie;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
       const pushToken = addedProduct.pushToken;
@@ -29,6 +30,7 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
           idVendeur,
           pseudoVendeur,
+          categorie,
           state.items[addedProduct.id].quantity * prodPrice
         );
       } else {
@@ -40,8 +42,8 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
             idVendeur,
             pseudoVendeur,
+          categorie,
           prodPrice,
-
         )
       }
       return {

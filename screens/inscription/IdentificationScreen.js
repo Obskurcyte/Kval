@@ -6,7 +6,7 @@ const IdentificationScreen = (props) => {
     <View style={styles.container}>
       <Text style={styles.title}>Identification</Text>
 
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => props.navigation.navigate('InscriptionScreen')}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => props.navigation.navigate('PreInscriptionScreen')}>
         <Text style={styles.createCompte}>Créer un compte</Text>
       </TouchableOpacity>
 

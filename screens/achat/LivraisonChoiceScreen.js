@@ -7,14 +7,6 @@ const LivraisonChoiceScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.itemForm3} onPress={() => {
-                setLivraison('Colissimo')
-                props.navigation.navigate('CartScreen', {
-                    livraison: 'Colissimo'
-                })
-            }}>
-                <Text style={styles.text}>Colissimo</Text>
-            </TouchableOpacity>
 
             <TouchableOpacity style={styles.itemForm3} onPress={() => {
                 setLivraison('MondialRelay')

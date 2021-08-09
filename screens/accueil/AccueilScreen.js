@@ -59,7 +59,6 @@ const AccueilScreen = (props) => {
         data={productsBoosted}
         horizontal={true}
         renderItem={itemData => {
-          console.log(productsBoosted[itemData.index])
           return (
             <BoostedProductCard
               title={itemData.item.title}

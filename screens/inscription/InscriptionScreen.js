@@ -11,6 +11,9 @@ const InscriptionScreen = (props) => {
     password: ""
   }
 
+  const params = props.route.params
+  console.log(params)
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -29,7 +32,14 @@ const InscriptionScreen = (props) => {
                 .doc(firebase.auth().currentUser.uid)
                 .set({
                   pseudo: values.pseudo,
-                  email: values.email
+                  email: values.email,
+                  IBAN: params.IBAN,
+                  nom: params.nom,
+                  prenom: params.prenom,
+                  postalCode: params.postalCode,
+                  ville: params.ville,
+                  pays: params.pays,
+                  portefeuille: 0
                 })
               console.log(result)
             })

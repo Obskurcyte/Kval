@@ -18,6 +18,7 @@ const ProductDetailScreen = (props) => {
   const dispatch = useDispatch();
 
 
+  console.log(product)
 
   const [search, setSearch] = useState('');
   const [errorAdded, setErrorAdded] = useState('');
@@ -25,7 +26,6 @@ const ProductDetailScreen = (props) => {
   const cartItems = useSelector(state => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
-
       transformedCartItems.push({
         productId: key,
         productTitle: state.cart.items[key].productTitle,
@@ -35,6 +35,7 @@ const ProductDetailScreen = (props) => {
         idVendeur: state.cart.items[key].idVendeur,
         pseudoVendeur: state.cart.items[key].pseudoVendeur,
         pushToken: state.cart.items[key].pushToken,
+        categorie: state.cart.items[key].categorie,
         sum: state.cart.items[key].sum
       })
     }
@@ -56,17 +57,11 @@ const ProductDetailScreen = (props) => {
   }
    */
 
-
   const onMessagePressed = () => {
     console.log(product.pseudoVendeur)
     firebase.firestore().collection('MESSAGE_THREADS')
-      .add({
-        name: product.pseudoVendeur,
-        latestMessage: {
-          createdAt: new Date().getTime()
-        }
-      }).then(docRef => {
-      docRef.collection('MESSAGES').add({
+        .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
+        .collection('MESSAGES').add({
         text: `Start chating`,
         createdAt: new Date().getTime(),
         system: true
@@ -74,9 +69,7 @@ const ProductDetailScreen = (props) => {
       props.navigation.navigate('Message', {
         screen: 'MessageScreen'
       })
-    })
   }
-
 
   const FourStar = () => {
     return (

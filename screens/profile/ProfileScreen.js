@@ -20,7 +20,6 @@ const ProfileScreen = (props) => {
   }, [dispatch, isLoading]);
 
 
-
   const userData = useSelector(state => state.user.userData);
 
   console.log(userData);
@@ -132,13 +131,13 @@ const ProfileScreen = (props) => {
 
           </View>
           <View>
-            <Text style={styles.nomText}>Thomas Goomba</Text>
+            <Text style={styles.nomText}>{userData?.prenom} {userData?.nom}</Text>
           </View>
         </View>
 
 
         <View>
-          <TouchableOpacity style={styles.boutonList}>
+          <TouchableOpacity style={styles.boutonList} onPress={() => props.navigation.navigate('MesCommandesScreen')}>
             <Text style={styles.text}>Mes commandes</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.boutonList}>

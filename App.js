@@ -12,6 +12,7 @@ import articleReducer from "./store/reducers/articlesEnVente";
 import userReducer from "./store/reducers/users";
 import * as Notifications from "expo-notifications";
 import notifReducer from "./store/reducers/notifications";
+import articleCommandeReducer from "./store/reducers/articlesCommandes";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDfRqLw_maATHpGVqO4nxcmHw_asxc0c60",
@@ -38,7 +39,8 @@ const rootReducer = combineReducers({
   cart: cartReducer,
   articles: articleReducer,
   user: userReducer,
-  notifs: notifReducer
+  notifs: notifReducer,
+  commandes: articleCommandeReducer
 })
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

@@ -166,7 +166,6 @@ const VendreArticleScreen = (props) => {
                           prix: values.price,
                         })
 
-
                     const uploadImage = async () => {
                       setIsLoading(true)
                       const uri = imagesTableau[0];

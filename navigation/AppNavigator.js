@@ -107,6 +107,11 @@ import ModifierEmailScreen from "../screens/profile/ModifierEmailScreen";
 import ModifierPseudoScreen from "../screens/profile/ModifierPseudoScreen";
 import LivraisonChoiceScreen from "../screens/achat/LivraisonChoiceScreen";
 import PortefeuilleScreen from "../screens/profile/PortefeuilleScreen";
+import PreInscriptionScreen from "../screens/inscription/PreInscriptionScreen";
+import MesCommandesScreen from "../screens/profile/MesCommandesScreen";
+import CommandeDetailScreen from "../screens/profile/CommandeDetailScreen";
+import EvaluationScreen from "../screens/profile/EvaluationScreen";
+import ThankYouScreen from "../screens/achat/ThankYouScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -131,6 +136,11 @@ export const AuthNavigator = () => {
         component={IdentificationScreen}
         options={{ headerShown: false }}
       />
+        <AuthStackNavigator.Screen
+            name="PreInscriptionScreen"
+            component={PreInscriptionScreen}
+            options={{ headerShown: false }}
+        />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
         component={InscriptionScreen}
@@ -854,6 +864,13 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: 'center'
         }}
       />
+        <AchatStackNavigator.Screen
+            name="ThankYouScreen"
+            component={ThankYouScreen}
+            options={{
+                headerShown: false
+            }}
+        />
       <AchatStackNavigator.Screen
         name="CavalierAccueilScreen"
         component={CavalierAccueilScreen}
@@ -1616,6 +1633,54 @@ export const ProfileNavigator = (props) => {
           ),
           headerTitle: "Booste tes ventes !"
         }}
+        />
+        <ProfileStackNavigator.Screen
+            name="MesCommandesScreen"
+            component={MesCommandesScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                ),
+                headerTitle: "Mes commandes"
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="CommandeDetailScreen"
+            component={CommandeDetailScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                ),
+                headerTitle: "Détail de la commande"
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EvaluationScreen"
+            component={EvaluationScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                ),
+                headerTitle: "Evaluation"
+            }}
         />
       <ProfileStackNavigator.Screen
         name="BoosteVentePaiementScreen"
