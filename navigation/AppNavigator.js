@@ -112,6 +112,9 @@ import MesCommandesScreen from "../screens/profile/MesCommandesScreen";
 import CommandeDetailScreen from "../screens/profile/CommandeDetailScreen";
 import EvaluationScreen from "../screens/profile/EvaluationScreen";
 import ThankYouScreen from "../screens/achat/ThankYouScreen";
+import ValidationEvaluationScreen from "../screens/profile/ValidationEvaluationScreen";
+import AvisScreen from "../screens/achat/AvisScreen";
+import LivraisonArticleLourdScreen from "../screens/achat/LivraisonArticleLourdScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -889,6 +892,24 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: 'center'
         }}
       />
+        <AchatStackNavigator.Screen
+            name="AvisScreen"
+            component={AvisScreen}
+            options={{
+                title: "Avis",
+                headerStyle: {
+                    backgroundColor: 'white'
+                },
+                headerTitleStyle: {
+                    color: 'black'
+                },
+                headerBackTitle: 'Retour',
+                headerBackTitleStyle: {
+                    color: 'black'
+                },
+                headerTitleAlign: 'center'
+            }}
+        />
       <AchatStackNavigator.Screen
         name="ChevalEtCuirAccueilScreen"
         component={ChevalEtCuirAccueilScreen}
@@ -1496,6 +1517,22 @@ export const AchatNavigator = (props) => {
 
         }}
       />
+        <AchatStackNavigator.Screen
+            name="LivraisonArticleLourdScreen"
+            component={LivraisonArticleLourdScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10
+                },
+                headerLeft : () => (
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+                ),
+                headerTitle: "Livraison Lourde"
+            }}
+        />
       <AchatStackNavigator.Screen
         name="CartScreen"
         component={CartScreen}
@@ -1645,7 +1682,7 @@ export const ProfileNavigator = (props) => {
                     paddingLeft: 10
                 },
                 headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
                 ),
                 headerTitle: "Mes commandes"
             }}
@@ -1661,7 +1698,7 @@ export const ProfileNavigator = (props) => {
                     paddingLeft: 10
                 },
                 headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('MesCommandesScreen')}/>
                 ),
                 headerTitle: "Détail de la commande"
             }}
@@ -1677,9 +1714,16 @@ export const ProfileNavigator = (props) => {
                     paddingLeft: 10
                 },
                 headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('CommandeDetailScreen')}/>
                 ),
                 headerTitle: "Evaluation"
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ValidationEvaluationScreen"
+            component={ValidationEvaluationScreen}
+            options={{
+               headerShown: false
             }}
         />
       <ProfileStackNavigator.Screen

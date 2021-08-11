@@ -87,9 +87,7 @@ const CartScreen = (props) => {
         amount: 2
       })
 
-
       if (stripeResponse) {
-
         const {paid} = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
@@ -246,7 +244,6 @@ const CartScreen = (props) => {
                               portefeuille: portefeuilleVendeur - parseInt(total)
                             })
                       })
-                  props.navigation.navigate('')
                 }
               } else {
                 setMakePayment(true)
@@ -279,7 +276,7 @@ const CartScreen = (props) => {
           {paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro' ?
             <View style={styles.container2}>
               <AntDesign name="checkcircleo" size={200} color="white" />
-              <Text style={styles.text2}>C'est en vente !</Text>
+              <Text style={styles.text3}>Vous avez bien acheté l'article !</Text>
               <TouchableOpacity style={styles.retourContainer} onPress={() => {
                 props.navigation.navigate('AccueilScreen')
               }}>
@@ -394,7 +391,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
     marginTop: '3%',
-    color: 'white'
+    color: 'white',
+  },
+  text3: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 24,
+    marginTop: '3%',
+    color: 'white',
+    width: windowWidth/2
   },
   retourContainer : {
     borderWidth: 5,

@@ -8,6 +8,8 @@ import {useDispatch, useSelector} from "react-redux";
 import * as cartActions from '../../store/actions/cart';
 import { Avatar } from "react-native-elements";
 import firebase from "firebase";
+import UserAvatar from 'react-native-user-avatar';
+import * as articlesActions from "../../store/actions/articlesCommandes";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -18,7 +20,30 @@ const ProductDetailScreen = (props) => {
   const dispatch = useDispatch();
 
 
+  useEffect(() => {
+    dispatch(articlesActions.getAvis(product.idVendeur))
+  }, [dispatch]);
+
+  let commentaires = useSelector(state => state.commandes.commentaires);
+  console.log('wola', commentaires)
   console.log(product)
+
+  let ratings = []
+  for (let data in commentaires) {
+    ratings.push(commentaires[data].rating)
+  }
+
+  console.log('ratings', ratings)
+
+  let overallRating = 0;
+  for (let data in ratings) {
+    console.log(ratings[data])
+    overallRating += parseInt(ratings[data])
+  }
+
+  console.log('overall', overallRating)
+
+  const trueRating = Math.ceil(overallRating/commentaires.length);
 
   const [search, setSearch] = useState('');
   const [errorAdded, setErrorAdded] = useState('');
@@ -73,15 +98,54 @@ const ProductDetailScreen = (props) => {
 
   const FourStar = () => {
     return (
-      <View style={{display: 'flex', flexDirection: 'row'}}>
-        <AntDesign name="star" size={24} color="#FFC107" />
-        <AntDesign name="star" size={24} color="#FFC107" />
-        <AntDesign name="star" size={24} color="#FFC107" />
-        <AntDesign name="star" size={24} color="#FFC107" />
-      </View>
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+        </View>
+    )
+  }
+  const FiveStar = () => {
+    return (
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+        </View>
     )
   }
 
+  const ThreeStar = () => {
+    return (
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+        </View>
+    )
+  }
+  const TwoStar = () => {
+    return (
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <AntDesign name="star" size={18} color="#FFC107" />
+          <AntDesign name="star" size={18} color="#FFC107" />
+        </View>
+    )
+  }
+
+  const OneStar = () => {
+    return (
+        <View style={{display: 'flex', flexDirection: 'row'}}>
+          <AntDesign name="star" size={18} color="#FFC107" />
+        </View>
+    )
+  }
+
+
+  const initial = product.pseudoVendeur.charAt(0)
     return (
       <View>
 
@@ -115,20 +179,23 @@ const ProductDetailScreen = (props) => {
           </View>
 
           <View style={styles.vendeurContainer}>
-            {product.imageURL ? <Image source={require('../../assets/photoProfile.png')}/> :<Avatar
-              size="small"
-              rounded
-              title="MT"
-              onPress={() => console.log("Works!")}
-              activeOpacity={0.7}
+            {product.imageURL ? <Image source={require('../../assets/photoProfile.png')}/> :<UserAvatar
+              size={50}
+              name={initial}
             /> }
 
             <View>
               <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              <FourStar />
+              {trueRating === 1 && <OneStar />}
+              {trueRating === 2 && <TwoStar />}
+              {trueRating === 3 && <ThreeStar />}
+              {trueRating === 4 && <FourStar />}
+              {trueRating === 5 && <FiveStar />}
             </View>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => props.navigation.navigate('AvisScreen', {
+              product: product
+            })}>
               <Text>Voir les avis</Text>
             </TouchableOpacity>
           </View>

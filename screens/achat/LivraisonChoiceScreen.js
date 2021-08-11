@@ -28,9 +28,7 @@ const LivraisonChoiceScreen = (props) => {
 
             <TouchableOpacity style={styles.itemForm3} onPress={() => {
                 setLivraison('Livraison article "lourd"')
-                props.navigation.navigate('CartScreen', {
-                    livraison: 'Livraison article "lourd"'
-                })
+                props.navigation.navigate('LivraisonArticleLourdScreen')
             }}>
                 <Text style={styles.text}>Livraison article "lourd"</Text>
             </TouchableOpacity>

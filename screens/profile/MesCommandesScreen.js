@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions, Image} from "react-native";
+import React, {useEffect} from 'react';
+import {View, StyleSheet, FlatList, Dimensions} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
 import * as articlesActions from "../../store/actions/articlesCommandes";
-import BoosteVenteItem from "../../components/BoosteVenteItem";
 import CommandeItem from "../../components/CommandeItem";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -15,9 +14,10 @@ const MesCommandesScreen = (props) => {
         dispatch(articlesActions.getCommandes())
     }, [dispatch]);
     let articles = useSelector(state => state.commandes.mesCommandes);
-    console.log(articles)
-    const renderItem = ({item}) => {
 
+    console.log(articles)
+
+    const renderItem = ({item}) => {
         return (
             <CommandeItem
                 item={item}

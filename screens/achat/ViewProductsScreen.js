@@ -18,6 +18,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useFocusEffect, useNavigation} from "@react-navigation/core";
 import { useIsFocused } from '@react-navigation/native';
 
+
 const ViewProductsScreen = (props) => {
 
   const dispatch = useDispatch()

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
@@ -10,6 +10,8 @@ const ConnectionScreen = (props) => {
     password: ""
   }
 
+  const [err, setErr] = useState(null);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -20,10 +22,12 @@ const ConnectionScreen = (props) => {
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
+            console.log(values)
             try {
               await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
             } catch (err) {
               console.log(err)
+              setErr(err)
             }
           }}
         >
@@ -38,7 +42,7 @@ const ConnectionScreen = (props) => {
                   placeholderTextColor='white'
                   value={props.values.email}
                   style={styles.textInput}
-                  onChange={props.handleChange('email')}
+                  onChangeText={props.handleChange('email')}
                 />
 
               </View>
@@ -50,12 +54,14 @@ const ConnectionScreen = (props) => {
                   placeholderTextColor='white'
                   value={props.values.password}
                   style={styles.textInput}
-                  onChange={props.handleChange('password')}
+                  secureTextEntry={true}
+                  onChangeText={props.handleChange('password')}
                 />
 
               </View>
 
-              <TouchableOpacity style={styles.buttonContainer} onPress={() => props.navigation.navigate('InscriptionScreen')}>
+              {err ? <Text style={styles.err}>Vos identifiants sont incorrects</Text> : <Text />}
+              <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
                 <Text style={styles.createCompte}>Valider</Text>
               </TouchableOpacity>
             </View>
@@ -119,6 +125,12 @@ const styles = StyleSheet.create({
     paddingVertical: "5%",
     borderRadius: 10,
     marginTop: '20%'
+  },
+  err: {
+    color: 'black',
+    fontSize: 15,
+    textAlign: 'center',
+    marginTop: 20
   },
   createCompte: {
     color: 'black',

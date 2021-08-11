@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, TouchableWithoutFeedback, KeyboardAvoidingView, Keyboard} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
+import {set} from "react-native-reanimated";
 
 const InscriptionScreen = (props) => {
 
@@ -14,6 +15,9 @@ const InscriptionScreen = (props) => {
   const params = props.route.params
   console.log(params)
 
+  const [err, setErr] = useState(null);
+
+  console.log('err', err)
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -44,13 +48,10 @@ const InscriptionScreen = (props) => {
               console.log(result)
             })
           } catch (err) {
-            console.log(err)
+            setErr(err)
           }
-
         }}
-
       >
-
         {props => (
           <View style={styles.formContainer}>
             <View>
@@ -87,9 +88,8 @@ const InscriptionScreen = (props) => {
                 secureTextEntry={true}
                 onChangeText={props.handleChange('password')}
               />
-
             </View>
-
+              {err ? <Text style={styles.err}>Cet utilisateur existe déjà</Text> : <Text />}
             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
               <Text style={styles.createCompte}>Valider</Text>
             </TouchableOpacity>
@@ -119,6 +119,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#D51317',
     alignItems: 'center'
   },
+    err: {
+      color: 'black',
+      fontSize: 15,
+        textAlign: 'center',
+        marginTop: 20
+    },
   title: {
     fontSize: 27,
     marginTop: '15%',

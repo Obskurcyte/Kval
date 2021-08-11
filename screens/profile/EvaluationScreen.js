@@ -1,5 +1,15 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Dimensions} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    ScrollView,
+    Dimensions,
+    KeyboardAvoidingView, TouchableWithoutFeedback,
+    Keyboard
+} from 'react-native';
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import CommandeItem from "../../components/CommandeItem";
 import {Formik} from 'formik';
@@ -17,56 +27,66 @@ const EvaluationScreen = (props) => {
     }
 
     const product = props.route.params.product;
+    console.log(product)
     console.log(rating)
     return (
-       <View style={styles.container}>
-           <Text style={styles.evaluationText}>Evalue {product.pseudoVendeur} !</Text>
-           <Text style={styles.achatText}>Tu as acheté...</Text>
-           <EvalueItem
-               item={product}
-           />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView
+                behavior="position"
+                style={styles.container}
+            >
+               <View>
+                   <Text style={styles.evaluationText}>Evalue {product.pseudoVendeur} !</Text>
+                   <Text style={styles.achatText}>Tu as acheté...</Text>
+                   <EvalueItem
+                       item={product}
+                   />
 
-           <Rating
-               showRating
-               type='custom'
-               ratingCount={5}
-               imageSize={30}
-               onFinishRating={ratingCompleted}
-               style={styles.rating}
-           />
-                <Formik
-                    initialValues={{
-                    commentaire: ''
-                    }}
-                    onSubmit={async values => {
-                        await firebase.firestore().collection('users')
-                            .doc(`${product.pseudoVendeur}`)
-                            .update({
-                                avis: firebase.firestore.FieldValue.arrayUnion(values.commentaire),
-                                ratings: firebase.firestore.FieldValue.arrayUnion(rating)
-                            })
-                    }}
-                >
-                    {props => (
-                        <View>
-                            <View style={styles.commentairesContainer}>
-                                <Text style={styles.commentaireText}>Commentaire</Text>
-                                <TextInput
-                                    placeholder="Dis nous ce que tu as pensé de ton achat"
-                                    value={props.values.commentaire}
-                                    onChangeText={props.handleChange('commentaire')}
-                                />
-                            </View>
+                   <Rating
+                       showRating
+                       type='custom'
+                       ratingCount={5}
+                       imageSize={30}
+                       onFinishRating={ratingCompleted}
+                       style={styles.rating}
+                   />
+                        <Formik
+                            initialValues={{
+                            commentaire: ''
+                            }}
+                            onSubmit={async values => {
+                                await firebase.firestore()
+                                    .collection('commentaires')
+                                    .doc(`${product.vendeur}`)
+                                    .collection("userCommentaires")
+                                    .add({
+                                        commentaire: values.commentaire,
+                                        rating,
+                                        rateur: product.pseudoVendeur
+                                    })
+                                props.navigation.navigate('ValidationEvaluationScreen')
+                            }}
+                        >
+                            {props => (
+                                <ScrollView>
+                                    <View style={styles.commentairesContainer}>
+                                        <Text style={styles.commentaireText}>Commentaire</Text>
+                                        <TextInput
+                                            placeholder="Dis nous ce que tu as pensé de ton achat"
+                                            value={props.values.commentaire}
+                                            onChangeText={props.handleChange('commentaire')}
+                                        />
+                                    </View>
 
-                            <TouchableOpacity style={styles.mettreEnVente} >
-                            <Text style={styles.mettreEnVenteText}>Evaluer</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-
-                </Formik>
-
-       </View>
+                                    <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
+                                        <Text style={styles.mettreEnVenteText}>Evaluer</Text>
+                                    </TouchableOpacity>
+                                </ScrollView>
+                            )}
+                        </Formik>
+               </View>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
