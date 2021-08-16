@@ -4,16 +4,21 @@ import firebase from "firebase";
 import * as notifsActions from '../../store/actions/notifications';
 import {useDispatch, useSelector} from "react-redux";
 import CardNotif from "../../components/CardNotif";
-import { Avatar } from 'react-native-elements';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-
+import UserAvatar from 'react-native-user-avatar';
 const MessageScreen = (props) => {
 
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
 
-  let notificationsBody = []
+  let pseudoVendeur;
+  let initial;
+  if (props.route.params) {
+    pseudoVendeur = props.route.params.pseudoVendeur
+    initial = pseudoVendeur.charAt(0)
+  }
+
 
   const dispatch = useDispatch()
   const [notificationsTitle, setNotificationsTitle] = useState([])
@@ -25,32 +30,33 @@ const MessageScreen = (props) => {
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [goodMessages, setGoodMessages] = useState([]);
 
   useEffect(() => {
+    console.log('woskdls')
     const unsubscribe = firebase.firestore()
       .collection('MESSAGE_THREADS')
-      .orderBy('latestMessage.createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const threads = querySnapshot.docs.map(documentSnapshot => {
+          console.log('wesh')
           if (documentSnapshot.id.includes(firebase.auth().currentUser.uid)) {
             return {
               _id: documentSnapshot.id,
-              name: '',
+              name: pseudoVendeur,
               latestMessage: { text: '' },
               ...documentSnapshot.data()
             }
           }
         })
         setThreads(threads)
-
         if (loading) {
           setLoading(false)
         }
       })
     return () => unsubscribe()
-  }, [])
+  }, [notifsList])
 
+
+  console.log('thre', threads)
 
   return (
     <View style={styles.container}>
@@ -72,7 +78,7 @@ const MessageScreen = (props) => {
       {messageActive && (
           <FlatList
             data={threads}
-            keyExtractor={item => item?._id}
+            keyExtractor={() => Math.random() * 100000000000}
             renderItem={({ item }) => {
               console.log(item)
               let date;
@@ -80,20 +86,17 @@ const MessageScreen = (props) => {
                 date = item.latestMessage.createdAt
                 console.log('date', date)
               }
-
               return (
                   <View>
                   {item!==undefined ?
                       <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen', {thread: item})}>
                         <View style={styles.messageContainer}>
-                          <Avatar size="small"
-                                  rounded
-                                  title="MT"
-                                  onPress={() => console.log("Works!")}
-                                  activeOpacity={1}/>
+                          <UserAvatar
+                              size={50}
+                              name={initial}
+                          />
                           <View style={styles.nameContainer}>
                             <Text style={styles.pseudoText}>{item.name}</Text>
-                            <Text style={styles.timeText}>Envoyé il ya 9 minutes</Text>
                           </View>
                         </View>
                         <View style={styles.previewMessage}>
@@ -118,6 +121,7 @@ const MessageScreen = (props) => {
             <CardNotif
               title={itemData.item.notificationsTitle}
               body={itemData.item.notificationsBody}
+              image={itemData.item.image}
             />
           )}}
         />
@@ -168,7 +172,8 @@ const styles = StyleSheet.create({
   nameContainer: {
     display: 'flex',
     flexDirection: 'column',
-    marginLeft: '5%'
+    marginLeft: '5%',
+    marginTop: '5%'
   },
   pseudoText: {
     fontSize: 18

@@ -1,12 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView} from "react-native";
-import {AntDesign, Fontisto} from "@expo/vector-icons";
-import {SearchBar} from "react-native-elements";
-import {useIsFocused} from "@react-navigation/native";
-import * as productsActions from "../../store/actions/products";
+import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, ScrollView} from "react-native";
+import {AntDesign} from "@expo/vector-icons";
 import {useDispatch, useSelector} from "react-redux";
 import * as cartActions from '../../store/actions/cart';
-import { Avatar } from "react-native-elements";
 import firebase from "firebase";
 import UserAvatar from 'react-native-user-avatar';
 import * as articlesActions from "../../store/actions/articlesCommandes";
@@ -68,19 +64,9 @@ const ProductDetailScreen = (props) => {
   });
 
 
-
-
-  console.log('cartitems', cartItems)
-
-
   const updateSearch = (search) => {
     setSearch(search)
   };
-
-  /*if (productDetail === undefined) {
-    dispatch(productsActions.fetchProductDetail(categorie, id))
-  }
-   */
 
   const onMessagePressed = () => {
     console.log(product.pseudoVendeur)
@@ -92,7 +78,10 @@ const ProductDetailScreen = (props) => {
         system: true
       })
       props.navigation.navigate('Message', {
-        screen: 'MessageScreen'
+        screen: 'MessageScreen',
+        params: {
+          pseudoVendeur: product.pseudoVendeur
+        }
       })
   }
 
@@ -144,8 +133,8 @@ const ProductDetailScreen = (props) => {
     )
   }
 
-
   const initial = product.pseudoVendeur.charAt(0)
+
     return (
       <View>
 

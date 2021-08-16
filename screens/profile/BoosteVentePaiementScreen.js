@@ -31,6 +31,7 @@ const BoosteVentePaiementScreen = (props) => {
     articles = props.route.params.articles
   }
 
+  console.log('articles', articles)
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
 
@@ -42,7 +43,8 @@ const BoosteVentePaiementScreen = (props) => {
     amount: 1
   }
   const [response, setResponse] = useState()
-  const [makePayment, setMakePayment] = useState(false)
+  const [makePayment, setMakePayment] = useState(false);
+  const [price, setPrice] = useState(0)
   const [paymentStatus, setPaymentStatus] = useState('')
 
   console.log('wola', articles)
@@ -55,18 +57,16 @@ const BoosteVentePaiementScreen = (props) => {
     // perform operation to check payment status
 
     try {
-
       const stripeResponse = await axios.post('https://stopgene.herokuapp.com/paymentonetime', {
         email: 'hadrien.jaubert99@gmail.com',
         product: cartInfo,
         authToken: jsonResponse,
-        amount: 2
+        amount: price
       })
 
       console.log('TSRIPE RESPONSE', stripeResponse)
 
       if (stripeResponse) {
-
         const {paid} = stripeResponse.data;
         if (paid === true) {
           for (let data in articles) {
@@ -75,7 +75,9 @@ const BoosteVentePaiementScreen = (props) => {
               etat: articles[data].etat,
               prix: articles[data].prix,
               title: articles[data].title,
+              image: articles[data].downloadURL,
               categorie: articles[data].categorie,
+              pseudoVendeur: articles[data].pseudoVendeur,
               time: new Date()
             })
           }
@@ -86,8 +88,6 @@ const BoosteVentePaiementScreen = (props) => {
       } else {
         setPaymentStatus('Le paiement a échoué')
       }
-
-
     } catch (error) {
 
       console.log(error)
@@ -142,6 +142,7 @@ const BoosteVentePaiementScreen = (props) => {
               <RoundedCheckbox onPress={(checked1) => {
                 setChecked1(!checked1)
                 setChecked2(false)
+                setPrice(1.15)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>
@@ -152,10 +153,10 @@ const BoosteVentePaiementScreen = (props) => {
               <RoundedCheckbox onPress={(checked2) => {
                 setChecked2(!checked2)
                 setChecked1(false)
+                setPrice(1.95)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>
-
 
             {goPaiement && (
 
@@ -495,203 +496,5 @@ const styles = StyleSheet.create({
   priceContainer: {
     marginLeft: '10%'
   }
-})
-  /*const cartInfo = {
-    id: '5eruyt35eggr76476236523t3',
-    description: 'T Shirt - With react Native Logo',
-    amount: 1
-  }
-  const [response, setResponse] = useState()
-  const [makePayment, setMakePayment] = useState(false)
-  const [paymentStatus, setPaymentStatus] = useState('')
-
-  const onCheckStatus = async (paymentResponse) => {
-    setPaymentStatus('Votre paiement est en cours de traitement')
-    setResponse(paymentResponse)
-
-    let jsonResponse = JSON.parse(paymentResponse);
-    console.log('paymentresponse', paymentResponse)
-    // perform operation to check payment status
-
-    try {
-
-      const stripeResponse = await axios.post('https://stopgene.herokuapp.com/paymentonetime', {
-        email: 'hadrien.jaubert99@gmail.com',
-        product: cartInfo,
-        authToken: jsonResponse,
-        amount: 2
-      })
-
-      console.log('TSRIPE RESPONSE', stripeResponse)
-
-      if (stripeResponse) {
-
-        const {paid} = stripeResponse.data;
-        if (paid === true) {
-          setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
-        } else {
-          setPaymentStatus('Le paiement a échoué')
-        }
-
-      } else {
-        setPaymentStatus('Le paiement a échoué')
-      }
-
-
-    } catch (error) {
-
-      console.log(error)
-      setPaymentStatus('Le paiement a échoué')
-
-    }
-
-  }
-
-  let articles;
-  if (props.route.params && props.route.params.articles) {
-    articles = props.route.params.articles
-  }
-
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
-
-  const [goPaiement, setGoPaiement] = useState(false);
-
-  const paymentUI = props => {
-    console.log(makePayment)
-    if (!makePayment) {
-      return (
-        <View>
-          <View style={styles.flatlistContainer}>
-            <FlatList
-              style={styles.list}
-              data={articles}
-              keyExtractor={item => item.id}
-              renderItem={itemData => {
-                return (
-                  <CartItem
-                    image={itemData.item.downloadURL}
-                    onDelete={() => {
-                      console.log('wola')
-                    }}
-                  />
-                )
-              }
-              }
-            />
-          </View>
-
-          <View style={styles.choicePaiementContainer}>
-            <View style={styles.choicePaiement}>
-              <Text>3 jours</Text>
-              <Text>1,15 €</Text>
-              <RoundedCheckbox onPress={(checked1) => {
-                setChecked1(!checked1)
-                setChecked2(false)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
-            </View>
-
-            <View style={styles.choicePaiement}>
-              <Text>7 jours</Text>
-              <Text>1,95 €</Text>
-              <RoundedCheckbox onPress={(checked2) => {
-                setChecked2(!checked2)
-                setChecked1(false)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
-            </View>
-
-            {goPaiement && (
-
-              <TouchableOpacity style={styles.mettreEnVente} onPress={() => setMakePayment(true)}>
-                <Text style={styles.mettreEnVenteText}>Payer</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      )
-    } else {
-
-      if (response !== undefined) {
-        console.log('paimentstatus', paymentStatus)
-        console.log(response)
-        return <View style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-        }}>
-          {paymentStatus === 'Votre paiement est en cours de traitement' ?
-            <View>
-              <Text>{paymentStatus}</Text>
-              <ActivityIndicator/>
-            </View> : <Text></Text>}
-
-          {paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro' ?
-            <View style={styles.container2}>
-              <AntDesign name="checkcircleo" size={200} color="white" />
-              <Text style={styles.text2}>C'est en vente !</Text>
-              <TouchableOpacity style={styles.retourContainer} onPress={() => {
-                dispatch(cartActions.deleteCart())
-                props.navigation.navigate('AccueilScreen')
-              }}>
-                <Text style={styles.text2}>Retour au menu principal</Text>
-              </TouchableOpacity>
-            </View> : <Text></Text>}
-        </View>
-
-      } else {
-        console.log('wola')
-        return (
-          <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
-        )
-
-      }
-    }
-  }
-
-  return (
-    <View style={styles.container}>
-      {paymentUI(props)}
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  flatlistContainer: {
-    width: '100%'
-  },
-  list: {
-    width: '100%'
-  },
-  choicePaiementContainer: {
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  choicePaiement: {
-    borderBottomColor: '#E0ECF8',
-    borderBottomWidth: 3,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: '5%'
-  },
-  mettreEnVenteText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18
-  },
-  mettreEnVente: {
-    backgroundColor: "#D51317",
-    marginTop: '5%',
-    width: windowWidth/1.1,
-    paddingVertical: '5%',
-    marginLeft: '5%'
-  },
-})
-
-   */
+});
 export default BoosteVentePaiementScreen;

@@ -64,7 +64,7 @@ const AccueilScreen = (props) => {
               title={itemData.item.title}
               prix={itemData.item.prix}
               image={itemData.item.image}
-              pseudo={itemData.item.pseudo}
+              pseudo={itemData.item.pseudoVendeur}
               onPress={() => props.navigation.navigate('Shop', {screen: 'ProductDetailScreen', params: {
                   productId: itemData.item.id,
                   product: productsBoosted[itemData.index]

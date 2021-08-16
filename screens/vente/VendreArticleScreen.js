@@ -41,24 +41,26 @@ const VendreArticleScreen = (props) => {
   const initialValues = {
     title: "",
     description: "",
-    price: ""
+    price: "",
+    poids: ""
   }
 
   let etat;
   let categorie;
+  let marques = 'test';
+
 
   useEffect(() => {
     dispatch(usersActions.getUser())
   }, [])
 
-  console.log(firebase.auth().currentUser)
   const currentUser = useSelector(state => state.user.userData)
-  console.log(currentUser);
-
+  console.log('current', currentUser);
 
   if (props.route.params) {
     etat = props.route.params.etat
     categorie = props.route.params.categorie
+    marques = props.route.params.marque
   }
 
   const [isLoading, setIsLoading] = useState(false);
@@ -85,7 +87,6 @@ const VendreArticleScreen = (props) => {
       quality: 1,
     });
     setImagesTableau(oldImage => [...oldImage, result.uri])
-    console.log(result);
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -97,14 +98,16 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate('CategoriesChoiceScreen')
   }
 
+  const navigateMarques = () => {
+    props.navigation.navigate('MarquesChoiceScreen')
+  }
+
   const navigateEtat = () => {
     props.navigation.navigate('EtatChoiceScreen')
   }
 
   const [error, setError] = useState('');
 
-  console.log(currentUser)
-  console.log(isLoading)
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
@@ -149,6 +152,7 @@ const VendreArticleScreen = (props) => {
                           title: values.title,
                           description: values.description,
                           prix: values.price,
+                          poids: values.poids,
                           pushToken,
                           idVendeur: firebase.auth().currentUser.uid,
                           pseudoVendeur: currentUser.pseudo
@@ -159,11 +163,13 @@ const VendreArticleScreen = (props) => {
                         .collection("userPosts")
                         .doc(`${id}`)
                         .set({
+                          pseudoVendeur: currentUser.pseudo,
                           categorie,
                           etat,
                           title: values.title,
                           description: values.description,
                           prix: values.price,
+                          poids: values.poids
                         })
 
                     const uploadImage = async () => {
@@ -356,11 +362,19 @@ const VendreArticleScreen = (props) => {
                     {props.errors.title && props.touched.title ? (
                         <Text style={{color: '#D51317'}}>{props.errors.title}</Text>
                     ) : null}
+
                     <TouchableOpacity style={styles.itemForm3} onPress={() => navigateCategories()}>
                       <Text style={styles.text}>Catégorie</Text>
                       {categorie ? <Text style={{color: 'black'}}>{categorie}</Text> : <Text/>}
                       <AntDesign name="right" size={24} color="grey" />
                     </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.itemForm3} onPress={() => navigateCategories()}>
+                      <Text style={styles.text}>Marques</Text>
+                      {categorie ? <Text style={{color: 'black'}}>{marques}</Text> : <Text/>}
+                      <AntDesign name="right" size={24} color="grey" />
+                    </TouchableOpacity>
+
                     <TouchableOpacity style={styles.itemForm3} onPress={() => {
                       navigateEtat()
                     }}>
@@ -395,6 +409,16 @@ const VendreArticleScreen = (props) => {
                     {props.errors.price && props.touched.price ? (
                         <Text style={{color: '#D51317'}}>{props.errors.price}</Text>
                     ) : null}
+                    <View style={styles.itemForm3}>
+                      <Text>Poids</Text>
+                      <TextInput
+                          keyboardType="numeric"
+                          placeholder="Ex: 30kg"
+                          style={styles.input}
+                          value={props.values.poids}
+                          onChangeText={props.handleChange('poids')}
+                      />
+                    </View>
                     {(imagesTableau && imagesTableau.length === 1) ? (
                       <View style={styles.imageList}>
                         <Image

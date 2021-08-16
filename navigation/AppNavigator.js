@@ -115,6 +115,7 @@ import ThankYouScreen from "../screens/achat/ThankYouScreen";
 import ValidationEvaluationScreen from "../screens/profile/ValidationEvaluationScreen";
 import AvisScreen from "../screens/achat/AvisScreen";
 import LivraisonArticleLourdScreen from "../screens/achat/LivraisonArticleLourdScreen";
+import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1531,6 +1532,13 @@ export const AchatNavigator = (props) => {
                     <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
                 ),
                 headerTitle: "Livraison Lourde"
+            }}
+        />
+        <AchatStackNavigator.Screen
+            name="PortefeuilleThankYouScreen"
+            component={PortefeuilleThankYouScreen}
+            options={{
+                headerShown: false
             }}
         />
       <AchatStackNavigator.Screen

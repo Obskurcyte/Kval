@@ -94,6 +94,7 @@ const ViewProductsScreen = (props) => {
           <FlatList
             data={productArray}
             numColumns={2}
+            style={styles.flatList}
             keyExtractor={item => item.title}
             renderItem={itemData => {
               return (
@@ -114,7 +115,6 @@ const ViewProductsScreen = (props) => {
 
           </FlatList>
         }
-
     </View>
     </View>
   );
@@ -180,6 +180,10 @@ const styles = StyleSheet.create({
     paddingVertical: '2%',
     width: '50%',
     marginBottom: '5%'
+  },
+  flatList: {
+    height: '100%',
+    paddingBottom: 100
   }
 });
 

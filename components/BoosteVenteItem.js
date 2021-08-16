@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 
 const BoosteVenteItem = ({item, onPress, backgroundColor}) => {
 
+  console.log('item', item.downloadURL)
   return (
 
     <TouchableOpacity style={styles.cardContainer} onPress={onPress}>

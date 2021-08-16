@@ -2,6 +2,7 @@ import {TouchableOpacity, Text, View, Image, StyleSheet} from "react-native";
 import React from "react";
 
 const BoostedProductCard = ({title, prix, image, pseudo, onPress}) => {
+
   return (
     <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
       <Text style={styles.cardTitle}>{title}</Text>
@@ -42,6 +43,10 @@ const styles = StyleSheet.create({
   vendeurContainer: {
     backgroundColor: '#F9F9FA'
   },
+  image: {
+    height: 140,
+    width: 140
+  }
 });
 
 export default BoostedProductCard

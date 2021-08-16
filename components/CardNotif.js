@@ -2,16 +2,18 @@ import React from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View, StyleSheet} from "react-native";
 
 const CardNotif = (props) => {
+
+  console.log(props.image)
+
   return (
     <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen')}>
       <View style={styles.messageContainer}>
-
         <Image
-          source={require('../assets/selle.png')}
+          source={{uri: props.image}}
+          style={styles.image}
         />
         <View style={styles.nameContainer}>
           <Text style={styles.pseudoText}>{props.title}</Text>
-          <Text style={styles.timeText}>il y a 9 minutes</Text>
         </View>
       </View>
       <View style={styles.previewMessage}>
@@ -73,6 +75,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '90%',
+  },
+  image: {
+    width: 100,
+    height: 100
   }
 });
 export default CardNotif;

@@ -93,8 +93,6 @@ const ProfileScreen = (props) => {
   }
 
 
-
-
   const saveImageData = async (downloadURL) => {
     await firebase.firestore()
       .collection('users')

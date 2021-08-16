@@ -52,9 +52,10 @@ const CartScreen = (props) => {
     return transformedCartItems
   });
 
+  console.log('cartitem', cartItems)
 
   let portefeuilleVendeur = 0
-
+  let portefeuilleAcheteur = 0
   for (let data in cartItems) {
     total += parseFloat(cartItems[data].quantity) * parseFloat(cartItems[data].productPrice)
   }
@@ -69,6 +70,7 @@ const CartScreen = (props) => {
   const [response, setResponse] = useState()
   const [makePayment, setMakePayment] = useState(false)
   const [paymentStatus, setPaymentStatus] = useState('')
+  const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus('Votre paiement est en cours de traitement')
@@ -76,15 +78,12 @@ const CartScreen = (props) => {
 
     let jsonResponse = JSON.parse(paymentResponse);
 
-    // perform operation to check payment status
-
     try {
-
       const stripeResponse = await axios.post('https://stopgene.herokuapp.com/paymentonetime', {
-        email: 'hadrien.jaubert99@gmail.com',
+        email: `${userData.email}`,
         product: cartInfo,
         authToken: jsonResponse,
-        amount: 2
+        amount: newTotal
       })
 
       if (stripeResponse) {
@@ -110,7 +109,8 @@ const CartScreen = (props) => {
               .collection('listeNotifs')
               .add({
                 notificationsTitle: 'Un article a été vendu !',
-                notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`
+                notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
+                image: cartItem.image
               })
             dispatch(cartActions.deleteCart())
             const pushToken = cartItem.pushToken;
@@ -131,16 +131,17 @@ const CartScreen = (props) => {
               await firebase.firestore().collection('users')
                   .doc(cartItem.idVendeur)
                   .get().then((doc) => {
-
                     portefeuilleVendeur = doc.data().portefeuille
                     console.log('doc data', doc.data().portefeuille)
                     console.log('portefeuille', portefeuilleVendeur)
                   }).then(() => {
-                    firebase.firestore().collection('users')
-                        .doc(cartItem.idVendeur)
-                        .update({
-                          portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
-                        })
+                    if (portefeuilleVendeur >= 0) {
+                      firebase.firestore().collection('users')
+                          .doc(cartItem.idVendeur)
+                          .update({
+                            portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
+                          })
+                    }
                   })
             } catch (err) {
               console.log(err)
@@ -163,9 +164,113 @@ const CartScreen = (props) => {
 
   const cartTotalAmount = useSelector(state => state.cart.items)
 
-  console.log(userData)
+  const ViewPortefeuille = () => {
+    console.log('paymentportefeuille')
+    const PaymentPortefeuille = async () => {
+      for (const cartItem of cartItems) {
+        await firebase.firestore()
+            .collection('commandes')
+            .doc(firebase.auth().currentUser.uid)
+            .collection("userCommandes")
+            .doc(`${cartItem.productId}`)
+            .set({
+              title: cartItem.productTitle,
+              prix: cartItem.productPrice,
+              image: cartItem.image,
+              vendeur: cartItem.idVendeur,
+              pseudoVendeur: cartItem.pseudoVendeur
+            })
+        await firebase.firestore()
+            .collection('notifications')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('listeNotifs')
+            .add({
+              notificationsTitle: 'Un article a été vendu !',
+              notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
+              image: cartItem.image
+            })
+        dispatch(cartActions.deleteCart())
+        const pushToken = cartItem.pushToken;
+        await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            to: pushToken,
+            title: 'Un de vos articles a été acheté !',
+            body: `L'article ${cartItem.productTitle} a été acheté !`
+          })
+        })
+        try {
+          await firebase.firestore().collection('users')
+              .doc(cartItem.idVendeur)
+              .get().then((doc) => {
+                portefeuilleVendeur = doc.data().portefeuille
+                console.log('doc data', doc.data().portefeuille)
+                console.log('portefeuille', portefeuilleVendeur)
+              }).then(() => {
+
+                if (portefeuilleVendeur >= 0) {
+                  firebase.firestore().collection('users')
+                      .doc(cartItem.idVendeur)
+                      .update({
+                        portefeuille: portefeuilleVendeur + parseInt(cartItem.sum)
+                      })
+                }
+              })
+          await firebase.firestore().collection('users')
+              .doc(firebase.firestore().currentUser.uid)
+              .get().then((doc) => {
+                portefeuilleAcheteur = doc.data().portefeuille
+                console.log('doc data', doc.data().portefeuille)
+                console.log('portefeuille', portefeuilleAcheteur)
+              }).then(() => {
+
+                if (portefeuilleAcheteur > 0) {
+                  firebase.firestore().collection('users')
+                      .doc(firebase.firestore().currentUser.uid)
+                      .update({
+                        portefeuille: portefeuilleVendeur - parseInt(cartItem.productPrice)
+                      })
+                }
+              })
+        } catch (err) {
+          console.log(err)
+        }
+      }
+    }
+    //PaymentPortefeuille().then(() => props.navigation.navigate('PortefeuilleThankYouScreen'))
+    return (
+        <View>
+          <Text style={styles.portefeuilleText}>Vous avez suffisamment d'argent sur votre portefeuille</Text>
+          <TouchableOpacity
+              style={styles.mettreEnVente}
+              onPress={async () => {
+                await PaymentPortefeuille()
+                props.navigation.navigate('PortefeuilleThankYouScreen')
+              }}
+          >
+            <Text style={styles.mettreEnVenteText}>Procéder au paiement avec l'argent de mon portefeuille</Text>
+          </TouchableOpacity>
+        </View>
+    )
+  }
+
+  const newTotal = total * 1.095
+
+
   const paymentUI = props => {
     console.log(makePayment)
+
+    if (portefeuillePayment) {
+      return (
+          <ViewPortefeuille/>
+      )
+    }
+
     if (!makePayment) {
       return (
         <ScrollView style={styles.container}>
@@ -222,7 +327,7 @@ const CartScreen = (props) => {
             </View>
             <View style={styles.itemForm3}>
               <Text style={{fontSize: 18}}>Total</Text>
-              <Text style={styles.totalPrice}>{total.toFixed(2)} €</Text>
+              <Text style={styles.totalPrice}>{newTotal.toFixed(2)} €</Text>
             </View>
           </View>
 
@@ -230,21 +335,9 @@ const CartScreen = (props) => {
             style={styles.mettreEnVente}
             onPress={async () => {
               if (userData?.portefeuille >= total) {
-                for (const cartItem of cartItems) {
-                  await firebase.firestore().collection('users')
-                      .doc(cartItem.idVendeur)
-                      .get().then((doc) => {
-                        portefeuilleVendeur = doc.data().portefeuille
-                        console.log('doc data', doc.data().portefeuille)
-                        console.log('portefeuille', portefeuilleVendeur)
-                      }).then(() => {
-                        firebase.firestore().collection('users')
-                            .doc(cartItem.idVendeur)
-                            .update({
-                              portefeuille: portefeuilleVendeur - parseInt(total)
-                            })
-                      })
-                }
+                console.log('wola')
+                console.log(portefeuillePayment)
+                setPortefeuillePayment(true)
               } else {
                 setMakePayment(true)
               }
@@ -256,7 +349,9 @@ const CartScreen = (props) => {
 
         </ScrollView>
       )
-    } else {
+    }
+
+   else {
 
       if (response !== undefined) {
         console.log('paimentstatus', paymentStatus)
@@ -289,7 +384,6 @@ const CartScreen = (props) => {
         return (
           <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={total}/>
         )
-
       }
     }
   }
@@ -548,6 +642,10 @@ const styles = StyleSheet.create({
   adresseContainer: {
     display: 'flex',
     flexDirection: 'column'
+  },
+  portefeuilleText: {
+    fontSize: 18,
+    textAlign: 'center'
   }
 })
 
