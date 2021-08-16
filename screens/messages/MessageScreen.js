@@ -53,7 +53,7 @@ const MessageScreen = (props) => {
         }
       })
     return () => unsubscribe()
-  }, [notifsList])
+  }, [])
 
 
   console.log('thre', threads)
