@@ -7,17 +7,16 @@ import CardNotif from "../../components/CardNotif";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import UserAvatar from 'react-native-user-avatar';
+import CardMessage from "../../components/CardMessage";
+
+
 const MessageScreen = (props) => {
 
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
 
-  let pseudoVendeur;
+
   let initial;
-  if (props.route.params) {
-    pseudoVendeur = props.route.params.pseudoVendeur
-    initial = pseudoVendeur.charAt(0)
-  }
 
 
   const dispatch = useDispatch()
@@ -41,7 +40,7 @@ const MessageScreen = (props) => {
           if (documentSnapshot.id.includes(firebase.auth().currentUser.uid)) {
             return {
               _id: documentSnapshot.id,
-              name: pseudoVendeur,
+              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
               latestMessage: { text: '' },
               ...documentSnapshot.data()
             }
@@ -56,8 +55,7 @@ const MessageScreen = (props) => {
   }, [])
 
 
-  console.log('thre', threads)
-
+  console.log('authid', firebase.auth().currentUser.uid)
   return (
     <View style={styles.container}>
       <View style={styles.messagesContainer}>
@@ -78,35 +76,39 @@ const MessageScreen = (props) => {
       {messageActive && (
           <FlatList
             data={threads}
-            keyExtractor={() => Math.random() * 100000000000}
-            renderItem={({ item }) => {
-              console.log(item)
-              let date;
-              if (item !== undefined) {
-                date = item.latestMessage.createdAt
-                console.log('date', date)
-              }
+            style={styles.flatList}
+            keyExtractor={(item) =>  item._id}
+            renderItem={(itemData ) => {
               return (
-                  <View>
-                  {item!==undefined ?
+
+                  <CardMessage
+                    pseudoVendeur={itemData.item.pseudoVendeur}
+                    latestMessage={itemData.item.latestMessage.text}
+                    onPress={() => props.navigation.navigate('ChatScreen', {thread: itemData.item})}
+                  />
+                  )
+
+                  {/*
+                  <View style={styles.messageHyperContainer}>
+                  {itemData.item!==undefined ?
                       <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen', {thread: item})}>
                         <View style={styles.messageContainer}>
                           <UserAvatar
                               size={50}
-                              name={initial}
+                              name={(itemData.item.pseudoVendeur).charAt(0)}
                           />
                           <View style={styles.nameContainer}>
-                            <Text style={styles.pseudoText}>{item.name}</Text>
+                            <Text style={styles.pseudoText}>{itemData.item.pseudoVendeur}</Text>
                           </View>
                         </View>
                         <View style={styles.previewMessage}>
-                          <Text style={styles.timeText}>{item?.latestMessage.text}</Text>
+                          <Text style={styles.timeText}>{itemData.item?.latestMessage.text}</Text>
                         </View>
                       </TouchableOpacity> : <Text/>
             }
                   </View>
+                  */}
 
-              )
             }}
           />
       )}
@@ -125,9 +127,6 @@ const MessageScreen = (props) => {
             />
           )}}
         />
-
-
-
       )}
 
     </View>
@@ -173,18 +172,18 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     marginLeft: '5%',
-    marginTop: '5%'
   },
   pseudoText: {
     fontSize: 18
   },
   previewMessage: {
-    marginTop: '5%',
-    marginLeft: '10%'
+    marginLeft: '20%',
+    marginBottom: '2%'
   },
   messageSuperContainer: {
-    padding: '5%',
-    width: '90%'
+    paddingLeft: '5%',
+    width: '90%',
+    height: '100%',
   },
   timeText: {
     fontSize: 14,
@@ -193,7 +192,13 @@ const styles = StyleSheet.create({
   messageContainer: {
     display: 'flex',
     flexDirection: 'row',
-    width: '90%',
+  },
+  messageHyperContainer: {
+    padding: 0,
+    borderTopWidth: 1
+  },
+  flatList: {
+    height: '100%'
   }
 })
 export default MessageScreen;

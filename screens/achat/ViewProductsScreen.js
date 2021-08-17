@@ -97,6 +97,7 @@ const ViewProductsScreen = (props) => {
             style={styles.flatList}
             keyExtractor={item => item.title}
             renderItem={itemData => {
+              console.log('data', itemData.item)
               return (
                 <CardVente
                   pseudo={itemData.item.pseudoVendeur}

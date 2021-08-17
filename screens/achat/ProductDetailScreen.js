@@ -1,20 +1,75 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, ScrollView} from "react-native";
+import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, Pressable, ScrollView} from "react-native";
 import {AntDesign} from "@expo/vector-icons";
 import {useDispatch, useSelector} from "react-redux";
 import * as cartActions from '../../store/actions/cart';
 import firebase from "firebase";
 import UserAvatar from 'react-native-user-avatar';
 import * as articlesActions from "../../store/actions/articlesCommandes";
+import Carousel from 'react-native-anchor-carousel';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+
+
+
+const ITEM_WIDTH = 0.7 * windowWidth;
+const SEPARATOR_WIDTH = 10;
+
 
 const ProductDetailScreen = (props) => {
 
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
+  //-------------CAROUSEL----------------//
+
+  let testData = []
+  testData.push({id: 'item1', image: product.downloadURL})
+
+  if (product.downloadURL1) {
+    testData.push({id: 'item2', image: product.downloadURL1})
+  }
+
+  if (product.downloadURL2) {
+    testData.push({id: 'item3', image: product.downloadURL2})
+  }
+
+  console.log('test', testData)
+
+  const carouselRef = React.useRef(null);
+
+  function renderItem({item, index}) {
+    const {image, title, url} = item;
+    return (
+        <Pressable
+            activeOpacity={1}
+            style={styles.item}
+            onPress={() => {
+              carouselRef.current.scrollToIndex(index);
+            }}>
+          <Image source={{uri: image}} style={styles.image} />
+          <View style={styles.lowerContainer}>
+            <View style={styles.lowerLeft}>
+              <Text style={styles.titleText} numberOfLines={2}>
+                {title}
+              </Text>
+              <Text style={styles.descriptionText} numberOfLines={1}>
+                reactNativeAnchorCarousel
+              </Text>
+            </View>
+            <TouchableOpacity
+                style={styles.button}
+                >
+              <Text style={styles.buttonText}>Install Now</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+    );
+  }
+
+
+  //-----------------COMMENTAIRES-----------------//
 
   useEffect(() => {
     dispatch(articlesActions.getAvis(product.idVendeur))
@@ -39,51 +94,13 @@ const ProductDetailScreen = (props) => {
 
   console.log('overall', overallRating)
 
-  const trueRating = Math.ceil(overallRating/commentaires.length);
+  let trueRating;
+  if (commentaires) {
+    trueRating = Math.ceil(overallRating/commentaires.length);
+  }
 
   const [search, setSearch] = useState('');
   const [errorAdded, setErrorAdded] = useState('');
-
-  const cartItems = useSelector(state => {
-    const transformedCartItems = [];
-    for (const key in state.cart.items) {
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
-        quantity: state.cart.items[key].quantity,
-        image: state.cart.items[key].image,
-        idVendeur: state.cart.items[key].idVendeur,
-        pseudoVendeur: state.cart.items[key].pseudoVendeur,
-        pushToken: state.cart.items[key].pushToken,
-        categorie: state.cart.items[key].categorie,
-        sum: state.cart.items[key].sum
-      })
-    }
-    return transformedCartItems
-  });
-
-
-  const updateSearch = (search) => {
-    setSearch(search)
-  };
-
-  const onMessagePressed = () => {
-    console.log(product.pseudoVendeur)
-    firebase.firestore().collection('MESSAGE_THREADS')
-        .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
-        .collection('MESSAGES').add({
-        text: `Start chating`,
-        createdAt: new Date().getTime(),
-        system: true
-      })
-      props.navigation.navigate('Message', {
-        screen: 'MessageScreen',
-        params: {
-          pseudoVendeur: product.pseudoVendeur
-        }
-      })
-  }
 
   const FourStar = () => {
     return (
@@ -133,6 +150,60 @@ const ProductDetailScreen = (props) => {
     )
   }
 
+
+  //------------------------CART--------------//
+
+
+  const cartItems = useSelector(state => {
+    const transformedCartItems = [];
+    for (const key in state.cart.items) {
+      transformedCartItems.push({
+        productId: key,
+        productTitle: state.cart.items[key].productTitle,
+        productPrice: state.cart.items[key].productPrice,
+        quantity: state.cart.items[key].quantity,
+        image: state.cart.items[key].image,
+        idVendeur: state.cart.items[key].idVendeur,
+        pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        pushToken: state.cart.items[key].pushToken,
+        categorie: state.cart.items[key].categorie,
+        sum: state.cart.items[key].sum
+      })
+    }
+    return transformedCartItems
+  });
+
+
+  const updateSearch = (search) => {
+    setSearch(search)
+  };
+
+
+  //-----------------------------------MESSAGES---------------------//
+  const idAcheteur = firebase.auth().currentUser.uid
+  console.log('authid', firebase.auth().currentUser.uid)
+  const onMessagePressed = () => {
+    console.log(product.pseudoVendeur)
+    firebase.firestore().collection('MESSAGE_THREADS')
+        .doc(`${product.idVendeur}` + `${idAcheteur}`)
+        .collection('MESSAGES').add({
+        text: `Start chating`,
+        createdAt: new Date().getTime(),
+        system: true
+      }).then(() => {
+      firebase.firestore().collection('MESSAGE_THREADS')
+          .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
+          .set({
+            latestMessage: { text: 'Commencez à chatter...' },
+            pseudoVendeur: product.pseudoVendeur
+          })
+    })
+
+      props.navigation.navigate('Message', {
+        screen: 'MessageScreen',
+      })
+  }
+
   const initial = product.pseudoVendeur.charAt(0)
 
     return (
@@ -142,9 +213,17 @@ const ProductDetailScreen = (props) => {
           <ScrollView>
 
           <View style={styles.imgContainer}>
-            <Image
-              source={{uri: product.downloadURL}}
-              style={styles.image}
+            <Carousel
+                keyExtractor={item => item?.id}
+                style={[styles.carousel]}
+                ref={carouselRef}
+                data={testData}
+                renderItem={renderItem}
+                itemWidth={ITEM_WIDTH}
+                separatorWidth={SEPARATOR_WIDTH}
+                inActiveScale={1}
+                inActiveOpacity={1}
+                containerWidth={windowWidth}
             />
           </View>
 
@@ -175,18 +254,23 @@ const ProductDetailScreen = (props) => {
 
             <View>
               <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              {trueRating === 1 && <OneStar />}
-              {trueRating === 2 && <TwoStar />}
-              {trueRating === 3 && <ThreeStar />}
-              {trueRating === 4 && <FourStar />}
-              {trueRating === 5 && <FiveStar />}
+              {commentaires.length ?  <View>
+                {trueRating === 1 && <OneStar />}
+                {trueRating === 2 && <TwoStar />}
+                {trueRating === 3 && <ThreeStar />}
+                {trueRating === 4 && <FourStar />}
+                {trueRating === 5 && <FiveStar />}
+              </View> : <Text>Aucun commentaire disponible</Text>}
             </View>
 
-            <TouchableOpacity onPress={() => props.navigation.navigate('AvisScreen', {
-              product: product
-            })}>
-              <Text>Voir les avis</Text>
-            </TouchableOpacity>
+            {commentaires.length ?
+                <TouchableOpacity onPress={() => props.navigation.navigate('AvisScreen', {
+                  product: product
+                })}>
+                  <Text>Voir les avis</Text>
+                </TouchableOpacity> : <Text />
+            }
+
           </View>
 
             <TouchableOpacity style={styles.envoyerMessageContainer} onPress={() => onMessagePressed()}>
@@ -250,11 +334,12 @@ const styles = StyleSheet.create({
     width: windowWidth,
     height: windowHeight/3,
     marginTop: '3%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
-    height: '100%',
-    width: '50%'
+    width: '100%',
+    aspectRatio: 1,
+    backgroundColor: '#EBEBEB',
   },
   title: {
     fontWeight: 'bold',
@@ -325,7 +410,90 @@ const styles = StyleSheet.create({
   envoyerMessageText: {
     color: '#D9353A',
     fontSize: 18
-  }
+  },
+  carousel: {
+    width: windowWidth,
+    height: ITEM_WIDTH + 100,
+    flexGrow: 0,
+    marginBottom: 30
+  },
+  item: {
+    backgroundColor: 'white',
+    height: '98%',
+    borderRadius: 5,
+    borderColor: '#EAECEE',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+    elevation: 1,
+  },
+  lowerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 12,
+  },
+  lowerLeft: {
+    width: '50%',
+  },
+  titleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1C2127',
+    marginTop: 4,
+  },
+  descriptionText: {
+    fontSize: 14,
+
+    color: '#A0A0A0',
+  },
+  button: {
+    width: '40%',
+    marginLeft: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    borderColor: '#585B60',
+  },
+  buttonText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#585B60',
+  },
+  footer: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    marginTop: 20,
+    marginHorizontal: 10,
+    borderColor: '#A0A0A0',
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-around',
+    padding: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 20,
+    borderColor: '#A0A0A0',
+    paddingHorizontal: 10,
+  },
+  logo: {
+    width: 40,
+    aspectRatio: 1,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  name: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1C2127',
+  },
 });
 
 export default ProductDetailScreen;

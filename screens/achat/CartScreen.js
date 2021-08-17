@@ -79,13 +79,14 @@ const CartScreen = (props) => {
     let jsonResponse = JSON.parse(paymentResponse);
 
     try {
-      const stripeResponse = await axios.post('https://stopgene.herokuapp.com/paymentonetime', {
+      const stripeResponse = await axios.post('https://kval-backend.herokuapp.com/paymentonetime', {
         email: `${userData.email}`,
         product: cartInfo,
         authToken: jsonResponse,
-        amount: newTotal
+        amount: newTotal*100
       })
 
+      console.log(stripeResponse.data)
       if (stripeResponse) {
         const {paid} = stripeResponse.data;
         if (paid === true) {
