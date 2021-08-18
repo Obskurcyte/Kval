@@ -4,19 +4,12 @@ import firebase from "firebase";
 import * as notifsActions from '../../store/actions/notifications';
 import {useDispatch, useSelector} from "react-redux";
 import CardNotif from "../../components/CardNotif";
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-import UserAvatar from 'react-native-user-avatar';
 import CardMessage from "../../components/CardMessage";
-
 
 const MessageScreen = (props) => {
 
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
-
-
-  let initial;
 
 
   const dispatch = useDispatch()
@@ -25,7 +18,7 @@ const MessageScreen = (props) => {
     dispatch(notifsActions.fetchNotifs())
   }, [])
 
-  const notifsList = useSelector(state => state.notifs.notifs)
+  const notifsList = useSelector(state => state.notifs.notifs);
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,15 +28,17 @@ const MessageScreen = (props) => {
     const unsubscribe = firebase.firestore()
       .collection('MESSAGE_THREADS')
       .onSnapshot(querySnapshot => {
-        const threads = querySnapshot.docs.map(documentSnapshot => {
+        const threads = [];
+        querySnapshot.docs.map(documentSnapshot => {
           console.log('wesh')
+          console.log(documentSnapshot.id.includes(firebase.auth().currentUser.uid))
           if (documentSnapshot.id.includes(firebase.auth().currentUser.uid)) {
-            return {
+            threads.push({
               _id: documentSnapshot.id,
               pseudoVendeur: documentSnapshot.data().pseudoVendeur,
               latestMessage: { text: '' },
               ...documentSnapshot.data()
-            }
+            })
           }
         })
         setThreads(threads)
@@ -54,14 +49,17 @@ const MessageScreen = (props) => {
     return () => unsubscribe()
   }, [])
 
+  console.log(threads)
 
   console.log('authid', firebase.auth().currentUser.uid)
   return (
     <View style={styles.container}>
       <View style={styles.messagesContainer}>
-        <TouchableOpacity style={messageActive ? styles.messageBorder : styles.message} onPress={() => {
-          setMessageActive(true)
-          setNotifActive(false)
+        <TouchableOpacity
+            style={messageActive ? styles.messageBorder : styles.message}
+            onPress={() => {
+                setMessageActive(true)
+                setNotifActive(false)
         }}>
           <Text style={styles.messageText}>Messagerie</Text>
         </TouchableOpacity>
@@ -77,38 +75,15 @@ const MessageScreen = (props) => {
           <FlatList
             data={threads}
             style={styles.flatList}
-            keyExtractor={(item) =>  item._id}
+            keyExtractor={(item) =>  item?._id}
             renderItem={(itemData ) => {
               return (
-
                   <CardMessage
-                    pseudoVendeur={itemData.item.pseudoVendeur}
-                    latestMessage={itemData.item.latestMessage.text}
-                    onPress={() => props.navigation.navigate('ChatScreen', {thread: itemData.item})}
-                  />
-                  )
-
-                  {/*
-                  <View style={styles.messageHyperContainer}>
-                  {itemData.item!==undefined ?
-                      <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen', {thread: item})}>
-                        <View style={styles.messageContainer}>
-                          <UserAvatar
-                              size={50}
-                              name={(itemData.item.pseudoVendeur).charAt(0)}
-                          />
-                          <View style={styles.nameContainer}>
-                            <Text style={styles.pseudoText}>{itemData.item.pseudoVendeur}</Text>
-                          </View>
-                        </View>
-                        <View style={styles.previewMessage}>
-                          <Text style={styles.timeText}>{itemData.item?.latestMessage.text}</Text>
-                        </View>
-                      </TouchableOpacity> : <Text/>
-            }
-                  </View>
-                  */}
-
+                        pseudoVendeur={itemData.item?.pseudoVendeur}
+                        latestMessage={itemData.item?.latestMessage.text}
+                        onPress={() => props.navigation.navigate('ChatScreen', {thread: itemData.item})}
+                    />
+              )
             }}
           />
       )}
@@ -134,10 +109,6 @@ const MessageScreen = (props) => {
 };
 
 const styles = StyleSheet.create({
-  avatar: {
-    backgroundColor: 'grey',
-    color: 'red'
-  },
   container: {
     backgroundColor: 'white'
   },
@@ -168,14 +139,6 @@ const styles = StyleSheet.create({
   messageText: {
     fontSize: 18
   },
-  nameContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginLeft: '5%',
-  },
-  pseudoText: {
-    fontSize: 18
-  },
   previewMessage: {
     marginLeft: '20%',
     marginBottom: '2%'
@@ -192,10 +155,6 @@ const styles = StyleSheet.create({
   messageContainer: {
     display: 'flex',
     flexDirection: 'row',
-  },
-  messageHyperContainer: {
-    padding: 0,
-    borderTopWidth: 1
   },
   flatList: {
     height: '100%'

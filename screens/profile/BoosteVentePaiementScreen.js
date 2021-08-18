@@ -57,7 +57,7 @@ const BoosteVentePaiementScreen = (props) => {
     // perform operation to check payment status
 
     try {
-      const stripeResponse = await axios.post('https://stopgene.herokuapp.com/paymentonetime', {
+      const stripeResponse = await axios.post('https://kval-backend.herokuapp.com/paymentonetime', {
         email: 'hadrien.jaubert99@gmail.com',
         product: cartInfo,
         authToken: jsonResponse,

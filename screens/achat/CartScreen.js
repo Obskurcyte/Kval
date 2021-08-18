@@ -26,6 +26,7 @@ const CartScreen = (props) => {
 
 
 
+
   let livraison;
 
   if (props.route.params) {
@@ -72,6 +73,16 @@ const CartScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState('')
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
+  const sousTotal = (total * 1.095).toFixed(2)
+  let reductionPortefeuille;
+
+  if (userData?.portefeuille <= sousTotal) {
+    reductionPortefeuille = userData.portefeuille
+  } else {
+    reductionPortefeuille = sousTotal
+  }
+  const newTotal = (sousTotal - reductionPortefeuille).toFixed(2)
+  console.log(newTotal)
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus('Votre paiement est en cours de traitement')
     setResponse(paymentResponse)
@@ -83,7 +94,7 @@ const CartScreen = (props) => {
         email: `${userData.email}`,
         product: cartInfo,
         authToken: jsonResponse,
-        amount: newTotal*100
+        amount: parseInt((newTotal)*100)
       })
 
       console.log(stripeResponse.data)
@@ -213,7 +224,6 @@ const CartScreen = (props) => {
                 console.log('doc data', doc.data().portefeuille)
                 console.log('portefeuille', portefeuilleVendeur)
               }).then(() => {
-
                 if (portefeuilleVendeur >= 0) {
                   firebase.firestore().collection('users')
                       .doc(cartItem.idVendeur)
@@ -229,7 +239,6 @@ const CartScreen = (props) => {
                 console.log('doc data', doc.data().portefeuille)
                 console.log('portefeuille', portefeuilleAcheteur)
               }).then(() => {
-
                 if (portefeuilleAcheteur > 0) {
                   firebase.firestore().collection('users')
                       .doc(firebase.firestore().currentUser.uid)
@@ -260,7 +269,7 @@ const CartScreen = (props) => {
     )
   }
 
-  const newTotal = total * 1.095
+
 
 
   const paymentUI = props => {
@@ -320,29 +329,36 @@ const CartScreen = (props) => {
           <View style={styles.totalContainer}>
             <View style={styles.itemForm3}>
               <Text style={{fontSize: 18}}>Prix protection acheteur</Text>
-              <Text style={{fontSize: 18}}>{total * 0.095} €</Text>
+              <Text style={{fontSize: 18}}>{(total * 0.095).toFixed(2)} €</Text>
             </View>
             <View style={styles.itemForm3}>
               <Text style={{fontSize: 18}}>Portefeuille</Text>
               <Text style={{fontSize: 18}}>{userData?.portefeuille.toFixed(2)} €</Text>
             </View>
             <View style={styles.itemForm3}>
+              <Text style={{fontSize: 18}}>Sous-Total</Text>
+              <Text style={{fontSize: 18}}>{sousTotal} €</Text>
+            </View>
+            <View style={styles.itemForm3}>
+              <Text style={{fontSize: 18}}>Déduction Portefeuille</Text>
+              <Text style={{fontSize: 18}}>- {reductionPortefeuille} €</Text>
+            </View>
+            <View style={styles.itemForm3}>
               <Text style={{fontSize: 18}}>Total</Text>
-              <Text style={styles.totalPrice}>{newTotal.toFixed(2)} €</Text>
+              <Text style={styles.totalPrice}>{newTotal} €</Text>
             </View>
           </View>
 
           <TouchableOpacity
             style={styles.mettreEnVente}
             onPress={async () => {
-              if (userData?.portefeuille >= total) {
+              if (newTotal == 0.00) {
                 console.log('wola')
                 console.log(portefeuillePayment)
                 setPortefeuillePayment(true)
               } else {
                 setMakePayment(true)
               }
-
             }}
           >
             <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>

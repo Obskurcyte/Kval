@@ -23,7 +23,7 @@ const ViewProductsScreen = (props) => {
 
   const dispatch = useDispatch()
   const [search, setSearch] = useState('');
-  const [count, setCount] = useState(0);
+
 
   const [filter, setFilter] = useState(false);
 
@@ -34,7 +34,6 @@ const ViewProductsScreen = (props) => {
     dispatch(productsActions.fetchProducts(categorie))
   }, [isFocused]);
 
-
   const updateSearch = (search) => {
     setSearch(search)
   };
@@ -43,12 +42,7 @@ const ViewProductsScreen = (props) => {
   const categorie = props.route.params.categorie
   console.log('categorie', categorie)
   const productArray = useSelector(state => state.products.products)
-
-  if(count < 1) {
-    setTimeout(() => {
-      setCount(count + 1);
-    }, 1000);
-  }
+  console.log(productArray)
 
   const productDetail = useSelector(state => state.products.productDetail)
 
@@ -97,7 +91,6 @@ const ViewProductsScreen = (props) => {
             style={styles.flatList}
             keyExtractor={item => item.title}
             renderItem={itemData => {
-              console.log('data', itemData.item)
               return (
                 <CardVente
                   pseudo={itemData.item.pseudoVendeur}

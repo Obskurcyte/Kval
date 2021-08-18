@@ -62,6 +62,7 @@ export default function App() {
     })
   })
 
+
   if (!loaded) {
     return <ActivityIndicator/>
   }

@@ -15,11 +15,13 @@ const ProfileScreen = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+
   useEffect(() => {
     dispatch(userActions.getUser())
   }, [dispatch, isLoading]);
 
 
+  console.log(firebase.auth().currentUser.uid)
   const userData = useSelector(state => state.user.userData);
 
   console.log(userData);
@@ -192,8 +194,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
     alignItems: 'center',
-    height: windowHeight/9,
-    width: windowWidth/4,
+    height: 100,
+    width: 100,
   },
   iconPhoto: {
     textAlign: 'center'

@@ -36,6 +36,7 @@ const uploadSchema = Yup.object().shape({
 
 const VendreArticleScreen = (props) => {
 
+  console.log(firebase.auth().currentUser.uid)
   const dispatch = useDispatch();
 
   const initialValues = {
@@ -127,9 +128,9 @@ const VendreArticleScreen = (props) => {
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
                   let pushToken;
-                  let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+                  let statusObj = await Notifications.getPermissionsAsync();
                   if (statusObj.status !== 'granted') {
-                    statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+                    statusObj = await Notifications.requestPermissionsAsync()
                   }
                   if (statusObj.status !== 'granted') {
                       pushToken = null;
@@ -267,9 +268,80 @@ const VendreArticleScreen = (props) => {
                       const taskProgress = snapshot => {
                         console.log(`transferred: ${snapshot.bytesTransferred}`)
                       }
-                      const taskCompleted = snapshot => {
+                      if (imagesTableau && imagesTableau.length === 3) {
                         task.snapshot.ref.getDownloadURL().then((snapshot) => {
                           saveImageData2(snapshot)
+                          console.log('snapshot', snapshot)
+                        }).then(() => setIsLoading(false)).then(() => {
+                          etat = '';
+                          categorie = '';
+                          setImagesTableau([])
+                          setImage(null)
+                        }).then(() => props.navigation.navigate('ValidationScreen'))
+                      } else {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                          saveImageData(snapshot)
+                          console.log('snapshot', snapshot)
+                        })}
+
+                      const taskError = snapshot => {
+                        console.log(snapshot)
+                      }
+                      task.on("state_changed", taskProgress, taskError, taskCompleted)
+                    }
+
+                    const uploadImage3 = async () => {
+                      const uri = imagesTableau[3];
+                      const response = await fetch(uri);
+                      const blob = await response.blob();
+
+                      const task = firebase
+                          .storage()
+                          .ref()
+                          .child(`${categorie}/${Math.random().toString(36)}`)
+                          .put(blob);
+
+                      const taskProgress = snapshot => {
+                        console.log(`transferred: ${snapshot.bytesTransferred}`)
+                      }
+                      if (imagesTableau && imagesTableau.length === 4) {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                          saveImageData3(snapshot)
+                          console.log('snapshot', snapshot)
+                        }).then(() => setIsLoading(false)).then(() => {
+                          etat = '';
+                          categorie = '';
+                          setImagesTableau([])
+                          setImage(null)
+                        }).then(() => props.navigation.navigate('ValidationScreen'))
+                      } else {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                          saveImageData(snapshot)
+                          console.log('snapshot', snapshot)
+                        })}
+                      const taskError = snapshot => {
+                        console.log(snapshot)
+                      }
+                      task.on("state_changed", taskProgress, taskError, taskCompleted)
+                    }
+
+                    const uploadImage4 = async () => {
+                      const uri = imagesTableau[4];
+                      const response = await fetch(uri);
+                      const blob = await response.blob();
+
+                      const task = firebase
+                          .storage()
+                          .ref()
+                          .child(`${categorie}/${Math.random().toString(36)}`)
+                          .put(blob);
+
+                      const taskProgress = snapshot => {
+                        console.log(`transferred: ${snapshot.bytesTransferred}`)
+                      }
+                      const taskCompleted = snapshot => {
+                        task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                          saveImageData4(snapshot)
                           console.log(snapshot)
                         }).then(() => setIsLoading(false)).then(() => {
                           etat = '';
@@ -283,6 +355,7 @@ const VendreArticleScreen = (props) => {
                       }
                       task.on("state_changed", taskProgress, taskError, taskCompleted)
                     }
+
 
                     const saveImageData = (downloadURL) => {
                       firebase.firestore()
@@ -332,6 +405,39 @@ const VendreArticleScreen = (props) => {
                             downloadURL2
                           })
                     }
+
+                    const saveImageData3 = (downloadURL3) => {
+                      firebase.firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL3,
+                          })
+                      firebase.firestore()
+                          .collection('posts')
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .add({
+                            downloadURL3
+                          })
+                    }
+
+                    const saveImageData4 = (downloadURL4) => {
+                      firebase.firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .update({
+                            downloadURL4,
+                          })
+                      firebase.firestore()
+                          .collection('posts')
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .add({
+                            downloadURL4
+                          })
+                    }
+
                     if (imagesTableau && imagesTableau.length === 1) {
                       await uploadImage()
                     }
@@ -343,7 +449,21 @@ const VendreArticleScreen = (props) => {
                       await uploadImage()
                       await uploadImage1()
                       await uploadImage2()
-                    }}}
+                    }
+                    if (imagesTableau && imagesTableau.length === 4) {
+                      await uploadImage()
+                      await uploadImage1()
+                      await uploadImage2()
+                      await uploadImage3()
+                    }
+                    if (imagesTableau && imagesTableau.length === 5) {
+                      await uploadImage()
+                      await uploadImage1()
+                      await uploadImage2()
+                      await uploadImage3()
+                      await uploadImage4()
+                    }
+                  }}
                   }
 
 
@@ -391,13 +511,12 @@ const VendreArticleScreen = (props) => {
                         value={props.values.description}
                         onChangeText={props.handleChange('description')}
                       />
-
                     </View>
                     {props.errors.description && props.touched.description ? (
                         <Text style={{color: '#D51317'}}>{props.errors.description}</Text>
                     ) : null}
                     <View style={styles.itemForm3}>
-                      <Text>Prix</Text>
+                      <Text>Prix (TTC)</Text>
                       <TextInput
                         keyboardType="numeric"
                         placeholder="Ex: 150,00"
@@ -455,10 +574,54 @@ const VendreArticleScreen = (props) => {
                         />
                       </View>
                     ): <Text />}
-                    {(imagesTableau && imagesTableau.length < 3) ? (
+                    {(imagesTableau && imagesTableau.length === 4) ? (
+                        <View style={styles.imageList}>
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[0]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[1]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[2]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[3]}}
+                          />
+                        </View>
+                    ): <Text />}
+                    {(imagesTableau && imagesTableau.length === 5) ? (
+                        <View style={styles.imageList}>
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[0]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[1]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[2]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[3]}}
+                          />
+                          <Image
+                              style={styles.image}
+                              source={{uri: imagesTableau[4]}}
+                          />
+                        </View>
+                    ): <Text />}
+                    {(imagesTableau && imagesTableau.length < 5) ? (
                       <TouchableOpacity style={styles.photoContainer} onPress={pickImage}>
                         <Text style={styles.addPhotoText}>Ajouter des photos</Text>
-                        <Text style={styles.addPhotoText}>(jusqu'à 3)</Text>
+                        <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
                         <AntDesign name="pluscircleo" size={24} color="#DADADA" />
                       </TouchableOpacity>
                     ): <Text/>}

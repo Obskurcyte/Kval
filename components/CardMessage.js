@@ -2,25 +2,27 @@ import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
 
+
 const CardMessage = ({pseudoVendeur, latestMessage, onPress}) => {
 
+
     return (
-        <View style={styles.messageHyperContainer}>
-                <TouchableOpacity style={styles.messageSuperContainer} onPress={onPress}>
-                    <View style={styles.messageContainer}>
-                        <UserAvatar
-                            size={50}
-                            name={(pseudoVendeur).charAt(0)}
-                        />
-                        <View style={styles.nameContainer}>
-                            <Text style={styles.pseudoText}>{pseudoVendeur}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.previewMessage}>
-                        <Text style={styles.timeText}>{latestMessage}</Text>
-                    </View>
-                </TouchableOpacity>
-        </View>
+                <View style={styles.messageHyperContainer}>
+                        <TouchableOpacity style={styles.messageSuperContainer} onPress={onPress}>
+                            <View style={styles.messageContainer}>
+                                <UserAvatar
+                                    size={50}
+                                    name={(pseudoVendeur)?.charAt(0)}
+                                />
+                                <View style={styles.nameContainer}>
+                                    <Text style={styles.pseudoText}>{pseudoVendeur}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.previewMessage}>
+                                <Text style={styles.timeText}>{latestMessage}</Text>
+                            </View>
+                        </TouchableOpacity>
+                </View>
     );
 };
 
