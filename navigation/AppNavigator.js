@@ -1,7 +1,7 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {createStackNavigator} from "@react-navigation/stack";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import OnboardingScreen1 from "../screens/inscription/OnboardingScreen1";
 import OnboardingScreen2 from "../screens/inscription/OnboardingScreen2";
 import IdentificationScreen from "../screens/inscription/IdentificationScreen";
@@ -11,9 +11,9 @@ import VendreArticleScreen from "../screens/vente/VendreArticleScreen";
 import MessageScreen from "../screens/messages/MessageScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import AccueilScreen from "../screens/accueil/AccueilScreen";
-import {AntDesign, Fontisto} from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Fontisto } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import CategoriesChoiceScreen from "../screens/vente/CategoriesChoiceScreen";
 import EtatChoiceScreen from "../screens/vente/EtatChoiceScreen";
 import ChevalEtCuirAccueilScreen from "../screens/achat/categories/ChevalEtCuirAccueilScreen";
@@ -93,7 +93,7 @@ const AchatStackNavigator = createStackNavigator();
 const MessageStackNavigator = createStackNavigator();
 const ProfileStackNavigator = createStackNavigator();
 const AccueilStackNavigator = createStackNavigator();
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 import HeaderRight from "../components/HeaderRight";
 import ArticlesEnVenteScreen from "../screens/profile/ArticlesEnVenteScreen";
 import BoosteVenteScreen from "../screens/profile/BoosteVenteScreen";
@@ -122,7 +122,6 @@ const AppTabNavigator = createBottomTabNavigator();
 export const AuthNavigator = () => {
   return (
     <AuthStackNavigator.Navigator>
-
       <AuthStackNavigator.Screen
         name="OnboardingScreen1"
         component={OnboardingScreen1}
@@ -140,11 +139,11 @@ export const AuthNavigator = () => {
         component={IdentificationScreen}
         options={{ headerShown: false }}
       />
-        <AuthStackNavigator.Screen
-            name="PreInscriptionScreen"
-            component={PreInscriptionScreen}
-            options={{ headerShown: false }}
-        />
+      <AuthStackNavigator.Screen
+        name="PreInscriptionScreen"
+        component={PreInscriptionScreen}
+        options={{ headerShown: false }}
+      />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
         component={InscriptionScreen}
@@ -156,8 +155,8 @@ export const AuthNavigator = () => {
         options={{ headerShown: false }}
       />
     </AuthStackNavigator.Navigator>
-  )
-}
+  );
+};
 
 export const SellNavigator = () => {
   return (
@@ -168,16 +167,16 @@ export const SellNavigator = () => {
         options={{
           title: "Vendre un article",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -186,16 +185,16 @@ export const SellNavigator = () => {
         options={{
           title: "Catégories",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -204,16 +203,16 @@ export const SellNavigator = () => {
         options={{
           title: "Etat",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -222,16 +221,16 @@ export const SellNavigator = () => {
         options={{
           title: "Cheval & Cuir",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -240,16 +239,16 @@ export const SellNavigator = () => {
         options={{
           title: "Brideries rênes et accessoires",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -258,16 +257,16 @@ export const SellNavigator = () => {
         options={{
           title: "Mors",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -276,16 +275,16 @@ export const SellNavigator = () => {
         options={{
           title: "Etriers et étrivières",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -294,16 +293,16 @@ export const SellNavigator = () => {
         options={{
           title: "Sangles et bavettes",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -312,16 +311,16 @@ export const SellNavigator = () => {
         options={{
           title: "Colliers de chasses et enrênements",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -330,16 +329,16 @@ export const SellNavigator = () => {
         options={{
           title: "Travail à pied",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -348,16 +347,16 @@ export const SellNavigator = () => {
         options={{
           title: "Selles et accessoires",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -366,16 +365,16 @@ export const SellNavigator = () => {
         options={{
           title: "Cheval & Textile",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -384,16 +383,16 @@ export const SellNavigator = () => {
         options={{
           title: "Chemises et séchantes",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -402,16 +401,16 @@ export const SellNavigator = () => {
         options={{
           title: "Couvertures et couvre-reins",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -420,16 +419,16 @@ export const SellNavigator = () => {
         options={{
           title: "Licols et longes",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -438,16 +437,16 @@ export const SellNavigator = () => {
         options={{
           title: "Protections des membres",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -456,16 +455,16 @@ export const SellNavigator = () => {
         options={{
           title: "Cavaliers",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -474,16 +473,16 @@ export const SellNavigator = () => {
         options={{
           title: "Accessoires",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -492,16 +491,16 @@ export const SellNavigator = () => {
         options={{
           title: "Bottes, boots et mini-chaps",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -510,16 +509,16 @@ export const SellNavigator = () => {
         options={{
           title: "Casques d’équitation",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -528,16 +527,16 @@ export const SellNavigator = () => {
         options={{
           title: "Prêt-à-porter enfant",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -546,16 +545,16 @@ export const SellNavigator = () => {
         options={{
           title: "Prêt-à-porter homme",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -564,16 +563,16 @@ export const SellNavigator = () => {
         options={{
           title: "Prêt-à-porter femme",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -582,16 +581,16 @@ export const SellNavigator = () => {
         options={{
           title: "Gilets de protection",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -600,16 +599,16 @@ export const SellNavigator = () => {
         options={{
           title: "Soins et écuries",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -618,16 +617,16 @@ export const SellNavigator = () => {
         options={{
           title: "Aliments",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -636,16 +635,16 @@ export const SellNavigator = () => {
         options={{
           title: "Produits d'entretien",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -654,16 +653,16 @@ export const SellNavigator = () => {
         options={{
           title: "Matériel de pansage",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -672,16 +671,16 @@ export const SellNavigator = () => {
         options={{
           title: "Tentures, housses",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -690,16 +689,16 @@ export const SellNavigator = () => {
         options={{
           title: "Equipements box",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -708,16 +707,16 @@ export const SellNavigator = () => {
         options={{
           title: "Matériels de clôture",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -726,16 +725,16 @@ export const SellNavigator = () => {
         options={{
           title: "Maréchalerie",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -744,16 +743,16 @@ export const SellNavigator = () => {
         options={{
           title: "Matériels d’entrainement",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -762,16 +761,16 @@ export const SellNavigator = () => {
         options={{
           title: "Chiens et autres animaux",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
@@ -780,31 +779,30 @@ export const SellNavigator = () => {
         options={{
           title: "Transport",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <SellStackNavigator.Screen
         name="ValidationScreen"
         component={ValidationScreen}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
-
     </SellStackNavigator.Navigator>
-  )
-}
+  );
+};
 
 export const AchatNavigator = (props) => {
   let totalQuantity = 0;
-  const cartItems = useSelector(state => {
+  const cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
       transformedCartItems.push({
@@ -812,17 +810,17 @@ export const AchatNavigator = (props) => {
         productTitle: state.cart.items[key].productTitle,
         productPrice: state.cart.items[key].productPrice,
         quantity: state.cart.items[key].quantity,
-        sum: state.cart.items[key].sum
-      })
+        sum: state.cart.items[key].sum,
+      });
     }
-    return transformedCartItems
+    return transformedCartItems;
   });
 
   for (let data in cartItems) {
-    totalQuantity += parseFloat(cartItems[data].quantity)
+    totalQuantity += parseFloat(cartItems[data].quantity);
   }
-  console.log('totalQuantity', totalQuantity)
-  console.log('cartItems', cartItems)
+  console.log("totalQuantity", totalQuantity);
+  console.log("cartItems", cartItems);
   return (
     <AchatStackNavigator.Navigator>
       <AchatStackNavigator.Screen
@@ -830,24 +828,45 @@ export const AchatNavigator = (props) => {
         component={AchatScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerRight : () => (
+          headerRight: () => (
             <View>
-              <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+              <View
+                style={{
+                  backgroundColor: "#D51317",
+                  borderRadius: 30,
+                  alignItems: "center",
+                  position: "absolute",
+                  width: 20,
+                  bottom: "65%",
+                  right: "55%",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
               </View>
-              <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
+              <Fontisto
+                name="shopping-basket"
+                size={24}
+                color="#D51317"
+                onPress={() => props.navigation.navigate("CartScreen")}
+              />
             </View>
           ),
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: props => <CustomHeader {...props} />
-
+          headerTitle: () => <CustomHeader {...props} />,
         }}
       />
       <AchatStackNavigator.Screen
@@ -856,77 +875,77 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Catégories",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="ThankYouScreen"
-            component={ThankYouScreen}
-            options={{
-                headerShown: false
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="ThankYouScreen"
+        component={ThankYouScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <AchatStackNavigator.Screen
         name="CavalierAccueilScreen"
         component={CavalierAccueilScreen}
         options={{
           title: "Cavalier",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="AvisScreen"
-            component={AvisScreen}
-            options={{
-                title: "Avis",
-                headerStyle: {
-                    backgroundColor: 'white'
-                },
-                headerTitleStyle: {
-                    color: 'black'
-                },
-                headerBackTitle: 'Retour',
-                headerBackTitleStyle: {
-                    color: 'black'
-                },
-                headerTitleAlign: 'center'
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="AvisScreen"
+        component={AvisScreen}
+        options={{
+          title: "Avis",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
       <AchatStackNavigator.Screen
         name="ChevalEtCuirAccueilScreen"
         component={ChevalEtCuirAccueilScreen}
         options={{
           title: "Cheval & Cuir",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -935,16 +954,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Cheval & Textile",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -953,16 +972,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Chien & Animaux",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -971,16 +990,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Soins & Ecuries",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -989,16 +1008,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Transport",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1007,16 +1026,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Accessoires",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1025,16 +1044,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Bottes",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1043,16 +1062,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Casques",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1061,16 +1080,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Enfant",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1079,16 +1098,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Femme",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1097,16 +1116,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Gilet",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1115,16 +1134,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Homme",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1133,16 +1152,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Brideries",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1151,16 +1170,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Colliers",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1169,16 +1188,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Etriers",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1187,16 +1206,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Mors",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1205,16 +1224,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Sangles",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1223,16 +1242,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Selles",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1241,16 +1260,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Travail à pied",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1259,16 +1278,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Chemises & séchantes",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1277,16 +1296,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Couvertures",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1295,16 +1314,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Licols",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1313,16 +1332,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Protections",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1331,16 +1350,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Aliments",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1349,16 +1368,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Clôtures",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1367,16 +1386,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Entraînements",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1385,16 +1404,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Equipements",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1403,16 +1422,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Maréchalerie",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1421,16 +1440,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Matériels",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1439,16 +1458,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Produits",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1457,16 +1476,16 @@ export const AchatNavigator = (props) => {
         options={{
           title: "Tentures",
           headerStyle: {
-            backgroundColor: 'white'
+            backgroundColor: "white",
           },
           headerTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerBackTitleStyle: {
-            color: 'black'
+            color: "black",
           },
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1474,23 +1493,45 @@ export const AchatNavigator = (props) => {
         component={ViewProductsScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerRight : () => (
+          headerRight: () => (
             <View>
-              <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+              <View
+                style={{
+                  backgroundColor: "#D51317",
+                  borderRadius: 30,
+                  alignItems: "center",
+                  position: "absolute",
+                  width: 20,
+                  bottom: "65%",
+                  right: "55%",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
               </View>
-              <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
+              <Fontisto
+                name="shopping-basket"
+                size={24}
+                color="#D51317"
+                onPress={() => props.navigation.navigate("CartScreen")}
+              />
             </View>
           ),
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: props => <CustomHeader {...props} />
+          headerTitle: () => <CustomHeader {...props} />,
         }}
       />
       <AchatStackNavigator.Screen
@@ -1498,79 +1539,114 @@ export const AchatNavigator = (props) => {
         component={ProductDetailScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerRight : () => (
+          headerRight: () => (
             <View>
-              <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+              <View
+                style={{
+                  backgroundColor: "#D51317",
+                  borderRadius: 30,
+                  alignItems: "center",
+                  position: "absolute",
+                  width: 20,
+                  bottom: "65%",
+                  right: "55%",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
               </View>
-              <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
+              <Fontisto
+                name="shopping-basket"
+                size={24}
+                color="#D51317"
+                onPress={() => props.navigation.navigate("CartScreen")}
+              />
             </View>
           ),
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: "Details"
-
+          headerTitle: "Details",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="LivraisonArticleLourdScreen"
-            component={LivraisonArticleLourdScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
-                ),
-                headerTitle: "Livraison Lourde"
-            }}
-        />
-        <AchatStackNavigator.Screen
-            name="PortefeuilleThankYouScreen"
-            component={PortefeuilleThankYouScreen}
-            options={{
-                headerShown: false
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="LivraisonArticleLourdScreen"
+        component={LivraisonArticleLourdScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
+          ),
+          headerTitle: "Livraison Lourde",
+        }}
+      />
+      <AchatStackNavigator.Screen
+        name="PortefeuilleThankYouScreen"
+        component={PortefeuilleThankYouScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <AchatStackNavigator.Screen
         name="CartScreen"
         component={CartScreen}
         options={{
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: "Panier"
+          headerTitle: "Panier",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="LivraisonChoiceScreen"
-            component={LivraisonChoiceScreen}
-            options={{
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('CartScreen')}/>
-                ),
-                headerTitle: "Livraison"
-            }}
-        />
-
+      <AchatStackNavigator.Screen
+        name="LivraisonChoiceScreen"
+        component={LivraisonChoiceScreen}
+        options={{
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("CartScreen")}
+            />
+          ),
+          headerTitle: "Livraison",
+        }}
+      />
     </AchatStackNavigator.Navigator>
-  )
-}
+  );
+};
 
 export const MessageNavigator = (props) => {
   return (
@@ -1580,13 +1656,13 @@ export const MessageNavigator = (props) => {
         component={MessageScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
           headerTitle: "Messages",
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
       <MessageStackNavigator.Screen
@@ -1594,23 +1670,26 @@ export const MessageNavigator = (props) => {
         component={ChatScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('MessageScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("MessageScreen")}
+            />
           ),
           headerTitle: "Messages",
-          headerTitleAlign: 'center'
+          headerTitleAlign: "center",
         }}
       />
-
-
     </MessageStackNavigator.Navigator>
-  )
-}
+  );
+};
 
 export const ProfileNavigator = (props) => {
   return (
@@ -1620,134 +1699,174 @@ export const ProfileNavigator = (props) => {
         component={ProfileScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: "Profil"
+          headerTitle: "Profil",
         }}
-        />
-        <ProfileStackNavigator.Screen
-            name="PortefeuilleScreen"
-            component={PortefeuilleScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
-                ),
-                headerTitle: "Mon portefeuille"
-            }}
-        />
+      />
+      <ProfileStackNavigator.Screen
+        name="PortefeuilleScreen"
+        component={PortefeuilleScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
+          ),
+          headerTitle: "Mon portefeuille",
+        }}
+      />
       <ProfileStackNavigator.Screen
         name="ArticlesEnVenteScreen"
         component={ArticlesEnVenteScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
           ),
-          headerTitle: "Mes articles en vente"
+          headerTitle: "Mes articles en vente",
         }}
-        />
+      />
       <ProfileStackNavigator.Screen
         name="BoosteVenteScreen"
         component={BoosteVenteScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ArticlesEnVenteScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ArticlesEnVenteScreen")}
+            />
           ),
-          headerTitle: "Booste tes ventes !"
+          headerTitle: "Booste tes ventes !",
         }}
-        />
-        <ProfileStackNavigator.Screen
-            name="MesCommandesScreen"
-            component={MesCommandesScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
-                ),
-                headerTitle: "Mes commandes"
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="CommandeDetailScreen"
-            component={CommandeDetailScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('MesCommandesScreen')}/>
-                ),
-                headerTitle: "Détail de la commande"
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EvaluationScreen"
-            component={EvaluationScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('CommandeDetailScreen')}/>
-                ),
-                headerTitle: "Evaluation"
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ValidationEvaluationScreen"
-            component={ValidationEvaluationScreen}
-            options={{
-               headerShown: false
-            }}
-        />
+      />
+      <ProfileStackNavigator.Screen
+        name="MesCommandesScreen"
+        component={MesCommandesScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
+          ),
+          headerTitle: "Mes commandes",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="CommandeDetailScreen"
+        component={CommandeDetailScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("MesCommandesScreen")}
+            />
+          ),
+          headerTitle: "Détail de la commande",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="EvaluationScreen"
+        component={EvaluationScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("CommandeDetailScreen")}
+            />
+          ),
+          headerTitle: "Evaluation",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ValidationEvaluationScreen"
+        component={ValidationEvaluationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <ProfileStackNavigator.Screen
         name="BoosteVentePaiementScreen"
         component={BoosteVentePaiementScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('BoosteVenteScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("BoosteVenteScreen")}
+            />
           ),
-          headerTitle: "Booste tes ventes !"
+          headerTitle: "Booste tes ventes !",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1755,15 +1874,20 @@ export const ProfileNavigator = (props) => {
         component={InformationsScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
           ),
-          headerTitle: "Mes informations"
+          headerTitle: "Mes informations",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1771,69 +1895,89 @@ export const ProfileNavigator = (props) => {
         component={ModifierAdresseScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("InformationsScreen")}
+            />
           ),
         }}
       />
-        <ProfileStackNavigator.Screen
-            name="ModifierEmailScreen"
-            component={ModifierEmailScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
-                ),
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ModifierPseudoScreen"
-            component={ModifierPseudoScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10
-                },
-                headerLeft : () => (
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('InformationsScreen')}/>
-                ),
-            }}
-        />
+      <ProfileStackNavigator.Screen
+        name="ModifierEmailScreen"
+        component={ModifierEmailScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("InformationsScreen")}
+            />
+          ),
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ModifierPseudoScreen"
+        component={ModifierPseudoScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("InformationsScreen")}
+            />
+          ),
+        }}
+      />
       <ProfileStackNavigator.Screen
         name="SignalerUnLitigeScreen"
         component={SignalerUnLitigeScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerTitle: 'Signaler un litige',
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate('ProfileScreen')}/>
+          headerTitle: "Signaler un litige",
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
           ),
         }}
       />
     </ProfileStackNavigator.Navigator>
-  )
-}
+  );
+};
 
 export const AccueilNavigator = (props) => {
   let totalQuantity = 0;
-  const cartItems = useSelector(state => {
+  const cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
       transformedCartItems.push({
@@ -1841,17 +1985,17 @@ export const AccueilNavigator = (props) => {
         productTitle: state.cart.items[key].productTitle,
         productPrice: state.cart.items[key].productPrice,
         quantity: state.cart.items[key].quantity,
-        sum: state.cart.items[key].sum
-      })
+        sum: state.cart.items[key].sum,
+      });
     }
-    return transformedCartItems
+    return transformedCartItems;
   });
 
   for (let data in cartItems) {
-    totalQuantity += parseFloat(cartItems[data].quantity)
+    totalQuantity += parseFloat(cartItems[data].quantity);
   }
-  console.log('totalQuantity', totalQuantity)
-  console.log('cartItems', cartItems)
+  console.log("totalQuantity", totalQuantity);
+  console.log("cartItems", cartItems);
 
   return (
     <AccueilStackNavigator.Navigator>
@@ -1860,24 +2004,42 @@ export const AccueilNavigator = (props) => {
         component={AccueilScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
           headerTitleStyle: {
-            marginBottom: 20
+            marginBottom: 20,
           },
-          headerRight : () => (
+          headerRight: () => (
             <View>
-              <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+              <View
+                style={{
+                  backgroundColor: "#D51317",
+                  borderRadius: 30,
+                  alignItems: "center",
+                  position: "absolute",
+                  width: 20,
+                  bottom: "65%",
+                  right: "55%",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
               </View>
-              <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('Shop', { screen: 'CartScreen' })}/>
+              <Fontisto
+                name="shopping-basket"
+                size={24}
+                color="#D51317"
+                onPress={() =>
+                  props.navigation.navigate("Shop", { screen: "CartScreen" })
+                }
+              />
             </View>
           ),
-          headerTitle: props => <CustomHeader {...props}/>
-
+          headerTitle: () => <CustomHeader {...props} />,
         }}
       />
       <AccueilStackNavigator.Screen
@@ -1885,55 +2047,74 @@ export const AccueilNavigator = (props) => {
         component={ProductDetailScreen}
         options={{
           headerRightContainerStyle: {
-            paddingRight: 10
+            paddingRight: 10,
           },
           headerLeftContainerStyle: {
-            paddingLeft: 10
+            paddingLeft: 10,
           },
-          headerRight : () => (
+          headerRight: () => (
             <View>
-              <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-                <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+              <View
+                style={{
+                  backgroundColor: "#D51317",
+                  borderRadius: 30,
+                  alignItems: "center",
+                  position: "absolute",
+                  width: 20,
+                  bottom: "65%",
+                  right: "55%",
+                }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
               </View>
-              <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
+              <Fontisto
+                name="shopping-basket"
+                size={24}
+                color="#D51317"
+                onPress={() => props.navigation.navigate("CartScreen")}
+              />
             </View>
           ),
-          headerLeft : () => (
-            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.goBack()}/>
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.goBack()}
+            />
           ),
-          headerTitle: "Details"
-
+          headerTitle: "Details",
         }}
       />
-
-
     </AccueilStackNavigator.Navigator>
-  )
-}
-
+  );
+};
 
 export const TabNavigator = () => {
   return (
     <AppTabNavigator.Navigator
       tabBarOptions={{
-        activeTintColor: 'red',
-        activeBackgroundColor: 'white',
-        inactiveBackgroundColor: 'white'
+        activeTintColor: "red",
+        activeBackgroundColor: "white",
+        inactiveBackgroundColor: "white",
       }}
     >
       <AppTabNavigator.Screen
         name="Accueil"
         component={AccueilNavigator}
         options={{
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <AntDesign name="home" size={24} color="black" />
           ),
-        }}/>
+        }}
+      />
       <AppTabNavigator.Screen
         name="Shop"
         component={AchatNavigator}
         options={{
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <Entypo name="shopping-cart" size={24} color="black" />
           ),
         }}
@@ -1942,7 +2123,7 @@ export const TabNavigator = () => {
         name="Vente"
         component={SellNavigator}
         options={{
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <Ionicons name="md-add-circle" size={24} color="black" />
           ),
         }}
@@ -1951,7 +2132,7 @@ export const TabNavigator = () => {
         name="Message"
         component={MessageNavigator}
         options={{
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <AntDesign name="message1" size={24} color="black" />
           ),
         }}
@@ -1960,15 +2141,13 @@ export const TabNavigator = () => {
         name="Profil"
         component={ProfileNavigator}
         options={{
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <AntDesign name="user" size={24} color="black" />
           ),
         }}
       />
     </AppTabNavigator.Navigator>
-  )
-}
+  );
+};
 
-const styles = StyleSheet.create({
-
-})
+const styles = StyleSheet.create({});
