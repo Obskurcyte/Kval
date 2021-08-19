@@ -29,6 +29,7 @@ const LivraisonChoiceScreen = (props) => {
           setLivraison("Personnalisée");
           props.navigation.navigate("CartScreen", {
             livraison: "Personnalisé",
+            adresse: null,
           });
         }}
       >
