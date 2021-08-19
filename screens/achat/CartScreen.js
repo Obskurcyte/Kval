@@ -385,6 +385,16 @@ const CartScreen = (props) => {
               <ActivityIndicator/>
             </View> : <Text></Text>}
 
+          {paymentStatus === 'Le paiement a échoué' ?
+            <View>
+            <Text>Le paiment a échoué</Text>
+              <TouchableOpacity style={styles.retourContainer} onPress={() => {
+                props.navigation.navigate('AccueilScreen')
+              }}>
+                <Text style={styles.text2}>Retour au menu principal</Text>
+              </TouchableOpacity>
+            </View> : <Text />
+            }
           {paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro' ?
             <View style={styles.container2}>
               <AntDesign name="checkcircleo" size={200} color="white" />

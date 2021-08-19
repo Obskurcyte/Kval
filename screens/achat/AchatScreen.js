@@ -36,24 +36,20 @@ const AchatScreen = (props) => {
             <Text style={styles.text}>Cheval & Cuir</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemForm3}>
+          <TouchableOpacity style={styles.itemForm3} onPress={() => props.navigation.navigate('ChevalEtTextileAccueilScreen')}>
             <Text style={styles.text}>Cheval & Textile</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemForm3}>
+          <TouchableOpacity style={styles.itemForm3} onPress={() => props.navigation.navigate('CavalierAccueilScreen')}>
             <Text style={styles.text}>Cavaliers</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemForm3}>
+          <TouchableOpacity style={styles.itemForm3} onPress={() => props.navigation.navigate('SoinsEtEcuriesAccueilScreen')}>
             <Text style={styles.text}>Soins & Ecuries</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.itemForm3}>
+          <TouchableOpacity style={styles.itemForm3} onPress={() => props.navigation.navigate('TransportAccueilScreen')}>
             <Text style={styles.text}>Transport</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.itemForm3}>
-            <Text style={styles.text}>Marques</Text>
           </TouchableOpacity>
         </View>
 
