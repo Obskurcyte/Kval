@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   vendeurContainer: {
-    backgroundColor: "white",
     width: "100%",
     paddingVertical: 10,
   },
@@ -71,6 +70,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     borderRadius: 10,
+    padding: 5,
     shadowOffset: {
       height: 3,
       width: 3,

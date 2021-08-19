@@ -178,7 +178,8 @@ const styles = StyleSheet.create({
     marginBottom: "5%",
   },
   flatList: {
-    height: "100%",
+    flex: 1,
+    backgroundColor: "#f5f5f5",
     paddingBottom: 100,
   },
 });
