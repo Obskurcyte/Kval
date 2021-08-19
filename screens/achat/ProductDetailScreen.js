@@ -40,6 +40,14 @@ const ProductDetailScreen = (props) => {
     testData.push({ id: "item3", image: product.downloadURL2 });
   }
 
+  if (product.downloadURL3) {
+    testData.push({ id: "item4", image: product.downloadURL3 });
+  }
+
+  if (product.downloadURL4) {
+    testData.push({ id: "item5", image: product.downloadURL4 });
+  }
+
   console.log("test", testData);
 
   const carouselRef = React.useRef(null);
