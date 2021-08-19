@@ -9,6 +9,9 @@ const MondialRelayView = (props) => {
 
 <head>
   <title>Utilisation du Widget Mondial Relay</title>
+  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
+
+
   <!--jQuery-->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
   <!-- Widget MR -->
