@@ -1,160 +1,169 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, Pressable, ScrollView} from "react-native";
-import {AntDesign} from "@expo/vector-icons";
-import {useDispatch, useSelector} from "react-redux";
-import * as cartActions from '../../store/actions/cart';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+  Pressable,
+  ScrollView,
+} from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import * as cartActions from "../../store/actions/cart";
 import firebase from "firebase";
-import UserAvatar from 'react-native-user-avatar';
+import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
-import Carousel from 'react-native-anchor-carousel';
+import Carousel from "react-native-anchor-carousel";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const ITEM_WIDTH = 0.7 * windowWidth;
 const SEPARATOR_WIDTH = 10;
 
-
 const ProductDetailScreen = (props) => {
-
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
   //-------------CAROUSEL----------------//
 
-  let testData = []
-  testData.push({id: 'item1', image: product.downloadURL})
+  let testData = [];
+  testData.push({ id: "item1", image: product.downloadURL });
 
   if (product.downloadURL1) {
-    testData.push({id: 'item2', image: product.downloadURL1})
+    testData.push({ id: "item2", image: product.downloadURL1 });
   }
 
   if (product.downloadURL2) {
-    testData.push({id: 'item3', image: product.downloadURL2})
+    testData.push({ id: "item3", image: product.downloadURL2 });
   }
 
-  console.log('test', testData)
+  if (product.downloadURL3) {
+    testData.push({ id: "item4", image: product.downloadURL3 });
+  }
+
+  if (product.downloadURL4) {
+    testData.push({ id: "item5", image: product.downloadURL4 });
+  }
+
+  console.log("test", testData);
 
   const carouselRef = React.useRef(null);
 
-  function renderItem({item, index}) {
-    const {image, title, url} = item;
+  function renderItem({ item, index }) {
+    const { image, title, url } = item;
     return (
-        <Pressable
-            activeOpacity={1}
-            style={styles.item}
-            onPress={() => {
-              carouselRef.current.scrollToIndex(index);
-            }}>
-          <Image source={{uri: image}} style={styles.image} />
-          <View style={styles.lowerContainer}>
-            <View style={styles.lowerLeft}>
-              <Text style={styles.titleText} numberOfLines={2}>
-                {title}
-              </Text>
-              <Text style={styles.descriptionText} numberOfLines={1}>
-                reactNativeAnchorCarousel
-              </Text>
-            </View>
-            <TouchableOpacity
-                style={styles.button}
-                >
-              <Text style={styles.buttonText}>Install Now</Text>
-            </TouchableOpacity>
+      <Pressable
+        activeOpacity={1}
+        style={styles.item}
+        onPress={() => {
+          carouselRef.current.scrollToIndex(index);
+        }}
+      >
+        <Image source={{ uri: image }} style={styles.image} />
+        <View style={styles.lowerContainer}>
+          <View style={styles.lowerLeft}>
+            <Text style={styles.titleText} numberOfLines={2}>
+              {title}
+            </Text>
+            <Text style={styles.descriptionText} numberOfLines={1}>
+              reactNativeAnchorCarousel
+            </Text>
           </View>
-        </Pressable>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Install Now</Text>
+          </TouchableOpacity>
+        </View>
+      </Pressable>
     );
   }
-
 
   //-----------------COMMENTAIRES-----------------//
 
   useEffect(() => {
-    dispatch(articlesActions.getAvis(product.idVendeur))
+    dispatch(articlesActions.getAvis(product.idVendeur));
   }, [dispatch]);
 
-  let commentaires = useSelector(state => state.commandes.commentaires);
-  console.log('wola', commentaires)
-  console.log(product)
+  let commentaires = useSelector((state) => state.commandes.commentaires);
+  console.log("wola", commentaires);
+  console.log(product);
 
-  let ratings = []
+  let ratings = [];
   for (let data in commentaires) {
-    ratings.push(commentaires[data].rating)
+    ratings.push(commentaires[data].rating);
   }
 
-  console.log('ratings', ratings)
+  console.log("ratings", ratings);
 
   let overallRating = 0;
   for (let data in ratings) {
-    console.log(ratings[data])
-    overallRating += parseInt(ratings[data])
+    console.log(ratings[data]);
+    overallRating += parseInt(ratings[data]);
   }
 
-  console.log('overall', overallRating)
+  console.log("overall", overallRating);
 
   let trueRating;
   if (commentaires) {
-    trueRating = Math.ceil(overallRating/commentaires.length);
+    trueRating = Math.ceil(overallRating / commentaires.length);
   }
 
-  const [search, setSearch] = useState('');
-  const [errorAdded, setErrorAdded] = useState('');
+  const [search, setSearch] = useState("");
+  const [errorAdded, setErrorAdded] = useState("");
 
   const FourStar = () => {
     return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-        </View>
-    )
-  }
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+      </View>
+    );
+  };
   const FiveStar = () => {
     return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-        </View>
-    )
-  }
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+      </View>
+    );
+  };
 
   const ThreeStar = () => {
     return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-        </View>
-    )
-  }
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+      </View>
+    );
+  };
   const TwoStar = () => {
     return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <AntDesign name="star" size={18} color="#FFC107" />
-          <AntDesign name="star" size={18} color="#FFC107" />
-        </View>
-    )
-  }
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <AntDesign name="star" size={18} color="#FFC107" />
+        <AntDesign name="star" size={18} color="#FFC107" />
+      </View>
+    );
+  };
 
   const OneStar = () => {
     return (
-        <View style={{display: 'flex', flexDirection: 'row'}}>
-          <AntDesign name="star" size={18} color="#FFC107" />
-        </View>
-    )
-  }
-
+      <View style={{ display: "flex", flexDirection: "row" }}>
+        <AntDesign name="star" size={18} color="#FFC107" />
+      </View>
+    );
+  };
 
   //------------------------CART--------------//
 
-
-  const cartItems = useSelector(state => {
+  const cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
       transformedCartItems.push({
@@ -167,63 +176,65 @@ const ProductDetailScreen = (props) => {
         pseudoVendeur: state.cart.items[key].pseudoVendeur,
         pushToken: state.cart.items[key].pushToken,
         categorie: state.cart.items[key].categorie,
-        sum: state.cart.items[key].sum
-      })
+        sum: state.cart.items[key].sum,
+      });
     }
-    return transformedCartItems
+    return transformedCartItems;
   });
 
-
   const updateSearch = (search) => {
-    setSearch(search)
+    setSearch(search);
   };
 
-
   //-----------------------------------MESSAGES---------------------//
-  const idAcheteur = firebase.auth().currentUser.uid
-  console.log('authid', firebase.auth().currentUser.uid)
+  const idAcheteur = firebase.auth().currentUser.uid;
+  console.log("authid", firebase.auth().currentUser.uid);
   const onMessagePressed = () => {
-    console.log(product.pseudoVendeur)
-    firebase.firestore().collection('MESSAGE_THREADS')
-        .doc(`${product.idVendeur}` + `${idAcheteur}`)
-        .collection('MESSAGES').add({
+    console.log(product.pseudoVendeur);
+    firebase
+      .firestore()
+      .collection("MESSAGE_THREADS")
+      .doc(`${product.idVendeur}` + `${idAcheteur}`)
+      .collection("MESSAGES")
+      .add({
         text: `Start chating`,
         createdAt: new Date().getTime(),
-        system: true
-      }).then(() => {
-      firebase.firestore().collection('MESSAGE_THREADS')
+        system: true,
+      })
+      .then(() => {
+        firebase
+          .firestore()
+          .collection("MESSAGE_THREADS")
           .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
           .set({
-            latestMessage: { text: 'Commencez à chatter...' },
-            pseudoVendeur: product.pseudoVendeur
-          })
-    })
+            latestMessage: { text: "Commencez à chatter..." },
+            pseudoVendeur: product.pseudoVendeur,
+          });
+      });
 
-      props.navigation.navigate('Message', {
-        screen: 'MessageScreen',
-      })
-  }
+    props.navigation.navigate("Message", {
+      screen: "MessageScreen",
+    });
+  };
 
-  const initial = product.pseudoVendeur.charAt(0)
+  const initial = product.pseudoVendeur.charAt(0);
 
-    return (
-      <View>
-
-        <View style={styles.container}>
-          <ScrollView>
-
+  return (
+    <View>
+      <View style={styles.container}>
+        <ScrollView>
           <View style={styles.imgContainer}>
             <Carousel
-                keyExtractor={item => item?.id}
-                style={[styles.carousel]}
-                ref={carouselRef}
-                data={testData}
-                renderItem={renderItem}
-                itemWidth={ITEM_WIDTH}
-                separatorWidth={SEPARATOR_WIDTH}
-                inActiveScale={1}
-                inActiveOpacity={1}
-                containerWidth={windowWidth}
+              keyExtractor={(item) => item?.id}
+              style={[styles.carousel]}
+              ref={carouselRef}
+              data={testData}
+              renderItem={renderItem}
+              itemWidth={ITEM_WIDTH}
+              separatorWidth={SEPARATOR_WIDTH}
+              inActiveScale={1}
+              inActiveOpacity={1}
+              containerWidth={windowWidth}
             />
           </View>
 
@@ -247,182 +258,206 @@ const ProductDetailScreen = (props) => {
           </View>
 
           <View style={styles.vendeurContainer}>
-            {product.imageURL ? <Image source={require('../../assets/photoProfile.png')}/> :<UserAvatar
-              size={50}
-              name={initial}
-            /> }
+            {product.imageURL ? (
+              <Image source={require("../../assets/photoProfile.png")} />
+            ) : (
+              <UserAvatar size={50} name={initial} />
+            )}
 
             <View>
               <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              {commentaires.length ?  <View>
-                {trueRating === 1 && <OneStar />}
-                {trueRating === 2 && <TwoStar />}
-                {trueRating === 3 && <ThreeStar />}
-                {trueRating === 4 && <FourStar />}
-                {trueRating === 5 && <FiveStar />}
-              </View> : <Text>Aucun commentaire disponible</Text>}
+              {commentaires.length ? (
+                <View>
+                  {trueRating === 1 && <OneStar />}
+                  {trueRating === 2 && <TwoStar />}
+                  {trueRating === 3 && <ThreeStar />}
+                  {trueRating === 4 && <FourStar />}
+                  {trueRating === 5 && <FiveStar />}
+                </View>
+              ) : (
+                <Text>Aucun commentaire disponible</Text>
+              )}
             </View>
 
-            {commentaires.length ?
-                <TouchableOpacity onPress={() => props.navigation.navigate('AvisScreen', {
-                  product: product
-                })}>
-                  <Text>Voir les avis</Text>
-                </TouchableOpacity> : <Text />
-            }
-
+            {commentaires.length ? (
+              <TouchableOpacity
+                onPress={() =>
+                  props.navigation.navigate("AvisScreen", {
+                    product: product,
+                  })
+                }
+              >
+                <Text>Voir les avis</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text />
+            )}
           </View>
 
-            <TouchableOpacity style={styles.envoyerMessageContainer} onPress={() => onMessagePressed()}>
-              <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.envoyerMessageContainer}
+            onPress={() => onMessagePressed()}
+          >
+            <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.mettreEnVente}
-              onPress={() => {
-                if (cartItems.length !== 0) {
-                  for (const key in cartItems) {
-                    console.log('wola')
-                    console.log('id1', product.id)
-                    console.log('id2', cartItems[key].productId)
-                    if (product.id == cartItems[key].productId) {
-                      setErrorAdded('Ce produit est déjà présent dans votre panier')
-                    } else {
-                      dispatch(cartActions.addToCart(product))
-                    }
+          <TouchableOpacity
+            style={styles.mettreEnVente}
+            onPress={() => {
+              if (cartItems.length !== 0) {
+                for (const key in cartItems) {
+                  console.log("wola");
+                  console.log("id1", product.id);
+                  console.log("id2", cartItems[key].productId);
+                  if (product.id == cartItems[key].productId) {
+                    setErrorAdded(
+                      "Ce produit est déjà présent dans votre panier"
+                    );
+                  } else {
+                    dispatch(cartActions.addToCart(product));
                   }
-                } else {
-                  dispatch(cartActions.addToCart(product))
                 }
+              } else {
+                dispatch(cartActions.addToCart(product));
+              }
+            }}
+          >
+            <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
+          </TouchableOpacity>
 
-              }}>
-              <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
-            </TouchableOpacity>
-
-            {errorAdded ? <Text style={{marginBottom: 12, textAlign: 'center', color: '#D51317'}}>{errorAdded}</Text> : <Text />}
+          {errorAdded ? (
+            <Text
+              style={{
+                marginBottom: 12,
+                textAlign: "center",
+                color: "#D51317",
+              }}
+            >
+              {errorAdded}
+            </Text>
+          ) : (
+            <Text />
+          )}
         </ScrollView>
-
-
-        </View>
-
       </View>
-    )
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '5%',
+    paddingTop: "5%",
   },
   searchBarContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    paddingRight: '2%',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "row",
+    paddingRight: "2%",
+    alignItems: "center",
   },
   searchBar: {
-    width: '80%',
-    borderRadius: 80
+    width: "80%",
+    borderRadius: 80,
   },
   icon: {
-    width: '10%',
-    marginLeft: '5%',
+    width: "10%",
+    marginLeft: "5%",
   },
   searchBarInner: {
-    borderRadius: 80
+    borderRadius: 80,
   },
   imgContainer: {
     width: windowWidth,
-    height: windowHeight/3,
-    marginTop: '3%',
-    alignItems: 'center',
+    height: windowHeight / 3,
+    marginTop: "3%",
+    alignItems: "center",
   },
   image: {
-    width: '100%',
+    width: "100%",
     aspectRatio: 1,
-    backgroundColor: '#EBEBEB',
+    backgroundColor: "#EBEBEB",
   },
   title: {
-    fontWeight: 'bold',
-    fontSize: 24
+    fontWeight: "bold",
+    fontSize: 24,
   },
   prix: {
-    color: '#737379',
-    fontWeight: 'bold',
-    fontSize: 17
+    color: "#737379",
+    fontWeight: "bold",
+    fontSize: 17,
   },
   titleAndPrixContainer: {
-    marginLeft: '5%'
+    marginLeft: "5%",
   },
   descriptionContainer: {
-    backgroundColor: '#E7E9EC',
-    paddingVertical: '5%',
-    paddingHorizontal: '2%',
-    marginTop: '5%'
+    backgroundColor: "#E7E9EC",
+    paddingVertical: "5%",
+    paddingHorizontal: "2%",
+    marginTop: "5%",
   },
   description: {
-    textAlign: 'center'
+    textAlign: "center",
   },
   itemForm3: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    marginLeft: '5%',
-    height: windowHeight/14,
-    alignItems: 'center',
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginLeft: "5%",
+    height: windowHeight / 14,
+    alignItems: "center",
+    borderBottomColor: "lightgrey",
+    borderBottomWidth: 1,
   },
   mettreEnVente: {
     backgroundColor: "#D51317",
-    marginTop: '5%',
-    marginLeft: '5%',
-    width: windowWidth/1.1,
-    paddingVertical: '5%',
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.1,
+    paddingVertical: "5%",
   },
   mettreEnVenteText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
   },
   vendeurContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#E7E9EC',
-    paddingVertical: '5%',
-    paddingHorizontal: '2%',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "#E7E9EC",
+    paddingVertical: "5%",
+    paddingHorizontal: "2%",
+    alignItems: "center",
   },
   pseudoVendeur: {
-    color: 'black',
-    fontSize: 16
+    color: "black",
+    fontSize: 16,
   },
   envoyerMessageContainer: {
     borderWidth: 1,
-    borderColor: '#D9353A',
-    width: '50%',
-    marginLeft: '25%',
-    marginTop: '5%',
-    alignItems: 'center',
-    borderRadius: 4
+    borderColor: "#D9353A",
+    width: "50%",
+    marginLeft: "25%",
+    marginTop: "5%",
+    alignItems: "center",
+    borderRadius: 4,
   },
   envoyerMessageText: {
-    color: '#D9353A',
-    fontSize: 18
+    color: "#D9353A",
+    fontSize: 18,
   },
   carousel: {
     width: windowWidth,
     height: ITEM_WIDTH + 100,
     flexGrow: 0,
-    marginBottom: 30
+    marginBottom: 30,
   },
   item: {
-    backgroundColor: 'white',
-    height: '98%',
+    backgroundColor: "white",
+    height: "98%",
     borderRadius: 5,
-    borderColor: '#EAECEE',
-    shadowColor: '#000',
+    borderColor: "#EAECEE",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
@@ -432,55 +467,55 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   lowerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 12,
   },
   lowerLeft: {
-    width: '50%',
+    width: "50%",
   },
   titleText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1C2127',
+    fontWeight: "bold",
+    color: "#1C2127",
     marginTop: 4,
   },
   descriptionText: {
     fontSize: 14,
 
-    color: '#A0A0A0',
+    color: "#A0A0A0",
   },
   button: {
-    width: '40%',
+    width: "40%",
     marginLeft: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 4,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 10,
     paddingHorizontal: 5,
-    borderColor: '#585B60',
+    borderColor: "#585B60",
   },
   buttonText: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
-    color: '#585B60',
+    color: "#585B60",
   },
   footer: {
     borderTopWidth: StyleSheet.hairlineWidth,
     marginTop: 20,
     marginHorizontal: 10,
-    borderColor: '#A0A0A0',
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
+    borderColor: "#A0A0A0",
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-around",
     padding: 10,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginVertical: 20,
-    borderColor: '#A0A0A0',
+    borderColor: "#A0A0A0",
     paddingHorizontal: 10,
   },
   logo: {
@@ -491,8 +526,8 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1C2127',
+    fontWeight: "bold",
+    color: "#1C2127",
   },
 });
 
