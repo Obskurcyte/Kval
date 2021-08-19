@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: "5%",
     paddingLeft: "2%",
-    backgroundColor: "white",
+    backgroundColor: "#f5f5f5",
   },
   backArrowContainer: {
     backgroundColor: "#D51317",
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
   },
   flatList: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
     paddingBottom: 100,
+    padding: 0,
   },
 });
 
