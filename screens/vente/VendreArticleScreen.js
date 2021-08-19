@@ -305,20 +305,29 @@ const VendreArticleScreen = (props) => {
                             const taskProgress = snapshot => {
                               console.log(`transferred: ${snapshot.bytesTransferred}`)
                             }
+
                             const taskCompleted = snapshot => {
-                              task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                saveImageData3(snapshot)
-                                console.log(snapshot)
-                              }).then(() => setIsLoading(false)).then(() => {
-                                etat = '';
-                                categorie = '';
-                                setImagesTableau([])
-                                setImage(null)
-                              }).then(() => props.navigation.navigate('ValidationScreen'))
+                              if (imagesTableau && imagesTableau.length === 4) {
+                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                                  saveImageData3(snapshot)
+                                  console.log('snapshot', snapshot)
+                                }).then(() => setIsLoading(false)).then(() => {
+                                  etat = '';
+                                  categorie = '';
+                                  setImagesTableau([])
+                                  setImage(null)
+                                }).then(() => props.navigation.navigate('ValidationScreen'))
+                              } else {
+                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                                  saveImageData3(snapshot)
+                                  console.log('snapshot', snapshot)
+                                })}
                             }
+
                             const taskError = snapshot => {
                               console.log(snapshot)
                             }
+
                             task.on("state_changed", taskProgress, taskError, taskCompleted)
                           }
 
@@ -340,35 +349,45 @@ const VendreArticleScreen = (props) => {
 
                           }
                           const saveImageData1 = (downloadURL1) => {
-                            firebase.firestore()
-                                .collection(`${categorie}`)
-                                .doc(`${id}`)
-                                .update({
-                                  downloadURL1,
-                                })
-                            firebase.firestore()
-                                .collection('posts')
-                                .doc(firebase.auth().currentUser.uid)
-                                .collection("userPosts")
-                                .add({
-                                  downloadURL1
-                                })
+                            try {
+                              firebase.firestore()
+                                  .collection(`${categorie}`)
+                                  .doc(`${id}`)
+                                  .update({
+                                    downloadURL1,
+                                  })
+                              firebase.firestore()
+                                  .collection('posts')
+                                  .doc(firebase.auth().currentUser.uid)
+                                  .collection("userPosts")
+                                  .add({
+                                    downloadURL1
+                                  })
+                            } catch (err) {
+                              console.log(err)
+                            }
+
                           }
 
                           const saveImageData2 = (downloadURL2) => {
-                            firebase.firestore()
-                                .collection(`${categorie}`)
-                                .doc(`${id}`)
-                                .update({
-                                  downloadURL2,
-                                })
-                            firebase.firestore()
-                                .collection('posts')
-                                .doc(firebase.auth().currentUser.uid)
-                                .collection("userPosts")
-                                .add({
-                                  downloadURL2
-                                })
+                            try {
+                              firebase.firestore()
+                                  .collection(`${categorie}`)
+                                  .doc(`${id}`)
+                                  .update({
+                                    downloadURL2,
+                                  })
+                              firebase.firestore()
+                                  .collection('posts')
+                                  .doc(firebase.auth().currentUser.uid)
+                                  .collection("userPosts")
+                                  .add({
+                                    downloadURL2
+                                  })
+                            } catch (err) {
+                              console.log(err)
+                            }
+
                           }
 
                           const saveImageData3 = (downloadURL3) => {
@@ -398,7 +417,15 @@ const VendreArticleScreen = (props) => {
                             await uploadImage()
                             await uploadImage1()
                             await uploadImage2()
-                          }}}
+                          }
+                          if (imagesTableau && imagesTableau.length === 4) {
+                            console.log('kdfjdkjfkdf')
+                            await uploadImage()
+                            await uploadImage1()
+                            await uploadImage2()
+                            await uploadImage3()
+                          }
+                        }}
                       }
 
 
