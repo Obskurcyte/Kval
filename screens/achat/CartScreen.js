@@ -467,11 +467,23 @@ const CartScreen = (props) => {
         );
       } else {
         return (
-          <PaymentView
-            onCheckStatus={onCheckStatus}
-            product={"Paiement unique"}
-            amount={total}
-          />
+          <View style={{ flex: 1, padding: 10 }}>
+            <PaymentView
+              onCheckStatus={onCheckStatus}
+              product={"Paiement unique"}
+              amount={total}
+            />
+            <TouchableOpacity
+              style={styles.mettreEnVenteOptional}
+              onPress={() => {
+                setMakePayment(!makePayment);
+              }}
+            >
+              <Text style={styles.mettreEnVenteTextOptional}>
+                Annuler Paiement
+              </Text>
+            </TouchableOpacity>
+          </View>
         );
       }
     }
@@ -524,6 +536,18 @@ const styles = StyleSheet.create({
   },
   mettreEnVenteText: {
     color: "white",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  mettreEnVenteOptional: {
+    backgroundColor: "#fff",
+    borderColor: "#D51317",
+    marginTop: 10,
+    width: windowWidth - 20,
+    paddingVertical: "5%",
+  },
+  mettreEnVenteTextOptional: {
+    color: "#D51317",
     textAlign: "center",
     fontSize: 18,
   },

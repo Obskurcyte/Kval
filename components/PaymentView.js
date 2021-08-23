@@ -108,8 +108,7 @@ const PaymentView = (props) => {
                         align-items: center;
                         background-color: #D51317;
                         color: white;
-                        margin-top: 50%
-                    }
+                        margin-top: 50px                    }
 
                     .payer {
                   color: white;
