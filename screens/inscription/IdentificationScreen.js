@@ -23,12 +23,14 @@ const IdentificationScreen = (props) => {
           >
             <Text style={styles.text}>Connecte-toi</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => props.setLoggedInAsVisit(!props.loggedInAsVisit)}
-          >
-            <Text style={styles.text}>Continuer en tant que visiteur</Text>
-          </TouchableOpacity>
         </View>
+      </View>
+      <View>
+        <TouchableOpacity
+          onPress={() => props.setLoggedInAsVisit(!props.loggedInAsVisit)}
+        >
+          <Text style={styles.text}>Continuer en tant que visiteur</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
