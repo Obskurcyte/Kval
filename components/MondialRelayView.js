@@ -76,7 +76,13 @@ const MondialRelayView = (props) => {
         injectedJavaScript={injectedJavaScript}
         onMessage={onMessage}
       />
-      <Button onPress={validationHandler}>Test</Button>
+      {relay && (
+        <Text>
+          {`Point Relais : n°${relay.ID}\n${relay.Nom}\n${relay.Adresse1}\n${relay.CP} \n ${relay.Ville}`}
+        </Text>
+      )}
+
+      <Button onPress={validationHandler}>Valider</Button>
     </View>
   );
 };
