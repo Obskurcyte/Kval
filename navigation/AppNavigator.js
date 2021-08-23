@@ -105,6 +105,9 @@ import SignalerUnLitigeScreen from "../screens/profile/SignalerUnLitigeScreen";
 import ModifierAdresseScreen from "../screens/profile/ModifierAdresseScreen";
 import ModifierEmailScreen from "../screens/profile/ModifierEmailScreen";
 import ModifierPseudoScreen from "../screens/profile/ModifierPseudoScreen";
+import ViePriveeScreen from "../screens/profile/ViePriveeScreen";
+import CGUScreen from "../screens/profile/CGUScreen";
+import MentionLegaleScreen from "../screens/profile/MentionLegaleScreen";
 import LivraisonChoiceScreen from "../screens/achat/LivraisonChoiceScreen";
 import PortefeuilleScreen from "../screens/profile/PortefeuilleScreen";
 import PreInscriptionScreen from "../screens/inscription/PreInscriptionScreen";
@@ -1969,6 +1972,69 @@ export const ProfileNavigator = (props) => {
               onPress={() => props.navigation.navigate("ProfileScreen")}
             />
           ),
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="MentionLegaleScreen"
+        component={MentionLegaleScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
+          ),
+          headerTitle: "Mentions Légales",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="CGUScreen"
+        component={CGUScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
+          ),
+          headerTitle: "CGU & CGV",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ViePriveeScreen"
+        component={ViePriveeScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerLeft: () => (
+            <AntDesign
+              name="arrowleft"
+              size={24}
+              color="black"
+              onPress={() => props.navigation.navigate("ProfileScreen")}
+            />
+          ),
+          headerTitle: "Vie Privée",
         }}
       />
     </ProfileStackNavigator.Navigator>
