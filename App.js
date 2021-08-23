@@ -50,6 +50,7 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 export default function App() {
   const [loaded, setIsLoaded] = useState(false);
   const [loggedIn, setIsLoggedIn] = useState(false);
+  const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -69,7 +70,17 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {loggedIn ? <TabNavigator /> : <AuthNavigator />}
+        {loggedInAsVisit || loggedIn ? (
+          <TabNavigator
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        ) : (
+          <AuthNavigator
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
       </NavigationContainer>
     </Provider>
   );

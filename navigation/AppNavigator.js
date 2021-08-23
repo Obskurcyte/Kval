@@ -122,7 +122,7 @@ import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScr
 
 const AppTabNavigator = createBottomTabNavigator();
 
-export const AuthNavigator = () => {
+export const AuthNavigator = (props) => {
   return (
     <AuthStackNavigator.Navigator>
       <AuthStackNavigator.Screen
@@ -139,7 +139,7 @@ export const AuthNavigator = () => {
 
       <AuthStackNavigator.Screen
         name="IdentificationScreen"
-        component={IdentificationScreen}
+        children={() => <IdentificationScreen {...props} />}
         options={{ headerShown: false }}
       />
       <AuthStackNavigator.Screen
@@ -2158,61 +2158,141 @@ export const AccueilNavigator = (props) => {
   );
 };
 
-export const TabNavigator = () => {
+export const TabNavigator = (props) => {
   return (
-    <AppTabNavigator.Navigator
-      tabBarOptions={{
-        activeTintColor: "red",
-        activeBackgroundColor: "white",
-        inactiveBackgroundColor: "white",
-      }}
-    >
-      <AppTabNavigator.Screen
-        name="Accueil"
-        component={AccueilNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="home" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Shop"
-        component={AchatNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="shopping-cart" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Vente"
-        component={SellNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-add-circle" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Message"
-        component={MessageNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Profil"
-        component={ProfileNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="user" size={24} color="black" />
-          ),
-        }}
-      />
-    </AppTabNavigator.Navigator>
+    <>
+      {props.loggedInAsVisit ? (
+        <AppTabNavigator.Navigator
+          tabBarOptions={{
+            activeTintColor: "red",
+            activeBackgroundColor: "white",
+            inactiveBackgroundColor: "white",
+          }}
+        >
+          <AppTabNavigator.Screen
+            name="Accueil"
+            component={AccueilNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="home" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Shop"
+            component={AchatNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Entypo name="shopping-cart" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Vente"
+            component={() => <></>}
+            onPress={() => props.setLoggedInAsVisit(!props.loggedInAsVisit)}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="md-add-circle" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Message"
+            component={() => <></>}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign
+                  name="message1"
+                  size={24}
+                  onPress={() =>
+                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                  }
+                  color="black"
+                />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Profil"
+            component={() => <></>}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign
+                  name="user"
+                  size={24}
+                  onPress={() =>
+                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                  }
+                  color="black"
+                />
+              ),
+            }}
+          />
+        </AppTabNavigator.Navigator>
+      ) : (
+        <AppTabNavigator.Navigator
+          tabBarOptions={{
+            activeTintColor: "red",
+            activeBackgroundColor: "white",
+            inactiveBackgroundColor: "white",
+          }}
+        >
+          <AppTabNavigator.Screen
+            name="Accueil"
+            component={AccueilNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="home" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Shop"
+            component={AchatNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Entypo name="shopping-cart" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Vente"
+            component={SellNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="md-add-circle" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Message"
+            component={MessageNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign
+                  name="message1"
+                  onPress={() =>
+                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                  }
+                  size={24}
+                  color="black"
+                />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Profil"
+            component={ProfileNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="user" size={24} color="black" />
+              ),
+            }}
+          />
+        </AppTabNavigator.Navigator>
+      )}
+    </>
   );
 };
 

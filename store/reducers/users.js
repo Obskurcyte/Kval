@@ -1,17 +1,17 @@
-import {GET_USER} from "../actions/users";
+import { GET_USER } from "../actions/users";
 
 const initialState = {
-  userData: null
-}
+  userData: null,
+};
 
-const userReducer = (state= initialState, action) => {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_USER :
+    case GET_USER:
       return {
-        userData : action.userData
-      }
+        userData: action.userData,
+      };
   }
   return state;
-}
+};
 
-export default userReducer
+export default userReducer;
