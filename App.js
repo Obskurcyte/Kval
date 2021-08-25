@@ -51,6 +51,7 @@ export default function App() {
   const [loaded, setIsLoaded] = useState(false);
   const [loggedIn, setIsLoggedIn] = useState(false);
   const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
+  const [firstLaunch, setFirstLaunch] = useState(true);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -77,6 +78,8 @@ export default function App() {
           />
         ) : (
           <AuthNavigator
+            firstLaunch={firstLaunch}
+            setFirstLaunch={setFirstLaunch}
             loggedInAsVisit={loggedInAsVisit}
             setLoggedInAsVisit={setLoggedInAsVisit}
           />

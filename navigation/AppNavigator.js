@@ -123,8 +123,13 @@ import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScr
 const AppTabNavigator = createBottomTabNavigator();
 
 export const AuthNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit, firstLaunch, setFirstLaunch } =
+    props;
+  setFirstLaunch(false);
   return (
-    <AuthStackNavigator.Navigator>
+    <AuthStackNavigator.Navigator
+      initialRouteName={firstLaunch ? "OnboardingScreen1" : "ConnectionScreen"}
+    >
       <AuthStackNavigator.Screen
         name="OnboardingScreen1"
         component={OnboardingScreen1}
@@ -139,7 +144,13 @@ export const AuthNavigator = (props) => {
 
       <AuthStackNavigator.Screen
         name="IdentificationScreen"
-        children={() => <IdentificationScreen {...props} />}
+        children={(props) => (
+          <IdentificationScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{ headerShown: false }}
       />
       <AuthStackNavigator.Screen
@@ -154,7 +165,13 @@ export const AuthNavigator = (props) => {
       />
       <AuthStackNavigator.Screen
         name="ConnectionScreen"
-        component={ConnectionScreen}
+        children={(props) => (
+          <ConnectionScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{ headerShown: false }}
       />
     </AuthStackNavigator.Navigator>
@@ -804,6 +821,8 @@ export const SellNavigator = () => {
 };
 
 export const AchatNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+
   let totalQuantity = 0;
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -1539,7 +1558,13 @@ export const AchatNavigator = (props) => {
       />
       <AchatStackNavigator.Screen
         name="ProductDetailScreen"
-        component={ProductDetailScreen}
+        children={(props) => (
+          <ProductDetailScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{
           headerRightContainerStyle: {
             paddingRight: 10,
@@ -1613,7 +1638,13 @@ export const AchatNavigator = (props) => {
       />
       <AchatStackNavigator.Screen
         name="CartScreen"
-        component={CartScreen}
+        children={(props) => (
+          <CartScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{
           headerLeftContainerStyle: {
             paddingLeft: 10,
@@ -2159,6 +2190,8 @@ export const AccueilNavigator = (props) => {
 };
 
 export const TabNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+
   return (
     <>
       {props.loggedInAsVisit ? (
@@ -2180,7 +2213,13 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Shop"
-            component={AchatNavigator}
+            children={(props) => (
+              <AchatNavigator
+                {...props}
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="shopping-cart" size={24} color="black" />
@@ -2249,7 +2288,13 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Shop"
-            component={AchatNavigator}
+            children={(props) => (
+              <AchatNavigator
+                {...props}
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="shopping-cart" size={24} color="black" />

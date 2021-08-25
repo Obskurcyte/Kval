@@ -16,6 +16,7 @@ import firebase from "firebase";
 import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
+import ProfileScreen from "../profile/ProfileScreen";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -25,6 +26,7 @@ const SEPARATOR_WIDTH = 10;
 
 const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
+  console.log(props);
   const dispatch = useDispatch();
 
   //-------------CAROUSEL----------------//
@@ -187,8 +189,11 @@ const ProductDetailScreen = (props) => {
   };
 
   //-----------------------------------MESSAGES---------------------//
-  const idAcheteur = firebase.auth().currentUser.uid;
-  console.log("authid", firebase.auth().currentUser.uid);
+  const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
+  console.log(
+    "authid",
+    !props.loggedInAsVisit && firebase.auth().currentUser.uid
+  );
   const onMessagePressed = () => {
     console.log(product.pseudoVendeur);
     firebase
@@ -299,7 +304,11 @@ const ProductDetailScreen = (props) => {
 
           <TouchableOpacity
             style={styles.envoyerMessageContainer}
-            onPress={() => onMessagePressed()}
+            onPress={() =>
+              props.loggedInAsVisit
+                ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                : onMessagePressed()
+            }
           >
             <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
           </TouchableOpacity>
