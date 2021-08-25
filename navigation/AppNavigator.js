@@ -126,6 +126,23 @@ export const AuthNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit, firstLaunch, setFirstLaunch } =
     props;
   setFirstLaunch(false);
+  const classes = {
+    header: {
+      headerStyle: {
+        backgroundColor: "#D51317",
+        elevation: 0, // remove shadow on Android
+        shadowOpacity: 0,
+      },
+      headerTitleStyle: {
+        color: "black",
+      }, // remove shadow on iOS
+      title: "",
+      headerBackTitleStyle: {
+        backgroundColor: "#fff",
+      },
+      headerTitleAlign: "center",
+    },
+  };
   return (
     <AuthStackNavigator.Navigator
       initialRouteName={firstLaunch ? "OnboardingScreen1" : "ConnectionScreen"}
@@ -139,7 +156,7 @@ export const AuthNavigator = (props) => {
       <AuthStackNavigator.Screen
         name="OnboardingScreen2"
         component={OnboardingScreen2}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
 
       <AuthStackNavigator.Screen
@@ -151,17 +168,17 @@ export const AuthNavigator = (props) => {
             setLoggedInAsVisit={setLoggedInAsVisit}
           />
         )}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="PreInscriptionScreen"
         component={PreInscriptionScreen}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
         component={InscriptionScreen}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="ConnectionScreen"
@@ -172,7 +189,7 @@ export const AuthNavigator = (props) => {
             setLoggedInAsVisit={setLoggedInAsVisit}
           />
         )}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
     </AuthStackNavigator.Navigator>
   );
