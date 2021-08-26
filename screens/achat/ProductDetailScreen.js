@@ -265,6 +265,13 @@ const ProductDetailScreen = (props) => {
             <Text>{product.categorie}</Text>
           </View>
 
+          {product.marques && (
+            <View style={styles.itemForm3}>
+              <Text>Marque</Text>
+              <Text>{product.marques}</Text>
+            </View>
+          )}
+
           <View style={styles.vendeurContainer}>
             {product.imageURL ? (
               <Image source={require("../../assets/photoProfile.png")} />

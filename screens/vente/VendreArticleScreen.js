@@ -145,6 +145,7 @@ const VendreArticleScreen = (props) => {
                         categorie,
                         etat,
                         id,
+                        marques,
                         title: values.title,
                         description: values.description,
                         prix: values.price,

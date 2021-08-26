@@ -142,6 +142,7 @@ export const AuthNavigator = (props) => {
         backgroundColor: "#fff",
       },
       headerTitleAlign: "center",
+      headerTintColor: "#fff",
     },
   };
   return (
