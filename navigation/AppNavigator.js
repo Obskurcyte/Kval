@@ -15,6 +15,7 @@ import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import CategoriesChoiceScreen from "../screens/vente/CategoriesChoiceScreen";
+import MarquesChoiceScreen from "../screens/vente/MarquesChoiceScreen";
 import EtatChoiceScreen from "../screens/vente/EtatChoiceScreen";
 import ChevalEtCuirAccueilScreen from "../screens/achat/categories/ChevalEtCuirAccueilScreen";
 import BrideriesAccueilScreen from "../screens/achat/sousCategoriesChevalEtCuir/BrideriesAccueilScreen";
@@ -203,6 +204,24 @@ export const SellNavigator = () => {
         component={VendreArticleScreen}
         options={{
           title: "Vendre un article",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <SellStackNavigator.Screen
+        name="MarquesChoiceScreen"
+        component={MarquesChoiceScreen}
+        options={{
+          title: "Catégories",
           headerStyle: {
             backgroundColor: "white",
           },

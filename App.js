@@ -68,6 +68,7 @@ export default function App() {
   if (!loaded) {
     return <ActivityIndicator />;
   }
+
   return (
     <Provider store={store}>
       <NavigationContainer>

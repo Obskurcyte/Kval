@@ -43,7 +43,7 @@ const VendreArticleScreen = (props) => {
 
   let etat;
   let categorie;
-  let marques = "test";
+  let marques;
 
   useEffect(() => {
     dispatch(usersActions.getUser());
@@ -275,10 +275,10 @@ const VendreArticleScreen = (props) => {
 
                     <TouchableOpacity
                       style={styles.itemForm3}
-                      onPress={() => navigateCategories()}
+                      onPress={() => navigateMarques()}
                     >
                       <Text style={styles.text}>Marques</Text>
-                      {categorie ? (
+                      {marques ? (
                         <Text style={{ color: "black" }}>{marques}</Text>
                       ) : (
                         <Text />
