@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 27,
-    marginTop: "25%",
+    marginTop: 15,
     fontWeight: "bold",
     color: "white",
     textAlign: "center",
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingVertical: "4%",
-    marginTop: "2%",
+    marginTop: 10,
     paddingLeft: "8%",
   },
   buttonContainer: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: "5%",
     borderRadius: 10,
-    marginTop: "20%",
+    marginTop: 15,
   },
   err: {
     color: "black",
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontSize: 18,
-    marginTop: "20%",
+    marginTop: 35,
   },
   connecteContainer: {
     display: "flex",
