@@ -45,6 +45,8 @@ const ConnectionScreen = (props) => {
                 <Text style={styles.text}>Email</Text>
                 <TextInput
                   placeholder="Email"
+                  keyboardType="email-address"
+                  autoCompleteType="email"
                   placeholderTextColor="white"
                   value={props.values.email}
                   style={styles.textInput}
@@ -123,7 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 27,
     marginTop: "25%",
     fontWeight: "bold",
-    fontFamily: "Arial",
     color: "white",
     textAlign: "center",
   },

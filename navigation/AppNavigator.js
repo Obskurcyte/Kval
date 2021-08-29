@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import OnboardingScreen1 from "../screens/inscription/OnboardingScreen1";
@@ -138,9 +138,6 @@ export const AuthNavigator = (props) => {
         color: "black",
       }, // remove shadow on iOS
       title: "",
-      headerBackTitleStyle: {
-        backgroundColor: "#fff",
-      },
       headerTitleAlign: "center",
       headerTintColor: "#fff",
     },
@@ -2265,42 +2262,45 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Vente"
-            component={() => <></>}
-            onPress={() => props.setLoggedInAsVisit(!props.loggedInAsVisit)}
+            children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="md-add-circle" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                />
               ),
             }}
           />
           <AppTabNavigator.Screen
             name="Message"
-            component={() => <></>}
+            children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <AntDesign
-                  name="message1"
-                  size={24}
-                  onPress={() =>
-                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
-                  }
-                  color="black"
+                <AntDesign name="message1" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
                 />
               ),
             }}
           />
           <AppTabNavigator.Screen
             name="Profil"
-            component={() => <></>}
+            children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <AntDesign
-                  name="user"
-                  size={24}
-                  onPress={() =>
-                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
-                  }
-                  color="black"
+                <AntDesign name="user" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
                 />
               ),
             }}
