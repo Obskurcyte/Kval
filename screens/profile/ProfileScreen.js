@@ -32,6 +32,7 @@ const ProfileScreen = (props) => {
 
   console.log(userData);
 
+  console.log('wola')
   const logout = () => {
     firebase.auth().signOut();
   };
@@ -196,18 +197,20 @@ const ProfileScreen = (props) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.boutonList}
-              onPress={() =>
-                props.navigation.navigate("SignalerUnLitigeScreen")
-              }
-            >
-              <Text style={styles.text}>Signaler un litige</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
               onPress={() => props.navigation.navigate("MentionLegaleScreen")}
             >
               <Text style={styles.text}>Mentions Légales</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.boutonList}
+                onPress={() =>
+                    props.navigation.navigate("SignalerUnLitigeScreen")
+                }
+            >
+              <Text style={styles.text}>Signaler un litige</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.mettreEnVente}
               onPress={() => logout()}

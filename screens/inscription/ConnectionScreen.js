@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: '4%',
     marginTop: '2%',
-    paddingLeft: '8%'
+    paddingLeft: '8%',
+    color: 'white'
   },
   buttonContainer: {
     backgroundColor: 'white',

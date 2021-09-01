@@ -14,7 +14,6 @@ import {
 import { SearchBar } from 'react-native-elements';
 import {Feather, Fontisto} from '@expo/vector-icons';
 import CardVente from "../../components/CardVente";
-import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import {useDispatch, useSelector} from "react-redux";
@@ -24,6 +23,7 @@ import {GET_PRODUCTS_BOOSTED} from "../../store/actions/products";
 import BoostedProductCard from "../../components/BoostedProductCard";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const AccueilScreen = (props) => {
 
@@ -127,7 +127,7 @@ const AccueilScreen = (props) => {
 
             <View style={styles.categoriesInnerContainer}>
               <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'TransportAccueilScreen'})}>
-                <AntDesign name="car" size={34} color="white" />
+                <FontAwesome5 name="shuttle-van" size={34} color="white" />
               </TouchableOpacity>
               <Text>Transport</Text>
             </View>

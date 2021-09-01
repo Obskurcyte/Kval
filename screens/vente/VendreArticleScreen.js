@@ -553,7 +553,7 @@ const styles = StyleSheet.create({
   image: {
     height: windowHeight / 8,
     width: windowWidth / 4,
-    marginRight: "3%",
+    marginRight: "7%",
   },
   imageList: {
     marginTop: "3%",

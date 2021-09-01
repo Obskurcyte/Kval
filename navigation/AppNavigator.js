@@ -912,6 +912,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -948,6 +956,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -966,6 +982,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -984,6 +1008,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1002,6 +1034,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1020,6 +1060,14 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
+            headerLeft: () => (
+                <AntDesign
+                    name="arrowleft"
+                    size={24}
+                    color="black"
+                    onPress={() => props.navigation.navigate('AccueilScreen')}
+                />
+            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1598,7 +1646,7 @@ export const AchatNavigator = (props) => {
               name="arrowleft"
               size={24}
               color="black"
-              onPress={() => props.navigation.goBack()}
+              onPress={() => props.navigation.navigate('LivraisonChoiceScreen')}
             />
           ),
           headerTitle: "Livraison Lourde",
