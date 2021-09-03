@@ -1863,6 +1863,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
+            headerTitle: "Modifier mon adresse",
             headerBackTitle: "Retour",
         }}
       />
@@ -1873,6 +1874,7 @@ export const ProfileNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+            headerTitle: "Modifier mon email",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1889,6 +1891,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
+            headerTitle: "Modifier mon pseudo",
             headerBackTitle: "Retour",
         }}
       />

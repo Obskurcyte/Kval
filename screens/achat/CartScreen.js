@@ -360,7 +360,7 @@ const CartScreen = (props) => {
               <Text style={styles.totalPrice}>
                 {adresse
                   ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
-                  : `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} $`}
+                  : `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `}
               </Text>
             </View>
           </View>

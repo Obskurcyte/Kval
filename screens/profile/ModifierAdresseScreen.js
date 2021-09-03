@@ -1,5 +1,14 @@
 import React, {useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    Dimensions,
+    TouchableWithoutFeedback,
+    Keyboard, KeyboardAvoidingView
+} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
@@ -27,9 +36,10 @@ const ModifierAdresseScreen = (props) => {
     console.log(userData)
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.container}>
-            <Text style={styles.title}>Adresse</Text>
-            <Text style={{fontSize: 18, marginBottom: '10%'}}>Adresse actuelle : <Text style={{color: '#D51317', fontSize: 16}}>{userData?.adresse}</Text></Text>
+            <Text style={styles.title}>Nouvelle adresse</Text>
 
             <Formik
                 initialValues={initialValues}
@@ -47,7 +57,6 @@ const ModifierAdresseScreen = (props) => {
             >
                 {props => (
                     <View>
-                        <Text>Nouvelle adresse</Text>
                         <TextInput
                             placeholder="Adresse"
                             style={styles.input}
@@ -85,6 +94,8 @@ const ModifierAdresseScreen = (props) => {
             </Formik>
 
         </View>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -110,7 +121,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         textAlign: 'justify',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: '5%'
     },
     input: {
         borderWidth: 1,

@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import * as userActions from "../../store/actions/users";
 import {useDispatch, useSelector} from "react-redux";
 import firebase from "firebase";
+
+const windowWidth = Dimensions.get('window').width;
 
 const InformationsScreen = (props) => {
 
@@ -11,8 +13,9 @@ const InformationsScreen = (props) => {
   const userData = useSelector(state => state.user.userData);
 
   useEffect(() => {
-  dispatch(userActions.getUser())
-}, [dispatch, userData]);
+    dispatch(userActions.getUser())
+  }, [dispatch, userData]);
+
 
   const logout = () => {
     firebase.auth().signOut();
@@ -24,10 +27,6 @@ const InformationsScreen = (props) => {
       {userData ?
           <View>
             <View style={styles.infosContainer}>
-
-              <View>
-
-              </View>
               <View>
                 <Text style={styles.title}>Nom d'utilisateur</Text>
                 <Text style={styles.infosText}>{userData.pseudo}</Text>
@@ -84,6 +83,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: '10%'
   },
+  noData: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
   container: {
     paddingHorizontal: '10%',
     paddingVertical: '3%'
@@ -98,7 +101,19 @@ const styles = StyleSheet.create({
   modify: {
     color: '#A7A9BE',
     fontSize: 12
-  }
+  },
+  mettreEnVente: {
+    backgroundColor: "#D51317",
+    marginTop: '15%',
+    marginLeft: '5%',
+    width: windowWidth/1.1,
+    paddingVertical: '5%',
+  },
+  mettreEnVenteText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 18
+  },
 });
 
 export default InformationsScreen;

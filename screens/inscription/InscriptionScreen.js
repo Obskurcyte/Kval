@@ -43,6 +43,7 @@ const InscriptionScreen = (props) => {
                   postalCode: params.postalCode,
                   ville: params.ville,
                   pays: params.pays,
+                    adresse: params.adresse,
                   portefeuille: 0
                 })
               console.log(result)
