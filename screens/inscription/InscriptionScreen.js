@@ -30,7 +30,7 @@ const InscriptionScreen = (props) => {
         onSubmit={async (values) => {
           console.log(values)
           try  {
-            await firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
+            firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
               console.log('wola')
               firebase.firestore().collection("users")
                 .doc(firebase.auth().currentUser.uid)
@@ -127,7 +127,6 @@ const styles = StyleSheet.create({
     },
   title: {
     fontSize: 27,
-    marginTop: '15%',
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center'

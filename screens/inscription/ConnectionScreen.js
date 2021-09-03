@@ -87,7 +87,7 @@ const ConnectionScreen = (props) => {
           </View>
           <View style={styles.connecte}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("InscriptionScreen")}
+              onPress={() => props.navigation.navigate("PreInscriptionScreen")}
             >
               <Text style={styles.text}> Crée-toi un compte</Text>
             </TouchableOpacity>
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     borderRadius: 10,
+    color: 'white',
     paddingVertical: "4%",
     marginTop: 10,
     paddingLeft: "8%",

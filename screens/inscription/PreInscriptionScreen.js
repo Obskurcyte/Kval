@@ -187,9 +187,9 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 27,
-        marginTop: '15%',
         fontWeight: 'bold',
         color: 'white',
+        marginTop: '20%',
         textAlign: 'center'
     },
     textInput: {

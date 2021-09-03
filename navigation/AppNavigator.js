@@ -140,6 +140,7 @@ export const AuthNavigator = (props) => {
       title: "",
       headerTitleAlign: "center",
       headerTintColor: "#fff",
+        headerBackTitle: 'Retour'
     },
   };
   return (
@@ -155,7 +156,7 @@ export const AuthNavigator = (props) => {
       <AuthStackNavigator.Screen
         name="OnboardingScreen2"
         component={OnboardingScreen2}
-        options={classes.header}
+        options={{ headerShown: false }}
       />
 
       <AuthStackNavigator.Screen
@@ -167,12 +168,12 @@ export const AuthNavigator = (props) => {
             setLoggedInAsVisit={setLoggedInAsVisit}
           />
         )}
-        options={classes.header}
+        options={{ headerShown: false }}
       />
       <AuthStackNavigator.Screen
         name="PreInscriptionScreen"
         component={PreInscriptionScreen}
-        options={classes.header}
+        options={{ headerShown: false }}
       />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
