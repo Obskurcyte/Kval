@@ -55,7 +55,8 @@ const MessageScreen = (props) => {
       });
   }, []);
 
-  console.log(threads);
+  console.log('threads', threads);
+
 
   console.log("authid", firebase.auth().currentUser.uid);
   return (
@@ -81,7 +82,7 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      {messageActive && (
+      {messageActive && threads.length !== 0 ?
         <FlatList
           data={threads}
           style={styles.flatList}
@@ -99,8 +100,8 @@ const MessageScreen = (props) => {
               />
             );
           }}
-        />
-      )}
+        /> : <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
+      }
 
       {notifActive && (
         <FlatList
@@ -173,5 +174,9 @@ const styles = StyleSheet.create({
   flatList: {
     height: "100%",
   },
+  noMessage: {
+    fontSize: 20,
+    textAlign: 'center'
+  }
 });
 export default MessageScreen;

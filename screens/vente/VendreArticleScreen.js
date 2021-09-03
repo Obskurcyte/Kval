@@ -76,7 +76,7 @@ const VendreArticleScreen = (props) => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
       quality: 1,
     });
@@ -340,96 +340,108 @@ const VendreArticleScreen = (props) => {
                         onChangeText={props.handleChange("poids")}
                       />
                     </View>
-                    {imagesTableau && imagesTableau.length === 1 ? (
-                      <View style={styles.imageList}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[0] }}
-                        />
-                      </View>
-                    ) : (
-                      <Text />
-                    )}
-                    {imagesTableau && imagesTableau.length === 2 ? (
-                      <View style={styles.imageList}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[0] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[1] }}
-                        />
-                      </View>
-                    ) : (
-                      <Text />
-                    )}
-                    {imagesTableau && imagesTableau.length === 3 ? (
-                      <View style={styles.imageList}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[0] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[1] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[2] }}
-                        />
-                      </View>
-                    ) : (
-                      <Text />
-                    )}
-                    {imagesTableau && imagesTableau.length === 4 ? (
-                      <View style={styles.imageList}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[0] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[1] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[2] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[3] }}
-                        />
-                      </View>
-                    ) : (
-                      <Text />
-                    )}
-                    {imagesTableau && imagesTableau.length === 5 ? (
-                      <View style={styles.imageList}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[0] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[1] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[2] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[3] }}
-                        />
-                        <Image
-                          style={styles.image}
-                          source={{ uri: imagesTableau[4] }}
-                        />
-                      </View>
-                    ) : (
-                      <Text />
-                    )}
+
+                    <View style={styles.photoBigContainer}>
+                      {imagesTableau && imagesTableau.length === 1 ? (
+                          <View style={styles.imageList}>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[0] }}
+                            />
+                          </View>
+                      ) : (
+                          <Text />
+                      )}
+                      {imagesTableau && imagesTableau.length === 2 ? (
+                          <View style={styles.imageList}>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[0] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[1] }}
+                            />
+                          </View>
+                      ) : (
+                          <Text />
+                      )}
+                      {imagesTableau && imagesTableau.length === 3 ? (
+                          <View style={styles.imageList}>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[0] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[1] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[2] }}
+                            />
+                          </View>
+                      ) : (
+                          <Text />
+                      )}
+                      {imagesTableau && imagesTableau.length === 4 ? (
+                          <View style={styles.imageListBig}>
+                            <View style={styles.imagesListFirstContainer}>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[0] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[1] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[2] }}
+                            />
+                            </View>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[3] }}
+                            />
+                          </View>
+                      ) : (
+                          <Text />
+                      )}
+                      {imagesTableau && imagesTableau.length === 5 ? (
+                          <View style={styles.imageListBig}>
+                            <View style={styles.imagesListFirstContainer}>
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[0] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[1] }}
+                            />
+                            <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[2] }}
+                            />
+                            </View>
+                            <View style={styles.imagesListSecondContainer}>
+                              <Image
+                                  style={styles.image}
+                                  source={{ uri: imagesTableau[3] }}
+                              />
+                              <Image
+                                  style={styles.image}
+                                  source={{ uri: imagesTableau[4] }}
+                              />
+                            </View>
+
+
+                          </View>
+                      ) : (
+                          <Text />
+                      )}
+                    </View>
+
                     {imagesTableau && imagesTableau.length < 5 ? (
                       <TouchableOpacity
                         style={styles.photoContainer}
@@ -483,6 +495,28 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+  },
+  photoBigContainer: {
+    width: windowWidth/1.1,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  imagesListFirstContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20
+  },
+  imagesListSecondContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 20
+  },
+  imageListBig: {
+    display: 'flex',
+    marginTop: 25,
+    flexDirection: 'column',
   },
   photoContainer: {
     alignItems: "center",

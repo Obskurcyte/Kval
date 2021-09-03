@@ -833,6 +833,7 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+            headerBackTitle: 'Retour',
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -860,14 +861,6 @@ export const AchatNavigator = (props) => {
                 onPress={() => props.navigation.navigate("CartScreen")}
               />
             </View>
-          ),
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
           ),
           headerTitle: () => <CustomHeader {...props} />,
         }}
@@ -912,14 +905,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -956,14 +941,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -982,14 +959,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1008,14 +977,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1034,14 +995,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1060,14 +1013,6 @@ export const AchatNavigator = (props) => {
           headerBackTitleStyle: {
             color: "black",
           },
-            headerLeft: () => (
-                <AntDesign
-                    name="arrowleft"
-                    size={24}
-                    color="black"
-                    onPress={() => props.navigation.navigate('AccueilScreen')}
-                />
-            ),
           headerTitleAlign: "center",
         }}
       />
@@ -1546,6 +1491,7 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+            headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1574,15 +1520,12 @@ export const AchatNavigator = (props) => {
               />
             </View>
           ),
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
+          headerTitle: () => (
+              <View style={{width: 220, marginLeft: 40}}>
+                  <CustomHeader {...props} />
+              </View>
+
           ),
-          headerTitle: () => <CustomHeader {...props} />,
         }}
       />
       <AchatStackNavigator.Screen
@@ -1595,6 +1538,7 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
+            headerBackTitle: "Retour",
           headerRight: () => (
             <View>
               <View
@@ -1620,14 +1564,6 @@ export const AchatNavigator = (props) => {
               />
             </View>
           ),
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
-          ),
           headerTitle: "Details",
         }}
       />
@@ -1638,17 +1574,10 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+            headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate('LivraisonChoiceScreen')}
-            />
-          ),
           headerTitle: "Livraison Lourde",
         }}
       />
@@ -1666,14 +1595,7 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Panier",
         }}
       />
@@ -1684,14 +1606,7 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("CartScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Livraison",
         }}
       />
@@ -1709,6 +1624,7 @@ export const MessageNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1726,14 +1642,7 @@ export const MessageNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("MessageScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Messages",
           headerTitleAlign: "center",
         }}
@@ -1752,17 +1661,10 @@ export const ProfileNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
+            headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
-          ),
           headerTitle: "Profil",
         }}
       />
@@ -1776,14 +1678,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Mon portefeuille",
         }}
       />
@@ -1797,14 +1692,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Mes articles en vente",
         }}
       />
@@ -1818,14 +1706,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ArticlesEnVenteScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Booste tes ventes !",
         }}
       />
@@ -1839,14 +1720,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Mes commandes",
         }}
       />
@@ -1860,14 +1734,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("MesCommandesScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Détail de la commande",
         }}
       />
@@ -1881,14 +1748,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("CommandeDetailScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Evaluation",
         }}
       />
@@ -1909,14 +1769,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("BoosteVenteScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Booste tes ventes !",
         }}
       />
@@ -1930,14 +1783,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Mes informations",
         }}
       />
@@ -1951,14 +1797,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("InformationsScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1971,14 +1810,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("InformationsScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1991,14 +1823,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("InformationsScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -2011,15 +1836,8 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
+            headerBackTitle: "Retour",
           headerTitle: "Signaler un litige",
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
         }}
       />
       <ProfileStackNavigator.Screen
@@ -2032,14 +1850,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Mentions Légales",
         }}
       />
@@ -2053,14 +1864,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "CGU & CGV",
         }}
       />
@@ -2074,14 +1878,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.navigate("ProfileScreen")}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Vie Privée",
         }}
       />
@@ -2191,14 +1988,7 @@ export const AccueilNavigator = (props) => {
               />
             </View>
           ),
-          headerLeft: () => (
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color="black"
-              onPress={() => props.navigation.goBack()}
-            />
-          ),
+            headerBackTitle: "Retour",
           headerTitle: "Details",
         }}
       />
