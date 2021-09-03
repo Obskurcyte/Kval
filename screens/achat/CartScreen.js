@@ -322,93 +322,98 @@ const CartScreen = (props) => {
     if (!makePayment) {
       return (
         <ScrollView style={styles.container}>
-          <FlatList
-            style={styles.list}
-            data={cartItems}
-            horizontal={true}
-            keyExtractor={(item) => item.productId}
-            renderItem={(itemData) => {
-              return (
-                <CartItem
-                  title={itemData.item.productTitle}
-                  price={itemData.item.productPrice}
-                  image={itemData.item.image}
-                  onDelete={() => {
-                    dispatch(
-                      cartActions.removeFromCart(itemData.item.productId)
+          {cartItems.length !==0 ?
+            <View>
+              <FlatList
+                  style={styles.list}
+                  data={cartItems}
+                  horizontal={true}
+                  keyExtractor={(item) => item.productId}
+                  renderItem={(itemData) => {
+                    return (
+                        <CartItem
+                            title={itemData.item.productTitle}
+                            price={itemData.item.productPrice}
+                            image={itemData.item.image}
+                            onDelete={() => {
+                              dispatch(
+                                  cartActions.removeFromCart(itemData.item.productId)
+                              );
+                            }}
+                        />
                     );
                   }}
-                />
-              );
-            }}
-          />
+              />
 
-          <View style={styles.itemForm3}>
-            <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
-            <TouchableOpacity
-              onPress={() => {
-                props.navigation.navigate("LivraisonChoiceScreen");
-              }}
-            >
-              {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
-            </TouchableOpacity>
-          </View>
+              <View style={styles.itemForm3}>
+                <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.navigate("LivraisonChoiceScreen");
+                    }}
+                >
+                  {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
+                </TouchableOpacity>
+              </View>
 
-          <View style={styles.itemForm3}>
-            <Text style={{ fontSize: 18 }}>Adresse</Text>
-            <View style={styles.adresseContainer}>
-              <Text style={styles.totalPrice}>
-                {adresse
-                  ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
-                  : `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.totalContainer}>
-            <View style={styles.itemForm3}>
-              <Text style={{ fontSize: 18 }}>Prix protection acheteur</Text>
-              <Text style={{ fontSize: 18 }}>
-                {(total * 0.095).toFixed(2)} €
-              </Text>
-            </View>
-            <View style={styles.itemForm3}>
-              <Text style={{ fontSize: 18 }}>Portefeuille</Text>
-              <Text style={{ fontSize: 18 }}>
-                {userData?.portefeuille.toFixed(2)} €
-              </Text>
-            </View>
-            <View style={styles.itemForm3}>
-              <Text style={{ fontSize: 18 }}>Sous-Total</Text>
-              <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
-            </View>
-            <View style={styles.itemForm3}>
-              <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
-              <Text style={{ fontSize: 18 }}>- {reductionPortefeuille} €</Text>
-            </View>
-            <View style={styles.itemForm3}>
-              <Text style={{ fontSize: 18 }}>Total</Text>
-              <Text style={styles.totalPrice}>{newTotal} €</Text>
-            </View>
-          </View>
+              <View style={styles.itemForm3}>
+                <Text style={{ fontSize: 18 }}>Adresse</Text>
+                <View style={styles.adresseContainer}>
+                  <Text style={styles.totalPrice}>
+                    {adresse
+                        ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
+                        : `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.totalContainer}>
+                <View style={styles.itemForm3}>
+                  <Text style={{ fontSize: 18 }}>Prix protection acheteur</Text>
+                  <Text style={{ fontSize: 18 }}>
+                    {(total * 0.095).toFixed(2)} €
+                  </Text>
+                </View>
+                <View style={styles.itemForm3}>
+                  <Text style={{ fontSize: 18 }}>Portefeuille</Text>
+                  <Text style={{ fontSize: 18 }}>
+                    {userData?.portefeuille.toFixed(2)} €
+                  </Text>
+                </View>
+                <View style={styles.itemForm3}>
+                  <Text style={{ fontSize: 18 }}>Sous-Total</Text>
+                  <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
+                </View>
+                <View style={styles.itemForm3}>
+                  <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
+                  <Text style={{ fontSize: 18 }}>- {reductionPortefeuille} €</Text>
+                </View>
+                <View style={styles.itemForm3}>
+                  <Text style={{ fontSize: 18 }}>Total</Text>
+                  <Text style={styles.totalPrice}>{newTotal} €</Text>
+                </View>
+              </View>
 
-          <TouchableOpacity
-            style={styles.mettreEnVente}
-            onPress={async () => {
-              if (props.loggedInAsVisit) {
-                props.setLoggedInAsVisit(!props.loggedInAsVisit);
-              } else {
-                if (newTotal == 0.0) {
-                  console.log("wola");
-                  console.log(portefeuillePayment);
-                  setPortefeuillePayment(true);
-                } else {
-                  setMakePayment(true);
-                }
-              }
-            }}
-          >
-            <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
-          </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.mettreEnVente}
+                  onPress={async () => {
+                    if (props.loggedInAsVisit) {
+                      props.setLoggedInAsVisit(!props.loggedInAsVisit);
+                    } else {
+                      if (newTotal == 0.0) {
+                        console.log("wola");
+                        console.log(portefeuillePayment);
+                        setPortefeuillePayment(true);
+                      } else {
+                        setMakePayment(true);
+                      }
+                    }
+                  }}
+              >
+                <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
+              </TouchableOpacity>
+            </View> : <Text style={styles.noCommandeText}>Vous n'avez aucun article dans votre panier</Text>
+          }
+
         </ScrollView>
       );
     } else {
@@ -515,6 +520,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
+  },
+  noCommandeText: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: windowHeight/2.5
   },
   totalContainer: {
     display: "flex",

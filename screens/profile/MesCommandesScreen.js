@@ -1,8 +1,9 @@
 import React, {useEffect} from 'react';
-import {View, StyleSheet, FlatList, Dimensions} from "react-native";
+import {View, StyleSheet, FlatList, Dimensions, Text} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import CommandeItem from "../../components/CommandeItem";
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -34,7 +35,7 @@ const MesCommandesScreen = (props) => {
     return (
         <View style={styles.container}>
 
-            <View style={styles.flatListContainer}>
+            {articles.length !== 0 ? <View style={styles.flatListContainer}>
                 <FlatList
                     data={articles}
                     numColumns={2}
@@ -42,7 +43,8 @@ const MesCommandesScreen = (props) => {
                     renderItem={renderItem}
                     extraData={articles}
                 />
-            </View>
+            </View> : <Text style={styles.noCommandeText}>Vous n'avez passé aucune commande</Text>}
+
         </View>
     );
 };
@@ -70,6 +72,11 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    noCommandeText: {
+      fontSize: 20,
+        textAlign: 'center',
+        marginTop: windowHeight/2.5
     },
     vendeurContainer: {
         backgroundColor: '#F9F9FA',

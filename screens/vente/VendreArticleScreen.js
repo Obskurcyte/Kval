@@ -78,7 +78,7 @@ const VendreArticleScreen = (props) => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
       quality: 1,
     });
@@ -537,6 +537,7 @@ const styles = StyleSheet.create({
   imageListBig: {
     display: "flex",
     marginTop: 25,
+    width: '80%',
     flexDirection: "column",
   },
   photoContainer: {
@@ -592,7 +593,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   addPhotoText: {
-    color: "#DADADA",
+    color: "black",
   },
   mettreEnVente: {
     backgroundColor: "#D51317",

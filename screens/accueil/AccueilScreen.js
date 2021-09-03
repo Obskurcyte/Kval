@@ -76,7 +76,7 @@ const AccueilScreen = (props) => {
         }}
 
       />
-      <Text style={styles.attendent}>Catégories</Text>
+      <Text style={styles.attendent}>Rechercher dans les catégories</Text>
         <View style={styles.categoriesSuperContainer}>
           <ScrollView
             horizontal={true}

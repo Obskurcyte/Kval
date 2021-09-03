@@ -64,7 +64,7 @@ const InformationsScreen = (props) => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>: <View>
+          </View>: <View style={styles.nodataContainer}>
             <Text style={styles.noData}>Aucune donnée disponible</Text>
             <TouchableOpacity  style={styles.mettreEnVente} onPress={() => logout()}>
               <Text style={styles.mettreEnVenteText}>Veuillez vous reconnecter</Text>
@@ -95,6 +95,10 @@ const styles = StyleSheet.create({
     color: '#D51317',
     fontSize: 16
   },
+  nodataContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   title: {
     fontSize: 18
   },
@@ -105,7 +109,6 @@ const styles = StyleSheet.create({
   mettreEnVente: {
     backgroundColor: "#D51317",
     marginTop: '15%',
-    marginLeft: '5%',
     width: windowWidth/1.1,
     paddingVertical: '5%',
   },

@@ -160,9 +160,6 @@ const ProfileScreen = (props) => {
             >
               <Text style={styles.text}>Mes commandes</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.boutonList}>
-              <Text style={styles.text}>Mes négociations en cours</Text>
-            </TouchableOpacity>
             <TouchableOpacity
               style={styles.boutonList}
               onPress={() => props.navigation.navigate("ArticlesEnVenteScreen")}

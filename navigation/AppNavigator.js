@@ -220,7 +220,7 @@ export const SellNavigator = () => {
         name="MarquesChoiceScreen"
         component={MarquesChoiceScreen}
         options={{
-          title: "Catégories",
+          title: "Marques",
           headerStyle: {
             backgroundColor: "white",
           },
@@ -1663,6 +1663,9 @@ export const AchatNavigator = (props) => {
           },
             headerBackTitle: "Retour",
           headerTitle: "Panier",
+            headerTitleStyle: {
+                textAlign: 'center'
+            }
         }}
       />
       <AchatStackNavigator.Screen
@@ -1746,6 +1749,9 @@ export const ProfileNavigator = (props) => {
           },
             headerBackTitle: "Retour",
           headerTitle: "Mon portefeuille",
+            headerTitleStyle: {
+                marginLeft: 50
+            }
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1760,6 +1766,9 @@ export const ProfileNavigator = (props) => {
           },
             headerBackTitle: "Retour",
           headerTitle: "Mes articles en vente",
+            headerTitleStyle: {
+                marginLeft: 50
+            }
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1788,6 +1797,9 @@ export const ProfileNavigator = (props) => {
           },
             headerBackTitle: "Retour",
           headerTitle: "Mes commandes",
+            headerTitleStyle: {
+                marginLeft: 50
+            }
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1851,6 +1863,9 @@ export const ProfileNavigator = (props) => {
           },
             headerBackTitle: "Retour",
           headerTitle: "Mes informations",
+            headerTitleStyle: {
+              marginLeft: 50
+            }
         }}
       />
       <ProfileStackNavigator.Screen

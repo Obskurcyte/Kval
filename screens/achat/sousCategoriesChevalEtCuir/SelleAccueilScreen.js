@@ -21,11 +21,6 @@ const SelleAccueilScreen = (props) => {
           <Text style={styles.text}>Selles mixtes</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('ViewProductsScreen', {
-          categorie: 'Bavettes'
-        })}>
-          <Text style={styles.text}>Bavettes</Text>
-        </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('ViewProductsScreen', {
           categorie: 'Selles CSO'
@@ -49,12 +44,6 @@ const SelleAccueilScreen = (props) => {
           categorie: 'Selles d’endurance et islandaise'
         })}>
           <Text style={styles.text}>Selles d’endurance et islandaise</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('ViewProductsScreen', {
-          categorie: 'Selles de cross'
-        })}>
-          <Text style={styles.text}>Selles de cross</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('ViewProductsScreen', {
