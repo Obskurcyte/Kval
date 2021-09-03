@@ -43,7 +43,7 @@ const VendreArticleScreen = (props) => {
 
   let etat;
   let categorie;
-  let marques = "test";
+  let marques;
 
   useEffect(() => {
     dispatch(usersActions.getUser());
@@ -145,6 +145,7 @@ const VendreArticleScreen = (props) => {
                         categorie,
                         etat,
                         id,
+                        marques,
                         title: values.title,
                         description: values.description,
                         prix: values.price,
@@ -275,10 +276,10 @@ const VendreArticleScreen = (props) => {
 
                     <TouchableOpacity
                       style={styles.itemForm3}
-                      onPress={() => navigateCategories()}
+                      onPress={() => navigateMarques()}
                     >
                       <Text style={styles.text}>Marques</Text>
-                      {categorie ? (
+                      {marques ? (
                         <Text style={{ color: "black" }}>{marques}</Text>
                       ) : (
                         <Text />
@@ -316,10 +317,11 @@ const VendreArticleScreen = (props) => {
                       </Text>
                     ) : null}
                     <View style={styles.itemForm3}>
-                      <Text>Prix</Text>
+                      <Text>Prix €</Text>
                       <TextInput
                         keyboardType="numeric"
                         placeholder="Ex: 150,00"
+                        inlineImageLeft="euro_icon"
                         style={styles.input}
                         value={props.values.price}
                         onChangeText={props.handleChange("price")}
@@ -331,7 +333,7 @@ const VendreArticleScreen = (props) => {
                       </Text>
                     ) : null}
                     <View style={styles.itemForm3}>
-                      <Text>Poids</Text>
+                      <Text>Poids kg</Text>
                       <TextInput
                         keyboardType="numeric"
                         placeholder="Ex: 30kg"

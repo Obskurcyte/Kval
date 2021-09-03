@@ -394,12 +394,16 @@ const CartScreen = (props) => {
           <TouchableOpacity
             style={styles.mettreEnVente}
             onPress={async () => {
-              if (newTotal == 0.0) {
-                console.log("wola");
-                console.log(portefeuillePayment);
-                setPortefeuillePayment(true);
+              if (props.loggedInAsVisit) {
+                props.setLoggedInAsVisit(!props.loggedInAsVisit);
               } else {
-                setMakePayment(true);
+                if (newTotal == 0.0) {
+                  console.log("wola");
+                  console.log(portefeuillePayment);
+                  setPortefeuillePayment(true);
+                } else {
+                  setMakePayment(true);
+                }
               }
             }}
           >

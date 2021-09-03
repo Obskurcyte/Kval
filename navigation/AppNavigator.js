@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import OnboardingScreen1 from "../screens/inscription/OnboardingScreen1";
@@ -15,6 +15,7 @@ import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import CategoriesChoiceScreen from "../screens/vente/CategoriesChoiceScreen";
+import MarquesChoiceScreen from "../screens/vente/MarquesChoiceScreen";
 import EtatChoiceScreen from "../screens/vente/EtatChoiceScreen";
 import ChevalEtCuirAccueilScreen from "../screens/achat/categories/ChevalEtCuirAccueilScreen";
 import BrideriesAccueilScreen from "../screens/achat/sousCategoriesChevalEtCuir/BrideriesAccueilScreen";
@@ -122,9 +123,29 @@ import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScr
 
 const AppTabNavigator = createBottomTabNavigator();
 
-export const AuthNavigator = () => {
+export const AuthNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit, firstLaunch, setFirstLaunch } =
+    props;
+  setFirstLaunch(false);
+  const classes = {
+    header: {
+      headerStyle: {
+        backgroundColor: "#D51317",
+        elevation: 0, // remove shadow on Android
+        shadowOpacity: 0,
+      },
+      headerTitleStyle: {
+        color: "black",
+      }, // remove shadow on iOS
+      title: "",
+      headerTitleAlign: "center",
+      headerTintColor: "#fff",
+    },
+  };
   return (
-    <AuthStackNavigator.Navigator>
+    <AuthStackNavigator.Navigator
+      initialRouteName={firstLaunch ? "OnboardingScreen1" : "ConnectionScreen"}
+    >
       <AuthStackNavigator.Screen
         name="OnboardingScreen1"
         component={OnboardingScreen1}
@@ -134,28 +155,40 @@ export const AuthNavigator = () => {
       <AuthStackNavigator.Screen
         name="OnboardingScreen2"
         component={OnboardingScreen2}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
 
       <AuthStackNavigator.Screen
         name="IdentificationScreen"
-        component={IdentificationScreen}
-        options={{ headerShown: false }}
+        children={(props) => (
+          <IdentificationScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="PreInscriptionScreen"
         component={PreInscriptionScreen}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
         component={InscriptionScreen}
-        options={{ headerShown: false }}
+        options={classes.header}
       />
       <AuthStackNavigator.Screen
         name="ConnectionScreen"
-        component={ConnectionScreen}
-        options={{ headerShown: false }}
+        children={(props) => (
+          <ConnectionScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
+        options={classes.header}
       />
     </AuthStackNavigator.Navigator>
   );
@@ -169,6 +202,24 @@ export const SellNavigator = () => {
         component={VendreArticleScreen}
         options={{
           title: "Vendre un article",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <SellStackNavigator.Screen
+        name="MarquesChoiceScreen"
+        component={MarquesChoiceScreen}
+        options={{
+          title: "Catégories",
           headerStyle: {
             backgroundColor: "white",
           },
@@ -804,6 +855,8 @@ export const SellNavigator = () => {
 };
 
 export const AchatNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+
   let totalQuantity = 0;
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -1530,7 +1583,13 @@ export const AchatNavigator = (props) => {
       />
       <AchatStackNavigator.Screen
         name="ProductDetailScreen"
-        component={ProductDetailScreen}
+        children={(props) => (
+          <ProductDetailScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{
           headerRightContainerStyle: {
             paddingRight: 10,
@@ -1590,7 +1649,13 @@ export const AchatNavigator = (props) => {
       />
       <AchatStackNavigator.Screen
         name="CartScreen"
-        component={CartScreen}
+        children={(props) => (
+          <CartScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
         options={{
           headerLeftContainerStyle: {
             paddingLeft: 10,
@@ -1996,61 +2061,158 @@ export const AccueilNavigator = (props) => {
   );
 };
 
-export const TabNavigator = () => {
+export const TabNavigator = (props) => {
+  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+
   return (
-    <AppTabNavigator.Navigator
-      tabBarOptions={{
-        activeTintColor: "red",
-        activeBackgroundColor: "white",
-        inactiveBackgroundColor: "white",
-      }}
-    >
-      <AppTabNavigator.Screen
-        name="Accueil"
-        component={AccueilNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="home" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Shop"
-        component={AchatNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Entypo name="shopping-cart" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Vente"
-        component={SellNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="md-add-circle" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Message"
-        component={MessageNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="message1" size={24} color="black" />
-          ),
-        }}
-      />
-      <AppTabNavigator.Screen
-        name="Profil"
-        component={ProfileNavigator}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="user" size={24} color="black" />
-          ),
-        }}
-      />
-    </AppTabNavigator.Navigator>
+    <>
+      {props.loggedInAsVisit ? (
+        <AppTabNavigator.Navigator
+          tabBarOptions={{
+            activeTintColor: "red",
+            activeBackgroundColor: "white",
+            inactiveBackgroundColor: "white",
+          }}
+        >
+          <AppTabNavigator.Screen
+            name="Accueil"
+            component={AccueilNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="home" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Shop"
+            children={(props) => (
+              <AchatNavigator
+                {...props}
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Entypo name="shopping-cart" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Vente"
+            children={() => <></>}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="md-add-circle" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Message"
+            children={() => <></>}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="message1" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Profil"
+            children={() => <></>}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="user" size={24} color="black" />
+              ),
+              tabBarButton: (props) => (
+                <TouchableOpacity
+                  {...props}
+                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                />
+              ),
+            }}
+          />
+        </AppTabNavigator.Navigator>
+      ) : (
+        <AppTabNavigator.Navigator
+          tabBarOptions={{
+            activeTintColor: "red",
+            activeBackgroundColor: "white",
+            inactiveBackgroundColor: "white",
+          }}
+        >
+          <AppTabNavigator.Screen
+            name="Accueil"
+            component={AccueilNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="home" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Shop"
+            children={(props) => (
+              <AchatNavigator
+                {...props}
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Entypo name="shopping-cart" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Vente"
+            component={SellNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="md-add-circle" size={24} color="black" />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Message"
+            component={MessageNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign
+                  name="message1"
+                  onPress={() =>
+                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                  }
+                  size={24}
+                  color="black"
+                />
+              ),
+            }}
+          />
+          <AppTabNavigator.Screen
+            name="Profil"
+            component={ProfileNavigator}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="user" size={24} color="black" />
+              ),
+            }}
+          />
+        </AppTabNavigator.Navigator>
+      )}
+    </>
   );
 };
 
