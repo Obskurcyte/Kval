@@ -66,6 +66,8 @@ const VendreArticleScreen = (props) => {
       if (Platform.OS !== "web") {
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status_camera } =
+          await ImagePicker.requestCameraPermissionsAsync();
         if (status !== "granted") {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
@@ -75,6 +77,19 @@ const VendreArticleScreen = (props) => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    setImagesTableau((oldImage) => [...oldImage, result.uri]);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
+
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       aspect: [4, 3],
@@ -101,9 +116,9 @@ const VendreArticleScreen = (props) => {
   const [error, setError] = useState("");
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView style={styles.container} behavior="height">
-        <ScrollView>
+    <ScrollView>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView style={styles.container} behavior="height">
           {isLoading ? (
             <View>
               <Text>
@@ -345,120 +360,125 @@ const VendreArticleScreen = (props) => {
 
                     <View style={styles.photoBigContainer}>
                       {imagesTableau && imagesTableau.length === 1 ? (
-                          <View style={styles.imageList}>
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[0] }}
-                            />
-                          </View>
+                        <View style={styles.imageList}>
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[0] }}
+                          />
+                        </View>
                       ) : (
-                          <Text />
+                        <Text />
                       )}
                       {imagesTableau && imagesTableau.length === 2 ? (
-                          <View style={styles.imageList}>
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[0] }}
-                            />
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[1] }}
-                            />
-                          </View>
+                        <View style={styles.imageList}>
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[0] }}
+                          />
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[1] }}
+                          />
+                        </View>
                       ) : (
-                          <Text />
+                        <Text />
                       )}
                       {imagesTableau && imagesTableau.length === 3 ? (
-                          <View style={styles.imageList}>
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[0] }}
-                            />
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[1] }}
-                            />
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[2] }}
-                            />
-                          </View>
+                        <View style={styles.imageList}>
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[0] }}
+                          />
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[1] }}
+                          />
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[2] }}
+                          />
+                        </View>
                       ) : (
-                          <Text />
+                        <Text />
                       )}
                       {imagesTableau && imagesTableau.length === 4 ? (
-                          <View style={styles.imageListBig}>
-                            <View style={styles.imagesListFirstContainer}>
+                        <View style={styles.imageListBig}>
+                          <View style={styles.imagesListFirstContainer}>
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[0] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[0] }}
                             />
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[1] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[1] }}
                             />
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[2] }}
-                            />
-                            </View>
-                            <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[3] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[2] }}
                             />
                           </View>
+                          <Image
+                            style={styles.image}
+                            source={{ uri: imagesTableau[3] }}
+                          />
+                        </View>
                       ) : (
-                          <Text />
+                        <Text />
                       )}
                       {imagesTableau && imagesTableau.length === 5 ? (
-                          <View style={styles.imageListBig}>
-                            <View style={styles.imagesListFirstContainer}>
+                        <View style={styles.imageListBig}>
+                          <View style={styles.imagesListFirstContainer}>
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[0] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[0] }}
                             />
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[1] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[1] }}
                             />
                             <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[2] }}
+                              style={styles.image}
+                              source={{ uri: imagesTableau[2] }}
                             />
-                            </View>
-                            <View style={styles.imagesListSecondContainer}>
-                              <Image
-                                  style={styles.image}
-                                  source={{ uri: imagesTableau[3] }}
-                              />
-                              <Image
-                                  style={styles.image}
-                                  source={{ uri: imagesTableau[4] }}
-                              />
-                            </View>
-
-
                           </View>
+                          <View style={styles.imagesListSecondContainer}>
+                            <Image
+                              style={styles.image}
+                              source={{ uri: imagesTableau[3] }}
+                            />
+                            <Image
+                              style={styles.image}
+                              source={{ uri: imagesTableau[4] }}
+                            />
+                          </View>
+                        </View>
                       ) : (
-                          <Text />
+                        <Text />
                       )}
                     </View>
 
                     {imagesTableau && imagesTableau.length < 5 ? (
-                      <TouchableOpacity
-                        style={styles.photoContainer}
-                        onPress={pickImage}
-                      >
-                        <Text style={styles.addPhotoText}>
-                          Ajouter des photos
-                        </Text>
-                        <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
-                        <AntDesign
-                          name="pluscircleo"
-                          size={24}
-                          color="#DADADA"
-                        />
-                      </TouchableOpacity>
+                      <View>
+                        <TouchableOpacity
+                          style={styles.photoContainer}
+                          onPress={pickImage}
+                        >
+                          <Text style={styles.addPhotoText}>
+                            Ajouter des photos depuis la librairie
+                          </Text>
+                          <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
+                          <AntDesign name="picture" size={24} color="#DADADA" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.photoContainer}
+                          onPress={takePicture}
+                        >
+                          <Text style={styles.addPhotoText}>
+                            Prendre une photo
+                          </Text>
+                          <AntDesign name="camera" size={24} color="#DADADA" />
+                        </TouchableOpacity>
+                      </View>
                     ) : (
                       <Text />
                     )}
@@ -479,9 +499,9 @@ const VendreArticleScreen = (props) => {
               </Formik>
             </View>
           )}
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </ScrollView>
   );
 };
 
@@ -499,26 +519,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   photoBigContainer: {
-    width: windowWidth/1.1,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   imagesListFirstContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
   },
   imagesListSecondContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: 20
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: 20,
   },
   imageListBig: {
-    display: 'flex',
+    display: "flex",
     marginTop: 25,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   photoContainer: {
     alignItems: "center",
@@ -587,15 +606,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   image: {
-    height: windowHeight / 8,
-    width: windowWidth / 4,
-    marginRight: "7%",
+    height: 120,
+    width: 120,
+    resizeMode: "contain",
+    margin: 5,
   },
   imageList: {
     marginTop: "3%",
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
   },
 });
 
