@@ -33,10 +33,6 @@ const CategoriesChoiceScreen = (props) => {
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('TransportScreen')}>
           <Text style={styles.text}>Transport</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.itemContainer}>
-          <Text style={styles.text}>Marques</Text>
-        </TouchableOpacity>
       </ScrollView>
 
     </View>

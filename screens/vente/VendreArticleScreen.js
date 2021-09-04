@@ -115,10 +115,12 @@ const VendreArticleScreen = (props) => {
 
   const [error, setError] = useState("");
 
+  const date = new Date();
+  console.log(date)
   return (
-    <ScrollView>
+      <View style={{flex: 1}}>
+    <ScrollView style={{flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView style={styles.container} behavior="height">
           {isLoading ? (
             <View>
               <Text>
@@ -147,7 +149,7 @@ const VendreArticleScreen = (props) => {
                       .data;
                   }
                   const id = Math.random() * 300000000;
-                  console.log(values);
+
 
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
@@ -161,6 +163,7 @@ const VendreArticleScreen = (props) => {
                         etat,
                         id,
                         marques,
+                        date: date,
                         title: values.title,
                         description: values.description,
                         prix: values.price,
@@ -179,6 +182,7 @@ const VendreArticleScreen = (props) => {
                         pseudoVendeur: currentUser.pseudo,
                         categorie,
                         etat,
+                        date: date,
                         title: values.title,
                         description: values.description,
                         prix: values.price,
@@ -478,37 +482,38 @@ const VendreArticleScreen = (props) => {
                           </Text>
                           <AntDesign name="camera" size={24} color="#DADADA" />
                         </TouchableOpacity>
+
+
                       </View>
+
                     ) : (
                       <Text />
                     )}
 
+
                     <Text style={{ color: "#D51317" }}>{error}</Text>
                     <TouchableOpacity
-                      style={styles.mettreEnVente}
-                      onPress={props.handleSubmit}
+                        style={styles.mettreEnVente}
+                        onPress={props.handleSubmit}
                     >
                       <Text style={styles.mettreEnVenteText}>
                         Mettre en vente !
                       </Text>
                     </TouchableOpacity>
-
-                    <View style={{ height: 150 }}></View>
                   </View>
                 )}
               </Formik>
             </View>
           )}
-        </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </ScrollView>
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F8F7F8",
-    flex: 1,
   },
   formContainer: {
     display: "flex",
@@ -537,7 +542,8 @@ const styles = StyleSheet.create({
   imageListBig: {
     display: "flex",
     marginTop: 25,
-    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: "column",
   },
   photoContainer: {
@@ -598,8 +604,9 @@ const styles = StyleSheet.create({
   mettreEnVente: {
     backgroundColor: "#D51317",
     marginTop: "5%",
-    width: windowWidth / 1.1,
+    width: windowWidth / 1.2,
     paddingVertical: "5%",
+    marginBottom: 50
   },
   mettreEnVenteText: {
     color: "white",

@@ -82,7 +82,14 @@ const ViewProductsScreen = (props) => {
           >
             <Text style={styles.filterText}>Prix croissant</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.filterButton}>
+          <TouchableOpacity style={styles.filterButton}
+                            onPress={() => {
+                              productArray.sort((a, b) => {
+                                return b.date - a.date;
+                              });
+                              setFilter(false);
+                            }}
+          >
             <Text style={styles.filterText}>Le plus récent</Text>
           </TouchableOpacity>
         </View>

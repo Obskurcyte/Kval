@@ -1575,7 +1575,7 @@ export const AchatNavigator = (props) => {
             </View>
           ),
           headerTitle: () => (
-              <View style={{width: 220, marginLeft: 40}}>
+              <View style={{width: 180, marginLeft: 40}}>
                   <CustomHeader {...props} />
               </View>
 
