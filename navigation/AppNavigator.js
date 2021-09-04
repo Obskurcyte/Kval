@@ -2211,9 +2211,6 @@ export const TabNavigator = (props) => {
               tabBarIcon: ({ color, size }) => (
                 <AntDesign
                   name="message1"
-                  onPress={() =>
-                    props.setLoggedInAsVisit(!props.loggedInAsVisit)
-                  }
                   size={24}
                   color="black"
                 />
