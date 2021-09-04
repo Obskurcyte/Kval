@@ -15,6 +15,11 @@ import { useDispatch, useSelector } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 
+
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
 const MessageScreen = (props) => {
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
@@ -176,7 +181,9 @@ const styles = StyleSheet.create({
   },
   noMessage: {
     fontSize: 20,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginTop: windowHeight/2.5,
+    marginBottom: windowHeight/2.5
   }
 });
 export default MessageScreen;

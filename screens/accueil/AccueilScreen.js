@@ -81,6 +81,7 @@ const AccueilScreen = (props) => {
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={true}
+            style={styles.scrollView}
           >
             <View style={styles.categoriesInnerContainer}>
               <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Shop', {screen: 'AchatScreen'})}>
@@ -162,6 +163,9 @@ const styles = StyleSheet.create({
   },
   searchBarInner: {
     borderRadius: 80
+  },
+  scrollView: {
+    paddingBottom: 10
   },
   attendent: {
     fontSize: 24,

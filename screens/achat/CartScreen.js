@@ -411,7 +411,7 @@ const CartScreen = (props) => {
               >
                 <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
               </TouchableOpacity>
-            </View> : <Text style={styles.noCommandeText}>Vous n'avez aucun article dans votre panier</Text>
+            </View> : <Text style={styles.noCommandeText}>Votre panier est vide</Text>
           }
 
         </ScrollView>
