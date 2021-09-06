@@ -41,9 +41,9 @@ const VendreArticleScreen = (props) => {
     poids: "",
   };
 
-  let etat;
-  let categorie;
-  let marques;
+  const [etat, setEtat] = useState(null);
+  const [categorie, setCategorie] = useState(null);
+  const [marques, setMarques] = useState(null);
 
   useEffect(() => {
     dispatch(usersActions.getUser());
@@ -51,15 +51,30 @@ const VendreArticleScreen = (props) => {
 
   const currentUser = useSelector((state) => state.user.userData);
 
-  if (props.route.params) {
-    etat = props.route.params.etat;
-    categorie = props.route.params.categorie;
-    marques = props.route.params.marque;
-  }
+  useEffect(() => {
+    if (props.route.params) {
+      setEtat(props.route.params.etat);
+      setCategorie(props.route.params.categorie);
+      setMarques(props.route.params.marque);
+    }
+  }, [props.route.params]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
+
+  const resetForm = () => {
+    setEtat(null);
+    setCategorie(null);
+    setMarques(null);
+    setImage(null);
+    setImagesTableau([]);
+  };
+
+  const removePicture = (index) => {
+    imagesTableau.splice(index, 1);
+    setImagesTableau([...imagesTableau]);
+  };
 
   useEffect(() => {
     (async () => {
@@ -116,11 +131,11 @@ const VendreArticleScreen = (props) => {
   const [error, setError] = useState("");
 
   const date = new Date();
-  console.log(date)
+  console.log(date);
   return (
-      <View style={{flex: 1}}>
-    <ScrollView style={{flex: 1 }}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           {isLoading ? (
             <View>
               <Text>
@@ -149,7 +164,6 @@ const VendreArticleScreen = (props) => {
                       .data;
                   }
                   const id = Math.random() * 300000000;
-
 
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
@@ -363,104 +377,31 @@ const VendreArticleScreen = (props) => {
                     </View>
 
                     <View style={styles.photoBigContainer}>
-                      {imagesTableau && imagesTableau.length === 1 ? (
-                        <View style={styles.imageList}>
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[0] }}
-                          />
-                        </View>
-                      ) : (
-                        <Text />
-                      )}
-                      {imagesTableau && imagesTableau.length === 2 ? (
-                        <View style={styles.imageList}>
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[0] }}
-                          />
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[1] }}
-                          />
-                        </View>
-                      ) : (
-                        <Text />
-                      )}
-                      {imagesTableau && imagesTableau.length === 3 ? (
-                        <View style={styles.imageList}>
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[0] }}
-                          />
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[1] }}
-                          />
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[2] }}
-                          />
-                        </View>
-                      ) : (
-                        <Text />
-                      )}
-                      {imagesTableau && imagesTableau.length === 4 ? (
-                        <View style={styles.imageListBig}>
-                          <View style={styles.imagesListFirstContainer}>
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[0] }}
-                            />
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[1] }}
-                            />
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[2] }}
-                            />
+                      {imagesTableau &&
+                        imagesTableau.length <= 5 &&
+                        imagesTableau.map((image, index) => (
+                          <View style={styles.imageList}>
+                            <TouchableOpacity
+                              onPress={() => openPicture(index)}
+                            >
+                              <Image
+                                style={styles.image}
+                                source={{ uri: imagesTableau[index] }}
+                              />
+                              <TouchableOpacity
+                                onPress={() => removePicture(index)}
+                              >
+                                <AntDesign
+                                  name="close"
+                                  size={24}
+                                  color="#DADADA"
+                                  style={styles.closeIcon}
+                                />
+                              </TouchableOpacity>
+                            </TouchableOpacity>
                           </View>
-                          <Image
-                            style={styles.image}
-                            source={{ uri: imagesTableau[3] }}
-                          />
-                        </View>
-                      ) : (
-                        <Text />
-                      )}
-                      {imagesTableau && imagesTableau.length === 5 ? (
-                        <View style={styles.imageListBig}>
-                          <View style={styles.imagesListFirstContainer}>
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[0] }}
-                            />
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[1] }}
-                            />
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[2] }}
-                            />
-                          </View>
-                          <View style={styles.imagesListSecondContainer}>
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[3] }}
-                            />
-                            <Image
-                              style={styles.image}
-                              source={{ uri: imagesTableau[4] }}
-                            />
-                          </View>
-                        </View>
-                      ) : (
-                        <Text />
-                      )}
+                        ))}
                     </View>
-
                     {imagesTableau && imagesTableau.length < 5 ? (
                       <View>
                         <TouchableOpacity
@@ -482,22 +423,23 @@ const VendreArticleScreen = (props) => {
                           </Text>
                           <AntDesign name="camera" size={24} color="#DADADA" />
                         </TouchableOpacity>
-
-
                       </View>
-
                     ) : (
                       <Text />
                     )}
 
-
                     <Text style={{ color: "#D51317" }}>{error}</Text>
                     <TouchableOpacity
-                        style={styles.mettreEnVente}
-                        onPress={props.handleSubmit}
+                      style={styles.mettreEnVente}
+                      onPress={props.handleSubmit}
                     >
                       <Text style={styles.mettreEnVenteText}>
                         Mettre en vente !
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.reset} onPress={resetForm}>
+                      <Text style={styles.resetText}>
+                        Réinitialiser le formulaire
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -505,15 +447,21 @@ const VendreArticleScreen = (props) => {
               </Formik>
             </View>
           )}
-      </TouchableWithoutFeedback>
-    </ScrollView>
-      </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F8F7F8",
+  },
+  closeIcon: {
+    position: "relative",
+    marginLeft: -10,
+    padding: 0,
+    color: "#D51317",
   },
   formContainer: {
     display: "flex",
@@ -542,8 +490,8 @@ const styles = StyleSheet.create({
   imageListBig: {
     display: "flex",
     marginTop: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     flexDirection: "column",
   },
   photoContainer: {
@@ -606,7 +554,20 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     width: windowWidth / 1.2,
     paddingVertical: "5%",
-    marginBottom: 50
+    marginBottom: 15,
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    borderColor: "#D51317",
+    width: windowWidth / 1.2,
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
   mettreEnVenteText: {
     color: "white",
