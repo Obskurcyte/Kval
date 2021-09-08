@@ -82,13 +82,14 @@ const ViewProductsScreen = (props) => {
           >
             <Text style={styles.filterText}>Prix croissant</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.filterButton}
-                            onPress={() => {
-                              productArray.sort((a, b) => {
-                                return b.date - a.date;
-                              });
-                              setFilter(false);
-                            }}
+          <TouchableOpacity
+            style={styles.filterButton}
+            onPress={() => {
+              productArray.sort((a, b) => {
+                return b.date - a.date;
+              });
+              setFilter(false);
+            }}
           >
             <Text style={styles.filterText}>Le plus récent</Text>
           </TouchableOpacity>
@@ -106,13 +107,13 @@ const ViewProductsScreen = (props) => {
                 title={itemData.item.title}
                 price={itemData.item.prix}
                 imageURI={itemData.item.downloadURL}
-                onpress={() =>
+                onPress={() => {
                   props.navigation.navigate("ProductDetailScreen", {
                     productId: itemData.item.id,
                     categorie,
                     product: productArray[itemData.index],
-                  })
-                }
+                  });
+                }}
               />
             );
           }}

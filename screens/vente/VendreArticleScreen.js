@@ -21,6 +21,7 @@ import * as Notifications from "expo-notifications";
 import * as usersActions from "../../store/actions/users";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
+import PhotoArticleScreen from "./PhotoArticleScreen";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -34,12 +35,12 @@ const uploadSchema = Yup.object().shape({
 const VendreArticleScreen = (props) => {
   const dispatch = useDispatch();
 
-  const initialValues = {
+  const [initialValues, setInitialValues] = useState({
     title: "",
     description: "",
     price: "",
     poids: "",
-  };
+  });
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -55,7 +56,7 @@ const VendreArticleScreen = (props) => {
     if (props.route.params) {
       setEtat(props.route.params.etat);
       setCategorie(props.route.params.categorie);
-      setMarques(props.route.params.marque);
+      setMarques(props.route.params.marques);
     }
   }, [props.route.params]);
 
@@ -122,6 +123,10 @@ const VendreArticleScreen = (props) => {
 
   const navigateMarques = () => {
     props.navigation.navigate("MarquesChoiceScreen");
+  };
+
+  const navigatePhotoScreen = (image) => {
+    props.navigation.navigate("PhotoArticleScreen", { image });
   };
 
   const navigateEtat = () => {
@@ -195,6 +200,7 @@ const VendreArticleScreen = (props) => {
                       .set({
                         pseudoVendeur: currentUser.pseudo,
                         categorie,
+                        marques,
                         etat,
                         date: date,
                         title: values.title,
@@ -382,22 +388,25 @@ const VendreArticleScreen = (props) => {
                         imagesTableau.map((image, index) => (
                           <View style={styles.imageList}>
                             <TouchableOpacity
-                              onPress={() => openPicture(index)}
+                              onPress={() =>
+                                navigatePhotoScreen(imagesTableau[index])
+                              }
                             >
                               <Image
                                 style={styles.image}
                                 source={{ uri: imagesTableau[index] }}
                               />
-                              <TouchableOpacity
-                                onPress={() => removePicture(index)}
-                              >
-                                <AntDesign
-                                  name="close"
-                                  size={24}
-                                  color="#DADADA"
-                                  style={styles.closeIcon}
-                                />
-                              </TouchableOpacity>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                              onPress={() => removePicture(index)}
+                            >
+                              <AntDesign
+                                name="close"
+                                size={24}
+                                color="#DADADA"
+                                style={styles.closeIcon}
+                              />
                             </TouchableOpacity>
                           </View>
                         ))}
@@ -437,7 +446,13 @@ const VendreArticleScreen = (props) => {
                         Mettre en vente !
                       </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.reset} onPress={resetForm}>
+                    <TouchableOpacity
+                      style={styles.reset}
+                      onPress={() => {
+                        resetForm();
+                        props.handleReset();
+                      }}
+                    >
                       <Text style={styles.resetText}>
                         Réinitialiser le formulaire
                       </Text>

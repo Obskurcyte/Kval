@@ -54,30 +54,15 @@ const ProductDetailScreen = (props) => {
 
   const carouselRef = React.useRef(null);
 
-  function renderItem({ item, index }) {
+  function renderItem({ item, index, navigation }) {
     const { image, title, url } = item;
     return (
-      <Pressable
-        activeOpacity={1}
-        style={styles.item}
-        onPress={() => {
-          carouselRef.current.scrollToIndex(index);
-        }}
-      >
-        <Image source={{ uri: image }} style={styles.image} />
-        <View style={styles.lowerContainer}>
-          <View style={styles.lowerLeft}>
-            <Text style={styles.titleText} numberOfLines={2}>
-              {title}
-            </Text>
-            <Text style={styles.descriptionText} numberOfLines={1}>
-              reactNativeAnchorCarousel
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Install Now</Text>
-          </TouchableOpacity>
-        </View>
+      <Pressable activeOpacity={1} style={styles.item}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PhotoArticleScreen", { image })}
+        >
+          <Image source={{ uri: image }} style={styles.image} />
+        </TouchableOpacity>
       </Pressable>
     );
   }
@@ -194,6 +179,8 @@ const ProductDetailScreen = (props) => {
     "authid",
     !props.loggedInAsVisit && firebase.auth().currentUser.uid
   );
+  console.log(product.idVendeur, idAcheteur);
+
   const onMessagePressed = () => {
     console.log(product.pseudoVendeur);
     firebase
@@ -237,7 +224,9 @@ const ProductDetailScreen = (props) => {
               style={[styles.carousel]}
               ref={carouselRef}
               data={testData}
-              renderItem={renderItem}
+              renderItem={({ item, index }) =>
+                renderItem({ item, index, navigation: props.navigation })
+              }
               itemWidth={ITEM_WIDTH}
               separatorWidth={SEPARATOR_WIDTH}
               inActiveScale={1}
@@ -245,33 +234,27 @@ const ProductDetailScreen = (props) => {
               containerWidth={windowWidth}
             />
           </View>
-
           <View style={styles.titleAndPrixContainer}>
             <Text style={styles.title}>{product.title}</Text>
             <Text style={styles.prix}>{product.prix} €</Text>
           </View>
-
           <View style={styles.descriptionContainer}>
             <Text style={styles.description}>{product.description}</Text>
           </View>
-
           <View style={styles.itemForm3}>
             <Text>Etat</Text>
             <Text>{product.etat}</Text>
           </View>
-
           <View style={styles.itemForm3}>
             <Text>Catégorie</Text>
             <Text>{product.categorie}</Text>
           </View>
-
           {product.marques && (
             <View style={styles.itemForm3}>
               <Text>Marque</Text>
               <Text>{product.marques}</Text>
             </View>
           )}
-
           <View style={styles.vendeurContainer}>
             {product.imageURL ? (
               <Image source={require("../../assets/photoProfile.png")} />
@@ -309,41 +292,59 @@ const ProductDetailScreen = (props) => {
             )}
           </View>
 
-          <TouchableOpacity
-            style={styles.envoyerMessageContainer}
-            onPress={() =>
-              props.loggedInAsVisit
-                ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
-                : onMessagePressed()
-            }
-          >
-            <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.mettreEnVente}
-            onPress={() => {
-              if (cartItems.length !== 0) {
-                for (const key in cartItems) {
-                  console.log("wola");
-                  console.log("id1", product.id);
-                  console.log("id2", cartItems[key].productId);
-                  if (product.id == cartItems[key].productId) {
-                    setErrorAdded(
-                      "Ce produit est déjà présent dans votre panier"
-                    );
+          {product.idVendeur === idAcheteur ? (
+            <View>
+              <TouchableOpacity
+                style={styles.reset}
+                onPress={() => {
+                  props.navigation.navigate("Vente", {
+                    screen: "VendreArticleScreen",
+                    params: product,
+                  });
+                }}
+              >
+                <Text style={styles.resetText}>Modifier mon offre</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View>
+              <TouchableOpacity
+                style={styles.envoyerMessageContainer}
+                onPress={() =>
+                  props.loggedInAsVisit
+                    ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                    : onMessagePressed()
+                }
+              >
+                <Text style={styles.envoyerMessageText}>
+                  Envoyer un message
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.mettreEnVente}
+                onPress={() => {
+                  if (cartItems.length !== 0) {
+                    for (const key in cartItems) {
+                      console.log("wola");
+                      console.log("id1", product.id);
+                      console.log("id2", cartItems[key].productId);
+                      if (product.id == cartItems[key].productId) {
+                        setErrorAdded(
+                          "Ce produit est déjà présent dans votre panier"
+                        );
+                      } else {
+                        dispatch(cartActions.addToCart(product));
+                      }
+                    }
                   } else {
                     dispatch(cartActions.addToCart(product));
                   }
-                }
-              } else {
-                dispatch(cartActions.addToCart(product));
-              }
-            }}
-          >
-            <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
-          </TouchableOpacity>
-
+                }}
+              >
+                <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
+              </TouchableOpacity>
+            </View>
+          )}
           {errorAdded ? (
             <Text
               style={{
@@ -366,6 +367,20 @@ const ProductDetailScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: "5%",
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.1,
+    borderColor: "#D51317",
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
   searchBarContainer: {
     display: "flex",

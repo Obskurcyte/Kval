@@ -8,6 +8,7 @@ import IdentificationScreen from "../screens/inscription/IdentificationScreen";
 import InscriptionScreen from "../screens/inscription/InscriptionScreen";
 import ConnectionScreen from "../screens/inscription/ConnectionScreen";
 import VendreArticleScreen from "../screens/vente/VendreArticleScreen";
+import PhotoArticleScreen from "../screens/vente/PhotoArticleScreen";
 import MessageScreen from "../screens/messages/MessageScreen";
 import ProfileScreen from "../screens/profile/ProfileScreen";
 import AccueilScreen from "../screens/accueil/AccueilScreen";
@@ -140,7 +141,7 @@ export const AuthNavigator = (props) => {
       title: "",
       headerTitleAlign: "center",
       headerTintColor: "#fff",
-        headerBackTitle: 'Retour'
+      headerBackTitle: "Retour",
     },
   };
   return (
@@ -203,6 +204,24 @@ export const SellNavigator = () => {
         component={VendreArticleScreen}
         options={{
           title: "Vendre un article",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <SellStackNavigator.Screen
+        name="PhotoArticleScreen"
+        component={PhotoArticleScreen}
+        options={{
+          title: "Photo",
           headerStyle: {
             backgroundColor: "white",
           },
@@ -887,7 +906,7 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-            headerBackTitle: 'Retour',
+          headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1545,7 +1564,7 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1575,11 +1594,28 @@ export const AchatNavigator = (props) => {
             </View>
           ),
           headerTitle: () => (
-              <View style={{width: 180, marginLeft: 40}}>
-                  <CustomHeader {...props} />
-              </View>
-
+            <View style={{ width: 180, marginLeft: 40 }}>
+              <CustomHeader {...props} />
+            </View>
           ),
+        }}
+      />
+      <AchatStackNavigator.Screen
+        name="PhotoArticleScreen"
+        component={PhotoArticleScreen}
+        options={{
+          title: "Photo",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
         }}
       />
       <AchatStackNavigator.Screen
@@ -1598,7 +1634,7 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerRight: () => (
             <View>
               <View
@@ -1634,7 +1670,7 @@ export const AchatNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1661,11 +1697,11 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Panier",
-            headerTitleStyle: {
-                textAlign: 'center'
-            }
+          headerTitleStyle: {
+            textAlign: "center",
+          },
         }}
       />
       <AchatStackNavigator.Screen
@@ -1675,7 +1711,7 @@ export const AchatNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Livraison",
         }}
       />
@@ -1711,7 +1747,7 @@ export const MessageNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Messages",
           headerTitleAlign: "center",
         }}
@@ -1730,7 +1766,7 @@ export const ProfileNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
@@ -1747,11 +1783,11 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Mon portefeuille",
-            headerTitleStyle: {
-                marginLeft: 50
-            }
+          headerTitleStyle: {
+            marginLeft: 50,
+          },
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1764,11 +1800,11 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Mes articles en vente",
-            headerTitleStyle: {
-                marginLeft: 50
-            }
+          headerTitleStyle: {
+            marginLeft: 50,
+          },
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1781,7 +1817,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Booste tes ventes !",
         }}
       />
@@ -1795,11 +1831,11 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Mes commandes",
-            headerTitleStyle: {
-                marginLeft: 50
-            }
+          headerTitleStyle: {
+            marginLeft: 50,
+          },
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1812,7 +1848,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Détail de la commande",
         }}
       />
@@ -1826,7 +1862,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Evaluation",
         }}
       />
@@ -1847,7 +1883,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Booste tes ventes !",
         }}
       />
@@ -1861,11 +1897,11 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Mes informations",
-            headerTitleStyle: {
-              marginLeft: 50
-            }
+          headerTitleStyle: {
+            marginLeft: 50,
+          },
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1878,8 +1914,8 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerTitle: "Modifier mon adresse",
-            headerBackTitle: "Retour",
+          headerTitle: "Modifier mon adresse",
+          headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1889,11 +1925,11 @@ export const ProfileNavigator = (props) => {
           headerRightContainerStyle: {
             paddingRight: 10,
           },
-            headerTitle: "Modifier mon email",
+          headerTitle: "Modifier mon email",
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1906,8 +1942,8 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerTitle: "Modifier mon pseudo",
-            headerBackTitle: "Retour",
+          headerTitle: "Modifier mon pseudo",
+          headerBackTitle: "Retour",
         }}
       />
       <ProfileStackNavigator.Screen
@@ -1920,7 +1956,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Signaler un litige",
         }}
       />
@@ -1934,7 +1970,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Mentions Légales",
         }}
       />
@@ -1948,7 +1984,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "CGU & CGV",
         }}
       />
@@ -1962,7 +1998,7 @@ export const ProfileNavigator = (props) => {
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Vie Privée",
         }}
       />
@@ -2072,7 +2108,7 @@ export const AccueilNavigator = (props) => {
               />
             </View>
           ),
-            headerBackTitle: "Retour",
+          headerBackTitle: "Retour",
           headerTitle: "Details",
         }}
       />
@@ -2209,11 +2245,7 @@ export const TabNavigator = (props) => {
             component={MessageNavigator}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <AntDesign
-                  name="message1"
-                  size={24}
-                  color="black"
-                />
+                <AntDesign name="message1" size={24} color="black" />
               ),
             }}
           />

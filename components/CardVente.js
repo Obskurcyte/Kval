@@ -13,7 +13,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const CardVente = (props) => {
   return (
-    <TouchableOpacity style={styles.cardContainer} onPress={props.onpress}>
+    <TouchableOpacity style={styles.cardContainer} onPress={props.onPress}>
       <View style={styles.innerCard}>
         <View
           style={{
