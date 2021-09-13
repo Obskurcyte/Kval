@@ -202,8 +202,12 @@ export const SellNavigator = () => {
       <SellStackNavigator.Screen
         name="VendreArticleScreen"
         component={VendreArticleScreen}
-        options={{
-          title: "Vendre un article",
+        options={(props) => ({
+          title: props.route.params
+            ? props.route.params.modify
+              ? "Modification article"
+              : "Vendre un article"
+            : "Vendre un article",
           headerStyle: {
             backgroundColor: "white",
           },
@@ -215,7 +219,7 @@ export const SellNavigator = () => {
             color: "black",
           },
           headerTitleAlign: "center",
-        }}
+        })}
       />
       <SellStackNavigator.Screen
         name="PhotoArticleScreen"
@@ -1774,6 +1778,24 @@ export const ProfileNavigator = (props) => {
         }}
       />
       <ProfileStackNavigator.Screen
+        name="ProductDetailScreen"
+        children={ProductDetailScreen}
+        options={{
+          title: "Details",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <ProfileStackNavigator.Screen
         name="PortefeuilleScreen"
         component={PortefeuilleScreen}
         options={{
@@ -2233,7 +2255,13 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Vente"
-            component={SellNavigator}
+            children={(props) => (
+              <SellNavigator
+                {...props}
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="md-add-circle" size={24} color="black" />

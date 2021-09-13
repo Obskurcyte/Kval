@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { Formik } from "formik";
+import { Formik, setIn } from "formik";
 import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
@@ -34,13 +34,19 @@ const uploadSchema = Yup.object().shape({
 
 const VendreArticleScreen = (props) => {
   const dispatch = useDispatch();
-
+  const [modify, setModify] = useState(
+    props.route.params ? props.route.params.modify : null
+  );
   const [initialValues, setInitialValues] = useState({
-    title: "",
-    description: "",
-    price: "",
-    poids: "",
+    title: modify ? props.route.params.title : "",
+    description: modify ? props.route.params.description : "",
+    price: modify ? props.route.params.prix : "",
+    poids: modify ? props.route.params.poids : "",
   });
+
+  const old_categorie = modify ? props.route.params.categorie : null;
+
+  const product_id = modify ? props.route.params.id : null;
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -56,20 +62,41 @@ const VendreArticleScreen = (props) => {
     if (props.route.params) {
       setEtat(props.route.params.etat);
       setCategorie(props.route.params.categorie);
-      setMarques(props.route.params.marques);
+      setMarques(props.route.params.marque);
+      setModify(props.route.params && props.route.params.modify);
+      const images = [];
+      props.route.params.downloadURL &&
+        images.push(props.route.params.downloadURL);
+      props.route.params.downloadURL1 &&
+        images.push(props.route.params.downloadURL1);
+      props.route.params.downloadURL2 &&
+        images.push(props.route.params.downloadURL2);
+      props.route.params.downloadURL3 &&
+        images.push(props.route.params.downloadURL3);
+      props.route.params.downloadURL4 &&
+        images.push(props.route.params.downloadURL4);
+      setImagesTableau(images);
     }
+    console.log(props.route.params);
   }, [props.route.params]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
-
   const resetForm = () => {
     setEtat(null);
     setCategorie(null);
     setMarques(null);
     setImage(null);
     setImagesTableau([]);
+    setModify(false);
+    setInitialValues({
+      title: "",
+      description: "",
+      price: "",
+      poids: "",
+    });
+    props.navigation.navigate("VendreArticleScreen", { modify: false });
   };
 
   const removePicture = (index) => {
@@ -102,6 +129,7 @@ const VendreArticleScreen = (props) => {
     if (!result.cancelled) {
       setImage(result.uri);
     }
+    console.log(imagesTableau);
   };
 
   const takePicture = async () => {
@@ -125,6 +153,10 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate("MarquesChoiceScreen");
   };
 
+  const navigateVendre = () => {
+    props.navigation.navigate("VendreArticleScreen", { modify: false });
+  };
+
   const navigatePhotoScreen = (image) => {
     props.navigation.navigate("PhotoArticleScreen", { image });
   };
@@ -140,6 +172,11 @@ const VendreArticleScreen = (props) => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
+        {modify && (
+          <Text style={styles.text}>
+            Vous êtes entrain de modifier votre article : {initialValues.title}
+          </Text>
+        )}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           {isLoading ? (
             <View>
@@ -168,11 +205,34 @@ const VendreArticleScreen = (props) => {
                     pushToken = (await Notifications.getExpoPushTokenAsync())
                       .data;
                   }
+
+                  const old_id = product_id;
                   const id = Math.random() * 300000000;
+                  console.log(id);
 
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
                   } else {
+                    if (modify) {
+                      try {
+                        console.log("entererd");
+                        await firebase
+                          .firestore()
+                          .collection(`${old_categorie}`)
+                          .doc(`${old_id}`)
+                          .delete();
+
+                        await firebase
+                          .firestore()
+                          .collection("posts")
+                          .doc(firebase.auth().currentUser.uid)
+                          .collection("userPosts")
+                          .doc(`${old_id}`)
+                          .delete();
+                      } catch (err) {
+                        console.log(err);
+                      }
+                    }
                     await firebase
                       .firestore()
                       .collection(`${categorie}`)
@@ -271,6 +331,7 @@ const VendreArticleScreen = (props) => {
 
                     await Promise.all(
                       imagesTableau.map(async (image, index) => {
+                        console.log("test");
                         await uploadImage(index);
                       })
                     );
@@ -443,7 +504,9 @@ const VendreArticleScreen = (props) => {
                       onPress={props.handleSubmit}
                     >
                       <Text style={styles.mettreEnVenteText}>
-                        Mettre en vente !
+                        {modify
+                          ? "Enregistrer la modification"
+                          : "Mettre en vente !"}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -451,6 +514,7 @@ const VendreArticleScreen = (props) => {
                       onPress={() => {
                         resetForm();
                         props.handleReset();
+                        //navigateVendre();
                       }}
                     >
                       <Text style={styles.resetText}>

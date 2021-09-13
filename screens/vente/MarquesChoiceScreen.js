@@ -11,6 +11,7 @@ import firebase from "firebase";
 const MarquesChoiceScreen = (props) => {
   const [marque, setMarque] = useState("");
   const [marques, setMarques] = useState([]);
+  const modify = props.route.params && props.route.params.modify;
 
   useEffect(() => {
     firebase
@@ -34,8 +35,10 @@ const MarquesChoiceScreen = (props) => {
             style={styles.itemForm3}
             onPress={() => {
               setMarque(marques_obj.name);
-              props.navigation.navigate("VendreArticleScreen", {
-                marque: marques_obj.name,
+
+              props.navigation.navigate("Vente", {
+                screen: "VendreArticleScreen",
+                params: { marque: marques_obj.name },
               });
             }}
           >

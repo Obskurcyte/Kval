@@ -299,7 +299,7 @@ const ProductDetailScreen = (props) => {
                 onPress={() => {
                   props.navigation.navigate("Vente", {
                     screen: "VendreArticleScreen",
-                    params: product,
+                    params: { ...product, modify: true },
                   });
                 }}
               >
