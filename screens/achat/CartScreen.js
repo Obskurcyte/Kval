@@ -33,8 +33,12 @@ const CartScreen = (props) => {
   const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
-    dispatch(userActions.getUser());
-  }, [dispatch]);
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      // The screen is focused
+     dispatch(userActions.getUser());
+    });
+    return unsubscribe;
+  }, [props.navigation, dispatch]);
 
   let livraison;
   let adresse;
@@ -365,7 +369,9 @@ const CartScreen = (props) => {
               </View>
 
               <View style={styles.itemForm3}>
-                <Text style={{ fontSize: 18 }}>Adresse</Text>
+                <View>
+                  <Text style={{ fontSize: 18 }}>Adresse</Text>
+                </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.totalPrice}>
                     {adresse
@@ -807,6 +813,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 5,
+    width: "30%"
   },
   portefeuilleText: {
     fontSize: 18,

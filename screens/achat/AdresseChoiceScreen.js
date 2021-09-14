@@ -52,7 +52,7 @@ const AdresseChoiceScreen = (props) => {
                                     postalCode: values.postalCode,
                                     ville: values.ville,
                                     pays: values.pays
-                                }).then(() => props.navigation.navigate('AdresseValidationScreen'))
+                                }).then(() => props.navigation.navigate('CartScreen'))
                         }}
                     >
                         {props => (
