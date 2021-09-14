@@ -30,11 +30,6 @@ const PreInscriptionScreen = (props) => {
     const InfoSchema = Yup.object().shape({
         nom: Yup.string().required('Ce champ est requis'),
         prenom: Yup.string().required('Ce champ est requis'),
-        IBAN: Yup.string().required('Ce champ est requis'),
-        adresse: Yup.string().required('Ce champ est requis'),
-        postalCode: Yup.string().required('Ce champ est requis'),
-        ville: Yup.string().required('Ce champ est requis'),
-        pays: Yup.string().required('Ce champ est requis'),
     });
 
     return (
@@ -88,84 +83,6 @@ const PreInscriptionScreen = (props) => {
                                 />
                             </View>
 
-                            {props.errors.prenom && props.touched.prenom ? (
-                                <Text style={styles.errors}>{props.errors.prenom}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>IBAN</Text>
-                                <TextInput
-                                    placeholder="IBAN"
-                                    placeholderTextColor='white'
-                                    value={props.values.IBAN}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('IBAN')}
-                                />
-                            </View>
-
-                            {props.errors.IBAN && props.touched.IBAN ? (
-                                <Text style={styles.errors}>{props.errors.IBAN}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Adresse</Text>
-                                <TextInput
-                                    placeholder="Adresse"
-                                    placeholderTextColor='white'
-                                    value={props.values.adresse}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('adresse')}
-                                />
-                            </View>
-
-                            {props.errors.adresse && props.touched.adresse ? (
-                                <Text style={styles.errors}>{props.errors.adresse}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Code Postal</Text>
-                                <TextInput
-                                    placeholder="Code Postal"
-                                    placeholderTextColor='white'
-                                    value={props.values.postalCode}
-                                    keyboardType="numeric"
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('postalCode')}
-                                />
-                            </View>
-
-                            {props.errors.postalCode && props.touched.postalCode ? (
-                                <Text style={styles.errors}>{props.errors.postalCode}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Ville</Text>
-                                <TextInput
-                                    placeholder="Ville"
-                                    placeholderTextColor='white'
-                                    value={props.values.ville}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('ville')}
-                                />
-                            </View>
-
-                            {props.errors.ville && props.touched.ville ? (
-                                <Text style={styles.errors}>{props.errors.ville}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Pays</Text>
-                                <TextInput
-                                    placeholder="Pays"
-                                    placeholderTextColor='white'
-                                    value={props.values.pays}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('pays')}
-                                />
-                            </View>
-                            {props.errors.pays && props.touched.pays ? (
-                                <Text style={styles.errors}>{props.errors.pays}</Text>
-                            ) : <Text />}
 
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
                                 <Text style={styles.createCompte}>Suivant</Text>

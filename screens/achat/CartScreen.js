@@ -30,14 +30,15 @@ const windowHeight = Dimensions.get("window").height;
 const CartScreen = (props) => {
   const dispatch = useDispatch();
 
+  const userData = useSelector((state) => state.user.userData);
+
   useEffect(() => {
     dispatch(userActions.getUser());
   }, [dispatch]);
 
-  const userData = useSelector((state) => state.user.userData);
-
   let livraison;
   let adresse;
+  let IBAN;
 
   if (props.route.params) {
     livraison = props.route.params.livraison;
@@ -199,6 +200,13 @@ const CartScreen = (props) => {
   };
 
   const cartTotalAmount = useSelector((state) => state.cart.items);
+
+  const [errors, setErrors] = useState(false);
+  let enteredAdresse = false
+  if (userData) {
+    enteredAdresse = true
+    IBAN = userData.IBAN
+  }
 
   const ViewPortefeuille = () => {
     console.log("paymentportefeuille");
@@ -362,9 +370,33 @@ const CartScreen = (props) => {
                   <Text style={styles.totalPrice}>
                     {adresse
                         ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
-                        : `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `}
+                        : <Text/>
+                    }
+
+                    {enteredAdresse && !adresse ? `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} ` : <Text/>
+                   }
+
+                    {adresse || enteredAdresse ? <TouchableOpacity onPress={() => props.navigation.navigate('AdresseChoiceScreen')} style={styles.modifierAdresse}>
+                      <Text>Modifier</Text>
+                    </TouchableOpacity> : <Text/>
+                    }
                   </Text>
+
                 </View>
+              </View>
+
+              <View style={styles.itemForm3}>
+                <Text style={{ fontSize: 18 }}>IBAN</Text>
+                <TouchableOpacity
+                    onPress={() => {
+                      props.navigation.navigate("IBANChoiceScreen");
+                    }}
+                >
+                  {IBAN ? <Text>{IBAN}</Text> : <Text>Choisir</Text>}
+                  {IBAN ? <TouchableOpacity onPress={() => props.navigation.navigate('IBANChoiceScreen')} style={styles.modifierAdresse}>
+                    <Text>Modifier</Text>
+                  </TouchableOpacity> : <Text/>}
+                </TouchableOpacity>
               </View>
               <View style={styles.totalContainer}>
                 <View style={styles.itemForm3}>
@@ -403,7 +435,10 @@ const CartScreen = (props) => {
                         console.log("wola");
                         console.log(portefeuillePayment);
                         setPortefeuillePayment(true);
-                      } else {
+                      } else if (!IBAN || !livraison){
+                         setErrors(true)
+                      }
+                       else {
                         setMakePayment(true);
                       }
                     }
@@ -411,6 +446,7 @@ const CartScreen = (props) => {
               >
                 <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
               </TouchableOpacity>
+              {errors ? <Text style={{textAlign: 'center'}}>Veuillez remplir tous les champs</Text> : <Text/>}
             </View> : <Text style={styles.noCommandeText}>Votre panier est vide</Text>
           }
 
@@ -538,7 +574,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   totalPrice: {
-    color: "#D51317",
+    color: "black",
     fontSize: 18,
   },
   mettreEnVente: {
@@ -655,6 +691,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     textDecorationLine: "underline",
+  },
+  modifierAdresse: {
+    marginBottom: -20,
+    marginLeft: 20,
+    height: 30
   },
   innerContainer: {
     display: "flex",

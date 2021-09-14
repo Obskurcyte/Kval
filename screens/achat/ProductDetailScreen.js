@@ -94,7 +94,7 @@ const ProductDetailScreen = (props) => {
 
   let trueRating;
   if (commentaires) {
-    trueRating = Math.ceil(overallRating / commentaires.length);
+    trueRating = Math.ceil(overallRating / commentaires?.length);
   }
 
   const [search, setSearch] = useState("");
@@ -201,6 +201,8 @@ const ProductDetailScreen = (props) => {
           .set({
             latestMessage: { text: "Commencez à chatter..." },
             pseudoVendeur: product.pseudoVendeur,
+            idVendeur: product.idVendeur,
+            idAcheteur: firebase.auth().currentUser.uid,
             id: `${product.idVendeur}` + `${firebase.auth().currentUser.uid}`,
             reverse_id:
               `${firebase.auth().currentUser.uid}` + `${product.idVendeur}`,
@@ -264,7 +266,7 @@ const ProductDetailScreen = (props) => {
 
             <View>
               <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              {commentaires.length ? (
+              {commentaires?.length ? (
                 <View>
                   {trueRating === 1 && <OneStar />}
                   {trueRating === 2 && <TwoStar />}
@@ -277,7 +279,7 @@ const ProductDetailScreen = (props) => {
               )}
             </View>
 
-            {commentaires.length ? (
+            {commentaires?.length ? (
               <TouchableOpacity
                 onPress={() =>
                   props.navigation.navigate("AvisScreen", {

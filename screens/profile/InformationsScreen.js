@@ -14,7 +14,7 @@ const InformationsScreen = (props) => {
 
   useEffect(() => {
     dispatch(userActions.getUser())
-  }, [dispatch, userData]);
+  }, [dispatch]);
 
 
   const logout = () => {

@@ -1,10 +1,22 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
+import firebase from "firebase";
 
 
-const CardMessage = ({pseudoVendeur, latestMessage, onPress}) => {
+const CardMessage = ({pseudoVendeur, latestMessage, onPress, idAcheteur, idVendeur}) => {
 
+
+    const deleteMessage = () => {
+        firebase
+            .firestore()
+            .collection("MESSAGE_THREADS")
+            .doc(`${idVendeur}` + `${idAcheteur}`)
+            .delete()
+            .then(() => {
+                console.log('deleted')
+            })
+    }
 
     return (
                 <View style={styles.messageHyperContainer}>
@@ -18,9 +30,17 @@ const CardMessage = ({pseudoVendeur, latestMessage, onPress}) => {
                                     <Text style={styles.pseudoText}>{pseudoVendeur}</Text>
                                 </View>
                             </View>
-                            <View style={styles.previewMessage}>
-                                <Text style={styles.timeText}>{latestMessage}</Text>
+                            <View style={styles.previewMessageContainer}>
+                                <View style={styles.previewMessage}>
+                                    <Text style={styles.timeText}>{latestMessage}</Text>
+                                </View>
+                                <View>
+                                    <TouchableOpacity onPress={deleteMessage}>
+                                        <Text style={styles.suppr}>Supprimer</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
+
                         </TouchableOpacity>
                 </View>
     );
@@ -30,6 +50,14 @@ const CardMessage = ({pseudoVendeur, latestMessage, onPress}) => {
 const styles = StyleSheet.create({
     avatar: {
         backgroundColor: 'grey',
+        color: 'red'
+    },
+    previewMessageContainer: {
+      display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    suppr: {
         color: 'red'
     },
     container: {

@@ -80,6 +80,7 @@ const VendreArticleScreen = (props) => {
     console.log(props.route.params);
   }, [props.route.params]);
 
+  console.log('cat', categorie)
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
@@ -90,6 +91,9 @@ const VendreArticleScreen = (props) => {
     setImage(null);
     setImagesTableau([]);
     setModify(false);
+    props.route.params.etat = null
+    props.route.params.categorie = null
+    props.route.params.marque = null
     setInitialValues({
       title: "",
       description: "",
@@ -336,8 +340,6 @@ const VendreArticleScreen = (props) => {
                       })
                     );
                     setIsLoading(false);
-                    etat = "";
-                    categorie = "";
                     setImagesTableau([]);
                     setImage(null);
                     props.navigation.navigate("ValidationScreen");
@@ -443,6 +445,7 @@ const VendreArticleScreen = (props) => {
                       />
                     </View>
 
+                    <ScrollView horizontal={true} style={styles.horizontalScrollList}>
                     <View style={styles.photoBigContainer}>
                       {imagesTableau &&
                         imagesTableau.length <= 5 &&
@@ -472,6 +475,7 @@ const VendreArticleScreen = (props) => {
                           </View>
                         ))}
                     </View>
+                    </ScrollView>
                     {imagesTableau && imagesTableau.length < 5 ? (
                       <View>
                         <TouchableOpacity
@@ -541,6 +545,9 @@ const styles = StyleSheet.create({
     marginLeft: -10,
     padding: 0,
     color: "#D51317",
+  },
+  horizontalScrollList: {
+    paddingBottom: 10
   },
   formContainer: {
     display: "flex",

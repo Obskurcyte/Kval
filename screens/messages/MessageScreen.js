@@ -63,6 +63,7 @@ const MessageScreen = (props) => {
   console.log('threads', threads);
 
 
+  console.log(threads.length)
   console.log("authid", firebase.auth().currentUser.uid);
   return (
     <View style={styles.container}>
@@ -93,9 +94,12 @@ const MessageScreen = (props) => {
           style={styles.flatList}
           keyExtractor={(item) => item?._id}
           renderItem={(itemData) => {
+            console.log('itemdata', itemData.item)
             return (
               <CardMessage
                 pseudoVendeur={itemData.item?.pseudoVendeur}
+                idVendeur={itemData.item?.idVendeur}
+                idAcheteur={itemData.item?.idAcheteur}
                 latestMessage={itemData.item?.latestMessage.text}
                 onPress={() =>
                   props.navigation.navigate("ChatScreen", {
@@ -107,6 +111,7 @@ const MessageScreen = (props) => {
           }}
         /> : <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
       }
+      {threads.length === 0 ? <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text> : <Text/>}
 
       {notifActive && (
         <FlatList

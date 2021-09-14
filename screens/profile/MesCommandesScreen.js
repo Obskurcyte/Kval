@@ -35,7 +35,7 @@ const MesCommandesScreen = (props) => {
     return (
         <View style={styles.container}>
 
-            {articles.length !== 0 ? <View style={styles.flatListContainer}>
+            {articles?.length !== 0 ? <View style={styles.flatListContainer}>
                 <FlatList
                     data={articles}
                     numColumns={2}

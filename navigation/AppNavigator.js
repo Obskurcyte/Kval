@@ -121,6 +121,9 @@ import ValidationEvaluationScreen from "../screens/profile/ValidationEvaluationS
 import AvisScreen from "../screens/achat/AvisScreen";
 import LivraisonArticleLourdScreen from "../screens/achat/LivraisonArticleLourdScreen";
 import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScreen";
+import AdresseChoiceScreen from "../screens/achat/AdresseChoiceScreen";
+import AdresseValidationScreen from "../screens/achat/AdresseValidationScreen";
+import IbanChoiceScreen from "../screens/achat/IBANChoiceScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -960,6 +963,49 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <AchatStackNavigator.Screen
+            name="AdresseChoiceScreen"
+            component={AdresseChoiceScreen}
+            options={{
+                title: "Adresse",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <AchatStackNavigator.Screen
+            name="AdresseValidationScreen"
+            component={AdresseValidationScreen}
+            options={{
+              headerShown: false
+            }}
+        />
+        <AchatStackNavigator.Screen
+            name="IBANChoiceScreen"
+            component={IbanChoiceScreen}
+            options={{
+                title: "IBAN",
+                headerStyle: {
+                backgroundColor: "white",
+            },
+                headerTitleStyle: {
+                color: "black",
+            },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                color: "black",
+            },
+                headerTitleAlign: "center",
+            }}
+        />
       <AchatStackNavigator.Screen
         name="ThankYouScreen"
         component={ThankYouScreen}
