@@ -27,7 +27,7 @@ const EvaluationScreen = (props) => {
     }
 
     const product = props.route.params.product;
-    console.log(product)
+    console.log('product', product)
     console.log(rating)
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

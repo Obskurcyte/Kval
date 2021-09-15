@@ -25,7 +25,6 @@ const IbanChoiceScreen = (props) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>IBAN</Text>
-
             <Formik
                 initialValues={initialValues}
                 onSubmit={async (values) => {

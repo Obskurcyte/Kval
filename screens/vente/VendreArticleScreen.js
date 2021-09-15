@@ -37,13 +37,31 @@ const VendreArticleScreen = (props) => {
   const [modify, setModify] = useState(
     props.route.params ? props.route.params.modify : null
   );
-  const [initialValues, setInitialValues] = useState({
+ /* const [initialValues, setInitialValues] = useState({
     title: modify ? props.route.params.title : "",
     description: modify ? props.route.params.description : "",
     price: modify ? props.route.params.prix : "",
     poids: modify ? props.route.params.poids : "",
   });
 
+  */
+
+  let initialValues = {
+    title: modify ? props.route.params.title : "",
+    description: modify ? props.route.params.description : "",
+    price: modify ? props.route.params.prix : "",
+    poids: modify ? props.route.params.poids : "",
+  }
+
+  let nonValues = {
+    title: '',
+    description: '',
+    price: '',
+    poids: ''
+  }
+
+  console.log('modify', modify)
+  console.log('initial', initialValues)
   const old_categorie = modify ? props.route.params.categorie : null;
 
   const product_id = modify ? props.route.params.id : null;
@@ -55,6 +73,7 @@ const VendreArticleScreen = (props) => {
   useEffect(() => {
     dispatch(usersActions.getUser());
   }, []);
+
 
   const currentUser = useSelector((state) => state.user.userData);
 
@@ -94,13 +113,15 @@ const VendreArticleScreen = (props) => {
     props.route.params.etat = null
     props.route.params.categorie = null
     props.route.params.marque = null
-    setInitialValues({
+
+   /* setInitialValues({
       title: "",
       description: "",
       price: "",
       poids: "",
     });
-    props.navigation.navigate("VendreArticleScreen", { modify: false });
+
+    */
   };
 
   const removePicture = (index) => {
@@ -172,7 +193,6 @@ const VendreArticleScreen = (props) => {
   const [error, setError] = useState("");
 
   const date = new Date();
-  console.log(date);
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -196,6 +216,7 @@ const VendreArticleScreen = (props) => {
                 initialValues={initialValues}
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
+                  console.log('values', values)
                   setIsLoading(true);
 
                   let pushToken;
@@ -212,14 +233,14 @@ const VendreArticleScreen = (props) => {
 
                   const old_id = product_id;
                   const id = Math.random() * 300000000;
-                  console.log(id);
+
 
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
                   } else {
                     if (modify) {
                       try {
-                        console.log("entererd");
+
                         await firebase
                           .firestore()
                           .collection(`${old_categorie}`)
@@ -273,6 +294,20 @@ const VendreArticleScreen = (props) => {
                         poids: values.poids,
                       });
 
+                    await firebase.firestore()
+                        .collection('allProducts')
+                        .doc(`${id}`)
+                        .set({
+                          pseudoVendeur: currentUser.pseudo,
+                          categorie,
+                          marques,
+                          etat,
+                          date: date,
+                          title: values.title,
+                          description: values.description,
+                          prix: values.price,
+                          poids: values.poids,
+                        })
                     const uploadImage = async (index) => {
                       return new Promise(async (resolve) => {
                         const uri = imagesTableau[index];
@@ -331,6 +366,10 @@ const VendreArticleScreen = (props) => {
                         .collection("userPosts")
                         .doc(`${id}`)
                         .update(data);
+                      firebase.firestore()
+                          .collection('allProducts')
+                          .doc(`${id}`)
+                          .update(data)
                     };
 
                     await Promise.all(
@@ -516,8 +555,11 @@ const VendreArticleScreen = (props) => {
                     <TouchableOpacity
                       style={styles.reset}
                       onPress={() => {
+                        props.resetForm({
+                          values: nonValues
+                        })
                         resetForm();
-                        props.handleReset();
+                      //  props.handleReset();
                         //navigateVendre();
                       }}
                     >

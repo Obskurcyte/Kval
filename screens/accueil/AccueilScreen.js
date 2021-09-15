@@ -11,19 +11,14 @@ import {
   TouchableOpacity,
   FlatList
 } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 import {Feather, Fontisto} from '@expo/vector-icons';
-import CardVente from "../../components/CardVente";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import {useDispatch, useSelector} from "react-redux";
-import * as productActions from '../../store/actions/products';
 import firebase from "firebase";
-import {GET_PRODUCTS_BOOSTED} from "../../store/actions/products";
 import BoostedProductCard from "../../components/BoostedProductCard";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as userActions from "../../store/actions/users";
 
 const AccueilScreen = (props) => {
 
@@ -34,7 +29,7 @@ const AccueilScreen = (props) => {
   };
 
   const [productsBoosted, setProductsBoosted] = useState([])
-
+  const [productsUne, setProductsUne] = useState([])
 
   useEffect(() => {
     firebase.firestore().collection("BoostedVentes")
@@ -49,15 +44,34 @@ const AccueilScreen = (props) => {
       })
   }, [])
 
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      firebase.firestore().collection("allProducts")
+          .get()
+          .then(snapshot => {
+            let productsBoosted = snapshot.docs.map(doc => {
+              const data = doc.data()
+              const id = doc.id;
+              return {id, ...data}
+            })
+            setProductsUne(productsBoosted)
+          })
+    });
+   return unsubscribe
+  }, [props.navigation])
+
+  console.log('products', productsUne)
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
+      <ScrollView>
     <View style={styles.container}>
-      <Text style={styles.attendent}>Ils vous attendent</Text>
+      <Text style={styles.attendent}>Annonces en avant première </Text>
 
       <FlatList
         data={productsBoosted}
         horizontal={true}
+        style={styles.flatList}
         renderItem={itemData => {
           return (
             <BoostedProductCard
@@ -76,6 +90,31 @@ const AccueilScreen = (props) => {
         }}
 
       />
+
+      <Text style={styles.attendent}>Annonces récentes</Text>
+
+      <FlatList
+          data={productsUne}
+          horizontal={true}
+          renderItem={itemData => {
+            return (
+                <BoostedProductCard
+                    title={itemData.item.title}
+                    prix={itemData.item.prix}
+                    image={itemData.item.downloadURL}
+                    pseudo={itemData.item.pseudoVendeur}
+                    onPress={() => props.navigation.navigate('Shop', {screen: 'ProductDetailScreen', params: {
+                        productId: itemData.item.id,
+                        product: productsUne[itemData.index]
+                      }
+                    })
+                    }
+                />
+            )
+          }}
+
+      />
+
       <Text style={styles.attendent}>Rechercher dans les catégories</Text>
         <View style={styles.categoriesSuperContainer}>
           <ScrollView
@@ -139,18 +178,22 @@ const AccueilScreen = (props) => {
 
 
  </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '15%',
+    paddingTop: '3%',
     paddingLeft: '5%'
   },
   searchBarContainer: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  flatList: {
+    marginBottom: 20
   },
   searchBar: {
     width: '80%',
@@ -170,7 +213,7 @@ const styles = StyleSheet.create({
   attendent: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginTop: '5%'
+    marginTop: '0%'
   },
   vendeurContainer: {
     backgroundColor: '#F9F9FA'
@@ -178,7 +221,8 @@ const styles = StyleSheet.create({
   categoriesSuperContainer: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: '6%'
+    marginTop: '6%',
+    marginBottom: '5%'
   },
   categoriesContainer: {
     backgroundColor: '#D51317',
