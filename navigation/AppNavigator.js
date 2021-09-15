@@ -124,6 +124,8 @@ import PortefeuilleThankYouScreen from "../screens/achat/PortefeuilleThankYouScr
 import AdresseChoiceScreen from "../screens/achat/AdresseChoiceScreen";
 import AdresseValidationScreen from "../screens/achat/AdresseValidationScreen";
 import IbanChoiceScreen from "../screens/achat/IBANChoiceScreen";
+import ContactScreen from "../screens/profile/ContactScreen";
+import ValidationContactScreen from "../screens/profile/ValidationContactScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1823,6 +1825,34 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil",
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="ContactScreen"
+            component={ContactScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Contactez-nous",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ValidationContactScreen"
+            component={ValidationContactScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Contactez-nous",
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="ProductDetailScreen"
         children={ProductDetailScreen}
@@ -2133,12 +2163,12 @@ export const AccueilNavigator = (props) => {
                 size={24}
                 color="#D51317"
                 onPress={() =>
-                  props.navigation.navigate("Shop", { screen: "CartScreen" })
+                  props.navigation.navigate("Acheter", { screen: "CartScreen" })
                 }
               />
             </View>
           ),
-          headerTitle: () => <CustomHeader {...props} />,
+          headerTitle: "Kval-Occaz",
         }}
       />
       <AccueilStackNavigator.Screen
@@ -2207,7 +2237,7 @@ export const TabNavigator = (props) => {
             }}
           />
           <AppTabNavigator.Screen
-            name="Shop"
+            name="Acheter"
             children={(props) => (
               <AchatNavigator
                 {...props}
@@ -2285,7 +2315,7 @@ export const TabNavigator = (props) => {
             }}
           />
           <AppTabNavigator.Screen
-            name="Shop"
+            name="Acheter"
             children={(props) => (
               <AchatNavigator
                 {...props}

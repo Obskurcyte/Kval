@@ -79,7 +79,7 @@ const AccueilScreen = (props) => {
               prix={itemData.item.prix}
               image={itemData.item.image}
               pseudo={itemData.item.pseudoVendeur}
-              onPress={() => props.navigation.navigate('Shop', {screen: 'ProductDetailScreen', params: {
+              onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                   productId: itemData.item.id,
                   product: productsBoosted[itemData.index]
                 }
@@ -103,7 +103,7 @@ const AccueilScreen = (props) => {
                     prix={itemData.item.prix}
                     image={itemData.item.downloadURL}
                     pseudo={itemData.item.pseudoVendeur}
-                    onPress={() => props.navigation.navigate('Shop', {screen: 'ProductDetailScreen', params: {
+                    onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                         productId: itemData.item.id,
                         product: productsUne[itemData.index]
                       }
@@ -123,35 +123,35 @@ const AccueilScreen = (props) => {
             style={styles.scrollView}
           >
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Shop', {screen: 'AchatScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Acheter', {screen: 'AchatScreen'})}>
                 <Feather name="list" size={34} color="white" />
               </TouchableOpacity>
               <Text>Catégories</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'ChevalEtCuirAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtCuirAccueilScreen'})}>
                 <Image source={require('../../assets/cat1.png')}/>
               </TouchableOpacity>
               <Text>Cheval & Cuir</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'ChevalEtTextileAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtTextileAccueilScreen'})}>
                 <Image source={require('../../assets/textile.png')}/>
               </TouchableOpacity>
               <Text>Cheval & Textile</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'CavalierAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'CavalierAccueilScreen'})}>
                 <Image source={require('../../assets/cavalier.png')}/>
               </TouchableOpacity>
               <Text>Cavalier</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'SoinsEtEcuriesAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'SoinsEtEcuriesAccueilScreen'})}>
                 <FontAwesome5 name="briefcase-medical" size={34} color="white" />
               </TouchableOpacity>
               <Text>Soins et écuries</Text>
@@ -159,14 +159,14 @@ const AccueilScreen = (props) => {
 
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'ChienAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChienAccueilScreen'})}>
                 <MaterialCommunityIcons name="dog" size={34} color="white" />
               </TouchableOpacity>
               <Text>Chiens/Animaux</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>
-              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Shop', {screen: 'TransportAccueilScreen'})}>
+              <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'TransportAccueilScreen'})}>
                 <FontAwesome5 name="shuttle-van" size={34} color="white" />
               </TouchableOpacity>
               <Text>Transport</Text>
@@ -185,7 +185,7 @@ const AccueilScreen = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: '3%',
+    paddingTop: '1%',
     paddingLeft: '5%'
   },
   searchBarContainer: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   flatList: {
-    marginBottom: 20
+    marginBottom: 10
   },
   searchBar: {
     width: '80%',

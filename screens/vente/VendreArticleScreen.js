@@ -121,7 +121,7 @@ const VendreArticleScreen = (props) => {
       poids: "",
     });
 
-    */
+   */
   };
 
   const removePicture = (index) => {
@@ -294,20 +294,23 @@ const VendreArticleScreen = (props) => {
                         poids: values.poids,
                       });
 
-                    await firebase.firestore()
-                        .collection('allProducts')
-                        .doc(`${id}`)
-                        .set({
-                          pseudoVendeur: currentUser.pseudo,
-                          categorie,
-                          marques,
-                          etat,
-                          date: date,
-                          title: values.title,
-                          description: values.description,
-                          prix: values.price,
-                          poids: values.poids,
-                        })
+                    if (!modify) {
+                      await firebase.firestore()
+                          .collection('allProducts')
+                          .doc(`${id}`)
+                          .set({
+                            pseudoVendeur: currentUser.pseudo,
+                            categorie,
+                            marques,
+                            etat,
+                            date: date,
+                            title: values.title,
+                            description: values.description,
+                            prix: values.price,
+                            poids: values.poids,
+                          })
+                    }
+                    
                     const uploadImage = async (index) => {
                       return new Promise(async (resolve) => {
                         const uri = imagesTableau[index];
@@ -381,7 +384,7 @@ const VendreArticleScreen = (props) => {
                     setIsLoading(false);
                     setImagesTableau([]);
                     setImage(null);
-                    props.navigation.navigate("ValidationScreen");
+                    props.navigation.navigate("ValidationScreen", {modify: modify});
                   }
                 }}
               >
@@ -555,6 +558,7 @@ const VendreArticleScreen = (props) => {
                     <TouchableOpacity
                       style={styles.reset}
                       onPress={() => {
+                        console.log('hey')
                         props.resetForm({
                           values: nonValues
                         })

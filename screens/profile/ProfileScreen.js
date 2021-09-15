@@ -179,6 +179,12 @@ const ProfileScreen = (props) => {
               <Text style={styles.text}>Mon portefeuille</Text>
             </TouchableOpacity>
             <TouchableOpacity
+                style={styles.boutonList}
+                onPress={() => props.navigation.navigate("ContactScreen")}
+            >
+              <Text style={styles.text}>Nous contacter</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.boutonList}
               onPress={() => props.navigation.navigate("ViePriveeScreen")}
             >

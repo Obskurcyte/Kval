@@ -7,12 +7,22 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const ValidationScreen = (props) => {
+
+  const modify = props.route.params.modify;
+
   return (
    <View style={styles.container}>
      <AntDesign name="checkcircleo" size={200} color="white" />
       <Text style={styles.text}>C'est en vente !</Text>
-     <TouchableOpacity style={styles.retourContainer} onPress={() => props.navigation.navigate('VendreArticleScreen')}>
-       <Text style={styles.text}>Continuer à vendre</Text>
+     <TouchableOpacity style={styles.retourContainer} onPress={() => {
+       if (modify) {
+         props.navigation.navigate('Profil', {screen: 'ProfileScreen'}
+         )
+       } else {
+         props.navigation.navigate('VendreArticleScreen')
+       }
+     }}>
+       <Text style={styles.text}>{modify ? "Retour au profil" : "Continuer à vendre"}</Text>
      </TouchableOpacity>
    </View>
   );
