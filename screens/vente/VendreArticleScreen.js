@@ -37,7 +37,7 @@ const VendreArticleScreen = (props) => {
   const [modify, setModify] = useState(
     props.route.params ? props.route.params.modify : null
   );
- /* const [initialValues, setInitialValues] = useState({
+  /* const [initialValues, setInitialValues] = useState({
     title: modify ? props.route.params.title : "",
     description: modify ? props.route.params.description : "",
     price: modify ? props.route.params.prix : "",
@@ -51,17 +51,17 @@ const VendreArticleScreen = (props) => {
     description: modify ? props.route.params.description : "",
     price: modify ? props.route.params.prix : "",
     poids: modify ? props.route.params.poids : "",
-  }
+  };
 
   let nonValues = {
-    title: '',
-    description: '',
-    price: '',
-    poids: ''
-  }
+    title: "",
+    description: "",
+    price: "",
+    poids: "",
+  };
 
-  console.log('modify', modify)
-  console.log('initial', initialValues)
+  console.log("modify", modify);
+  console.log("initial", initialValues);
   const old_categorie = modify ? props.route.params.categorie : null;
 
   const product_id = modify ? props.route.params.id : null;
@@ -73,7 +73,6 @@ const VendreArticleScreen = (props) => {
   useEffect(() => {
     dispatch(usersActions.getUser());
   }, []);
-
 
   const currentUser = useSelector((state) => state.user.userData);
 
@@ -99,7 +98,7 @@ const VendreArticleScreen = (props) => {
     console.log(props.route.params);
   }, [props.route.params]);
 
-  console.log('cat', categorie)
+  console.log("cat", categorie);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
@@ -110,11 +109,11 @@ const VendreArticleScreen = (props) => {
     setImage(null);
     setImagesTableau([]);
     setModify(false);
-    props.route.params.etat = null
-    props.route.params.categorie = null
-    props.route.params.marque = null
+    props.route.params.etat = null;
+    props.route.params.categorie = null;
+    props.route.params.marque = null;
 
-   /* setInitialValues({
+    /* setInitialValues({
       title: "",
       description: "",
       price: "",
@@ -148,7 +147,7 @@ const VendreArticleScreen = (props) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.2,
     });
     setImagesTableau((oldImage) => [...oldImage, result.uri]);
     if (!result.cancelled) {
@@ -162,7 +161,7 @@ const VendreArticleScreen = (props) => {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.2,
     });
     setImagesTableau((oldImage) => [...oldImage, result.uri]);
     if (!result.cancelled) {
@@ -216,7 +215,7 @@ const VendreArticleScreen = (props) => {
                 initialValues={initialValues}
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
-                  console.log('values', values)
+                  console.log("values", values);
                   setIsLoading(true);
 
                   let pushToken;
@@ -234,13 +233,11 @@ const VendreArticleScreen = (props) => {
                   const old_id = product_id;
                   const id = Math.random() * 300000000;
 
-
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
                   } else {
                     if (modify) {
                       try {
-
                         await firebase
                           .firestore()
                           .collection(`${old_categorie}`)
@@ -295,22 +292,23 @@ const VendreArticleScreen = (props) => {
                       });
 
                     if (!modify) {
-                      await firebase.firestore()
-                          .collection('allProducts')
-                          .doc(`${id}`)
-                          .set({
-                            pseudoVendeur: currentUser.pseudo,
-                            categorie,
-                            marques,
-                            etat,
-                            date: date,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price,
-                            poids: values.poids,
-                          })
+                      await firebase
+                        .firestore()
+                        .collection("allProducts")
+                        .doc(`${id}`)
+                        .set({
+                          pseudoVendeur: currentUser.pseudo,
+                          categorie,
+                          marques,
+                          etat,
+                          date: date,
+                          title: values.title,
+                          description: values.description,
+                          prix: values.price,
+                          poids: values.poids,
+                        });
                     }
-                    
+
                     const uploadImage = async (index) => {
                       return new Promise(async (resolve) => {
                         const uri = imagesTableau[index];
@@ -369,10 +367,11 @@ const VendreArticleScreen = (props) => {
                         .collection("userPosts")
                         .doc(`${id}`)
                         .update(data);
-                      firebase.firestore()
-                          .collection('allProducts')
-                          .doc(`${id}`)
-                          .update(data)
+                      firebase
+                        .firestore()
+                        .collection("allProducts")
+                        .doc(`${id}`)
+                        .update(data);
                     };
 
                     await Promise.all(
@@ -384,7 +383,9 @@ const VendreArticleScreen = (props) => {
                     setIsLoading(false);
                     setImagesTableau([]);
                     setImage(null);
-                    props.navigation.navigate("ValidationScreen", {modify: modify});
+                    props.navigation.navigate("ValidationScreen", {
+                      modify: modify,
+                    });
                   }
                 }}
               >
@@ -487,36 +488,39 @@ const VendreArticleScreen = (props) => {
                       />
                     </View>
 
-                    <ScrollView horizontal={true} style={styles.horizontalScrollList}>
-                    <View style={styles.photoBigContainer}>
-                      {imagesTableau &&
-                        imagesTableau.length <= 5 &&
-                        imagesTableau.map((image, index) => (
-                          <View style={styles.imageList}>
-                            <TouchableOpacity
-                              onPress={() =>
-                                navigatePhotoScreen(imagesTableau[index])
-                              }
-                            >
-                              <Image
-                                style={styles.image}
-                                source={{ uri: imagesTableau[index] }}
-                              />
-                            </TouchableOpacity>
+                    <ScrollView
+                      horizontal={true}
+                      style={styles.horizontalScrollList}
+                    >
+                      <View style={styles.photoBigContainer}>
+                        {imagesTableau &&
+                          imagesTableau.length <= 5 &&
+                          imagesTableau.map((image, index) => (
+                            <View style={styles.imageList}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  navigatePhotoScreen(imagesTableau[index])
+                                }
+                              >
+                                <Image
+                                  style={styles.image}
+                                  source={{ uri: imagesTableau[index] }}
+                                />
+                              </TouchableOpacity>
 
-                            <TouchableOpacity
-                              onPress={() => removePicture(index)}
-                            >
-                              <AntDesign
-                                name="close"
-                                size={24}
-                                color="#DADADA"
-                                style={styles.closeIcon}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        ))}
-                    </View>
+                              <TouchableOpacity
+                                onPress={() => removePicture(index)}
+                              >
+                                <AntDesign
+                                  name="close"
+                                  size={24}
+                                  color="#DADADA"
+                                  style={styles.closeIcon}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                      </View>
                     </ScrollView>
                     {imagesTableau && imagesTableau.length < 5 ? (
                       <View>
@@ -558,12 +562,12 @@ const VendreArticleScreen = (props) => {
                     <TouchableOpacity
                       style={styles.reset}
                       onPress={() => {
-                        console.log('hey')
+                        console.log("hey");
                         props.resetForm({
-                          values: nonValues
-                        })
+                          values: nonValues,
+                        });
                         resetForm();
-                      //  props.handleReset();
+                        //  props.handleReset();
                         //navigateVendre();
                       }}
                     >
@@ -593,7 +597,7 @@ const styles = StyleSheet.create({
     color: "#D51317",
   },
   horizontalScrollList: {
-    paddingBottom: 10
+    paddingBottom: 10,
   },
   formContainer: {
     display: "flex",

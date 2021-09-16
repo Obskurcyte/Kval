@@ -21,7 +21,7 @@ const MondialRelayView = (props) => {
       // Parameterized the widget
       $(document).ready(function () {
         $("#Zone_Widget").MR_ParcelShopPicker({
-          Brand: "BDTEST  ",
+          Brand: "CC20JJ6P",
           Country: "FR",
           EnableGmap: true,
           Responsive: true,
