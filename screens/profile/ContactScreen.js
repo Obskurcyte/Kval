@@ -6,6 +6,7 @@ import {
     TextInput,
     TouchableOpacity,
     Dimensions,
+    ScrollView,
     TouchableWithoutFeedback,
     Keyboard, KeyboardAvoidingView
 } from 'react-native';
@@ -34,7 +35,6 @@ const ContactScreen = (props) => {
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                 <View style={styles.container}>
                     <Text style={styles.title}>Formulaire de contact</Text>
-
                     <Formik
                         initialValues={initialValues}
                         onSubmit={async (values) => {
@@ -43,12 +43,14 @@ const ContactScreen = (props) => {
                     >
                         {props => (
                             <View>
+                                <Text style={styles.label}>Nom (*)</Text>
                                 <TextInput
                                     placeholder="Nom"
                                     style={styles.input}
                                     value={props.values.nom}
                                     onChangeText={props.handleChange('nom')}
                                 />
+                                <Text style={styles.label}>Prénom (*)</Text>
                                 <TextInput
                                     placeholder="Prénom"
                                     style={styles.input}
@@ -56,6 +58,7 @@ const ContactScreen = (props) => {
                                     value={props.values.prenom}
                                     onChangeText={props.handleChange('prenom')}
                                 />
+                                <Text style={styles.label}>Téléphone (*)</Text>
                                 <TextInput
                                     placeholder="Téléphone"
                                     style={styles.input}
@@ -63,29 +66,31 @@ const ContactScreen = (props) => {
                                     value={props.values.phone}
                                     onChangeText={props.handleChange('phone')}
                                 />
+                                <Text style={styles.label}>Mail (*)</Text>
                                 <TextInput
                                     placeholder="Mail"
                                     style={styles.input}
                                     value={props.values.mail}
                                     onChangeText={props.handleChange('mail')}
                                 />
+                                <Text style={styles.label}>Message (*)</Text>
                                 <TextInput
+                                    multiline={true}
                                     placeholder="Message"
-                                    style={styles.input}
-                                    value={props.values.mail}
-                                    onChangeText={props.handleChange('Message')}
+                                    style={styles.inputMessage}
+                                    value={props.values.message}
+                                    onChangeText={props.handleChange('message')}
                                 />
 
                                 <TouchableOpacity
                                     style={styles.mettreEnVente}
                                     onPress={props.handleSubmit}
                                 >
-                                    <Text style={styles.mettreEnVenteText}>Nous contacter</Text>
+                                    <Text style={styles.mettreEnVenteText}>Envoyer le message</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
                     </Formik>
-
 
                     <View style={styles.contact}>
                         <Text style={styles.contactText}>Contact : </Text>
@@ -93,8 +98,9 @@ const ContactScreen = (props) => {
                             <Text style={styles.contactTextBlue}>07 60 58 67 48</Text>
                         </TouchableOpacity>
 
-                    </View>
                 </View>
+                    </View>
+
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );
@@ -103,20 +109,23 @@ const ContactScreen = (props) => {
 
 const styles = StyleSheet.create({
     contactText: {
-        fontSize: 20,
+        fontSize: 17,
     },
     contactTextBlue: {
-        fontSize: 20,
+        fontSize: 17,
         color: 'blue'
     },
     contact: {
-        marginRight: '50%',
-        marginTop: '10%'
+        marginRight: '40%',
+        marginTop: '10%',
+        width: '100%'
+    },
+    label: {
+        marginLeft: 5
     },
     mettreEnVente: {
         backgroundColor: "#D51317",
         marginTop: '5%',
-        marginLeft: '5%',
         width: windowWidth/1.1,
         paddingVertical: '5%'
     },
@@ -127,8 +136,9 @@ const styles = StyleSheet.create({
     },
     container: {
         paddingHorizontal: '6%',
-        paddingVertical: '7%',
-        alignItems: 'center'
+        paddingVertical: '2%',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     title: {
         fontSize: 24,
@@ -139,10 +149,19 @@ const styles = StyleSheet.create({
     input: {
         borderWidth: 1,
         borderColor: '#A7A9BE',
-        paddingVertical: '4%',
+        paddingVertical: '3%',
         borderRadius: 5,
         paddingHorizontal: '3%',
         marginBottom: '5%'
+    },
+    inputMessage: {
+        borderWidth: 1,
+        borderColor: '#A7A9BE',
+        paddingVertical: '4%',
+        borderRadius: 5,
+        paddingHorizontal: '3%',
+        marginBottom: '5%',
+        height: 100
     }
 });
 

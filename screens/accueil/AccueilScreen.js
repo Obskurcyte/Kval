@@ -60,7 +60,6 @@ const AccueilScreen = (props) => {
    return unsubscribe
   }, [props.navigation])
 
-  console.log('products', productsUne)
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -126,7 +125,7 @@ const AccueilScreen = (props) => {
               <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Acheter', {screen: 'AchatScreen'})}>
                 <Feather name="list" size={34} color="white" />
               </TouchableOpacity>
-              <Text>Catégories</Text>
+              <Text>Toutes les catégories</Text>
             </View>
 
             <View style={styles.categoriesInnerContainer}>

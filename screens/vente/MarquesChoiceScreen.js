@@ -36,7 +36,7 @@ const MarquesChoiceScreen = (props) => {
             onPress={() => {
               setMarque(marques_obj.name);
 
-              props.navigation.navigate("Vente", {
+              props.navigation.navigate("Vendre", {
                 screen: "VendreArticleScreen",
                 params: { marque: marques_obj.name },
               });

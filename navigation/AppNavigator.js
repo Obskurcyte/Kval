@@ -126,6 +126,11 @@ import AdresseValidationScreen from "../screens/achat/AdresseValidationScreen";
 import IbanChoiceScreen from "../screens/achat/IBANChoiceScreen";
 import ContactScreen from "../screens/profile/ContactScreen";
 import ValidationContactScreen from "../screens/profile/ValidationContactScreen";
+import ModifierAnnonceScreen from "../screens/profile/ModifierAnnonceScreen";
+import ValidationAnnonceModifieeScreen from "../screens/profile/ValidationAnnonceModifieeScreen";
+import PhotoModifierAnnonceScreen from "../screens/profile/PhotoModifierAnnonceScreen";
+import EnterIbanScreen from "../screens/profile/EnterIbanScreen";
+import ValidationIBANScreen from "../screens/profile/ValidationIBANScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1840,6 +1845,62 @@ export const ProfileNavigator = (props) => {
             }}
         />
         <ProfileStackNavigator.Screen
+            name="PhotoModifierAnnonceScreen"
+            component={PhotoModifierAnnonceScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Photo",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+        name="EnterIbanScreen"
+        component={EnterIbanScreen}
+        options={{
+            headerRightContainerStyle: {
+                paddingRight: 10,
+            },
+            headerBackTitle: "Retour",
+            headerLeftContainerStyle: {
+                paddingLeft: 10,
+            },
+            headerTitle: "Saisissez votre IBAN",
+        }}
+    />
+        <ProfileStackNavigator.Screen
+            name="ValidationIBANScreen"
+            component={ValidationIBANScreen}
+            options={{
+              headerShown: false
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ValidationAnnonceModifieeScreen"
+            component={ValidationAnnonceModifieeScreen}
+            options={{
+                headerShown: false
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ModifierAnnonceScreen"
+            component={ModifierAnnonceScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Modifier votre annonce",
+            }}
+        />
+        <ProfileStackNavigator.Screen
             name="ValidationContactScreen"
             component={ValidationContactScreen}
             options={{
@@ -2252,7 +2313,7 @@ export const TabNavigator = (props) => {
             }}
           />
           <AppTabNavigator.Screen
-            name="Vente"
+            name="Vendre"
             children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
@@ -2330,7 +2391,7 @@ export const TabNavigator = (props) => {
             }}
           />
           <AppTabNavigator.Screen
-            name="Vente"
+            name="Vendre"
             children={(props) => (
               <SellNavigator
                 {...props}

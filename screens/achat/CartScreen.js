@@ -15,6 +15,7 @@ import {
   KeyboardAvoidingView,
   Modal,
 } from "react-native";
+import {CheckBox} from 'react-native';
 import { useSelector, useDispatch } from "react-redux";
 import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
@@ -29,7 +30,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const CartScreen = (props) => {
   const dispatch = useDispatch();
-
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
@@ -357,7 +358,8 @@ const CartScreen = (props) => {
                   }}
               />
 
-              <View style={styles.itemForm3}>
+              <View style={[styles.itemForm3, {    borderTopColor: "lightgrey",
+                borderTopWidth: 1, marginTop: 10}]}>
                 <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
                 <TouchableOpacity
                     onPress={() => {
@@ -369,11 +371,11 @@ const CartScreen = (props) => {
               </View>
 
               <View style={styles.itemForm3}>
-                <View>
+                <View style={styles.adresseText}>
                   <Text style={{ fontSize: 18 }}>Adresse</Text>
                 </View>
                 <View style={styles.adresseContainer}>
-                  <Text style={styles.totalPrice}>
+                  <Text style={styles.adresseInner}>
                     {adresse
                         ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
                         : <Text/>
@@ -391,19 +393,6 @@ const CartScreen = (props) => {
                 </View>
               </View>
 
-              <View style={styles.itemForm3}>
-                <Text style={{ fontSize: 18 }}>IBAN</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                      props.navigation.navigate("IBANChoiceScreen");
-                    }}
-                >
-                  {IBAN ? <Text>{IBAN}</Text> : <Text>Choisir</Text>}
-                  {IBAN ? <TouchableOpacity onPress={() => props.navigation.navigate('IBANChoiceScreen')} style={styles.modifierAdresse}>
-                    <Text>Modifier</Text>
-                  </TouchableOpacity> : <Text/>}
-                </TouchableOpacity>
-              </View>
               <View style={styles.totalContainer}>
                 <View style={styles.itemForm3}>
                   <Text style={{ fontSize: 18 }}>Prix protection acheteur</Text>
@@ -431,6 +420,19 @@ const CartScreen = (props) => {
                 </View>
               </View>
 
+              {/*    <View style={styles.checkBoxContainer}>
+                <View style={styles.checkboxInner}>
+
+                <CheckBox
+                    disabled={false}
+                    value={toggleCheckBox}
+                    onValueChange={(newValue) => setToggleCheckBox(newValue)}
+                />
+
+                </View>
+                <Text>J’accepte les conditions générales de vente, cliques <TouchableOpacity onPress={() => props.navigation.navigate('Profil', {screen: 'CGUScreen'})}><Text>ici</Text></TouchableOpacity>pour les consulter </Text>
+              </View>
+              */}
               <TouchableOpacity
                   style={styles.mettreEnVente}
                   onPress={async () => {
@@ -563,6 +565,10 @@ const styles = StyleSheet.create({
     borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
   },
+  checkBoxContainer: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
   noCommandeText: {
     fontSize: 20,
     textAlign: 'center',
@@ -582,6 +588,7 @@ const styles = StyleSheet.create({
   totalPrice: {
     color: "black",
     fontSize: 18,
+    width: '70%'
   },
   mettreEnVente: {
     backgroundColor: "#D51317",
@@ -809,11 +816,14 @@ const styles = StyleSheet.create({
     marginTop: "20%",
     textAlign: "center",
   },
+  adresseText: {
+    width: '30%'
+  },
   adresseContainer: {
     display: "flex",
     flexDirection: "column",
     padding: 5,
-    width: "30%"
+    width: "60%"
   },
   portefeuilleText: {
     fontSize: 18,

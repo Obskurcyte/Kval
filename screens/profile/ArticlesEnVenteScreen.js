@@ -34,10 +34,15 @@ const ArticlesEnVenteScreen = (props) => {
             style={styles.avantArticlesContainer}
             onPress={() => props.navigation.navigate("BoosteVenteScreen")}
           >
-            <MaterialCommunityIcons name="fire" size={34} color="#D51317" />
+            <MaterialCommunityIcons name="fire" size={34} color="#D51317"/>
+            <View style={{display: 'flex', flexDirection: 'column'}}>
             <Text style={styles.avantArticlesText}>
               Met en avant tes articles
             </Text>
+            <Text style={styles.avantArticlesText}>
+              et booste tes ventes
+            </Text>
+            </View>
             <MaterialIcons
               name="keyboard-arrow-right"
               size={34}

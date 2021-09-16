@@ -1,5 +1,15 @@
 import React from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Dimensions} from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Dimensions,
+    Keyboard,
+  TouchableWithoutFeedback
+} from "react-native";
 import {Formik} from 'formik';
 import * as cartActions from "../../store/actions/cart";
 
@@ -15,6 +25,7 @@ const SignalerUnLitigeScreen = () => {
     probleme: ''
   }
   return (
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View>
       <Formik
         initialValues={initialValues}
@@ -31,7 +42,6 @@ const SignalerUnLitigeScreen = () => {
               placeholderTextColor='black'
               value={props.values.utilisateur}
               style={styles.textInput}
-              secureTextEntry={true}
               onChangeText={props.handleChange('utilisateur')}
             />
 
@@ -41,18 +51,17 @@ const SignalerUnLitigeScreen = () => {
               placeholderTextColor='black'
               value={props.values.article}
               style={styles.textInput}
-              secureTextEntry={true}
               onChangeText={props.handleChange('article')}
             />
 
             <Text style={styles.text}>Problème concerné</Text>
             <TextInput
+                multiline={true}
               placeholder="Motif du litige"
               placeholderTextColor='black'
-              value={props.values.article}
-              style={styles.textInput}
-              secureTextEntry={true}
-              onChangeText={props.handleChange('article')}
+              value={props.values.probleme}
+              style={styles.litigeInput}
+              onChangeText={props.handleChange('probleme')}
             />
 
 
@@ -68,6 +77,7 @@ const SignalerUnLitigeScreen = () => {
         )}
       </Formik>
     </View>
+      </TouchableWithoutFeedback>
   );
 };
 
@@ -79,6 +89,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: '4%',
     paddingLeft: '8%',
+    color: 'black',
+    width: '100%'
+  },
+  litigeInput: {
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: '4%',
+    paddingLeft: '2%',
+    height: 100,
     color: 'black',
     width: '100%'
   },

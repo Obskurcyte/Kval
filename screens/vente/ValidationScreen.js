@@ -13,14 +13,13 @@ const ValidationScreen = (props) => {
   return (
    <View style={styles.container}>
      <AntDesign name="checkcircleo" size={200} color="white" />
-      <Text style={styles.text}>C'est en vente !</Text>
+      <Text style={styles.text}>C’est en vente ! Vous pouvez retrouver l’ensemble de vos articles en vente dans votre profil</Text>
      <TouchableOpacity style={styles.retourContainer} onPress={() => {
-       if (modify) {
-         props.navigation.navigate('Profil', {screen: 'ProfileScreen'}
-         )
-       } else {
-         props.navigation.navigate('VendreArticleScreen')
-       }
+         props.navigation.navigate('VendreArticleScreen', {
+           etat: null,
+           categorie: null,
+           marque: null
+         })
      }}>
        <Text style={styles.text}>{modify ? "Retour au profil" : "Continuer à vendre"}</Text>
      </TouchableOpacity>
@@ -44,7 +43,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
     marginTop: '3%',
-    color: 'white'
+    color: 'white',
+    maxWidth: '90%'
   },
   retourContainer : {
     borderWidth: 5,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     width: windowWidth/1.1,
     alignItems: 'center',
     paddingBottom: "2%",
-    marginTop: windowHeight/6
+    marginTop: windowHeight/9
   }
 })
 export default ValidationScreen;

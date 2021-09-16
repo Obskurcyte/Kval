@@ -33,7 +33,7 @@ const LivraisonChoiceScreen = (props) => {
           });
         }}
       >
-        <Text style={styles.text}>Personnalisée</Text>
+        <Text style={styles.text}>Remise en main propre</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

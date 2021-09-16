@@ -6,7 +6,7 @@ import firebase from "firebase";
 
 const windowWidth = Dimensions.get('window').width;
 
-const PortefeuilleScreen = () => {
+const PortefeuilleScreen = (props) => {
 
     const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ const PortefeuilleScreen = () => {
             {userData ? <View>
                 <Text style={styles.argent}>{userData.portefeuille} €</Text>
                 <Text style={styles.montant}>Montant disponible</Text>
-                <TouchableOpacity  style={styles.mettreEnVente}>
+                <TouchableOpacity  style={styles.mettreEnVente} onPress={() => props.navigation.navigate('EnterIbanScreen')}>
                     <Text style={styles.mettreEnVenteText}>Transférer vers un compte bancaire</Text>
                 </TouchableOpacity>
             </View> :

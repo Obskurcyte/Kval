@@ -37,20 +37,13 @@ const VendreArticleScreen = (props) => {
   const [modify, setModify] = useState(
     props.route.params ? props.route.params.modify : null
   );
-  /* const [initialValues, setInitialValues] = useState({
-    title: modify ? props.route.params.title : "",
-    description: modify ? props.route.params.description : "",
-    price: modify ? props.route.params.prix : "",
-    poids: modify ? props.route.params.poids : "",
-  });
 
-  */
 
   let initialValues = {
-    title: modify ? props.route.params.title : "",
-    description: modify ? props.route.params.description : "",
-    price: modify ? props.route.params.prix : "",
-    poids: modify ? props.route.params.poids : "",
+    title: "",
+    description: "",
+    price: "",
+    poids: "",
   };
 
   let nonValues = {
@@ -62,9 +55,7 @@ const VendreArticleScreen = (props) => {
 
   console.log("modify", modify);
   console.log("initial", initialValues);
-  const old_categorie = modify ? props.route.params.categorie : null;
 
-  const product_id = modify ? props.route.params.id : null;
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -195,18 +186,13 @@ const VendreArticleScreen = (props) => {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
-        {modify && (
-          <Text style={styles.text}>
-            Vous êtes entrain de modifier votre article : {initialValues.title}
-          </Text>
-        )}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           {isLoading ? (
             <View style={styles.containerLoading}>
-              <Text>
+              <Text style={styles.loadingText}>
                 Cette opération peut prendre plusieurs minutes en fonction de la taille de vos photos, merci de ne pas interrompre la mise en vente…
               </Text>
-              <ActivityIndicator />
+              <ActivityIndicator color="red"/>
             </View>
           ) : (
             <View>
@@ -229,31 +215,11 @@ const VendreArticleScreen = (props) => {
                       .data;
                   }
 
-                  const old_id = product_id;
                   const id = Math.random() * 300000000;
 
                   if (imagesTableau.length === 0) {
                     setError("Veuillez uploader des photos");
                   } else {
-                    if (modify) {
-                      try {
-                        await firebase
-                          .firestore()
-                          .collection(`${old_categorie}`)
-                          .doc(`${old_id}`)
-                          .delete();
-
-                        await firebase
-                          .firestore()
-                          .collection("posts")
-                          .doc(firebase.auth().currentUser.uid)
-                          .collection("userPosts")
-                          .doc(`${old_id}`)
-                          .delete();
-                      } catch (err) {
-                        console.log(err);
-                      }
-                    }
                     await firebase
                       .firestore()
                       .collection(`${categorie}`)
@@ -290,7 +256,6 @@ const VendreArticleScreen = (props) => {
                         poids: values.poids,
                       });
 
-                    if (!modify) {
                       await firebase
                         .firestore()
                         .collection("allProducts")
@@ -306,7 +271,6 @@ const VendreArticleScreen = (props) => {
                           prix: values.price,
                           poids: values.poids,
                         });
-                    }
 
                     const uploadImage = async (index) => {
                       return new Promise(async (resolve) => {
@@ -382,8 +346,12 @@ const VendreArticleScreen = (props) => {
                     setIsLoading(false);
                     setImagesTableau([]);
                     setImage(null);
+                    setCategorie(null);
+                    setMarques(null);
+                    setEtat(null);
                     props.navigation.navigate("ValidationScreen", {
-                      modify: modify,
+                      props: props,
+                      modify: false,
                     });
                   }
                 }}
@@ -553,27 +521,26 @@ const VendreArticleScreen = (props) => {
                       onPress={props.handleSubmit}
                     >
                       <Text style={styles.mettreEnVenteText}>
-                        {modify
-                          ? "Enregistrer la modification"
-                          : "Mettre en vente !"}
+                        Mettre en vente !
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.reset}
-                      onPress={() => {
-                        console.log("hey");
-                        props.resetForm({
-                          values: nonValues,
-                        });
-                        resetForm();
-                        //  props.handleReset();
-                        //navigateVendre();
-                      }}
+                        style={styles.reset}
+                        onPress={() => {
+                          console.log("hey");
+                          props.resetForm({
+                            values: nonValues,
+                          });
+                          resetForm();
+                          //  props.handleReset();
+                          //navigateVendre();
+                        }}
                     >
                       <Text style={styles.resetText}>
                         Réinitialiser le formulaire
                       </Text>
                     </TouchableOpacity>
+
                   </View>
                 )}
               </Formik>
@@ -695,6 +662,17 @@ const styles = StyleSheet.create({
     color: "#D51317",
     textAlign: "center",
     fontSize: 18,
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: 'center',
+    maxWidth: '90%',
+    marginBottom: 20
+  },
+  containerLoading: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: '20%'
   },
   reset: {
     backgroundColor: "#fff",
