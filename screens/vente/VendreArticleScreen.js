@@ -203,10 +203,9 @@ const VendreArticleScreen = (props) => {
         )}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           {isLoading ? (
-            <View>
+            <View style={styles.containerLoading}>
               <Text>
-                Votre produit est en train d'être mis en vente, veuillez
-                patientez !
+                Cette opération peut prendre plusieurs minutes en fonction de la taille de vos photos, merci de ne pas interrompre la mise en vente…
               </Text>
               <ActivityIndicator />
             </View>
