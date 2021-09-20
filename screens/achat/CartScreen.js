@@ -15,7 +15,7 @@ import {
   KeyboardAvoidingView,
   Modal,
 } from "react-native";
-import {CheckBox} from 'react-native';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
 import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
@@ -420,19 +420,18 @@ const CartScreen = (props) => {
                 </View>
               </View>
 
-              {/*    <View style={styles.checkBoxContainer}>
+              <View style={styles.checkBoxContainer}>
                 <View style={styles.checkboxInner}>
 
-                <CheckBox
-                    disabled={false}
-                    value={toggleCheckBox}
-                    onValueChange={(newValue) => setToggleCheckBox(newValue)}
-                />
-
+            <BouncyCheckbox
+              size={25}
+              fillColor="red"
+              unfillColor="#FFFFFF"
+              iconStyle={{ borderColor: "red" }}
+              />
                 </View>
-                <Text>J’accepte les conditions générales de vente, cliques <TouchableOpacity onPress={() => props.navigation.navigate('Profil', {screen: 'CGUScreen'})}><Text>ici</Text></TouchableOpacity>pour les consulter </Text>
+                <Text style={styles.acceptGeneralConditions}>J’accepte les conditions générales de vente, cliques <TouchableOpacity onPress={() => props.navigation.navigate('Profil', {screen: 'CGUScreen'})} style={styles.iciContainer}><Text style={styles.ici}>ici</Text></TouchableOpacity> pour les consulter </Text>
               </View>
-              */}
               <TouchableOpacity
                   style={styles.mettreEnVente}
                   onPress={async () => {
@@ -567,7 +566,8 @@ const styles = StyleSheet.create({
   },
   checkBoxContainer: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginLeft: 20
   },
   noCommandeText: {
     fontSize: 20,
@@ -829,6 +829,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
   },
+  acceptGeneralConditions: {
+    maxWidth: '80%'
+  },
+  iciContainer: {
+    marginTop: 5
+  },
+  ici: {
+    color: 'blue'
+  }
 });
 
 export default CartScreen;

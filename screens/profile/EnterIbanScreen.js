@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
+import axios from 'axios';
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
 const windowWidth = Dimensions.get('window').width;
@@ -31,6 +32,10 @@ const EnterIbanScreen = (props) => {
                 initialValues={initialValues}
                 onSubmit={async (values) => {
                     console.log(values)
+                    await axios.post('https://kval-backend.herokuapp.com/send', {
+                        IBAN: values.IBAN,
+                        BIC: values.BIC
+                    })
                     await firebase.firestore().collection('users')
                         .doc(firebase.auth().currentUser.uid)
                         .update({
@@ -56,7 +61,7 @@ const EnterIbanScreen = (props) => {
                             style={styles.mettreEnVente}
                             onPress={props.handleSubmit}
                         >
-                            <Text style={styles.mettreEnVenteText}>Confirmer la modification</Text>
+                            <Text style={styles.mettreEnVenteText}>Soumettre</Text>
                         </TouchableOpacity>
                     </View>
                 )}

@@ -22,6 +22,9 @@ import * as usersActions from "../../store/actions/users";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import PhotoArticleScreen from "../vente/PhotoArticleScreen";
+import {PaymentView} from "../../components/PaymentView";
+import axios from "axios";
+import * as cartActions from "../../store/actions/cart";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -42,15 +45,20 @@ const ModifierAnnonceScreen = (props) => {
         poids: props.route.params.poids,
     };
 
+    let price = props.route.params.prix
     console.log('params', props.route.params)
     const old_categorie = props.route.params.categorie
 
     const product_id = props.route.params.id
 
+
     const [etat, setEtat] = useState(null);
     const [categorie, setCategorie] = useState(null);
     const [marques, setMarques] = useState(null);
-
+    const [makePayment, setMakePayment] = useState(false);
+    const [paymentStatus, setPaymentStatus] = useState("");
+    const [response, setResponse] = useState();
+    console.log(makePayment)
     useEffect(() => {
         dispatch(usersActions.getUser());
     }, []);
@@ -151,393 +159,514 @@ const ModifierAnnonceScreen = (props) => {
     const [error, setError] = useState("");
 
     const date = new Date();
-    return (
-        <View style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1 }}>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    {isLoading ? (
-                        <View style={styles.containerLoading}>
-                            <Text style={styles.loadingText}>
-                                Cette opération peut prendre plusieurs minutes en fonction de la taille de vos photos, merci de ne pas interrompre la mise à jour de votre annonce…
-                            </Text>
-                            <ActivityIndicator />
-                        </View>
-                    ) : (
-                        <View>
-                            <Text style={styles.text}>
-                                Vous êtes entrain de modifier votre article : {initialValues.title}
-                            </Text>
-                            <Formik
-                                initialValues={initialValues}
-                                validationSchema={uploadSchema}
-                                onSubmit={async (values) => {
-                                    console.log("values", values);
-                                    setIsLoading(true);
 
-                                    let pushToken;
-                                    let statusObj = await Notifications.getPermissionsAsync();
-                                    if (statusObj.status !== "granted") {
-                                        statusObj = await Notifications.requestPermissionsAsync();
-                                    }
-                                    if (statusObj.status !== "granted") {
-                                        pushToken = null;
-                                    } else {
-                                        pushToken = (await Notifications.getExpoPushTokenAsync())
-                                            .data;
-                                    }
+    const onCheckStatus = async (paymentResponse) => {
+        setPaymentStatus("Votre paiement est en cours de traitement");
+        setResponse(paymentResponse);
 
-                                    const old_id = product_id;
-                                    const id = Math.random() * 300000000;
+        let jsonResponse = JSON.parse(paymentResponse);
 
-                                    if (imagesTableau.length === 0) {
-                                        setError("Veuillez uploader des photos");
-                                    } else {
+        try {
+            const stripeResponse = await axios.post(
+                "https://kval-backend.herokuapp.com/paymentonetime",
+                {
+                    email: `${userData.email}`,
+                    authToken: jsonResponse,
+                    amount: 2500,
+                }
+            );
 
-                                        console.log('1')
-                                        try {
-                                        await firebase
-                                            .firestore()
-                                            .collection(`${old_categorie}`)
-                                            .doc(`${old_id}`)
-                                            .delete();
+            console.log(stripeResponse.data);
+            if (stripeResponse) {
+                const { paid } = stripeResponse.data;
+                if (paid === true) {
+                    setPaymentStatus(
+                        "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
+                    );
+                } else {
+                    setPaymentStatus("Le paiement a échoué");
+                }
+            } else {
+                setPaymentStatus("Le paiement a échoué");
+            }
+        } catch (error) {
+            console.log(error);
+            setPaymentStatus("Le paiement a échoué");
+        }
+    };
 
-                                        await firebase
-                                            .firestore()
-                                            .collection("posts")
-                                            .doc(firebase.auth().currentUser.uid)
-                                            .collection("userPosts")
-                                            .doc(`${old_id}`)
-                                            .delete();
+    const paymentUI = (props) => {
+        console.log(!makePayment)
+        if(!makePayment) {
+            return (
+                <View style={styles.container}>
+                    <ScrollView style={styles.container}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                            {isLoading ? (
+                                <View style={styles.containerLoading}>
+                                    <Text style={styles.loadingText}>
+                                        Cette opération peut prendre plusieurs minutes en fonction de la taille de vos photos, merci de ne pas interrompre la mise à jour de votre annonce…
+                                    </Text>
+                                    <ActivityIndicator />
+                                </View>
+                            ) : (
+                                <View>
+                                    <Text style={styles.text}>
+                                        Vous êtes entrain de modifier votre article : {initialValues.title}
+                                    </Text>
+                                    <Formik
+                                        initialValues={initialValues}
+                                        validationSchema={uploadSchema}
+                                        onSubmit={async (values) => {
+                                            if (price !== values.price) {
+                                                setMakePayment(true)
+                                            } else {
+                                                console.log("values", values);
+                                                setIsLoading(true);
 
-                                        await firebase
-                                            .firestore()
-                                            .collection("allProducts")
-                                            .doc(`${old_id}`)
-                                            .delete()
-                                        } catch(err) {
-                                            console.log(err)
-                                        }
+                                                let pushToken;
+                                                let statusObj = await Notifications.getPermissionsAsync();
+                                                if (statusObj.status !== "granted") {
+                                                    statusObj = await Notifications.requestPermissionsAsync();
+                                                }
+                                                if (statusObj.status !== "granted") {
+                                                    pushToken = null;
+                                                } else {
+                                                    pushToken = (await Notifications.getExpoPushTokenAsync())
+                                                        .data;
+                                                }
 
-                                        console.log('2')
-                                        try  {
-                                            await firebase
-                                                .firestore()
-                                                .collection(`${categorie}`)
-                                                .doc(`${id}`)
-                                                .set({
-                                                    categorie,
-                                                    etat,
-                                                    id,
-                                                    marques,
-                                                    date: date,
-                                                    title: values.title,
-                                                    description: values.description,
-                                                    prix: values.price,
-                                                    poids: values.poids,
-                                                    pushToken,
-                                                    idVendeur: firebase.auth().currentUser.uid,
-                                                    pseudoVendeur: currentUser.pseudo,
-                                                });
-                                        } catch(err) {
-                                            console.log(err)
-                                        }
+                                                const old_id = product_id;
+                                                const id = Math.random() * 300000000;
 
+                                                if (imagesTableau.length === 0) {
+                                                    setError("Veuillez uploader des photos");
+                                                } else {
 
-                                        console.log('3')
-                                        await firebase
-                                            .firestore()
-                                            .collection("posts")
-                                            .doc(firebase.auth().currentUser.uid)
-                                            .collection("userPosts")
-                                            .doc(`${id}`)
-                                            .set({
-                                                pseudoVendeur: currentUser.pseudo,
-                                                categorie,
-                                                marques,
-                                                etat,
-                                                date: date,
-                                                title: values.title,
-                                                description: values.description,
-                                                prix: values.price,
-                                                poids: values.poids,
-                                            });
+                                                    console.log('1')
+                                                    try {
+                                                        await firebase
+                                                            .firestore()
+                                                            .collection(`${old_categorie}`)
+                                                            .doc(`${old_id}`)
+                                                            .delete();
 
-                                        console.log('4')
-                                            await firebase
-                                                .firestore()
-                                                .collection("allProducts")
-                                                .doc(`${id}`)
-                                                .set({
-                                                    pseudoVendeur: currentUser.pseudo,
-                                                    categorie,
-                                                    marques,
-                                                    etat,
-                                                    date: date,
-                                                    title: values.title,
-                                                    description: values.description,
-                                                    prix: values.price,
-                                                    poids: values.poids,
-                                                });
+                                                        await firebase
+                                                            .firestore()
+                                                            .collection("posts")
+                                                            .doc(firebase.auth().currentUser.uid)
+                                                            .collection("userPosts")
+                                                            .doc(`${old_id}`)
+                                                            .delete();
+
+                                                        await firebase
+                                                            .firestore()
+                                                            .collection("allProducts")
+                                                            .doc(`${old_id}`)
+                                                            .delete()
+                                                    } catch(err) {
+                                                        console.log(err)
+                                                    }
+
+                                                    console.log('2')
+                                                    try  {
+                                                        await firebase
+                                                            .firestore()
+                                                            .collection(`${categorie}`)
+                                                            .doc(`${id}`)
+                                                            .set({
+                                                                categorie,
+                                                                etat,
+                                                                id,
+                                                                marques,
+                                                                date: date,
+                                                                title: values.title,
+                                                                description: values.description,
+                                                                prix: values.price,
+                                                                poids: values.poids,
+                                                                pushToken,
+                                                                idVendeur: firebase.auth().currentUser.uid,
+                                                                pseudoVendeur: currentUser.pseudo,
+                                                            });
+                                                    } catch(err) {
+                                                        console.log(err)
+                                                    }
 
 
-                                        console.log('5')
-                                        const uploadImage = async (index) => {
-                                            return new Promise(async (resolve) => {
-                                                const uri = imagesTableau[index];
-                                                const response = await fetch(uri);
-                                                const blob = await response.blob();
-
-                                                const task = firebase
-                                                    .storage()
-                                                    .ref()
-                                                    .child(`${categorie}/${Math.random().toString(36)}`)
-                                                    .put(blob);
-
-                                                const taskProgress = (snapshot) => {
-                                                    console.log(
-                                                        `transferred: ${snapshot.bytesTransferred}`
-                                                    );
-                                                };
-
-                                                const taskCompleted = (snapshot) => {
-                                                    task.snapshot.ref
-                                                        .getDownloadURL()
-                                                        .then((snapshot) => {
-                                                            saveImageData(snapshot, index);
-                                                            console.log("snapshot", snapshot);
-                                                            resolve();
+                                                    console.log('3')
+                                                    await firebase
+                                                        .firestore()
+                                                        .collection("posts")
+                                                        .doc(firebase.auth().currentUser.uid)
+                                                        .collection("userPosts")
+                                                        .doc(`${id}`)
+                                                        .set({
+                                                            pseudoVendeur: currentUser.pseudo,
+                                                            categorie,
+                                                            marques,
+                                                            etat,
+                                                            date: date,
+                                                            title: values.title,
+                                                            description: values.description,
+                                                            prix: values.price,
+                                                            poids: values.poids,
                                                         });
-                                                };
 
-                                                const taskError = (snapshot) => {
-                                                    console.log(snapshot);
-                                                };
+                                                    console.log('4')
+                                                    await firebase
+                                                        .firestore()
+                                                        .collection("allProducts")
+                                                        .doc(`${id}`)
+                                                        .set({
+                                                            pseudoVendeur: currentUser.pseudo,
+                                                            categorie,
+                                                            marques,
+                                                            etat,
+                                                            date: date,
+                                                            title: values.title,
+                                                            description: values.description,
+                                                            prix: values.price,
+                                                            poids: values.poids,
+                                                        });
 
-                                                task.on(
-                                                    "state_changed",
-                                                    taskProgress,
-                                                    taskError,
-                                                    taskCompleted
-                                                );
-                                            });
-                                        };
 
-                                        console.log('6')
-                                        const saveImageData = (downloadURL, index) => {
-                                            const property_name =
-                                                index === 0 ? "downloadURL" : `downloadURL${index}`;
-                                            const data = {};
-                                            data[property_name] = downloadURL;
-                                            firebase
-                                                .firestore()
-                                                .collection(`${categorie}`)
-                                                .doc(`${id}`)
-                                                .update(data);
-                                            firebase
-                                                .firestore()
-                                                .collection("posts")
-                                                .doc(firebase.auth().currentUser.uid)
-                                                .collection("userPosts")
-                                                .doc(`${id}`)
-                                                .update(data);
-                                            firebase
-                                                .firestore()
-                                                .collection("allProducts")
-                                                .doc(`${id}`)
-                                                .update(data);
-                                        };
+                                                    console.log('5')
+                                                    const uploadImage = async (index) => {
+                                                        return new Promise(async (resolve) => {
+                                                            const uri = imagesTableau[index];
+                                                            const response = await fetch(uri);
+                                                            const blob = await response.blob();
 
-                                        await Promise.all(
-                                            imagesTableau.map(async (image, index) => {
-                                                console.log("test");
-                                                await uploadImage(index);
-                                            })
-                                        );
-                                        setIsLoading(false);
-                                        setImagesTableau([]);
-                                        setImage(null);
-                                        props.navigation.navigate("ValidationAnnonceModifieeScreen");
-                                    }
-                                }}
-                            >
-                                {(props) => (
-                                    <View style={styles.formContainer}>
-                                        <View style={styles.itemForm}>
-                                            <Text style={styles.text}>Titre</Text>
-                                            <TextInput
-                                                value={props.values.title}
-                                                style={styles.input}
-                                                placeholder="Ex: Selle Randol's"
-                                                onChangeText={props.handleChange("title")}
-                                            />
-                                        </View>
-                                        {props.errors.title && props.touched.title ? (
-                                            <Text style={{ color: "#D51317" }}>
-                                                {props.errors.title}
-                                            </Text>
-                                        ) : null}
+                                                            const task = firebase
+                                                                .storage()
+                                                                .ref()
+                                                                .child(`${categorie}/${Math.random().toString(36)}`)
+                                                                .put(blob);
 
-                                        <TouchableOpacity
-                                            style={styles.itemForm3}
-                                            onPress={() => navigateCategories()}
-                                        >
-                                            <Text style={styles.text}>Catégorie</Text>
-                                            {categorie ? (
-                                                <Text style={{ color: "black" }}>{categorie}</Text>
-                                            ) : (
-                                                <Text />
-                                            )}
-                                            <AntDesign name="right" size={24} color="grey" />
-                                        </TouchableOpacity>
+                                                            const taskProgress = (snapshot) => {
+                                                                console.log(
+                                                                    `transferred: ${snapshot.bytesTransferred}`
+                                                                );
+                                                            };
 
-                                        <TouchableOpacity
-                                            style={styles.itemForm3}
-                                            onPress={() => navigateMarques()}
-                                        >
-                                            <Text style={styles.text}>Marques</Text>
-                                            {marques ? (
-                                                <Text style={{ color: "black" }}>{marques}</Text>
-                                            ) : (
-                                                <Text />
-                                            )}
-                                            <AntDesign name="right" size={24} color="grey" />
-                                        </TouchableOpacity>
+                                                            const taskCompleted = (snapshot) => {
+                                                                task.snapshot.ref
+                                                                    .getDownloadURL()
+                                                                    .then((snapshot) => {
+                                                                        saveImageData(snapshot, index);
+                                                                        console.log("snapshot", snapshot);
+                                                                        resolve();
+                                                                    });
+                                                            };
 
-                                        <TouchableOpacity
-                                            style={styles.itemForm3}
-                                            onPress={() => {
-                                                navigateEtat();
-                                            }}
-                                        >
-                                            <Text>Etat</Text>
-                                            {etat ? (
-                                                <Text style={{ color: "black" }}>{etat}</Text>
-                                            ) : (
-                                                <Text />
-                                            )}
-                                            <AntDesign name="right" size={24} color="grey" />
-                                        </TouchableOpacity>
-                                        <View style={styles.itemForm2}>
-                                            <Text>Description</Text>
-                                            <TextInput
-                                                style={styles.input2}
-                                                multiline
-                                                placeholder="Ex : Neuf, jamais utilisé"
-                                                value={props.values.description}
-                                                onChangeText={props.handleChange("description")}
-                                            />
-                                        </View>
-                                        {props.errors.description && props.touched.description ? (
-                                            <Text style={{ color: "#D51317" }}>
-                                                {props.errors.description}
-                                            </Text>
-                                        ) : null}
-                                        <View style={styles.itemForm3}>
-                                            <Text>Prix €</Text>
-                                            <TextInput
-                                                keyboardType="numeric"
-                                                placeholder="Ex: 150,00"
-                                                inlineImageLeft="euro_icon"
-                                                style={styles.input}
-                                                value={props.values.price}
-                                                onChangeText={props.handleChange("price")}
-                                            />
-                                        </View>
-                                        {props.errors.price && props.touched.price ? (
-                                            <Text style={{ color: "#D51317" }}>
-                                                {props.errors.price}
-                                            </Text>
-                                        ) : null}
-                                        <View style={styles.itemForm3}>
-                                            <Text>Poids kg</Text>
-                                            <TextInput
-                                                keyboardType="numeric"
-                                                placeholder="Ex: 30kg"
-                                                style={styles.input}
-                                                value={props.values.poids}
-                                                onChangeText={props.handleChange("poids")}
-                                            />
-                                        </View>
+                                                            const taskError = (snapshot) => {
+                                                                console.log(snapshot);
+                                                            };
 
-                                        <ScrollView
-                                            horizontal={true}
-                                            style={styles.horizontalScrollList}
-                                        >
-                                            <View style={styles.photoBigContainer}>
-                                                {imagesTableau &&
-                                                imagesTableau.length <= 5 &&
-                                                imagesTableau.map((image, index) => (
-                                                    <View style={styles.imageList}>
+                                                            task.on(
+                                                                "state_changed",
+                                                                taskProgress,
+                                                                taskError,
+                                                                taskCompleted
+                                                            );
+                                                        });
+                                                    };
+
+                                                    console.log('6')
+                                                    const saveImageData = (downloadURL, index) => {
+                                                        const property_name =
+                                                            index === 0 ? "downloadURL" : `downloadURL${index}`;
+                                                        const data = {};
+                                                        data[property_name] = downloadURL;
+                                                        firebase
+                                                            .firestore()
+                                                            .collection(`${categorie}`)
+                                                            .doc(`${id}`)
+                                                            .update(data);
+                                                        firebase
+                                                            .firestore()
+                                                            .collection("posts")
+                                                            .doc(firebase.auth().currentUser.uid)
+                                                            .collection("userPosts")
+                                                            .doc(`${id}`)
+                                                            .update(data);
+                                                        firebase
+                                                            .firestore()
+                                                            .collection("allProducts")
+                                                            .doc(`${id}`)
+                                                            .update(data);
+                                                    };
+
+                                                    await Promise.all(
+                                                        imagesTableau.map(async (image, index) => {
+                                                            console.log("test");
+                                                            await uploadImage(index);
+                                                        })
+                                                    );
+                                                    setIsLoading(false);
+                                                    setImagesTableau([]);
+                                                    setImage(null);
+                                                    props.navigation.navigate('ValidationAnnonceModifieeScreen')
+                                            }
+                                            }
+                                        }}
+                                    >
+                                        {(props) => (
+                                            <View style={styles.formContainer}>
+                                                <View style={styles.itemForm}>
+                                                    <Text style={styles.text}>Titre</Text>
+                                                    <TextInput
+                                                        value={props.values.title}
+                                                        style={styles.input}
+                                                        placeholder="Ex: Selle Randol's"
+                                                        onChangeText={props.handleChange("title")}
+                                                    />
+                                                </View>
+                                                {props.errors.title && props.touched.title ? (
+                                                    <Text style={{ color: "#D51317" }}>
+                                                        {props.errors.title}
+                                                    </Text>
+                                                ) : null}
+
+                                                <TouchableOpacity
+                                                    style={styles.itemForm3}
+                                                    onPress={() => navigateCategories()}
+                                                >
+                                                    <Text style={styles.text}>Catégorie</Text>
+                                                    {categorie ? (
+                                                        <Text style={{ color: "black" }}>{categorie}</Text>
+                                                    ) : (
+                                                        <Text />
+                                                    )}
+                                                    <AntDesign name="right" size={24} color="grey" />
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity
+                                                    style={styles.itemForm3}
+                                                    onPress={() => navigateMarques()}
+                                                >
+                                                    <Text style={styles.text}>Marques</Text>
+                                                    {marques ? (
+                                                        <Text style={{ color: "black" }}>{marques}</Text>
+                                                    ) : (
+                                                        <Text />
+                                                    )}
+                                                    <AntDesign name="right" size={24} color="grey" />
+                                                </TouchableOpacity>
+
+                                                <TouchableOpacity
+                                                    style={styles.itemForm3}
+                                                    onPress={() => {
+                                                        navigateEtat();
+                                                    }}
+                                                >
+                                                    <Text>Etat</Text>
+                                                    {etat ? (
+                                                        <Text style={{ color: "black" }}>{etat}</Text>
+                                                    ) : (
+                                                        <Text />
+                                                    )}
+                                                    <AntDesign name="right" size={24} color="grey" />
+                                                </TouchableOpacity>
+                                                <View style={styles.itemForm2}>
+                                                    <Text>Description</Text>
+                                                    <TextInput
+                                                        style={styles.input2}
+                                                        multiline
+                                                        placeholder="Ex : Neuf, jamais utilisé"
+                                                        value={props.values.description}
+                                                        onChangeText={props.handleChange("description")}
+                                                    />
+                                                </View>
+                                                {props.errors.description && props.touched.description ? (
+                                                    <Text style={{ color: "#D51317" }}>
+                                                        {props.errors.description}
+                                                    </Text>
+                                                ) : null}
+                                                <View style={styles.itemForm3}>
+                                                    <Text>Prix €</Text>
+                                                    <TextInput
+                                                        keyboardType="numeric"
+                                                        placeholder="Ex: 150,00"
+                                                        inlineImageLeft="euro_icon"
+                                                        style={styles.input}
+                                                        value={props.values.price}
+                                                        onChangeText={props.handleChange("price")}
+                                                    />
+                                                </View>
+                                                {props.errors.price && props.touched.price ? (
+                                                    <Text style={{ color: "#D51317" }}>
+                                                        {props.errors.price}
+                                                    </Text>
+                                                ) : null}
+                                                <View style={styles.itemForm3}>
+                                                    <Text>Poids kg</Text>
+                                                    <TextInput
+                                                        keyboardType="numeric"
+                                                        placeholder="Ex: 30kg"
+                                                        style={styles.input}
+                                                        value={props.values.poids}
+                                                        onChangeText={props.handleChange("poids")}
+                                                    />
+                                                </View>
+
+                                                <ScrollView
+                                                    horizontal={true}
+                                                    style={styles.horizontalScrollList}
+                                                >
+                                                    <View style={styles.photoBigContainer}>
+                                                        {imagesTableau &&
+                                                        imagesTableau.length <= 5 &&
+                                                        imagesTableau.map((image, index) => (
+                                                            <View style={styles.imageList}>
+                                                                <TouchableOpacity
+                                                                    onPress={() =>
+                                                                        navigatePhotoScreen(imagesTableau[index])
+                                                                    }
+                                                                >
+                                                                    <Image
+                                                                        style={styles.image}
+                                                                        source={{ uri: imagesTableau[index] }}
+                                                                    />
+                                                                </TouchableOpacity>
+
+                                                                <TouchableOpacity
+                                                                    onPress={() => removePicture(index)}
+                                                                >
+                                                                    <AntDesign
+                                                                        name="close"
+                                                                        size={24}
+                                                                        color="#DADADA"
+                                                                        style={styles.closeIcon}
+                                                                    />
+                                                                </TouchableOpacity>
+                                                            </View>
+                                                        ))}
+                                                    </View>
+                                                </ScrollView>
+                                                {imagesTableau && imagesTableau.length < 5 ? (
+                                                    <View>
                                                         <TouchableOpacity
-                                                            onPress={() =>
-                                                                navigatePhotoScreen(imagesTableau[index])
-                                                            }
+                                                            style={styles.photoContainer}
+                                                            onPress={pickImage}
                                                         >
-                                                            <Image
-                                                                style={styles.image}
-                                                                source={{ uri: imagesTableau[index] }}
-                                                            />
+                                                            <Text style={styles.addPhotoText}>
+                                                                Ajouter des photos depuis la librairie
+                                                            </Text>
+                                                            <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
+                                                            <AntDesign name="picture" size={24} color="#DADADA" />
                                                         </TouchableOpacity>
-
                                                         <TouchableOpacity
-                                                            onPress={() => removePicture(index)}
+                                                            style={styles.photoContainer}
+                                                            onPress={takePicture}
                                                         >
-                                                            <AntDesign
-                                                                name="close"
-                                                                size={24}
-                                                                color="#DADADA"
-                                                                style={styles.closeIcon}
-                                                            />
+                                                            <Text style={styles.addPhotoText}>
+                                                                Prendre une photo
+                                                            </Text>
+                                                            <AntDesign name="camera" size={24} color="#DADADA" />
                                                         </TouchableOpacity>
                                                     </View>
-                                                ))}
-                                            </View>
-                                        </ScrollView>
-                                        {imagesTableau && imagesTableau.length < 5 ? (
-                                            <View>
+                                                ) : (
+                                                    <Text />
+                                                )}
+
+                                                <Text style={{ color: "#D51317" }}>{error}</Text>
                                                 <TouchableOpacity
-                                                    style={styles.photoContainer}
-                                                    onPress={pickImage}
+                                                    style={styles.mettreEnVente}
+                                                    onPress={props.handleSubmit}
                                                 >
-                                                    <Text style={styles.addPhotoText}>
-                                                        Ajouter des photos depuis la librairie
+                                                    <Text style={styles.mettreEnVenteText}>
+                                                        Enregistrer la modification
                                                     </Text>
-                                                    <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
-                                                    <AntDesign name="picture" size={24} color="#DADADA" />
                                                 </TouchableOpacity>
-                                                <TouchableOpacity
-                                                    style={styles.photoContainer}
-                                                    onPress={takePicture}
-                                                >
-                                                    <Text style={styles.addPhotoText}>
-                                                        Prendre une photo
-                                                    </Text>
-                                                    <AntDesign name="camera" size={24} color="#DADADA" />
-                                                </TouchableOpacity>
+
                                             </View>
-                                        ) : (
-                                            <Text />
                                         )}
+                                    </Formik>
+                                </View>
+                            )}
+                        </TouchableWithoutFeedback>
+                    </ScrollView>
+                </View>
+            )
+        } else {
+            if (response !== undefined) {
+                console.log("paimentstatus", paymentStatus);
+                return (
+                    <View
+                    >
+                        {paymentStatus === "Votre paiement est en cours de traitement" ? (
+                            <View>
+                                <Text>{paymentStatus}</Text>
+                                <ActivityIndicator />
+                            </View>
+                        ) : (
+                            <Text></Text>
+                        )}
 
-                                        <Text style={{ color: "#D51317" }}>{error}</Text>
-                                        <TouchableOpacity
-                                            style={styles.mettreEnVente}
-                                            onPress={props.handleSubmit}
-                                        >
-                                            <Text style={styles.mettreEnVenteText}>
-                                                Enregistrer la modification
-                                            </Text>
-                                        </TouchableOpacity>
+                        {paymentStatus === "Le paiement a échoué" ? (
+                            <View>
+                                <Text>Le paiment a échoué</Text>
+                                <TouchableOpacity
+                                    style={styles.retourContainer}
+                                    onPress={() => {
+                                        props.navigation.navigate("AccueilScreen");
+                                    }}
+                                >
+                                    <Text style={styles.text2}>Retour au menu principal</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <Text />
+                        )}
+                        {paymentStatus ===
+                        "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
+                            <View style={styles.container2}>
+                                <AntDesign name="checkcircleo" size={200} color="white" />
+                                <Text style={styles.text3}>
+                                    Votre annonce a bien été modifiée
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.retourContainer}
+                                    onPress={() => {
+                                        props.navigation.navigate("ProfileScreen");
+                                    }}
+                                >
+                                    <Text style={styles.text2}>Retour au profil</Text>
+                                </TouchableOpacity>
+                            </View>
+                        ) : (
+                            <Text></Text>
+                        )}
+                    </View>
+                );
+            } else {
+                return (
+                    <View>
+                        <PaymentView
+                            onCheckStatus={onCheckStatus}
+                            product={"Paiement unique"}
+                            amount="2.5"
+                        />
+                        <TouchableOpacity
+                            style={styles.mettreEnVenteOptional}
+                            onPress={() => {
+                                setMakePayment(!makePayment);
+                            }}
+                        >
+                            <Text style={styles.mettreEnVenteTextOptional}>
+                                Annuler Paiement
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        }
 
-                                    </View>
-                                )}
-                            </Formik>
-                        </View>
-                    )}
-                </TouchableWithoutFeedback>
-            </ScrollView>
-        </View>
-    );
+    }
+
+    return <View style={styles.container}>{paymentUI(props)}</View>;
+
 };
 
 const styles = StyleSheet.create({
@@ -635,6 +764,18 @@ const styles = StyleSheet.create({
     },
     input: {
         width: "80%",
+    },
+    mettreEnVenteOptional: {
+        backgroundColor: "#fff",
+        borderColor: "#D51317",
+        marginTop: 10,
+        width: windowWidth - 20,
+        paddingVertical: "5%",
+    },
+    mettreEnVenteTextOptional: {
+        color: "#D51317",
+        textAlign: "center",
+        fontSize: 18,
     },
     addPhotoText: {
         color: "black",
