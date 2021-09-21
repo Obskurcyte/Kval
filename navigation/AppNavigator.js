@@ -970,49 +970,49 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="AdresseChoiceScreen"
-            component={AdresseChoiceScreen}
-            options={{
-                title: "Adresse",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <AchatStackNavigator.Screen
-            name="AdresseValidationScreen"
-            component={AdresseValidationScreen}
-            options={{
-              headerShown: false
-            }}
-        />
-        <AchatStackNavigator.Screen
-            name="IBANChoiceScreen"
-            component={IbanChoiceScreen}
-            options={{
-                title: "IBAN",
-                headerStyle: {
-                backgroundColor: "white",
-            },
-                headerTitleStyle: {
-                color: "black",
-            },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                color: "black",
-            },
-                headerTitleAlign: "center",
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="AdresseChoiceScreen"
+        component={AdresseChoiceScreen}
+        options={{
+          title: "Adresse",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
+      <AchatStackNavigator.Screen
+        name="AdresseValidationScreen"
+        component={AdresseValidationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <AchatStackNavigator.Screen
+        name="IBANChoiceScreen"
+        component={IbanChoiceScreen}
+        options={{
+          title: "IBAN",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
       <AchatStackNavigator.Screen
         name="ThankYouScreen"
         component={ThankYouScreen}
@@ -1830,90 +1830,90 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil",
         }}
       />
-        <ProfileStackNavigator.Screen
-            name="ContactScreen"
-            component={ContactScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Contactez-nous",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="PhotoModifierAnnonceScreen"
-            component={PhotoModifierAnnonceScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Photo",
-            }}
-        />
-        <ProfileStackNavigator.Screen
+      <ProfileStackNavigator.Screen
+        name="ContactScreen"
+        component={ContactScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Contactez-nous",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="PhotoModifierAnnonceScreen"
+        component={PhotoModifierAnnonceScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Photo",
+        }}
+      />
+      <ProfileStackNavigator.Screen
         name="EnterIbanScreen"
         component={EnterIbanScreen}
         options={{
-            headerRightContainerStyle: {
-                paddingRight: 10,
-            },
-            headerBackTitle: "Retour",
-            headerLeftContainerStyle: {
-                paddingLeft: 10,
-            },
-            headerTitle: "Saisissez votre IBAN",
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Saisissez votre IBAN",
         }}
-    />
-        <ProfileStackNavigator.Screen
-            name="ValidationIBANScreen"
-            component={ValidationIBANScreen}
-            options={{
-              headerShown: false
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ValidationAnnonceModifieeScreen"
-            component={ValidationAnnonceModifieeScreen}
-            options={{
-                headerShown: false
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ModifierAnnonceScreen"
-            component={ModifierAnnonceScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Modifier votre annonce",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ValidationContactScreen"
-            component={ValidationContactScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Contactez-nous",
-            }}
-        />
+      />
+      <ProfileStackNavigator.Screen
+        name="ValidationIBANScreen"
+        component={ValidationIBANScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ValidationAnnonceModifieeScreen"
+        component={ValidationAnnonceModifieeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ModifierAnnonceScreen"
+        component={ModifierAnnonceScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Modifier votre annonce",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ValidationContactScreen"
+        component={ValidationContactScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Contactez-nous",
+        }}
+      />
       <ProfileStackNavigator.Screen
         name="ProductDetailScreen"
         children={ProductDetailScreen}
@@ -2136,16 +2136,17 @@ export const ProfileNavigator = (props) => {
       <ProfileStackNavigator.Screen
         name="CGUScreen"
         component={CGUScreen}
-        options={{
+        options={(props) => ({
           headerRightContainerStyle: {
             paddingRight: 10,
           },
           headerLeftContainerStyle: {
             paddingLeft: 10,
           },
+          headerBackVisible: true,
           headerBackTitle: "Retour",
           headerTitle: "CGU & CGV",
-        }}
+        })}
       />
       <ProfileStackNavigator.Screen
         name="ViePriveeScreen"

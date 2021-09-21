@@ -30,13 +30,13 @@ const windowHeight = Dimensions.get("window").height;
 
 const CartScreen = (props) => {
   const dispatch = useDispatch();
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
-     dispatch(userActions.getUser());
+      dispatch(userActions.getUser());
     });
     return unsubscribe;
   }, [props.navigation, dispatch]);
@@ -207,10 +207,10 @@ const CartScreen = (props) => {
   const cartTotalAmount = useSelector((state) => state.cart.items);
 
   const [errors, setErrors] = useState(false);
-  let enteredAdresse = false
+  let enteredAdresse = false;
   if (userData) {
-    enteredAdresse = true
-    IBAN = userData.IBAN
+    enteredAdresse = true;
+    IBAN = userData.IBAN;
   }
 
   const ViewPortefeuille = () => {
@@ -335,36 +335,44 @@ const CartScreen = (props) => {
     if (!makePayment) {
       return (
         <ScrollView style={styles.container}>
-          {cartItems.length !==0 ?
+          {cartItems.length !== 0 ? (
             <View>
               <FlatList
-                  style={styles.list}
-                  data={cartItems}
-                  horizontal={true}
-                  keyExtractor={(item) => item.productId}
-                  renderItem={(itemData) => {
-                    return (
-                        <CartItem
-                            title={itemData.item.productTitle}
-                            price={itemData.item.productPrice}
-                            image={itemData.item.image}
-                            onDelete={() => {
-                              dispatch(
-                                  cartActions.removeFromCart(itemData.item.productId)
-                              );
-                            }}
-                        />
-                    );
-                  }}
+                style={styles.list}
+                data={cartItems}
+                horizontal={true}
+                keyExtractor={(item) => item.productId}
+                renderItem={(itemData) => {
+                  return (
+                    <CartItem
+                      title={itemData.item.productTitle}
+                      price={itemData.item.productPrice}
+                      image={itemData.item.image}
+                      onDelete={() => {
+                        dispatch(
+                          cartActions.removeFromCart(itemData.item.productId)
+                        );
+                      }}
+                    />
+                  );
+                }}
               />
 
-              <View style={[styles.itemForm3, {    borderTopColor: "lightgrey",
-                borderTopWidth: 1, marginTop: 10}]}>
+              <View
+                style={[
+                  styles.itemForm3,
+                  {
+                    borderTopColor: "lightgrey",
+                    borderTopWidth: 1,
+                    marginTop: 10,
+                  },
+                ]}
+              >
                 <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
                 <TouchableOpacity
-                    onPress={() => {
-                      props.navigation.navigate("LivraisonChoiceScreen");
-                    }}
+                  onPress={() => {
+                    props.navigation.navigate("LivraisonChoiceScreen");
+                  }}
                 >
                   {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
                 </TouchableOpacity>
@@ -376,20 +384,31 @@ const CartScreen = (props) => {
                 </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.adresseInner}>
-                    {adresse
-                        ? `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
-                        : <Text/>
-                    }
+                    {adresse ? (
+                      `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
+                    ) : (
+                      <Text />
+                    )}
 
-                    {enteredAdresse && !adresse ? `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} ` : <Text/>
-                   }
+                    {enteredAdresse && !adresse ? (
+                      `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `
+                    ) : (
+                      <Text />
+                    )}
 
-                    {adresse || enteredAdresse ? <TouchableOpacity onPress={() => props.navigation.navigate('AdresseChoiceScreen')} style={styles.modifierAdresse}>
-                      <Text>Modifier</Text>
-                    </TouchableOpacity> : <Text/>
-                    }
+                    {adresse || enteredAdresse ? (
+                      <TouchableOpacity
+                        onPress={() =>
+                          props.navigation.navigate("AdresseChoiceScreen")
+                        }
+                        style={styles.modifierAdresse}
+                      >
+                        <Text>Modifier</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <Text />
+                    )}
                   </Text>
-
                 </View>
               </View>
 
@@ -412,7 +431,9 @@ const CartScreen = (props) => {
                 </View>
                 <View style={styles.itemForm3}>
                   <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
-                  <Text style={{ fontSize: 18 }}>- {reductionPortefeuille} €</Text>
+                  <Text style={{ fontSize: 18 }}>
+                    - {reductionPortefeuille} €
+                  </Text>
                 </View>
                 <View style={styles.itemForm3}>
                   <Text style={{ fontSize: 18 }}>Total</Text>
@@ -422,41 +443,62 @@ const CartScreen = (props) => {
 
               <View style={styles.checkBoxContainer}>
                 <View style={styles.checkboxInner}>
-
-            <BouncyCheckbox
-              size={25}
-              fillColor="red"
-              unfillColor="#FFFFFF"
-              iconStyle={{ borderColor: "red" }}
-              />
+                  <BouncyCheckbox
+                    size={25}
+                    fillColor="red"
+                    unfillColor="#FFFFFF"
+                    iconStyle={{ borderColor: "red" }}
+                  />
                 </View>
-                <Text style={styles.acceptGeneralConditions}>J’accepte les conditions générales de vente, cliques <TouchableOpacity onPress={() => props.navigation.navigate('Profil', {screen: 'CGUScreen'})} style={styles.iciContainer}><Text style={styles.ici}>ici</Text></TouchableOpacity> pour les consulter </Text>
+                <Text style={styles.acceptGeneralConditions}>
+                  J’accepte les conditions générales de vente, cliques{" "}
+                  <Text
+                    style={styles.ici}
+                    onPress={() =>
+                      props.navigation.navigate("Profil", {
+                        screen: "CGUScreen",
+                        params: { from: "CartScreen" },
+                      })
+                    }
+                  >
+                    ici
+                  </Text>{" "}
+                  pour les consulter{" "}
+                </Text>
               </View>
               <TouchableOpacity
-                  style={styles.mettreEnVente}
-                  onPress={async () => {
-                    if (props.loggedInAsVisit) {
-                      props.setLoggedInAsVisit(!props.loggedInAsVisit);
+                style={styles.mettreEnVente}
+                onPress={async () => {
+                  if (props.loggedInAsVisit) {
+                    props.setLoggedInAsVisit(!props.loggedInAsVisit);
+                  } else {
+                    if (newTotal == 0.0) {
+                      console.log("wola");
+                      console.log(portefeuillePayment);
+                      setPortefeuillePayment(true);
+                    } else if (!IBAN || !livraison) {
+                      setErrors(true);
                     } else {
-                      if (newTotal == 0.0) {
-                        console.log("wola");
-                        console.log(portefeuillePayment);
-                        setPortefeuillePayment(true);
-                      } else if (!IBAN || !livraison){
-                         setErrors(true)
-                      }
-                       else {
-                        setMakePayment(true);
-                      }
+                      setMakePayment(true);
                     }
-                  }}
+                  }
+                }}
               >
-                <Text style={styles.mettreEnVenteText}>Procéder au paiement</Text>
+                <Text style={styles.mettreEnVenteText}>
+                  Procéder au paiement
+                </Text>
               </TouchableOpacity>
-              {errors ? <Text style={{textAlign: 'center'}}>Veuillez remplir tous les champs</Text> : <Text/>}
-            </View> : <Text style={styles.noCommandeText}>Votre panier est vide</Text>
-          }
-
+              {errors ? (
+                <Text style={{ textAlign: "center" }}>
+                  Veuillez remplir tous les champs
+                </Text>
+              ) : (
+                <Text />
+              )}
+            </View>
+          ) : (
+            <Text style={styles.noCommandeText}>Votre panier est vide</Text>
+          )}
         </ScrollView>
       );
     } else {
@@ -565,14 +607,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   checkBoxContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginLeft: 20
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: 20,
   },
   noCommandeText: {
     fontSize: 20,
-    textAlign: 'center',
-    marginTop: windowHeight/2.5
+    textAlign: "center",
+    marginTop: windowHeight / 2.5,
   },
   totalContainer: {
     display: "flex",
@@ -588,7 +630,7 @@ const styles = StyleSheet.create({
   totalPrice: {
     color: "black",
     fontSize: 18,
-    width: '70%'
+    width: "70%",
   },
   mettreEnVente: {
     backgroundColor: "#D51317",
@@ -708,7 +750,7 @@ const styles = StyleSheet.create({
   modifierAdresse: {
     marginBottom: -20,
     marginLeft: 20,
-    height: 30
+    height: 30,
   },
   innerContainer: {
     display: "flex",
@@ -817,27 +859,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   adresseText: {
-    width: '30%'
+    width: "30%",
   },
   adresseContainer: {
     display: "flex",
     flexDirection: "column",
     padding: 5,
-    width: "60%"
+    width: "60%",
   },
   portefeuilleText: {
     fontSize: 18,
     textAlign: "center",
   },
   acceptGeneralConditions: {
-    maxWidth: '80%'
+    maxWidth: "80%",
   },
   iciContainer: {
-    marginTop: 5
+    margin: 0,
+    padding: 0,
   },
   ici: {
-    color: 'blue'
-  }
+    marginTop: 25,
+    padding: 0,
+    color: "blue",
+  },
 });
 
 export default CartScreen;
