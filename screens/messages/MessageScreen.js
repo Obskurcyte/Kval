@@ -42,52 +42,59 @@ const MessageScreen = (props) => {
   useEffect(() => {
     console.log("woskdls");
     const threads = [];
-    const unsubscribe = firebase
-      .firestore()
-      .collection("MESSAGE_THREADS")
-      .where("idVendeur", "==", firebase.auth().currentUser.uid)
-        .get().then((querySnapshot) => {
-          const threads = [];
-          querySnapshot.docs.map((documentSnapshot) => {
-            console.log(documentSnapshot)
-            threads.push({
-              _id: documentSnapshot.id,
-              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-              latestMessage: { text: "" },
-              ...documentSnapshot.data(),
-            });
+
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      firebase
+          .firestore()
+          .collection("MESSAGE_THREADS")
+          .where("idVendeur", "==", firebase.auth().currentUser.uid)
+          .get().then((querySnapshot) => {
+        const threads = [];
+        querySnapshot.docs.map((documentSnapshot) => {
+          console.log(documentSnapshot)
+          threads.push({
+            _id: documentSnapshot.id,
+            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+            latestMessage: { text: "" },
+            ...documentSnapshot.data(),
           });
-          if (loading) {
-            setLoading(false);
-          }
-          setThreads(threads);
-        })
-      }, [threads]);
+        });
+        if (loading) {
+          setLoading(false);
+        }
+        setThreads(threads);
+      })
+    })
+    return unsubscribe
+      }, [props.navigation]);
 
   useEffect(() => {
     console.log("woskdls");
     const threads = [];
-    const unsubscribe = firebase
-        .firestore()
-        .collection("MESSAGE_THREADS")
-        .where("idAcheteur", "==", firebase.auth().currentUser.uid)
-        .get().then((querySnapshot) => {
-          const threads = [];
-          querySnapshot.docs.map((documentSnapshot) => {
-            console.log(documentSnapshot)
-            threads.push({
-              _id: documentSnapshot.id,
-              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-              latestMessage: { text: "" },
-              ...documentSnapshot.data(),
-            });
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      firebase
+          .firestore()
+          .collection("MESSAGE_THREADS")
+          .where("idAcheteur", "==", firebase.auth().currentUser.uid)
+          .get().then((querySnapshot) => {
+        const threads = [];
+        querySnapshot.docs.map((documentSnapshot) => {
+          console.log(documentSnapshot)
+          threads.push({
+            _id: documentSnapshot.id,
+            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+            latestMessage: { text: "" },
+            ...documentSnapshot.data(),
           });
-          if (loading) {
-            setLoading(false);
-          }
-          setThreads2(threads);
-        })
-  }, [threads2]);
+        });
+        if (loading) {
+          setLoading(false);
+        }
+        setThreads2(threads);
+      })
+    })
+    return unsubscribe
+  }, [props.navigation]);
 
 
   if (threads2.length ===0) {
