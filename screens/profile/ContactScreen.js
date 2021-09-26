@@ -54,7 +54,6 @@ const ContactScreen = (props) => {
                                 <TextInput
                                     placeholder="Prénom"
                                     style={styles.input}
-                                    keyboardType="numeric"
                                     value={props.values.prenom}
                                     onChangeText={props.handleChange('prenom')}
                                 />

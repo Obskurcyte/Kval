@@ -26,7 +26,6 @@ const SEPARATOR_WIDTH = 10;
 
 const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
-  console.log(props);
   const dispatch = useDispatch();
 
   //-------------CAROUSEL----------------//
@@ -74,23 +73,20 @@ const ProductDetailScreen = (props) => {
   }, [dispatch]);
 
   let commentaires = useSelector((state) => state.commandes.commentaires);
-  console.log("wola", commentaires);
-  console.log(product);
+
+  console.log('product', product);
 
   let ratings = [];
   for (let data in commentaires) {
     ratings.push(commentaires[data].rating);
   }
 
-  console.log("ratings", ratings);
 
   let overallRating = 0;
   for (let data in ratings) {
-    console.log(ratings[data]);
     overallRating += parseInt(ratings[data]);
   }
 
-  console.log("overall", overallRating);
 
   let trueRating;
   if (commentaires) {
@@ -175,10 +171,7 @@ const ProductDetailScreen = (props) => {
 
   //-----------------------------------MESSAGES---------------------//
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
-  console.log(
-    "authid",
-    !props.loggedInAsVisit && firebase.auth().currentUser.uid
-  );
+
   console.log(product.idVendeur, idAcheteur);
 
   const onMessagePressed = () => {

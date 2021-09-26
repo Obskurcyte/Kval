@@ -38,7 +38,6 @@ const VendreArticleScreen = (props) => {
     props.route.params ? props.route.params.modify : null
   );
 
-
   let initialValues = {
     title: "",
     description: "",
@@ -89,6 +88,7 @@ const VendreArticleScreen = (props) => {
     console.log(props.route.params);
   }, [props.route.params]);
 
+  console.log('current', currentUser)
   console.log("cat", categorie);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -235,7 +235,7 @@ const VendreArticleScreen = (props) => {
                         prix: values.price,
                         poids: values.poids,
                         pushToken,
-                        idVendeur: firebase.auth().currentUser.uid,
+                        idVendeur: currentUser.id,
                         pseudoVendeur: currentUser.pseudo,
                       });
                     await firebase
@@ -250,6 +250,7 @@ const VendreArticleScreen = (props) => {
                         marques,
                         etat,
                         date: date,
+                        idVendeur: currentUser.id,
                         title: values.title,
                         description: values.description,
                         prix: values.price,
@@ -266,6 +267,7 @@ const VendreArticleScreen = (props) => {
                           marques,
                           etat,
                           date: date,
+                          idVendeur: currentUser.id,
                           title: values.title,
                           description: values.description,
                           prix: values.price,

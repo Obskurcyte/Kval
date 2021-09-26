@@ -46,7 +46,6 @@ const ModifierAnnonceScreen = (props) => {
   };
 
   let price = props.route.params.prix;
-  console.log("params", props.route.params);
   const old_categorie = props.route.params.categorie;
 
   const product_id = props.route.params.id;
@@ -54,10 +53,17 @@ const ModifierAnnonceScreen = (props) => {
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
   const [marques, setMarques] = useState(null);
+  const [titre, setTitre] = useState('');
+  const [description, setDescription] = useState('');
+  const [prix, setPrix] = useState('');
+  const [poids, setPoids] = useState('');
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [response, setResponse] = useState();
-  console.log(makePayment);
+  const [goMessagePayment, setGoMessagePayment] = useState(false);
+
+
+  console.log(titre);
   useEffect(() => {
     dispatch(usersActions.getUser());
   }, []);
@@ -82,12 +88,9 @@ const ModifierAnnonceScreen = (props) => {
         images.push(props.route.params.downloadURL4);
       setImagesTableau(images);
     }
-    console.log(props.route.params);
   }, [props.route.params]);
 
-  console.log("marques", marques);
 
-  console.log("cat", categorie);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
@@ -156,6 +159,7 @@ const ModifierAnnonceScreen = (props) => {
 
   const [error, setError] = useState("");
 
+  console.log('go', goMessagePayment)
   const date = new Date();
 
   const onCheckStatus = async (paymentResponse) => {
@@ -168,34 +172,217 @@ const ModifierAnnonceScreen = (props) => {
       const stripeResponse = await axios.post(
         "https://kval-backend.herokuapp.com/paymentonetime",
         {
-          email: `${userData.email}`,
+          email: "hadrien.jaubert@gmail.com",
           authToken: jsonResponse,
           amount: 2500,
         }
       );
 
-      console.log(stripeResponse.data);
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
+
+          let pushToken;
+          let statusObj =
+              await Notifications.getPermissionsAsync();
+          if (statusObj.status !== "granted") {
+            statusObj =
+                await Notifications.requestPermissionsAsync();
+          }
+          if (statusObj.status !== "granted") {
+            pushToken = null;
+          } else {
+            pushToken = (
+                await Notifications.getExpoPushTokenAsync()
+            ).data;
+          }
+
+          const old_id = product_id;
+          const id = Math.random() * 300000000;
+
+          if (imagesTableau.length === 0) {
+            setError("Veuillez uploader des photos");
+          } else {
+            console.log("1");
+            try {
+              await firebase
+                  .firestore()
+                  .collection(`${old_categorie}`)
+                  .doc(`${old_id}`)
+                  .delete();
+
+              await firebase
+                  .firestore()
+                  .collection("posts")
+                  .doc(firebase.auth().currentUser.uid)
+                  .collection("userPosts")
+                  .doc(`${old_id}`)
+                  .delete();
+
+              await firebase
+                  .firestore()
+                  .collection("allProducts")
+                  .doc(`${old_id}`)
+                  .delete();
+            } catch (err) {
+              console.log(err);
+            }
+
+            console.log("2");
+            try {
+              await firebase
+                  .firestore()
+                  .collection(`${categorie}`)
+                  .doc(`${id}`)
+                  .set({
+                    categorie,
+                    etat,
+                    id,
+                    marques,
+                    date: date,
+                    title: titre,
+                    description: description,
+                    prix: price,
+                    poids: poids,
+                    pushToken,
+                    idVendeur: firebase.auth().currentUser.uid,
+                    pseudoVendeur: currentUser.pseudo,
+                  });
+            } catch (err) {
+              console.log(err);
+            }
+
+            console.log("3");
+            await firebase
+                .firestore()
+                .collection("posts")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("userPosts")
+                .doc(`${id}`)
+                .set({
+                  pseudoVendeur: currentUser.pseudo,
+                  categorie,
+                  marques,
+                  etat,
+                  date: date,
+                  title: titre,
+                  idVendeur: firebase.auth().currentUser.uid,
+                  description: description,
+                  prix: prix,
+                  poids: poids,
+                });
+
+            console.log("4");
+            await firebase
+                .firestore()
+                .collection("allProducts")
+                .doc(`${id}`)
+                .set({
+                  pseudoVendeur: currentUser.pseudo,
+                  categorie,
+                  marques,
+                  etat,
+                  date: date,
+                  title: titre,
+                  idVendeur: firebase.auth().currentUser.uid,
+                  description: description,
+                  prix: prix,
+                  poids: poids,
+                });
+
+            console.log("5");
+            const uploadImage = async (index) => {
+              return new Promise(async (resolve) => {
+                const uri = imagesTableau[index];
+                const response = await fetch(uri);
+                const blob = await response.blob();
+
+                const task = firebase
+                    .storage()
+                    .ref()
+                    .child(
+                        `${categorie}/${Math.random().toString(36)}`
+                    )
+                    .put(blob);
+
+                const taskProgress = (snapshot) => {
+                  console.log(
+                      `transferred: ${snapshot.bytesTransferred}`
+                  );
+                };
+
+                const taskCompleted = (snapshot) => {
+                  task.snapshot.ref
+                      .getDownloadURL()
+                      .then((snapshot) => {
+                        saveImageData(snapshot, index);
+                        console.log("snapshot", snapshot);
+                        resolve();
+                      });
+                };
+
+                const taskError = (snapshot) => {
+                  console.log(snapshot);
+                };
+
+                task.on(
+                    "state_changed",
+                    taskProgress,
+                    taskError,
+                    taskCompleted
+                );
+              });
+            };
+
+            console.log("6");
+            const saveImageData = (downloadURL, index) => {
+              const property_name =
+                  index === 0
+                      ? "downloadURL"
+                      : `downloadURL${index}`;
+              const data = {};
+              data[property_name] = downloadURL;
+              firebase
+                  .firestore()
+                  .collection(`${categorie}`)
+                  .doc(`${id}`)
+                  .update(data);
+              firebase
+                  .firestore()
+                  .collection("posts")
+                  .doc(firebase.auth().currentUser.uid)
+                  .collection("userPosts")
+                  .doc(`${id}`)
+                  .update(data);
+              firebase
+                  .firestore()
+                  .collection("allProducts")
+                  .doc(`${id}`)
+                  .update(data);
+            };
+
+            await Promise.all(
+                imagesTableau.map(async (image, index) => {
+                  console.log("test");
+                  await uploadImage(index);
+                })
+            );
           setPaymentStatus(
             "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
           );
-        } else {
+        }} else {
           setPaymentStatus("Le paiement a échoué");
         }
       } else {
         setPaymentStatus("Le paiement a échoué");
       }
     } catch (error) {
-      console.log(error);
       setPaymentStatus("Le paiement a échoué");
     }
   };
 
   const paymentUI = (props) => {
-    console.log(!makePayment);
-    if (!makePayment) {
+    if (!makePayment && !goMessagePayment) {
       return (
         <View style={styles.container}>
           <ScrollView style={styles.container}>
@@ -220,9 +407,12 @@ const ModifierAnnonceScreen = (props) => {
                     validationSchema={uploadSchema}
                     onSubmit={async (values) => {
                       if (price !== values.price) {
-                        setMakePayment(true);
+                        setGoMessagePayment(true);
+                        setTitre(values.title)
+                        setDescription(values.description)
+                        setPrix(values.price)
+                        setPoids(values.poids)
                       } else {
-                        console.log("values", values);
                         setIsLoading(true);
 
                         let pushToken;
@@ -288,7 +478,7 @@ const ModifierAnnonceScreen = (props) => {
                                 prix: values.price,
                                 poids: values.poids,
                                 pushToken,
-                                idVendeur: firebase.auth().currentUser.uid,
+                                idVendeur: currentUser.id,
                                 pseudoVendeur: currentUser.pseudo,
                               });
                           } catch (err) {
@@ -309,6 +499,7 @@ const ModifierAnnonceScreen = (props) => {
                               etat,
                               date: date,
                               title: values.title,
+                              idVendeur: currentUser.id,
                               description: values.description,
                               prix: values.price,
                               poids: values.poids,
@@ -327,6 +518,7 @@ const ModifierAnnonceScreen = (props) => {
                               date: date,
                               title: values.title,
                               description: values.description,
+                              idVendeur: currentUser.id,
                               prix: values.price,
                               poids: values.poids,
                             });
@@ -426,7 +618,7 @@ const ModifierAnnonceScreen = (props) => {
                             value={props.values.title}
                             style={styles.input}
                             placeholder="Ex: Selle Randol's"
-                            onChangeText={props.handleChange("title")}
+                            onChangeText={props.handleChange('title')}
                           />
                         </View>
                         {props.errors.title && props.touched.title ? (
@@ -606,15 +798,35 @@ const ModifierAnnonceScreen = (props) => {
           </ScrollView>
         </View>
       );
-    } else {
+    } if (goMessagePayment) {
+      return (
+          <View style={styles.container}>
+            <Text style={styles.intermediateMessage}>Vous avez changé le prix de votre annonce. Vous devez en conséquence payer 2,5€.</Text>
+            <TouchableOpacity
+                style={styles.mettreEnVenteIntermediate}
+                onPress={() => {
+                  setGoMessagePayment(false)
+                  setMakePayment(true)
+                }}
+            >
+              <Text style={styles.mettreEnVenteText}>
+                Poursuivre vers le paiement
+              </Text>
+            </TouchableOpacity>
+          </View>
+      )
+    }
+
+
+    else {
       if (response !== undefined) {
         console.log("paimentstatus", paymentStatus);
         return (
           <View>
             {paymentStatus === "Votre paiement est en cours de traitement" ? (
               <View>
-                <Text>{paymentStatus}</Text>
-                <ActivityIndicator />
+                <Text style={styles.paymentStatus}>{paymentStatus}</Text>
+                <ActivityIndicator style={styles.indicator}/>
               </View>
             ) : (
               <Text></Text>
@@ -638,7 +850,7 @@ const ModifierAnnonceScreen = (props) => {
             {paymentStatus ===
             "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
               <View style={styles.container2}>
-                <AntDesign name="checkcircleo" size={200} color="white" />
+                <AntDesign name="checkcircleo" size={200} color="white" style={styles.icon}/>
                 <Text style={styles.text3}>
                   Votre annonce a bien été modifiée
                 </Text>
@@ -662,7 +874,7 @@ const ModifierAnnonceScreen = (props) => {
             <PaymentView
               onCheckStatus={onCheckStatus}
               product={"Paiement unique"}
-              amount="2.5"
+              amount={2.5}
             />
             <TouchableOpacity
               style={styles.mettreEnVenteOptional}
@@ -689,6 +901,19 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 5,
   },
+  container2: {
+    backgroundColor: "#D51317",
+    height: '100%'
+  },
+  icon: {
+    marginLeft: "22%",
+    marginTop: 20
+  },
+  indicator: {
+    width: 30,
+    marginLeft: "45%",
+    marginTop: "10%"
+  },
   closeIcon: {
     position: "relative",
     marginLeft: -10,
@@ -697,6 +922,18 @@ const styles = StyleSheet.create({
   },
   horizontalScrollList: {
     paddingBottom: 10,
+  },
+  paymentStatus: {
+    fontSize: 20,
+    textAlign: 'center',
+    maxWidth: '90%',
+    marginLeft: 10
+  },
+  text2: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 4
   },
   formContainer: {
     display: "flex",
@@ -764,6 +1001,24 @@ const styles = StyleSheet.create({
     paddingTop: "1%",
     height: windowHeight / 8,
   },
+  text3: {
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 24,
+    marginTop: "6%",
+    color: "white",
+  },
+  retourContainer: {
+    borderWidth: 5,
+    borderColor: "white",
+    borderRadius: 20,
+    paddingHorizontal: windowWidth / 17,
+    width: windowWidth / 1.1,
+    alignItems: "center",
+    paddingBottom: "2%",
+    marginLeft: 10,
+    marginTop: windowHeight / 9,
+  },
   itemForm3: {
     display: "flex",
     flexDirection: "row",
@@ -814,6 +1069,12 @@ const styles = StyleSheet.create({
     paddingVertical: "5%",
     marginBottom: 15,
   },
+  mettreEnVenteIntermediate: {
+    backgroundColor: "#D51317",
+    marginTop: "5%",
+    paddingVertical: "5%",
+    marginBottom: 15,
+  },
   resetText: {
     color: "#D51317",
     textAlign: "center",
@@ -844,6 +1105,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  intermediateMessage: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 50,
+    marginBottom: 70
+  }
 });
 
 export default ModifierAnnonceScreen;

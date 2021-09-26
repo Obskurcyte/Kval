@@ -39,6 +39,7 @@ const InscriptionScreen = (props) => {
                   email: values.email,
                   IBAN: params.IBAN,
                   nom: params.nom,
+                    id: firebase.auth().currentUser.uid,
                   prenom: params.prenom,
                   postalCode: params.postalCode,
                   ville: params.ville,
@@ -64,9 +65,7 @@ const InscriptionScreen = (props) => {
               style={styles.textInput}
               onChangeText={props.handleChange('pseudo')}
             />
-
             </View>
-
             <View>
               <Text style={styles.text}>Email</Text>
               <TextInput
@@ -76,7 +75,6 @@ const InscriptionScreen = (props) => {
                 style={styles.textInput}
                 onChangeText={props.handleChange('email')}
               />
-
             </View>
 
             <View>

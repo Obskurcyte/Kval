@@ -26,9 +26,9 @@ const LivraisonChoiceScreen = (props) => {
       <TouchableOpacity
         style={styles.itemForm3}
         onPress={() => {
-          setLivraison("Personnalisée");
+          setLivraison("Remise en main propre");
           props.navigation.navigate("CartScreen", {
-            livraison: "Personnalisé",
+            livraison: "Remise en main propre",
             adresse: null,
           });
         }}

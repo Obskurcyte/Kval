@@ -420,7 +420,7 @@ const CartScreen = (props) => {
                   </Text>
                 </View>
                 <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Portefeuille</Text>
+                  <Text style={{ fontSize: 18 }}>Dans le portefeuille</Text>
                   <Text style={{ fontSize: 18 }}>
                     {userData?.portefeuille.toFixed(2)} €
                   </Text>
@@ -448,7 +448,7 @@ const CartScreen = (props) => {
                     fillColor="red"
                     unfillColor="#FFFFFF"
                     iconStyle={{ borderColor: "red" }}
-                  />
+                    onPress={() => setToggleCheckBox(!toggleCheckBox)}/>
                 </View>
                 <Text style={styles.acceptGeneralConditions}>
                   J’accepte les conditions générales de vente, cliques{" "}
@@ -476,7 +476,9 @@ const CartScreen = (props) => {
                       console.log("wola");
                       console.log(portefeuillePayment);
                       setPortefeuillePayment(true);
-                    } else if (!IBAN || !livraison) {
+                    } else if (!livraison || !toggleCheckBox) {
+                      console.log(livraison)
+                      console.log(toggleCheckBox)
                       setErrors(true);
                     } else {
                       setMakePayment(true);
@@ -489,7 +491,7 @@ const CartScreen = (props) => {
                 </Text>
               </TouchableOpacity>
               {errors ? (
-                <Text style={{ textAlign: "center" }}>
+                <Text style={{ textAlign: "center", color: 'red' }}>
                   Veuillez remplir tous les champs
                 </Text>
               ) : (

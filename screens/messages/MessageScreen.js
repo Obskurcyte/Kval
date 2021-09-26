@@ -33,36 +33,70 @@ const MessageScreen = (props) => {
   const notifsList = useSelector((state) => state.notifs.notifs);
 
   const [threads, setThreads] = useState([]);
+  const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  let finalThreads = [];
+
+  console.log(firebase.auth().currentUser.uid)
   useEffect(() => {
     console.log("woskdls");
     const threads = [];
     const unsubscribe = firebase
       .firestore()
       .collection("MESSAGE_THREADS")
-      .where("reverse_id", ">=", firebase.auth().currentUser.uid)
-      .where("reverse_id", "<=", firebase.auth().currentUser.uid + "\uf8ff")
-      .onSnapshot((querySnapshot) => {
-        const threads = [];
-        querySnapshot.docs.map((documentSnapshot) => {
-          threads.push({
-            _id: documentSnapshot.id,
-            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-            latestMessage: { text: "" },
-            ...documentSnapshot.data(),
+      .where("idVendeur", "==", firebase.auth().currentUser.uid)
+        .get().then((querySnapshot) => {
+          const threads = [];
+          querySnapshot.docs.map((documentSnapshot) => {
+            console.log(documentSnapshot)
+            threads.push({
+              _id: documentSnapshot.id,
+              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+              latestMessage: { text: "" },
+              ...documentSnapshot.data(),
+            });
           });
-        });
-        if (loading) {
-          setLoading(false);
-        }
-        setThreads(threads);
-      });
+          if (loading) {
+            setLoading(false);
+          }
+          setThreads(threads);
+        })
+      }, []);
+
+  useEffect(() => {
+    console.log("woskdls");
+    const threads = [];
+    const unsubscribe = firebase
+        .firestore()
+        .collection("MESSAGE_THREADS")
+        .where("idAcheteur", "==", firebase.auth().currentUser.uid)
+        .get().then((querySnapshot) => {
+          const threads = [];
+          querySnapshot.docs.map((documentSnapshot) => {
+            console.log(documentSnapshot)
+            threads.push({
+              _id: documentSnapshot.id,
+              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+              latestMessage: { text: "" },
+              ...documentSnapshot.data(),
+            });
+          });
+          if (loading) {
+            setLoading(false);
+          }
+          setThreads2(threads);
+        })
   }, []);
 
-  console.log('threads', threads);
 
+  if (threads2.length ===0) {
+    finalThreads = threads
+  } else {
+    finalThreads = threads2
+  }
 
+  console.log('fina', finalThreads)
   console.log(threads.length)
   console.log("authid", firebase.auth().currentUser.uid);
   return (
@@ -88,9 +122,9 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      {messageActive && threads.length !== 0 ?
+      {messageActive && finalThreads.length !== 0 ?
         <FlatList
-          data={threads}
+          data={finalThreads}
           style={styles.flatList}
           keyExtractor={(item) => item?._id}
           renderItem={(itemData) => {

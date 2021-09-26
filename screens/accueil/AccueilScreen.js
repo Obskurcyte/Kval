@@ -9,7 +9,8 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  RefreshControl
 } from 'react-native';
 import {Feather, Fontisto} from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,10 +20,23 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as userActions from "../../store/actions/users";
+import {useSelector} from "react-redux";
+
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 
 const AccueilScreen = (props) => {
 
   const [search, setSearch] = useState('');
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   const updateSearch = (search) => {
     setSearch(search)
@@ -30,6 +44,10 @@ const AccueilScreen = (props) => {
 
   const [productsBoosted, setProductsBoosted] = useState([])
   const [productsUne, setProductsUne] = useState([])
+  const currentUser = useSelector((state) => state.user.userData);
+
+  console.log(currentUser)
+
 
   useEffect(() => {
     firebase.firestore().collection("BoostedVentes")
@@ -60,10 +78,18 @@ const AccueilScreen = (props) => {
    return unsubscribe
   }, [props.navigation])
 
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView>
+      <ScrollView
+
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+        />
+        }
+        >
+
     <View style={styles.container}>
       <Text style={styles.attendent}>Annonces en avant première </Text>
 
