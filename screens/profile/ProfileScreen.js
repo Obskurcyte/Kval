@@ -30,11 +30,6 @@ const ProfileScreen = (props) => {
   console.log(firebase.auth().currentUser.uid);
   const userData = useSelector((state) => state.user.userData);
 
-  useEffect(() => {
-    if (userData === null) {
-      firebase.auth().signOut();
-    }
-  })
   console.log(userData);
 
 
