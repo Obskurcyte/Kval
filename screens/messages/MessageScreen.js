@@ -62,7 +62,7 @@ const MessageScreen = (props) => {
           }
           setThreads(threads);
         })
-      }, []);
+      }, [threads]);
 
   useEffect(() => {
     console.log("woskdls");
@@ -87,7 +87,7 @@ const MessageScreen = (props) => {
           }
           setThreads2(threads);
         })
-  }, []);
+  }, [threads2]);
 
 
   if (threads2.length ===0) {
@@ -145,7 +145,7 @@ const MessageScreen = (props) => {
           }}
         /> : <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
       }
-      {threads.length === 0 ? <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text> : <Text/>}
+      {finalThreads.length === 0 ? <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text> : <Text/>}
 
       {notifActive && (
         <FlatList
