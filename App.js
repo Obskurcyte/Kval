@@ -17,16 +17,16 @@ import articleCommandeReducer from "./store/reducers/articlesCommandes";
 LogBox.ignoreLogs(["Setting a timer"]);
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDfRqLw_maATHpGVqO4nxcmHw_asxc0c60",
-  authDomain: "kval-c264a.firebaseapp.com",
-  projectId: "kval-c264a",
-  storageBucket: "kval-c264a.appspot.com",
-  messagingSenderId: "692297808431",
-  appId: "1:692297808431:web:d17649aabc7a6700f024da",
-  measurementId: "G-EDTT5RXHJ2",
+  apiKey: "AIzaSyCkee21-SCCNxfS6co9SjW-PNfLTFTkdec",
+  authDomain: "kval-occaz.firebaseapp.com",
+  projectId: "kval-occaz",
+  storageBucket: "kval-occaz.appspot.com",
+  messagingSenderId: "40095874290",
+  appId: "1:40095874290:web:9ae177535c519f10ec646b"
 };
+
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const app = firebase.initializeApp(firebaseConfig);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
