@@ -50,17 +50,21 @@ const AccueilScreen = (props) => {
 
 
   useEffect(() => {
-    firebase.firestore().collection("BoostedVentes")
-      .get()
-      .then(snapshot => {
-        let productsBoosted = snapshot.docs.map(doc => {
-          const data = doc.data()
-          const id = doc.id;
-          return {id, ...data}
-        })
-        setProductsBoosted(productsBoosted)
-      })
-  }, [])
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      firebase.firestore().collection("BoostedVentes")
+          .get()
+          .then(snapshot => {
+            console.log(snapshot)
+            let productsBoosted = snapshot.docs.map(doc => {
+              const data = doc.data()
+              const id = doc.id;
+              return {id, ...data}
+            })
+            setProductsBoosted(productsBoosted)
+          })
+    });
+    return unsubscribe
+  }, [props.navigation])
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -77,6 +81,8 @@ const AccueilScreen = (props) => {
     });
    return unsubscribe
   }, [props.navigation])
+
+  console.log(productsBoosted)
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

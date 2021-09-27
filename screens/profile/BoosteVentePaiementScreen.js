@@ -47,6 +47,7 @@ const BoosteVentePaiementScreen = (props) => {
   const [price, setPrice] = useState(0)
   const [paymentStatus, setPaymentStatus] = useState('')
 
+  console.log((price*100).toFixed(0))
   console.log('wola', articles)
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus('Votre paiement est en cours de traitement')
@@ -61,7 +62,7 @@ const BoosteVentePaiementScreen = (props) => {
         email: 'hadrien.jaubert99@gmail.com',
         product: cartInfo,
         authToken: jsonResponse,
-        amount: price
+        amount: (price*100).toFixed(0)
       })
 
       console.log('TSRIPE RESPONSE', stripeResponse)

@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import UserAvatar from 'react-native-user-avatar';
 import firebase from "firebase";
 
 
 const CardMessage = ({pseudoVendeur, latestMessage, onPress, idAcheteur, idVendeur}) => {
-
 
     const deleteMessage = () => {
         firebase
