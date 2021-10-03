@@ -15,8 +15,6 @@ import { useDispatch, useSelector } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 
-
-
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -38,73 +36,78 @@ const MessageScreen = (props) => {
 
   let finalThreads = [];
 
-  console.log(firebase.auth().currentUser.uid)
+  console.log(firebase.auth().currentUser.uid);
   useEffect(() => {
     console.log("woskdls");
     const threads = [];
 
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
       firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .where("idVendeur", "==", firebase.auth().currentUser.uid)
-          .get().then((querySnapshot) => {
-        const threads = [];
-        querySnapshot.docs.map((documentSnapshot) => {
-          console.log(documentSnapshot)
-          threads.push({
-            _id: documentSnapshot.id,
-            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-            latestMessage: { text: "" },
-            ...documentSnapshot.data(),
+        .firestore()
+        .collection("MESSAGE_THREADS")
+        .where("idVendeur", "==", firebase.auth().currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+          const threads = [];
+          querySnapshot.docs.map((documentSnapshot) => {
+            firebase
+              .firestore()
+              .collection("users")
+              .where("id", "==", documentSnapshot.data().idAcheteur)
+              .get()
+              .then((userSnapshot) => {
+                const newPseudoVendeur = userSnapshot.docs.map(
+                  (doc) => doc.data().pseudo
+                )[0];
+                threads.push({
+                  ...documentSnapshot.data(),
+                  _id: documentSnapshot.id,
+                  pseudoVendeur: newPseudoVendeur,
+                });
+                console.log("okay", newPseudoVendeur);
+                if (loading) {
+                  setLoading(false);
+                }
+                setThreads(threads);
+              });
           });
         });
-        if (loading) {
-          setLoading(false);
-        }
-        setThreads(threads);
-      })
-    })
-    return unsubscribe
-      }, [props.navigation]);
-
-  useEffect(() => {
-    console.log("woskdls");
-    const threads = [];
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .where("idAcheteur", "==", firebase.auth().currentUser.uid)
-          .get().then((querySnapshot) => {
-        const threads = [];
-        querySnapshot.docs.map((documentSnapshot) => {
-          console.log(documentSnapshot)
-          threads.push({
-            _id: documentSnapshot.id,
-            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-            latestMessage: { text: "" },
-            ...documentSnapshot.data(),
-          });
-        });
-        if (loading) {
-          setLoading(false);
-        }
-        setThreads2(threads);
-      })
-    })
-    return unsubscribe
+    });
+    return unsubscribe;
   }, [props.navigation]);
 
+  useEffect(() => {
+    console.log("woskdls");
+    const threads = [];
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      firebase
+        .firestore()
+        .collection("MESSAGE_THREADS")
+        .where("idAcheteur", "==", firebase.auth().currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+          const threads = [];
+          querySnapshot.docs.map((documentSnapshot) => {
+            console.log(documentSnapshot);
+            threads.push({
+              ...documentSnapshot.data(),
+              _id: documentSnapshot.id,
+              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+            });
+          });
+          if (loading) {
+            setLoading(false);
+          }
+          setThreads2(threads);
+        });
+    });
+    return unsubscribe;
+  }, [props.navigation]);
 
-  if (threads2.length ===0) {
-    finalThreads = threads
-  } else {
-    finalThreads = threads2
-  }
+  finalThreads = [...threads, ...threads2];
 
-  console.log('fina', finalThreads)
-  console.log(threads.length)
+  console.log("fina", finalThreads);
+  console.log(threads.length);
   console.log("authid", firebase.auth().currentUser.uid);
   return (
     <View style={styles.container}>
@@ -129,13 +132,13 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      {messageActive && finalThreads.length !== 0 ?
+      {messageActive && finalThreads.length !== 0 ? (
         <FlatList
           data={finalThreads}
           style={styles.flatList}
           keyExtractor={(item) => item?._id}
           renderItem={(itemData) => {
-            console.log('itemdata', itemData.item)
+            console.log("itemdata", itemData.item);
             return (
               <CardMessage
                 pseudoVendeur={itemData.item?.pseudoVendeur}
@@ -150,9 +153,15 @@ const MessageScreen = (props) => {
               />
             );
           }}
-        /> : <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
-      }
-      {finalThreads.length === 0 ? <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text> : <Text/>}
+        />
+      ) : (
+        <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
+      )}
+      {finalThreads.length === 0 ? (
+        <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
+      ) : (
+        <Text />
+      )}
 
       {notifActive && (
         <FlatList
@@ -227,9 +236,9 @@ const styles = StyleSheet.create({
   },
   noMessage: {
     fontSize: 20,
-    textAlign: 'center',
-    marginTop: windowHeight/2.5,
-    marginBottom: windowHeight/2.5
-  }
+    textAlign: "center",
+    marginTop: windowHeight / 2.5,
+    marginBottom: windowHeight / 2.5,
+  },
 });
 export default MessageScreen;

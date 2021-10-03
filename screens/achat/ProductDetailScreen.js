@@ -74,19 +74,17 @@ const ProductDetailScreen = (props) => {
 
   let commentaires = useSelector((state) => state.commandes.commentaires);
 
-  console.log('product', product);
+  console.log("product", product);
 
   let ratings = [];
   for (let data in commentaires) {
     ratings.push(commentaires[data].rating);
   }
 
-
   let overallRating = 0;
   for (let data in ratings) {
     overallRating += parseInt(ratings[data]);
   }
-
 
   let trueRating;
   if (commentaires) {
@@ -172,7 +170,7 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
   const currentUser = useSelector((state) => state.user.userData);
-  console.log('curr', currentUser)
+  console.log("curr", currentUser);
   console.log(product.idVendeur, idAcheteur);
 
   const onMessagePressed = () => {
@@ -183,7 +181,7 @@ const ProductDetailScreen = (props) => {
       .doc(`${product.idVendeur}` + `${idAcheteur}`)
       .collection("MESSAGES")
       .add({
-        text: `Start chating`,
+        text: `Commencer à chatter`,
         createdAt: new Date().getTime(),
         system: true,
       })
