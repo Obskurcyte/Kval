@@ -32,6 +32,8 @@ const MessageScreen = (props) => {
 
   const notifsList = useSelector((state) => state.notifs.notifs);
 
+  console.log('notifs', notifsList)
+  console.log('id', firebase.auth().currentUser.uid)
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -152,14 +154,17 @@ const MessageScreen = (props) => {
           }}
         /> : <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
       }
-      {finalThreads.length === 0 ? <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text> : <Text/>}
 
-      {notifActive && (
+
+      {notifActive ?  (
         <FlatList
           data={notifsList}
+          style={styles.notifsList}
           keyExtractor={() => (Math.random() * 100000).toString()}
           renderItem={(itemData) => {
-            console.log(itemData);
+            console.log('notifsActive', notifActive)
+            console.log('data', itemData);
+            console.log('title', itemData.item.notificationsTitle)
             return (
               <CardNotif
                 title={itemData.item.notificationsTitle}
@@ -169,7 +174,7 @@ const MessageScreen = (props) => {
             );
           }}
         />
-      )}
+      ): <Text>Wola</Text>}
     </View>
   );
 };
@@ -193,6 +198,11 @@ const styles = StyleSheet.create({
     padding: "5%",
     width: "50%",
     alignItems: "center",
+  },
+  notifsList: {
+    flex: 1,
+    height: 500,
+    backgroundColor: 'red'
   },
   messageBorder: {
     borderBottomWidth: 3,

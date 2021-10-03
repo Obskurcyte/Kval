@@ -172,7 +172,6 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
   const currentUser = useSelector((state) => state.user.userData);
-  console.log('curr', currentUser)
   console.log(product.idVendeur, idAcheteur);
 
   const onMessagePressed = () => {
@@ -288,7 +287,7 @@ const ProductDetailScreen = (props) => {
             )}
           </View>
 
-          {product.idVendeur === currentUser.id ? (
+          {product.idVendeur === firebase.auth().currentUser.uid ? (
             <View>
               <TouchableOpacity
                 style={styles.reset}

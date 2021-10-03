@@ -46,15 +46,11 @@ const AccueilScreen = (props) => {
   const [productsUne, setProductsUne] = useState([])
   const currentUser = useSelector((state) => state.user.userData);
 
-  console.log(currentUser)
-
-
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
       firebase.firestore().collection("BoostedVentes")
           .get()
           .then(snapshot => {
-            console.log(snapshot)
             let productsBoosted = snapshot.docs.map(doc => {
               const data = doc.data()
               const id = doc.id;
@@ -82,7 +78,6 @@ const AccueilScreen = (props) => {
    return unsubscribe
   }, [props.navigation])
 
-  console.log(productsBoosted)
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

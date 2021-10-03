@@ -11,10 +11,12 @@ export const fetchNotifs = () => {
       .get()
       .then(snapshot => {
         let notifs = snapshot.docs.map(doc => {
+            console.log('doc', doc)
           const data = doc.data()
           const id = doc.id;
           return { id, ...data}
         })
+          console.log(notifs)
         dispatch({type: GET_NOTIFICATIONS, notifs})
       })
       .catch((error) => {
