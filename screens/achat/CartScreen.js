@@ -378,7 +378,7 @@ const CartScreen = (props) => {
                   },
                 ]}
               >
-                <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
+                <Text style={errors ? styles.modeErrors : styles.noError}>Mode de livraison</Text>
                 <TouchableOpacity
                   onPress={() => {
                     props.navigation.navigate("LivraisonChoiceScreen");
@@ -390,7 +390,7 @@ const CartScreen = (props) => {
 
               <View style={styles.itemForm3}>
                 <View style={styles.adresseText}>
-                  <Text style={{ fontSize: 18 }}>Adresse</Text>
+                  <Text style={styles.noError}>Adresse</Text>
                 </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.adresseInner}>
@@ -482,10 +482,11 @@ const CartScreen = (props) => {
                   if (props.loggedInAsVisit) {
                     props.setLoggedInAsVisit(!props.loggedInAsVisit);
                   } else {
-                    if (newTotal == 0.0) {
-                      setPortefeuillePayment(true);
-                    } else if (!livraison || !toggleCheckBox) {
+                    if (!livraison || !toggleCheckBox) {
                       setErrors(true);
+                    }
+                    else if (newTotal == 0.0) {
+                      setPortefeuillePayment(true);
                     } else {
                       setMakePayment(true);
                     }
@@ -683,6 +684,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
+  },
+  modeErrors: {
+    color: 'red',
+    fontSize: 18
+  },
+  noError: {
+    fontSize: 18
   },
   paiementstatus: {
     fontSize: 20,

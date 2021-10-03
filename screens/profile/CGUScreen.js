@@ -8,27 +8,30 @@ import ProfileScreen from "./ProfileScreen";
 
 const CGUScreen = (props) => {
   const [url, setUrl] = useState(null);
-  console.log(props.route.params);
 
   React.useEffect(() => {
-    if (props.route.params.from === "CartScreen") {
-      props.navigation.setOptions({
-        headerLeft: () => (
-          <HeaderBackButton
-            onPress={() => {
-              props.navigation.navigate("Acheter", {
-                screen: "CGUScreen",
+      if (props.route.params) {
+          if (props.route.params.from === "CartScreen") {
+              props.navigation.setOptions({
+                  headerLeft: () => (
+                      <HeaderBackButton
+                          onPress={() => {
+                              props.navigation.navigate("Acheter", {
+                                  screen: "CGUScreen",
+                              });
+                              props.navigation.setParams({ from: "" });
+                          }}
+                      />
+                  ),
               });
-              props.navigation.setParams({ from: "" });
-            }}
-          />
-        ),
-      });
-    } else {
+          }
+      }
+   else {
       props.navigation.setOptions({
         headerLeft: () => (
           <HeaderBackButton
-            onPress={() =>
+              headerBackTitle = "Retour"
+                onPress={() =>
               props.navigation.navigate("Profil", {
                 screen: "ProfileScreen",
               })
