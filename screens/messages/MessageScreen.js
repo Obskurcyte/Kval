@@ -14,6 +14,7 @@ import * as notifsActions from "../../store/actions/notifications";
 import { useDispatch, useSelector } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
+import { ActivityIndicator } from "react-native-paper";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -132,53 +133,50 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      {messageActive && finalThreads.length !== 0 ? (
-        <FlatList
-          data={finalThreads}
-          style={styles.flatList}
-          keyExtractor={(item) => item?._id}
-          renderItem={(itemData) => {
-            console.log("itemdata", itemData.item);
-            return (
-              <CardMessage
-                pseudoVendeur={itemData.item?.pseudoVendeur}
-                idVendeur={itemData.item?.idVendeur}
-                idAcheteur={itemData.item?.idAcheteur}
-                latestMessage={itemData.item?.latestMessage.text}
-                onPress={() =>
-                  props.navigation.navigate("ChatScreen", {
-                    thread: itemData.item,
-                  })
-                }
-              />
-            );
-          }}
-        />
-      ) : (
-        <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
-      )}
-      {finalThreads.length === 0 ? (
-        <Text style={styles.noMessage}>Il n'y a aucun message à afficher</Text>
-      ) : (
-        <Text />
-      )}
+      <View>
+        {!loading ? (
+          <FlatList
+            data={finalThreads}
+            style={styles.flatList}
+            keyExtractor={(item) => item?._id}
+            renderItem={(itemData) => {
+              console.log("itemdata", itemData.item);
+              return (
+                <CardMessage
+                  pseudoVendeur={itemData.item?.pseudoVendeur}
+                  idVendeur={itemData.item?.idVendeur}
+                  idAcheteur={itemData.item?.idAcheteur}
+                  latestMessage={itemData.item?.latestMessage.text}
+                  onPress={() =>
+                    props.navigation.navigate("ChatScreen", {
+                      thread: itemData.item,
+                    })
+                  }
+                />
+              );
+            }}
+          />
+        ) : (
+          <ActivityIndicator />
+        )}
 
-      {notifActive && (
-        <FlatList
-          data={notifsList}
-          keyExtractor={() => (Math.random() * 100000).toString()}
-          renderItem={(itemData) => {
-            console.log(itemData);
-            return (
-              <CardNotif
-                title={itemData.item.notificationsTitle}
-                body={itemData.item.notificationsBody}
-                image={itemData.item.image}
-              />
-            );
-          }}
-        />
-      )}
+        {notifActive && (
+          <FlatList
+            data={notifsList}
+            keyExtractor={() => (Math.random() * 100000).toString()}
+            renderItem={(itemData) => {
+              console.log(itemData);
+              return (
+                <CardNotif
+                  title={itemData.item.notificationsTitle}
+                  body={itemData.item.notificationsBody}
+                  image={itemData.item.image}
+                />
+              );
+            }}
+          />
+        )}
+      </View>
     </View>
   );
 };

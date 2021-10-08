@@ -69,6 +69,10 @@ const CartScreen = (props) => {
     return transformedCartItems;
   });
 
+  const cart = useSelector((state) => {
+    return state.cart;
+  });
+
   console.log("cartitem", cartItems);
 
   let portefeuilleVendeur = 0;
@@ -181,6 +185,16 @@ const CartScreen = (props) => {
                       .update({
                         portefeuille:
                           portefeuilleVendeur + parseInt(cartItem.sum),
+                      })
+                      .then(async () => {
+                        const mailResponse = await axios.post(
+                          "https://kval-backend.herokuapp.com/newcommand",
+                          {
+                            mail_acheteur: `${userData.email}`,
+                            cart,
+                          }
+                        );
+                        console.log(mailResponse);
                       });
                   }
                 });
@@ -448,7 +462,8 @@ const CartScreen = (props) => {
                     fillColor="red"
                     unfillColor="#FFFFFF"
                     iconStyle={{ borderColor: "red" }}
-                    onPress={() => setToggleCheckBox(!toggleCheckBox)}/>
+                    onPress={() => setToggleCheckBox(!toggleCheckBox)}
+                  />
                 </View>
                 <Text style={styles.acceptGeneralConditions}>
                   J’accepte les conditions générales de vente, cliques{" "}
@@ -477,8 +492,8 @@ const CartScreen = (props) => {
                       console.log(portefeuillePayment);
                       setPortefeuillePayment(true);
                     } else if (!livraison || !toggleCheckBox) {
-                      console.log(livraison)
-                      console.log(toggleCheckBox)
+                      console.log(livraison);
+                      console.log(toggleCheckBox);
                       setErrors(true);
                     } else {
                       setMakePayment(true);
@@ -491,7 +506,7 @@ const CartScreen = (props) => {
                 </Text>
               </TouchableOpacity>
               {errors ? (
-                <Text style={{ textAlign: "center", color: 'red' }}>
+                <Text style={{ textAlign: "center", color: "red" }}>
                   Veuillez remplir tous les champs
                 </Text>
               ) : (
