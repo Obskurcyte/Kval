@@ -203,7 +203,6 @@ const VendreArticleScreen = (props) => {
                 onSubmit={async (values) => {
                   console.log("values", values);
 
-
                   let pushToken;
                   let statusObj = await Notifications.getPermissionsAsync();
                   if (statusObj.status !== "granted") {
@@ -212,8 +211,7 @@ const VendreArticleScreen = (props) => {
                   if (statusObj.status !== "granted") {
                     pushToken = null;
                   } else {
-                    pushToken = (await Notifications.getExpoPushTokenAsync())
-                      .data;
+                    pushToken = await Notifications.getExpoPushTokenAsync()
                   }
 
                   const id = Math.random() * 300000000;
@@ -259,6 +257,7 @@ const VendreArticleScreen = (props) => {
                             title: values.title,
                             description: values.description,
                             prix: values.price,
+                            pushToken,
                             poids: values.poids,
                           });
 
@@ -272,6 +271,7 @@ const VendreArticleScreen = (props) => {
                             categorie,
                             marques,
                             etat,
+                            pushToken,
                             date: date,
                             idVendeur: currentUser.id,
                             title: values.title,

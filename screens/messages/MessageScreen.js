@@ -16,6 +16,8 @@ import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
 
+
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -31,6 +33,8 @@ const MessageScreen = (props) => {
 
   const notifsList = useSelector((state) => state.notifs.notifs);
 
+  console.log('notifs', notifsList)
+  console.log('id', firebase.auth().currentUser.uid)
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -160,23 +164,26 @@ const MessageScreen = (props) => {
           <ActivityIndicator />
         )}
 
-        {notifActive && (
-          <FlatList
-            data={notifsList}
-            keyExtractor={() => (Math.random() * 100000).toString()}
-            renderItem={(itemData) => {
-              console.log(itemData);
-              return (
-                <CardNotif
-                  title={itemData.item.notificationsTitle}
-                  body={itemData.item.notificationsBody}
-                  image={itemData.item.image}
-                />
-              );
-            }}
-          />
-        )}
-      </View>
+
+      {notifActive ?  (
+        <FlatList
+          data={notifsList}
+          style={styles.notifsList}
+          keyExtractor={() => (Math.random() * 100000).toString()}
+          renderItem={(itemData) => {
+            console.log('notifsActive', notifActive)
+            console.log('data', itemData);
+            console.log('title', itemData.item.notificationsTitle)
+            return (
+              <CardNotif
+                title={itemData.item.notificationsTitle}
+                body={itemData.item.notificationsBody}
+                image={itemData.item.image}
+              />
+            );
+          }}
+        />
+      ): <Text>Wola</Text>}
     </View>
   );
 };
@@ -200,6 +207,11 @@ const styles = StyleSheet.create({
     padding: "5%",
     width: "50%",
     alignItems: "center",
+  },
+  notifsList: {
+    flex: 1,
+    height: 500,
+    backgroundColor: 'red'
   },
   messageBorder: {
     borderBottomWidth: 3,

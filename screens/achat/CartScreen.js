@@ -103,7 +103,7 @@ const CartScreen = (props) => {
     reductionPortefeuille = sousTotal;
   }
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
-  console.log(newTotal);
+
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -121,12 +121,10 @@ const CartScreen = (props) => {
         }
       );
 
-      console.log(stripeResponse.data);
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
-            console.log(cartItem);
             await firebase
               .firestore()
               .collection("commandes")
@@ -143,12 +141,19 @@ const CartScreen = (props) => {
             await firebase
               .firestore()
               .collection("notifications")
-              .doc(firebase.auth().currentUser.uid)
+              .doc(cartItem.idVendeur)
               .collection("listeNotifs")
               .add({
                 notificationsTitle: "Un article a été vendu !",
                 notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
                 image: cartItem.image,
+              });
+            await firebase
+              .firestore()
+              .collection("notifications")
+              .doc(cartItem.idVendeur)
+              .set({
+                test: "test",
               });
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
@@ -160,7 +165,7 @@ const CartScreen = (props) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                to: pushToken,
+                to: pushToken.data,
                 title: "Un de vos articles a été acheté !",
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
@@ -228,7 +233,6 @@ const CartScreen = (props) => {
   }
 
   const ViewPortefeuille = () => {
-    console.log("paymentportefeuille");
     const PaymentPortefeuille = async () => {
       for (const cartItem of cartItems) {
         await firebase
@@ -244,15 +248,23 @@ const CartScreen = (props) => {
             vendeur: cartItem.idVendeur,
             pseudoVendeur: cartItem.pseudoVendeur,
           });
+
         await firebase
           .firestore()
           .collection("notifications")
-          .doc(firebase.auth().currentUser.uid)
+          .doc(cartItem.idVendeur)
           .collection("listeNotifs")
           .add({
             notificationsTitle: "Un article a été vendu !",
             notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
             image: cartItem.image,
+          });
+        await firebase
+          .firestore()
+          .collection("notifications")
+          .doc(cartItem.idVendeur)
+          .set({
+            test: "test",
           });
         dispatch(cartActions.deleteCart());
         const pushToken = cartItem.pushToken;
@@ -264,7 +276,7 @@ const CartScreen = (props) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            to: pushToken,
+            to: pushToken.data,
             title: "Un de vos articles a été acheté !",
             body: `L'article ${cartItem.productTitle} a été acheté !`,
           }),
@@ -294,7 +306,7 @@ const CartScreen = (props) => {
           await firebase
             .firestore()
             .collection("users")
-            .doc(firebase.firestore().currentUser.uid)
+            .doc(firebase.auth().currentUser.uid)
             .get()
             .then((doc) => {
               portefeuilleAcheteur = doc.data().portefeuille;
@@ -306,10 +318,10 @@ const CartScreen = (props) => {
                 firebase
                   .firestore()
                   .collection("users")
-                  .doc(firebase.firestore().currentUser.uid)
+                  .doc(firebase.auth().currentUser.uid)
                   .update({
                     portefeuille:
-                      portefeuilleVendeur - parseInt(cartItem.productPrice),
+                      portefeuilleAcheteur - parseInt(cartItem.productPrice),
                   });
               }
             });
@@ -327,8 +339,9 @@ const CartScreen = (props) => {
         <TouchableOpacity
           style={styles.mettreEnVente}
           onPress={async () => {
-            await PaymentPortefeuille();
-            props.navigation.navigate("PortefeuilleThankYouScreen");
+            await PaymentPortefeuille().then(() =>
+              props.navigation.navigate("PortefeuilleThankYouScreen")
+            );
           }}
         >
           <Text style={styles.mettreEnVenteText}>
@@ -382,7 +395,9 @@ const CartScreen = (props) => {
                   },
                 ]}
               >
-                <Text style={{ fontSize: 18 }}>Mode de livraison</Text>
+                <Text style={errors ? styles.modeErrors : styles.noError}>
+                  Mode de livraison
+                </Text>
                 <TouchableOpacity
                   onPress={() => {
                     props.navigation.navigate("LivraisonChoiceScreen");
@@ -394,7 +409,7 @@ const CartScreen = (props) => {
 
               <View style={styles.itemForm3}>
                 <View style={styles.adresseText}>
-                  <Text style={{ fontSize: 18 }}>Adresse</Text>
+                  <Text style={styles.noError}>Adresse</Text>
                 </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.adresseInner}>
@@ -487,14 +502,10 @@ const CartScreen = (props) => {
                   if (props.loggedInAsVisit) {
                     props.setLoggedInAsVisit(!props.loggedInAsVisit);
                   } else {
-                    if (newTotal == 0.0) {
-                      console.log("wola");
-                      console.log(portefeuillePayment);
-                      setPortefeuillePayment(true);
-                    } else if (!livraison || !toggleCheckBox) {
-                      console.log(livraison);
-                      console.log(toggleCheckBox);
+                    if (!livraison || !toggleCheckBox) {
                       setErrors(true);
+                    } else if (newTotal == 0.0) {
+                      setPortefeuillePayment(true);
                     } else {
                       setMakePayment(true);
                     }
@@ -520,7 +531,6 @@ const CartScreen = (props) => {
       );
     } else {
       if (response !== undefined) {
-        console.log("paimentstatus", paymentStatus);
         return (
           <View
             style={{
@@ -541,8 +551,9 @@ const CartScreen = (props) => {
             )}
 
             {paymentStatus === "Le paiement a échoué" ? (
-              <View>
-                <Text>Le paiment a échoué</Text>
+              <View style={styles.container2}>
+                <AntDesign name="close" size={200} color="white" />
+                <Text style={styles.text3}>Le paiment a échoué</Text>
                 <TouchableOpacity
                   style={styles.retourContainer}
                   onPress={() => {
@@ -692,6 +703,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
+  },
+  modeErrors: {
+    color: "red",
+    fontSize: 18,
+  },
+  noError: {
+    fontSize: 18,
   },
   paiementstatus: {
     fontSize: 20,

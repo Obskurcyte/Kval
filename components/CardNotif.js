@@ -4,7 +4,7 @@ import {Image, ScrollView, Text, TouchableOpacity, View, StyleSheet} from "react
 const CardNotif = (props) => {
 
   console.log(props.image)
-
+  console.log(props.title)
   return (
     <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen')}>
       <View style={styles.messageContainer}>
