@@ -69,7 +69,7 @@ const EnterIbanScreen = (props) => {
               onChangeText={props.handleChange("IBAN")}
             />
             {props.errors.IBAN && props.errors.IBAN ? (
-                <Text>{props.errors.IBAN}</Text>
+                <Text style={styles.errors}>{props.errors.IBAN}</Text>
             ) : null}
             <TextInput
               placeholder="BIC"
@@ -78,7 +78,7 @@ const EnterIbanScreen = (props) => {
               onChangeText={props.handleChange("BIC")}
             />
             {props.errors.BIC && props.errors.BIC ? (
-                <Text>{props.errors.BIC}</Text>
+                <Text style={styles.errors}>{props.errors.BIC}</Text>
             ) : null}
             <TouchableOpacity
               style={styles.mettreEnVente}
@@ -99,6 +99,9 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     width: windowWidth / 1.1,
     paddingVertical: "5%",
+  },
+  errors: {
+    color: 'red'
   },
   mettreEnVenteText: {
     color: "white",
