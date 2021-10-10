@@ -81,12 +81,10 @@ const ProductDetailScreen = (props) => {
     ratings.push(commentaires[data].rating);
   }
 
-
   let overallRating = 0;
   for (let data in ratings) {
     overallRating += parseInt(ratings[data]);
   }
-
 
   let trueRating;
   if (commentaires) {
@@ -172,7 +170,7 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
   const currentUser = useSelector((state) => state.user.userData);
-  console.log('curr', currentUser)
+  console.log("curr", currentUser);
   console.log(product.idVendeur, idAcheteur);
 
   const onMessagePressed = () => {
@@ -200,12 +198,13 @@ const ProductDetailScreen = (props) => {
             id: `${product.idVendeur}` + `${firebase.auth().currentUser.uid}`,
             reverse_id:
               `${firebase.auth().currentUser.uid}` + `${product.idVendeur}`,
+          })
+          .then(() => {
+            props.navigation.navigate("Message", {
+              screen: "MessageScreen",
+            });
           });
       });
-
-    props.navigation.navigate("Message", {
-      screen: "MessageScreen",
-    });
   };
 
   const initial = product.pseudoVendeur.charAt(0);

@@ -25,6 +25,8 @@ const MessageScreen = (props) => {
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
 
+  const [action, setAction] = useState(false);
+
   const dispatch = useDispatch();
   const [notificationsTitle, setNotificationsTitle] = useState([]);
   useEffect(() => {
@@ -33,8 +35,8 @@ const MessageScreen = (props) => {
 
   const notifsList = useSelector((state) => state.notifs.notifs);
 
-  console.log('notifs', notifsList)
-  console.log('id', firebase.auth().currentUser.uid)
+  console.log("notifs", notifsList);
+  console.log("id", firebase.auth().currentUser.uid);
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,6 +49,7 @@ const MessageScreen = (props) => {
     const threads = [];
 
     const unsubscribe = props.navigation.addListener("focus", () => {
+      setLoading(true);
       firebase
         .firestore()
         .collection("MESSAGE_THREADS")
@@ -79,9 +82,11 @@ const MessageScreen = (props) => {
         });
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, action]);
 
   useEffect(() => {
+    setLoading(true);
+
     console.log("woskdls");
     const threads = [];
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -107,7 +112,7 @@ const MessageScreen = (props) => {
         });
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, action]);
 
   finalThreads = [...threads, ...threads2];
 
@@ -137,43 +142,47 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      <View>
-        {!loading ? (
-          <FlatList
-            data={finalThreads}
-            style={styles.flatList}
-            keyExtractor={(item) => item?._id}
-            renderItem={(itemData) => {
-              console.log("itemdata", itemData.item);
-              return (
-                <CardMessage
-                  pseudoVendeur={itemData.item?.pseudoVendeur}
-                  idVendeur={itemData.item?.idVendeur}
-                  idAcheteur={itemData.item?.idAcheteur}
-                  latestMessage={itemData.item?.latestMessage.text}
-                  onPress={() =>
-                    props.navigation.navigate("ChatScreen", {
-                      thread: itemData.item,
-                    })
-                  }
-                />
-              );
-            }}
-          />
-        ) : (
-          <ActivityIndicator />
-        )}
+      {!loading ? (
+        <FlatList
+          data={finalThreads}
+          style={styles.flatList}
+          keyExtractor={(item) => item?._id}
+          renderItem={(itemData) => {
+            console.log("itemdata", itemData.item);
+            return (
+              <CardMessage
+                pseudoVendeur={itemData.item?.pseudoVendeur}
+                setAction={setAction}
+                action={action}
+                idVendeur={itemData.item?.idVendeur}
+                idAcheteur={itemData.item?.idAcheteur}
+                latestMessage={itemData.item?.latestMessage.text}
+                onPress={() =>
+                  props.navigation.navigate("ChatScreen", {
+                    thread: itemData.item,
+                  })
+                }
+              />
+            );
+          }}
+        />
+      ) : (
+        <ActivityIndicator
+          color="#D51317"
+          size={40}
+          style={{ marginTop: 40 }}
+        />
+      )}
 
-
-      {notifActive ?  (
+      {notifActive ? (
         <FlatList
           data={notifsList}
           style={styles.notifsList}
           keyExtractor={() => (Math.random() * 100000).toString()}
           renderItem={(itemData) => {
-            console.log('notifsActive', notifActive)
-            console.log('data', itemData);
-            console.log('title', itemData.item.notificationsTitle)
+            console.log("notifsActive", notifActive);
+            console.log("data", itemData);
+            console.log("title", itemData.item.notificationsTitle);
             return (
               <CardNotif
                 title={itemData.item.notificationsTitle}
@@ -183,16 +192,16 @@ const MessageScreen = (props) => {
             );
           }}
         />
-      ): <Text>Wola</Text>}
-      </View>
+      ) : (
+        <View></View>
+      )}
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(231, 233, 236, 0.26)",
   },
   messagesContainer: {
     display: "flex",
@@ -213,7 +222,7 @@ const styles = StyleSheet.create({
   notifsList: {
     flex: 1,
     height: 500,
-    backgroundColor: 'red'
+    backgroundColor: "red",
   },
   messageBorder: {
     borderBottomWidth: 3,
