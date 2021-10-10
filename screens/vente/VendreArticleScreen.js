@@ -182,7 +182,7 @@ const VendreArticleScreen = (props) => {
   };
 
   const [error, setError] = useState("");
-
+  const [errors, setErrors] = useState(false)
   const date = new Date();
   return (
     <View style={{ flex: 1 }}>
@@ -201,171 +201,179 @@ const VendreArticleScreen = (props) => {
                 initialValues={initialValues}
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
+                  setErrors(false)
+                  if (!etat || !categorie || !marques) {
+                    setErrors(true)
+                  }
+
                   console.log("values", values);
 
-                  let pushToken;
-                  let statusObj = await Notifications.getPermissionsAsync();
-                  if (statusObj.status !== "granted") {
-                    statusObj = await Notifications.requestPermissionsAsync();
-                  }
-                  if (statusObj.status !== "granted") {
-                    pushToken = null;
-                  } else {
-                    pushToken = await Notifications.getExpoPushTokenAsync()
-                  }
+                  if (!errors) {
+                    let pushToken;
+                    let statusObj = await Notifications.getPermissionsAsync();
+                    if (statusObj.status !== "granted") {
+                      statusObj = await Notifications.requestPermissionsAsync();
+                    }
+                    if (statusObj.status !== "granted") {
+                      pushToken = null;
+                    } else {
+                      pushToken = await Notifications.getExpoPushTokenAsync()
+                    }
 
-                  const id = Math.random() * 300000000;
+                    const id = Math.random() * 300000000;
 
-                  if (imagesTableau.length === 0) {
-                    setError("Veuillez uploader des photos");
-                  } else {
-                    try {
-                      setIsLoading(true);
-                      console.log('1')
-                      await firebase
-                          .firestore()
-                          .collection(`${categorie}`)
-                          .doc(`${id}`)
-                          .set({
-                            categorie,
-                            etat,
-                            id,
-                            marques,
-                            date: date,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price,
-                            poids: values.poids,
-                            pushToken,
-                            idVendeur: currentUser.id,
-                            pseudoVendeur: currentUser.pseudo,
-                          });
-                      console.log('2')
-                      await firebase
-                          .firestore()
-                          .collection("posts")
-                          .doc(currentUser.id)
-                          .collection("userPosts")
-                          .doc(`${id}`)
-                          .set({
-                            pseudoVendeur: currentUser.pseudo,
-                            categorie,
-                            marques,
-                            etat,
-                            date: date,
-                            idVendeur: currentUser.id,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price,
-                            pushToken,
-                            poids: values.poids,
-                          });
-
-                      console.log('3')
-                      await firebase
-                          .firestore()
-                          .collection("allProducts")
-                          .doc(`${id}`)
-                          .set({
-                            pseudoVendeur: currentUser.pseudo,
-                            categorie,
-                            marques,
-                            etat,
-                            pushToken,
-                            date: date,
-                            idVendeur: currentUser.id,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price,
-                            poids: values.poids,
-                          });
-
-                      const uploadImage = async (index) => {
-                        return new Promise(async (resolve) => {
-                          const uri = imagesTableau[index];
-                          const response = await fetch(uri);
-                          const blob = await response.blob();
-
-                          const task = firebase
-                              .storage()
-                              .ref()
-                              .child(`${categorie}/${Math.random().toString(36)}`)
-                              .put(blob);
-
-                          const taskProgress = (snapshot) => {
-                            console.log(
-                                `transferred: ${snapshot.bytesTransferred}`
-                            );
-                          };
-
-                          const taskCompleted = (snapshot) => {
-                            task.snapshot.ref
-                                .getDownloadURL()
-                                .then((snapshot) => {
-                                  saveImageData(snapshot, index);
-                                  console.log("snapshot", snapshot);
-                                  resolve();
-                                });
-                          };
-
-                          const taskError = (snapshot) => {
-                            console.log(snapshot);
-                          };
-
-                          task.on(
-                              "state_changed",
-                              taskProgress,
-                              taskError,
-                              taskCompleted
-                          );
-                        });
-                      };
-
-                      const saveImageData = (downloadURL, index) => {
-                        const property_name =
-                            index === 0 ? "downloadURL" : `downloadURL${index}`;
-                        const data = {};
-                        data[property_name] = downloadURL;
-                        firebase
+                    if (imagesTableau.length === 0) {
+                      setError("Veuillez uploader des photos");
+                    } else {
+                      try {
+                        setIsLoading(true);
+                        console.log('1')
+                        await firebase
                             .firestore()
                             .collection(`${categorie}`)
                             .doc(`${id}`)
-                            .update(data);
-                        firebase
+                            .set({
+                              categorie,
+                              etat,
+                              id,
+                              marques,
+                              date: date,
+                              title: values.title,
+                              description: values.description,
+                              prix: values.price,
+                              poids: values.poids,
+                              pushToken,
+                              idVendeur: currentUser.id,
+                              pseudoVendeur: currentUser.pseudo,
+                            });
+                        console.log('2')
+                        await firebase
                             .firestore()
                             .collection("posts")
                             .doc(currentUser.id)
                             .collection("userPosts")
                             .doc(`${id}`)
-                            .update(data);
-                        firebase
+                            .set({
+                              pseudoVendeur: currentUser.pseudo,
+                              categorie,
+                              marques,
+                              etat,
+                              date: date,
+                              idVendeur: currentUser.id,
+                              title: values.title,
+                              description: values.description,
+                              prix: values.price,
+                              pushToken,
+                              poids: values.poids,
+                            });
+
+                        console.log('3')
+                        await firebase
                             .firestore()
                             .collection("allProducts")
                             .doc(`${id}`)
-                            .update(data);
-                      };
+                            .set({
+                              pseudoVendeur: currentUser.pseudo,
+                              categorie,
+                              marques,
+                              etat,
+                              pushToken,
+                              date: date,
+                              idVendeur: currentUser.id,
+                              title: values.title,
+                              description: values.description,
+                              prix: values.price,
+                              poids: values.poids,
+                            });
 
-                      await Promise.all(
-                          imagesTableau.map(async (image, index) => {
-                            console.log("test");
-                            await uploadImage(index);
-                          })
-                      );
-                    } catch(err) {
-                      console.log(err)
+                        const uploadImage = async (index) => {
+                          return new Promise(async (resolve) => {
+                            const uri = imagesTableau[index];
+                            const response = await fetch(uri);
+                            const blob = await response.blob();
+
+                            const task = firebase
+                                .storage()
+                                .ref()
+                                .child(`${categorie}/${Math.random().toString(36)}`)
+                                .put(blob);
+
+                            const taskProgress = (snapshot) => {
+                              console.log(
+                                  `transferred: ${snapshot.bytesTransferred}`
+                              );
+                            };
+
+                            const taskCompleted = (snapshot) => {
+                              task.snapshot.ref
+                                  .getDownloadURL()
+                                  .then((snapshot) => {
+                                    saveImageData(snapshot, index);
+                                    console.log("snapshot", snapshot);
+                                    resolve();
+                                  });
+                            };
+
+                            const taskError = (snapshot) => {
+                              console.log(snapshot);
+                            };
+
+                            task.on(
+                                "state_changed",
+                                taskProgress,
+                                taskError,
+                                taskCompleted
+                            );
+                          });
+                        };
+
+                        const saveImageData = (downloadURL, index) => {
+                          const property_name =
+                              index === 0 ? "downloadURL" : `downloadURL${index}`;
+                          const data = {};
+                          data[property_name] = downloadURL;
+                          firebase
+                              .firestore()
+                              .collection(`${categorie}`)
+                              .doc(`${id}`)
+                              .update(data);
+                          firebase
+                              .firestore()
+                              .collection("posts")
+                              .doc(currentUser.id)
+                              .collection("userPosts")
+                              .doc(`${id}`)
+                              .update(data);
+                          firebase
+                              .firestore()
+                              .collection("allProducts")
+                              .doc(`${id}`)
+                              .update(data);
+                        };
+
+                        await Promise.all(
+                            imagesTableau.map(async (image, index) => {
+                              console.log("test");
+                              await uploadImage(index);
+                            })
+                        );
+                      } catch(err) {
+                        console.log(err)
+                      }
+
+                      setIsLoading(false);
+                      setImagesTableau([]);
+                      setImage(null);
+                      setCategorie(null);
+                      setMarques(null);
+                      setEtat(null);
+                      props.navigation.navigate("ValidationScreen", {
+                        props: props,
+                        modify: false,
+                      });
                     }
-
-                    setIsLoading(false);
-                    setImagesTableau([]);
-                    setImage(null);
-                    setCategorie(null);
-                    setMarques(null);
-                    setEtat(null);
-                    props.navigation.navigate("ValidationScreen", {
-                      props: props,
-                      modify: false,
-                    });
                   }
+
                 }}
               >
                 {(props) => (
@@ -389,7 +397,7 @@ const VendreArticleScreen = (props) => {
                       style={styles.itemForm3}
                       onPress={() => navigateCategories()}
                     >
-                      <Text style={styles.text}>Catégorie</Text>
+                      <Text style={categorie ? styles.noErrors : styles.errors}>Catégorie</Text>
                       {categorie ? (
                         <Text style={{ color: "black" }}>{categorie}</Text>
                       ) : (
@@ -402,7 +410,7 @@ const VendreArticleScreen = (props) => {
                       style={styles.itemForm3}
                       onPress={() => navigateMarques()}
                     >
-                      <Text style={styles.text}>Marques</Text>
+                      <Text style={marques ? styles.noErrors : styles.errors}>Marques</Text>
                       {marques ? (
                         <Text style={{ color: "black" }}>{marques}</Text>
                       ) : (
@@ -417,7 +425,7 @@ const VendreArticleScreen = (props) => {
                         navigateEtat();
                       }}
                     >
-                      <Text>Etat</Text>
+                      <Text style={etat ? styles.noErrors : styles.errors}>Etat</Text>
                       {etat ? (
                         <Text style={{ color: "black" }}>{etat}</Text>
                       ) : (
@@ -584,6 +592,12 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: "center",
+  },
+  noErrors: {
+    color: 'black'
+  },
+  errors: {
+    color: 'red'
   },
   photoBigContainer: {
     display: "flex",

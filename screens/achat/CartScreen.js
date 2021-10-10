@@ -413,7 +413,7 @@ const CartScreen = (props) => {
 
               <View style={styles.itemForm3}>
                 <View style={styles.adresseText}>
-                  <Text style={!adresse || !enteredAdresse ? styles.modeErrors : styles.noError}>Adresse</Text>
+                  <Text style={!enteredAdresse ? styles.modeErrors : styles.noError}>Adresse</Text>
                 </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.adresseInner}>
