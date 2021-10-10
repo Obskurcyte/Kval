@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import UserAvatar from "react-native-user-avatar";
 import firebase from "firebase";
 
@@ -23,6 +23,20 @@ const CardMessage = ({
       });
   };
 
+  const createTwoButtonAlert = () =>
+    Alert.alert(
+      "Supprimer la conversation",
+      "Vous êtes sur le point de supprimer une conversation, Etes vous sur de vouloir la supprimer? (cette action est irréversible).",
+      [
+        {
+          text: "Annuler",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "OK", onPress: () => deleteMessage() },
+      ]
+    );
+
   return (
     <View>
       {visible ? (
@@ -42,7 +56,7 @@ const CardMessage = ({
                 <Text style={styles.timeText}>{latestMessage}</Text>
               </View>
               <View>
-                <TouchableOpacity onPress={deleteMessage}>
+                <TouchableOpacity onPress={createTwoButtonAlert}>
                   <Text style={styles.suppr}>Supprimer</Text>
                 </TouchableOpacity>
               </View>

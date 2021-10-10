@@ -47,6 +47,7 @@ const MessageScreen = (props) => {
     const threads = [];
 
     const unsubscribe = props.navigation.addListener("focus", () => {
+      setLoading(true);
       firebase
         .firestore()
         .collection("MESSAGE_THREADS")
@@ -82,6 +83,8 @@ const MessageScreen = (props) => {
   }, [props.navigation, action]);
 
   useEffect(() => {
+    setLoading(true);
+
     console.log("woskdls");
     const threads = [];
     const unsubscribe = props.navigation.addListener("focus", () => {
@@ -137,64 +140,66 @@ const MessageScreen = (props) => {
         </TouchableOpacity>
       </View>
 
-      <View>
-        {!loading ? (
-          <FlatList
-            data={finalThreads}
-            style={styles.flatList}
-            keyExtractor={(item) => item?._id}
-            renderItem={(itemData) => {
-              console.log("itemdata", itemData.item);
-              return (
-                <CardMessage
-                  pseudoVendeur={itemData.item?.pseudoVendeur}
-                  setAction={setAction}
-                  action={action}
-                  idVendeur={itemData.item?.idVendeur}
-                  idAcheteur={itemData.item?.idAcheteur}
-                  latestMessage={itemData.item?.latestMessage.text}
-                  onPress={() =>
-                    props.navigation.navigate("ChatScreen", {
-                      thread: itemData.item,
-                    })
-                  }
-                />
-              );
-            }}
-          />
-        ) : (
-          <ActivityIndicator />
-        )}
+      {!loading ? (
+        <FlatList
+          data={finalThreads}
+          style={styles.flatList}
+          keyExtractor={(item) => item?._id}
+          renderItem={(itemData) => {
+            console.log("itemdata", itemData.item);
+            return (
+              <CardMessage
+                pseudoVendeur={itemData.item?.pseudoVendeur}
+                setAction={setAction}
+                action={action}
+                idVendeur={itemData.item?.idVendeur}
+                idAcheteur={itemData.item?.idAcheteur}
+                latestMessage={itemData.item?.latestMessage.text}
+                onPress={() =>
+                  props.navigation.navigate("ChatScreen", {
+                    thread: itemData.item,
+                  })
+                }
+              />
+            );
+          }}
+        />
+      ) : (
+        <ActivityIndicator
+          color="#D51317"
+          size={40}
+          style={{ marginTop: 40 }}
+        />
+      )}
 
-        {notifActive ? (
-          <FlatList
-            data={notifsList}
-            style={styles.notifsList}
-            keyExtractor={() => (Math.random() * 100000).toString()}
-            renderItem={(itemData) => {
-              console.log("notifsActive", notifActive);
-              console.log("data", itemData);
-              console.log("title", itemData.item.notificationsTitle);
-              return (
-                <CardNotif
-                  title={itemData.item.notificationsTitle}
-                  body={itemData.item.notificationsBody}
-                  image={itemData.item.image}
-                />
-              );
-            }}
-          />
-        ) : (
-          <Text>Wola</Text>
-        )}
-      </View>
+      {notifActive ? (
+        <FlatList
+          data={notifsList}
+          style={styles.notifsList}
+          keyExtractor={() => (Math.random() * 100000).toString()}
+          renderItem={(itemData) => {
+            console.log("notifsActive", notifActive);
+            console.log("data", itemData);
+            console.log("title", itemData.item.notificationsTitle);
+            return (
+              <CardNotif
+                title={itemData.item.notificationsTitle}
+                body={itemData.item.notificationsBody}
+                image={itemData.item.image}
+              />
+            );
+          }}
+        />
+      ) : (
+        <View></View>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(231, 233, 236, 0.26)",
   },
   messagesContainer: {
     display: "flex",
