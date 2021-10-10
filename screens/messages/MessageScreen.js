@@ -16,14 +16,14 @@ import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
 
-
-
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const MessageScreen = (props) => {
   const [messageActive, setMessageActive] = useState(true);
   const [notifActive, setNotifActive] = useState(false);
+
+  const [action, setAction] = useState(false);
 
   const dispatch = useDispatch();
   const [notificationsTitle, setNotificationsTitle] = useState([]);
@@ -33,8 +33,8 @@ const MessageScreen = (props) => {
 
   const notifsList = useSelector((state) => state.notifs.notifs);
 
-  console.log('notifs', notifsList)
-  console.log('id', firebase.auth().currentUser.uid)
+  console.log("notifs", notifsList);
+  console.log("id", firebase.auth().currentUser.uid);
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +79,7 @@ const MessageScreen = (props) => {
         });
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, action]);
 
   useEffect(() => {
     console.log("woskdls");
@@ -107,7 +107,7 @@ const MessageScreen = (props) => {
         });
     });
     return unsubscribe;
-  }, [props.navigation]);
+  }, [props.navigation, action]);
 
   finalThreads = [...threads, ...threads2];
 
@@ -148,6 +148,8 @@ const MessageScreen = (props) => {
               return (
                 <CardMessage
                   pseudoVendeur={itemData.item?.pseudoVendeur}
+                  setAction={setAction}
+                  action={action}
                   idVendeur={itemData.item?.idVendeur}
                   idAcheteur={itemData.item?.idAcheteur}
                   latestMessage={itemData.item?.latestMessage.text}
@@ -164,26 +166,28 @@ const MessageScreen = (props) => {
           <ActivityIndicator />
         )}
 
-
-      {notifActive ?  (
-        <FlatList
-          data={notifsList}
-          style={styles.notifsList}
-          keyExtractor={() => (Math.random() * 100000).toString()}
-          renderItem={(itemData) => {
-            console.log('notifsActive', notifActive)
-            console.log('data', itemData);
-            console.log('title', itemData.item.notificationsTitle)
-            return (
-              <CardNotif
-                title={itemData.item.notificationsTitle}
-                body={itemData.item.notificationsBody}
-                image={itemData.item.image}
-              />
-            );
-          }}
-        />
-      ): <Text>Wola</Text>}
+        {notifActive ? (
+          <FlatList
+            data={notifsList}
+            style={styles.notifsList}
+            keyExtractor={() => (Math.random() * 100000).toString()}
+            renderItem={(itemData) => {
+              console.log("notifsActive", notifActive);
+              console.log("data", itemData);
+              console.log("title", itemData.item.notificationsTitle);
+              return (
+                <CardNotif
+                  title={itemData.item.notificationsTitle}
+                  body={itemData.item.notificationsBody}
+                  image={itemData.item.image}
+                />
+              );
+            }}
+          />
+        ) : (
+          <Text>Wola</Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -211,7 +215,7 @@ const styles = StyleSheet.create({
   notifsList: {
     flex: 1,
     height: 500,
-    backgroundColor: 'red'
+    backgroundColor: "red",
   },
   messageBorder: {
     borderBottomWidth: 3,
