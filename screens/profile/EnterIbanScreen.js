@@ -12,6 +12,7 @@ import firebase from "firebase";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "../../store/actions/users";
+import * as Yup from "yup";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -25,16 +26,24 @@ const EnterIbanScreen = (props) => {
   const userData = useSelector((state) => state.user.userData);
   console.log(userData);
 
+  const IBANSchema = Yup.object().shape({
+    IBAN: Yup.string().required("Veuillez rentrer un IBAN"),
+    BIC: Yup.string().required("Veuillez rentrer un BIC")
+  });
+
   const initialValues = {
     IBAN: userData?.IBAN ? userData.IBAN : "",
     BIC: "",
   };
+
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>IBAN</Text>
       <Formik
         initialValues={initialValues}
+        validationSchema={IBANSchema}
         onSubmit={async (values) => {
           console.log(values);
           await axios.post("https://kval-backend.herokuapp.com/send", {
@@ -59,12 +68,18 @@ const EnterIbanScreen = (props) => {
               value={props.values.IBAN}
               onChangeText={props.handleChange("IBAN")}
             />
+            {props.errors.IBAN && props.errors.IBAN ? (
+                <Text>{props.errors.IBAN}</Text>
+            ) : null}
             <TextInput
               placeholder="BIC"
               style={styles.input}
               value={props.values.BIC}
               onChangeText={props.handleChange("BIC")}
             />
+            {props.errors.BIC && props.errors.BIC ? (
+                <Text>{props.errors.BIC}</Text>
+            ) : null}
             <TouchableOpacity
               style={styles.mettreEnVente}
               onPress={props.handleSubmit}

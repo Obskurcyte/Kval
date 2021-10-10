@@ -31,6 +31,7 @@ const windowHeight = Dimensions.get("window").height;
 const CartScreen = (props) => {
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] = useState(false);
   const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const CartScreen = (props) => {
     adresse = props.route.params.adresse;
   }
 
+  console.log(livraison)
   let total = 0;
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -364,6 +366,7 @@ const CartScreen = (props) => {
         <ScrollView style={styles.container}>
           {cartItems.length !== 0 ? (
             <View>
+              <ScrollView horizontal={true}>
               <FlatList
                 style={styles.list}
                 data={cartItems}
@@ -384,6 +387,7 @@ const CartScreen = (props) => {
                   );
                 }}
               />
+              </ScrollView>
 
               <View
                 style={[
@@ -395,7 +399,7 @@ const CartScreen = (props) => {
                   },
                 ]}
               >
-                <Text style={errors ? styles.modeErrors : styles.noError}>
+                <Text style={!livraison ? styles.modeErrors : styles.noError}>
                   Mode de livraison
                 </Text>
                 <TouchableOpacity
@@ -409,7 +413,7 @@ const CartScreen = (props) => {
 
               <View style={styles.itemForm3}>
                 <View style={styles.adresseText}>
-                  <Text style={styles.noError}>Adresse</Text>
+                  <Text style={!adresse || !enteredAdresse ? styles.modeErrors : styles.noError}>Adresse</Text>
                 </View>
                 <View style={styles.adresseContainer}>
                   <Text style={styles.adresseInner}>
@@ -459,6 +463,13 @@ const CartScreen = (props) => {
                   <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
                 </View>
                 <View style={styles.itemForm3}>
+                  <BouncyCheckbox
+                      size={25}
+                      fillColor="red"
+                      unfillColor="#FFFFFF"
+                      iconStyle={{ borderColor: "red" }}
+                      onPress={() => setToggleCheckBoxPortefeuille(!toggleCheckBoxPortefeuille)}
+                  />
                   <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
                   <Text style={{ fontSize: 18 }}>
                     - {reductionPortefeuille} €
@@ -504,9 +515,11 @@ const CartScreen = (props) => {
                   } else {
                     if (!livraison || !toggleCheckBox) {
                       setErrors(true);
-                    } else if (newTotal == 0.0) {
+                    } else if (newTotal == 0.0 && toggleCheckBoxPortefeuille) {
+                      setErrors(false)
                       setPortefeuillePayment(true);
                     } else {
+                      setErrors(false)
                       setMakePayment(true);
                     }
                   }
@@ -683,6 +696,9 @@ const styles = StyleSheet.create({
     color: "#D51317",
     textAlign: "center",
     fontSize: 18,
+  },
+  list: {
+    width: 8000
   },
   startContainer: {
     position: "absolute",

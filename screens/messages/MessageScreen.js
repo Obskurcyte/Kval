@@ -184,9 +184,11 @@ const MessageScreen = (props) => {
           }}
         />
       ): <Text>Wola</Text>}
+      </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
