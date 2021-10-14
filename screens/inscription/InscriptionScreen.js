@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity, TextInput, TouchableWit
 import {Formik} from "formik";
 import firebase from "firebase";
 import {set} from "react-native-reanimated";
+import * as Notifications from "expo-notifications";
 
 const InscriptionScreen = (props) => {
 
@@ -29,6 +30,16 @@ const InscriptionScreen = (props) => {
         initialValues={initialValues}
         onSubmit={async (values) => {
           console.log(values)
+          let pushToken;
+          let statusObj = await Notifications.getPermissionsAsync();
+          if (statusObj.status !== "granted") {
+            statusObj = await Notifications.requestPermissionsAsync();
+          }
+          if (statusObj.status !== "granted") {
+            pushToken = null;
+          } else {
+            pushToken = await Notifications.getExpoPushTokenAsync()
+          }
           try  {
             firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
               console.log('wola')
@@ -39,12 +50,13 @@ const InscriptionScreen = (props) => {
                   email: values.email,
                   IBAN: params.IBAN,
                   nom: params.nom,
-                    id: firebase.auth().currentUser.uid,
+                  id: firebase.auth().currentUser.uid,
                   prenom: params.prenom,
                   postalCode: params.postalCode,
                   ville: params.ville,
+                  pushToken: pushToken.data,
                   pays: params.pays,
-                    adresse: params.adresse,
+                  adresse: params.adresse,
                   portefeuille: 0
                 })
               console.log(result)

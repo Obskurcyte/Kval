@@ -104,7 +104,9 @@ const CartScreen = (props) => {
   } else {
     reductionPortefeuille = sousTotal;
   }
+
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
+  console.log(sousTotal)
 
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
@@ -119,7 +121,7 @@ const CartScreen = (props) => {
           email: `${userData.email}`,
           product: cartInfo,
           authToken: jsonResponse,
-          amount: parseInt(newTotal * 100),
+          amount: toggleCheckBoxPortefeuille ? (newTotal * 100) : (sousTotal * 100),
         }
       );
 
@@ -477,7 +479,7 @@ const CartScreen = (props) => {
                 </View>
                 <View style={styles.itemForm3}>
                   <Text style={{ fontSize: 18 }}>Total</Text>
-                  <Text style={styles.totalPrice}>{newTotal} €</Text>
+                  <Text style={styles.totalPrice}>{toggleCheckBoxPortefeuille ? newTotal : sousTotal} €</Text>
                 </View>
               </View>
 

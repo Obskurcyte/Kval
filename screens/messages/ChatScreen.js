@@ -3,11 +3,34 @@ import {View, Text, TextInput, StyleSheet} from "react-native";
 import { IconButton } from 'react-native-paper';
 import  { GiftedChat, Send } from 'react-native-gifted-chat';
 import firebase from "firebase";
+import {useDispatch} from "react-redux";
+import * as userActions from '../../store/actions/users';
 
 const ChatScreen = (props) => {
 
   const { thread } = props.route.params
   const user = firebase.auth().currentUser.toJSON()
+
+  const [userInfo, setUserInfo] = useState(null)
+
+  useEffect(() => {
+      const user = firebase.firestore()
+          .collection('users')
+          .doc(`${thread.idVendeur}`)
+          .get().then((doc) => {
+            if (doc.exists) {
+              setUserInfo(doc.data())
+            } else {
+              // doc.data() will be undefined in this case
+              console.log("No such document!");
+            }
+          }).catch((error) => {
+            console.log("Error getting document:", error);
+          });
+  }, []);
+
+  console.log('user', userInfo);
+
 
   const [messages, setMessages] = useState([
     {
@@ -62,9 +85,23 @@ const ChatScreen = (props) => {
   }, [])
 
 
-
   async function handleSend(messages) {
     const text = messages[0].text
+      console.log('you')
+      await fetch("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: {
+              Accept: "application/json",
+              "Accept-Encoding": "gzip, deflate",
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              to: userInfo.pushToken.data,
+              title: "Vous avez un nouveau message !",
+              body: `Revenez vite ! Un utilisateur vous a envoyé un message !`,
+          }),
+      });
+
     await firebase.firestore()
       .collection('MESSAGE_THREADS')
       .doc(thread._id)
