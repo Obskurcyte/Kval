@@ -96,7 +96,7 @@ const ChatScreen = (props) => {
               "Content-Type": "application/json",
           },
           body: JSON.stringify({
-              to: userInfo.pushToken.data,
+              to: userInfo.pushToken,
               title: "Vous avez un nouveau message !",
               body: `Revenez vite ! Un utilisateur vous a envoyé un message !`,
           }),

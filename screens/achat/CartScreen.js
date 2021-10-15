@@ -103,7 +103,7 @@ const CartScreen = (props) => {
     reductionPortefeuille = userData.portefeuille;
   } else {
     reductionPortefeuille = sousTotal;
-  }
+  }$
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
   console.log(sousTotal)
