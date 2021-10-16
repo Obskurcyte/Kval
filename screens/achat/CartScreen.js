@@ -103,7 +103,7 @@ const CartScreen = (props) => {
     reductionPortefeuille = userData.portefeuille;
   } else {
     reductionPortefeuille = sousTotal;
-  }$
+  }
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
   console.log(sousTotal)
@@ -613,6 +613,9 @@ const CartScreen = (props) => {
             <TouchableOpacity
               style={styles.mettreEnVenteOptional}
               onPress={() => {
+                adresse = null;
+                enteredAdresse = null;
+                setToggleCheckBox(false);
                 setMakePayment(!makePayment);
               }}
             >

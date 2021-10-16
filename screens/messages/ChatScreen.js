@@ -8,15 +8,28 @@ import * as userActions from '../../store/actions/users';
 
 const ChatScreen = (props) => {
 
-  const { thread } = props.route.params
-  const user = firebase.auth().currentUser.toJSON()
+  const { thread } = props.route.params;
+  console.log('thread', thread);
+
+  const user = firebase.auth().currentUser.toJSON();
+
+  const userId = firebase.auth().currentUser.uid;
 
   const [userInfo, setUserInfo] = useState(null)
+
+  let docId;
+  if (userId === thread.idAcheteur) {
+      docId = thread.idVendeur
+  } else {
+      docId = thread.idAcheteur
+  }
+
+
 
   useEffect(() => {
       const user = firebase.firestore()
           .collection('users')
-          .doc(`${thread.idVendeur}`)
+          .doc(`${docId}`)
           .get().then((doc) => {
             if (doc.exists) {
               setUserInfo(doc.data())
@@ -30,7 +43,6 @@ const ChatScreen = (props) => {
   }, []);
 
   console.log('user', userInfo);
-
 
   const [messages, setMessages] = useState([
     {
@@ -48,7 +60,7 @@ const ChatScreen = (props) => {
         name: 'Demo'
       }
     }
-  ])
+  ]);
 
   useEffect(() => {
     const unsubscribeListener = firebase.firestore()
@@ -84,7 +96,6 @@ const ChatScreen = (props) => {
     return () => unsubscribeListener()
   }, [])
 
-
   async function handleSend(messages) {
     const text = messages[0].text
       console.log('you')
@@ -114,6 +125,7 @@ const ChatScreen = (props) => {
           displayName: user.displayName
         }
       })
+
     await firebase.firestore()
       .collection('MESSAGE_THREADS')
       .doc(thread._id)

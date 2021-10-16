@@ -119,6 +119,7 @@ const MessageScreen = (props) => {
   console.log("fina", finalThreads);
   console.log(threads.length);
   console.log("authid", firebase.auth().currentUser.uid);
+
   return (
     <View style={styles.container}>
       <View style={styles.messagesContainer}>
