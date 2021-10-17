@@ -131,6 +131,7 @@ import ValidationAnnonceModifieeScreen from "../screens/profile/ValidationAnnonc
 import PhotoModifierAnnonceScreen from "../screens/profile/PhotoModifierAnnonceScreen";
 import EnterIbanScreen from "../screens/profile/EnterIbanScreen";
 import ValidationIBANScreen from "../screens/profile/ValidationIBANScreen";
+import { CommonActions, StackActions } from "@react-navigation/native";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -2276,6 +2277,31 @@ export const AccueilNavigator = (props) => {
   );
 };
 
+const resetStackOnTabPress = ({ navigation, route }) => ({
+  tabPress: (e) => {
+    const state = navigation.dangerouslyGetState();
+
+    if (state) {
+      // Grab all the tabs that are NOT the one we just pressed
+      const nonTargetTabs = state.routes.filter((r) => r.key !== e.target);
+
+      nonTargetTabs.forEach((tab) => {
+        // Find the tab we want to reset and grab the key of the nested stack
+        const tabName = tab?.name;
+        const stackKey = tab?.state?.key;
+
+        if (stackKey) {
+          // Pass the stack key that we want to reset and use popToTop to reset it
+          navigation.dispatch({
+            ...StackActions.popToTop(),
+            target: stackKey,
+          });
+        }
+      });
+    }
+  },
+});
+
 export const TabNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
@@ -2292,6 +2318,7 @@ export const TabNavigator = (props) => {
           <AppTabNavigator.Screen
             name="Accueil"
             component={AccueilNavigator}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <AntDesign name="home" size={24} color="black" />
@@ -2307,6 +2334,7 @@ export const TabNavigator = (props) => {
                 setLoggedInAsVisit={setLoggedInAsVisit}
               />
             )}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="shopping-cart" size={24} color="black" />
@@ -2370,6 +2398,7 @@ export const TabNavigator = (props) => {
           <AppTabNavigator.Screen
             name="Accueil"
             component={AccueilNavigator}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <AntDesign name="home" size={24} color="black" />
@@ -2385,6 +2414,7 @@ export const TabNavigator = (props) => {
                 setLoggedInAsVisit={setLoggedInAsVisit}
               />
             )}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Entypo name="shopping-cart" size={24} color="black" />
@@ -2393,6 +2423,7 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Vendre"
+            listeners={resetStackOnTabPress}
             children={(props) => (
               <SellNavigator
                 {...props}
@@ -2418,6 +2449,7 @@ export const TabNavigator = (props) => {
           <AppTabNavigator.Screen
             name="Profil"
             component={ProfileNavigator}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <AntDesign name="user" size={24} color="black" />
