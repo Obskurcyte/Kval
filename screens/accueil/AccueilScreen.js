@@ -65,6 +65,7 @@ const AccueilScreen = (props) => {
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
       firebase.firestore().collection("allProducts")
+          .orderBy('date', "desc")
           .get()
           .then(snapshot => {
             let productsBoosted = snapshot.docs.map(doc => {

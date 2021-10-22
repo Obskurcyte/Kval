@@ -66,6 +66,33 @@ const ProductDetailScreen = (props) => {
     );
   }
 
+  //-----------------DELETE ANNONCE---------------//
+
+  const deleteAnnonce = (id, categorie) => {
+    firebase.firestore().collection('allProducts')
+        .doc(`${id}`)
+        .delete()
+        .then(() => console.log('productDeleted'))
+    firebase.firestore().collection(`${categorie}`)
+        .doc(`${id}`)
+        .delete()
+        .then(() => console.log('productDeleted'))
+    firebase
+        .firestore()
+        .collection("posts")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("userPosts")
+        .doc(`${id}`)
+        .delete()
+        .then(() => console.log('productDeleted'))
+    firebase
+        .firestore()
+        .collection("BoostedVentes")
+        .doc(`${id}`)
+        .delete()
+        .then(() => console.log('productDeleted'))
+  }
+
   //-----------------COMMENTAIRES-----------------//
 
   useEffect(() => {
@@ -299,6 +326,16 @@ const ProductDetailScreen = (props) => {
                 }}
               >
                 <Text style={styles.resetText}>Modifier mon offre</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                  style={styles.mettreEnVente}
+                  onPress={() => {
+                    deleteAnnonce(product.id, product.categorie)
+                    props.navigation.navigate('DeleteAnnonceValidationScreen')
+                  }}
+              >
+                <Text style={styles.mettreEnVenteText}>Supprimer mon offre</Text>
               </TouchableOpacity>
             </View>
           ) : (

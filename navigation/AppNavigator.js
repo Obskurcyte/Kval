@@ -96,11 +96,9 @@ const MessageStackNavigator = createStackNavigator();
 const ProfileStackNavigator = createStackNavigator();
 const AccueilStackNavigator = createStackNavigator();
 import { useSelector } from "react-redux";
-import HeaderRight from "../components/HeaderRight";
 import ArticlesEnVenteScreen from "../screens/profile/ArticlesEnVenteScreen";
 import BoosteVenteScreen from "../screens/profile/BoosteVenteScreen";
 import InformationsScreen from "../screens/profile/InformationsScreen";
-import ModifierInfosScreen from "../screens/profile/ModifierEmailScreen";
 import BoosteVentePaiementScreen from "../screens/profile/BoosteVentePaiementScreen";
 import ChatScreen from "../screens/messages/ChatScreen";
 import SignalerUnLitigeScreen from "../screens/profile/SignalerUnLitigeScreen";
@@ -132,6 +130,7 @@ import PhotoModifierAnnonceScreen from "../screens/profile/PhotoModifierAnnonceS
 import EnterIbanScreen from "../screens/profile/EnterIbanScreen";
 import ValidationIBANScreen from "../screens/profile/ValidationIBANScreen";
 import { CommonActions, StackActions } from "@react-navigation/native";
+import DeleteAnnonceValidationScreen from "../screens/achat/DeleteAnnonceValidationScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -971,6 +970,13 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <AchatStackNavigator.Screen
+            name="DeleteAnnonceValidationScreen"
+            component={DeleteAnnonceValidationScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
       <AchatStackNavigator.Screen
         name="AdresseChoiceScreen"
         component={AdresseChoiceScreen}
@@ -2064,6 +2070,7 @@ export const ProfileNavigator = (props) => {
           },
         }}
       />
+        
       <ProfileStackNavigator.Screen
         name="ModifierAdresseScreen"
         component={ModifierAdresseScreen}
