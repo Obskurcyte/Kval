@@ -131,6 +131,7 @@ import EnterIbanScreen from "../screens/profile/EnterIbanScreen";
 import ValidationIBANScreen from "../screens/profile/ValidationIBANScreen";
 import { CommonActions, StackActions } from "@react-navigation/native";
 import DeleteAnnonceValidationScreen from "../screens/achat/DeleteAnnonceValidationScreen";
+import ForgotPasswordScreen from "../screens/inscription/ForgotPasswordScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -191,6 +192,11 @@ export const AuthNavigator = (props) => {
         component={InscriptionScreen}
         options={classes.header}
       />
+        <AuthStackNavigator.Screen
+            name="ForgotPasswordScreen"
+            component={ForgotPasswordScreen}
+            options={classes.header}
+        />
       <AuthStackNavigator.Screen
         name="ConnectionScreen"
         children={(props) => (

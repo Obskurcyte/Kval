@@ -97,7 +97,10 @@ const ConnectionScreen = (props) => {
         <View style={styles.connecteContainer}>
           <View style={styles.connecte}>
             <TouchableOpacity
-              onPress={() => props.navigation.navigate("ConnectionScreen")}
+              onPress={() => {
+                console.log('hey')
+                props.navigation.navigate("ForgotPasswordScreen")
+              }}
             >
               <Text style={styles.text}>Mot de passe oublié ?</Text>
             </TouchableOpacity>
