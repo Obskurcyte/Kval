@@ -20,7 +20,8 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as userActions from "../../store/actions/users";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import * as messageAction from "../../store/actions/messages";
 
 
 const wait = (timeout) => {
@@ -30,6 +31,12 @@ const wait = (timeout) => {
 
 const AccueilScreen = (props) => {
 
+  const dispatch = useDispatch();
+
+
+  const message = useSelector(state => state.messages.unreadMessages)
+
+  console.log('message', message)
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -48,6 +55,7 @@ const AccueilScreen = (props) => {
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(messageAction.fetchUnreadMessage())
       firebase.firestore().collection("BoostedVentes")
           .get()
           .then(snapshot => {
@@ -60,7 +68,7 @@ const AccueilScreen = (props) => {
           })
     });
     return unsubscribe
-  }, [props.navigation])
+  }, [props.navigation, dispatch])
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {

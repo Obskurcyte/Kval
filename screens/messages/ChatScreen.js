@@ -5,9 +5,11 @@ import  { GiftedChat, Send } from 'react-native-gifted-chat';
 import firebase from "firebase";
 import {useDispatch} from "react-redux";
 import * as userActions from '../../store/actions/users';
+import * as messageAction from "../../store/actions/messages";
 
 const ChatScreen = (props) => {
 
+    const dispatch = useDispatch()
   const { thread } = props.route.params;
   console.log('thread', thread);
 
@@ -18,13 +20,36 @@ const ChatScreen = (props) => {
   const [userInfo, setUserInfo] = useState(null)
 
   let docId;
+
+    useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            dispatch(messageAction.fetchUnreadMessage())
+        });
+        return unsubscribe
+    }, [props.navigation, dispatch])
+
   if (userId === thread.idAcheteur) {
       docId = thread.idVendeur
   } else {
       docId = thread.idAcheteur
   }
+    console.log('dicId', docId)
 
 
+    useEffect(() => {
+        const deleteMessage = async () => {
+            await firebase.firestore()
+                .collection('users')
+                .doc(`${firebase.auth().currentUser.uid}`)
+                .collection('unreadMessage')
+                .doc(firebase.auth().currentUser.uid)
+                .delete()
+                .catch((error) => {
+                    console.log("Error getting document:", error);
+                });
+        }
+        deleteMessage()
+    }, []);
 
   useEffect(() => {
       const user = firebase.firestore()
@@ -41,8 +66,6 @@ const ChatScreen = (props) => {
             console.log("Error getting document:", error);
           });
   }, []);
-
-  console.log('user', userInfo);
 
   const [messages, setMessages] = useState([
     {
@@ -62,6 +85,7 @@ const ChatScreen = (props) => {
     }
   ]);
 
+  console.log('info', userInfo)
   useEffect(() => {
     const unsubscribeListener = firebase.firestore()
       .collection('MESSAGE_THREADS')
@@ -99,6 +123,28 @@ const ChatScreen = (props) => {
   async function handleSend(messages) {
     const text = messages[0].text
       console.log('you')
+      await firebase.firestore()
+          .collection('users')
+          .doc(`${docId}`)
+          .collection('unreadMessage')
+          .doc(docId)
+          .get().then(async (doc) => {
+          if (doc.exists) {
+             console.log('yeah')
+          } else {
+              await firebase.firestore()
+                  .collection('users')
+                  .doc(`${docId}`)
+                  .collection('unreadMessage')
+                  .doc(docId)
+                  .set({
+                      count: 1
+                  })
+              console.log("New doc created !");
+          }
+      }).catch((error) => {
+          console.log("Error getting document:", error);
+      });
       await fetch("https://exp.host/--/api/v2/push/send", {
           method: "POST",
           headers: {

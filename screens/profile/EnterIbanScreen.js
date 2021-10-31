@@ -47,8 +47,21 @@ const EnterIbanScreen = (props) => {
         onSubmit={async (values) => {
           console.log(values);
           await axios.post("https://kval-backend.herokuapp.com/send", {
-            IBAN: values.IBAN,
-            BIC: values.BIC,
+            mail: userData.email,
+            subject: "Confirmation de boost d'articles",
+            html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} a bien été prise en compte</p>
+<p>L'argent sera disponible sur votre compte bancaire sous 48h</p>
+</div>`
+          });
+          await axios.post("https://kval-backend.herokuapp.com/send", {
+            mail: 'info@k-val.com',
+            subject: "Demande de transfert d'argent",
+            html_output: `<div><p>Bonjour, <br></p> 
+<p>Une nouvelle de demande de transfert d'argent : </p>
+<p>BIC : ${values.BIC}</p>
+<p>IBAN : ${values.IBAN}</p>
+</div>`
           });
           await firebase
             .firestore()

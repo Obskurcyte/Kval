@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
+import * as messageAction from "../../store/actions/messages";
 
 
 
@@ -42,6 +43,13 @@ const MessageScreen = (props) => {
   const [loading, setLoading] = useState(true);
 
   let finalThreads = [];
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(messageAction.fetchUnreadMessage())
+    });
+    return unsubscribe
+  }, [props.navigation, dispatch])
 
   console.log(firebase.auth().currentUser.uid);
   useEffect(() => {
@@ -120,6 +128,7 @@ const MessageScreen = (props) => {
   console.log(threads.length);
   console.log("authid", firebase.auth().currentUser.uid);
 
+
   return (
     <View style={styles.container}>
       <View style={styles.messagesContainer}>
@@ -158,10 +167,12 @@ const MessageScreen = (props) => {
                 idVendeur={itemData.item?.idVendeur}
                 idAcheteur={itemData.item?.idAcheteur}
                 latestMessage={itemData.item?.latestMessage.text}
-                onPress={() =>
+                onPress={() => {
+
                   props.navigation.navigate("ChatScreen", {
                     thread: itemData.item,
                   })
+                }
                 }
               />
             );

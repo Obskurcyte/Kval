@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -95,7 +95,7 @@ const AchatStackNavigator = createStackNavigator();
 const MessageStackNavigator = createStackNavigator();
 const ProfileStackNavigator = createStackNavigator();
 const AccueilStackNavigator = createStackNavigator();
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ArticlesEnVenteScreen from "../screens/profile/ArticlesEnVenteScreen";
 import BoosteVenteScreen from "../screens/profile/BoosteVenteScreen";
 import InformationsScreen from "../screens/profile/InformationsScreen";
@@ -132,6 +132,12 @@ import ValidationIBANScreen from "../screens/profile/ValidationIBANScreen";
 import { CommonActions, StackActions } from "@react-navigation/native";
 import DeleteAnnonceValidationScreen from "../screens/achat/DeleteAnnonceValidationScreen";
 import ForgotPasswordScreen from "../screens/inscription/ForgotPasswordScreen";
+import TapisAccueilScreen from "../screens/achat/sousCategoriesChevalEtTextile/TapisAccueilScreen";
+import TapisScreen from "../screens/vente/sousCategoriesChevalEtTextile/TapisScreen";
+import firebase from "firebase";
+import * as userActions from "../store/actions/users";
+import {set} from "react-native-reanimated";
+import * as messageAction from '../store/actions/messages';
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -543,6 +549,24 @@ export const SellNavigator = () => {
           headerTitleAlign: "center",
         }}
       />
+        <SellStackNavigator.Screen
+            name="TapisScreen"
+            component={TapisScreen}
+            options={{
+                title: "Tapis, bonnets et amortisseurs",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
       <SellStackNavigator.Screen
         name="CavalierScreen"
         component={CavalierScreen}
@@ -1051,6 +1075,24 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <AchatStackNavigator.Screen
+            name="TapisAccueilScreen"
+            component={TapisAccueilScreen}
+            options={{
+                title: "Tapis",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
       <AchatStackNavigator.Screen
         name="AvisScreen"
         component={AvisScreen}
@@ -2318,7 +2360,21 @@ const resetStackOnTabPress = ({ navigation, route }) => ({
 export const TabNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
-  return (
+
+
+    const dispatch = useDispatch();
+    console.log('auth', firebase.auth().currentUser.uid)
+    const [count, setCount] = useState(0)
+
+    useEffect(() => {
+        dispatch(messageAction.fetchUnreadMessage())
+    }, [dispatch]);
+
+    const message = useSelector(state => state.messages.unreadMessages)
+    console.log('message', message)
+    const messageLength = message.length;
+
+    return (
     <>
       {props.loggedInAsVisit ? (
         <AppTabNavigator.Navigator
@@ -2374,7 +2430,24 @@ export const TabNavigator = (props) => {
             children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <AntDesign name="message1" size={24} color="black" />
+                  <View>
+                      <View
+                          style={{
+                              backgroundColor: "#D51317",
+                              borderRadius: 30,
+                              alignItems: "center",
+                              position: "absolute",
+                              width: 20,
+                              bottom: "65%",
+                              right: "55%",
+                          }}
+                      >
+                          <Text style={{ color: "white", fontWeight: "bold" }}>
+                              1
+                          </Text>
+                      </View>
+                        <AntDesign name="message1" size={24} color="black" />
+                  </View>
               ),
               tabBarButton: (props) => (
                 <TouchableOpacity
@@ -2455,7 +2528,24 @@ export const TabNavigator = (props) => {
             component={MessageNavigator}
             options={{
               tabBarIcon: ({ color, size }) => (
-                <AntDesign name="message1" size={24} color="black" />
+                  <View>
+                      <View
+                          style={{
+                              backgroundColor: "#D51317",
+                              borderRadius: 30,
+                              alignItems: "center",
+                              position: "absolute",
+                              width: 18,
+                              bottom: "45%",
+                              left: "25%",
+                          }}
+                      >
+                              <Text style={{ color: "white", fontWeight: "bold" }}>
+                              {messageLength - 1}
+                          </Text>
+                      </View>
+                      <AntDesign name="message1" size={24} color="black" />
+                  </View>
               ),
             }}
           />

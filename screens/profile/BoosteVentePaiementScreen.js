@@ -30,6 +30,7 @@ const BoosteVentePaiementScreen = (props) => {
   if (props.route.params && props.route.params.articles) {
     articles = props.route.params.articles
   }
+  const currentUser = useSelector((state) => state.user.userData);
 
   console.log('articles', articles)
   const [checked1, setChecked1] = useState(false);
@@ -46,6 +47,14 @@ const BoosteVentePaiementScreen = (props) => {
   const [makePayment, setMakePayment] = useState(false);
   const [price, setPrice] = useState(0)
   const [paymentStatus, setPaymentStatus] = useState('')
+
+  let dureeBoost = 0;
+  if (checked1) {
+    dureeBoost = 3
+  }
+  if (checked2) {
+    dureeBoost = 7
+  }
 
   console.log((price*100).toFixed(0))
   console.log('wola', articles)
@@ -81,7 +90,16 @@ const BoosteVentePaiementScreen = (props) => {
               pseudoVendeur: articles[data].pseudoVendeur,
               time: new Date()
             })
+            await axios.post("https://kval-backend.herokuapp.com/send", {
+              mail: currentUser.email,
+              subject: "Confirmation de boost d'articles",
+              html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
+<p>Votre article ${articles[data].title}  est boosté pour une durée de ${dureeBoost} jours.</p>
+<p>Votre article se trouve dès à présent dans la rubrique « Annonce en avant-première »</p>
+</div>`
+            })
           }
+
           setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
         } else {
           setPaymentStatus('Le paiement a échoué')

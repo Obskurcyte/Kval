@@ -28,6 +28,10 @@ const CavalierAccueilScreen = (props) => {
           <Text style={styles.text}>Gilet de protection</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('BottesAccueilScreen')}>
+          <Text style={styles.text}>Bottes, boots et mini-chaps</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('AccessoiresAccueilScreen')}>
           <Text style={styles.text}>Accessoires</Text>
         </TouchableOpacity>

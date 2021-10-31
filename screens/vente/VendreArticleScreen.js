@@ -22,6 +22,8 @@ import * as usersActions from "../../store/actions/users";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import PhotoArticleScreen from "./PhotoArticleScreen";
+import axios from "axios";
+import * as messageAction from "../../store/actions/messages";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -37,6 +39,13 @@ const VendreArticleScreen = (props) => {
   const [modify, setModify] = useState(
     props.route.params ? props.route.params.modify : null
   );
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(messageAction.fetchUnreadMessage())
+    });
+    return unsubscribe
+  }, [props.navigation, dispatch])
 
   let initialValues = {
     title: "",
@@ -93,6 +102,7 @@ const VendreArticleScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
+
   const resetForm = () => {
     setEtat(null);
     setCategorie(null);
@@ -367,6 +377,15 @@ const VendreArticleScreen = (props) => {
                       setCategorie(null);
                       setMarques(null);
                       setEtat(null);
+                      await axios.post("https://kval-backend.herokuapp.com/send", {
+                        mail: currentUser.email,
+                        subject: 'Confirmation de vente',
+                        html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
+<p>Votre article ${values.title} a bien été mis en vente.</p>
+<p>Vous pouvez dès à présent le retrouver dans la rubrique « Mes articles en vente » de votre profil pour le consulter, le modifier ou le supprimer.</p>
+<p>Vous pouvez également booster cet article à tout moment afin d’améliorer sa visibilité</p>
+</div>`
+                      });
                       props.navigation.navigate("ValidationScreen", {
                         props: props,
                         modify: false,

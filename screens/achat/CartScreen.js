@@ -3,17 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
-  TextInput,
   FlatList,
   ScrollView,
   Dimensions,
-  ActivityIndicator,
-  TouchableWithoutFeedback,
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
+  ActivityIndicator
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
@@ -34,6 +28,7 @@ const CartScreen = (props) => {
   const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] = useState(false);
   const userData = useSelector((state) => state.user.userData);
 
+
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -51,7 +46,6 @@ const CartScreen = (props) => {
     adresse = props.route.params.adresse;
   }
 
-  console.log(livraison)
   let total = 0;
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -76,6 +70,9 @@ const CartScreen = (props) => {
   });
 
   console.log("cartitem", cartItems);
+
+  let idVendeurArray = cartItems.map(item => item.idVendeur)
+  console.log('vendeurArray', idVendeurArray)
 
   let portefeuilleVendeur = 0;
   let portefeuilleAcheteur = 0;
@@ -129,6 +126,7 @@ const CartScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
+            console.log(cartItem)
             await firebase
               .firestore()
               .collection("commandes")
@@ -159,6 +157,7 @@ const CartScreen = (props) => {
               .set({
                 test: "test",
               });
+
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
@@ -195,18 +194,19 @@ const CartScreen = (props) => {
                         portefeuille:
                           portefeuilleVendeur + parseInt(cartItem.sum),
                       })
-                      .then(async () => {
-                        const mailResponse = await axios.post(
-                          "https://kval-backend.herokuapp.com/newcommand",
-                          {
-                            mail_acheteur: `${userData.email}`,
-                            cart,
-                          }
-                        );
-                        console.log(mailResponse);
-                      });
                   }
                 });
+              await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: userData.email,
+                subject: "Confirmation d'achat",
+                html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons l'achat de l'article ${cartItem.productTitle} à ${cartItem.pseudoVendeur}.</p>
+<p>A présent, ${cartItem.pseudoVendeur} dispose de 5 jours ouvrés pour vous envoyer l'article</p>
+<p>Une fois l’article reçu vous disposerez de 2 jours pour faire une réclamation dans la rubrique « signaler un litige » de votre profil.</p>
+<p>Le numéro de suivi vous sera communiqué lorsque l’envoie aura été effectué par ${cartItem.pseudoVendeur}</p>
+<p>N’oubliez pas de vous rendre dans votre profil, rubrique « mes commandes » afin de nous informer de la bonne réception et conformité du colis.</p>
+</div>`
+              })
             } catch (err) {
               console.log(err);
             }

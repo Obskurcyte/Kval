@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import firebase from "firebase/app";
 import { TabNavigator, AuthNavigator } from "./navigation/AppNavigator";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import { Provider } from "react-redux";
+import {Provider, useSelector} from "react-redux";
 import { LogBox } from "react-native";
 import ReduxThunk from "redux-thunk";
 import productReducer from "./store/reducers/products";
@@ -14,6 +14,7 @@ import userReducer from "./store/reducers/users";
 import * as Notifications from "expo-notifications";
 import notifReducer from "./store/reducers/notifications";
 import articleCommandeReducer from "./store/reducers/articlesCommandes";
+import messageReducer from "./store/reducers/messages";
 LogBox.ignoreLogs(["Setting a timer"]);
 
 const firebaseConfig = {
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   notifs: notifReducer,
   commandes: articleCommandeReducer,
+  messages: messageReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

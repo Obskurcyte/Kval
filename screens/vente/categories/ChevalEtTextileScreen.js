@@ -30,6 +30,12 @@ const ChevalEtTextileScreen = (props) => {
           <Text style={styles.text}>Collection shetland et mini-shetland</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('TapisScreen', {
+          categorie: 'Tapis, bonnets et amortisseurs'
+        })}>
+          <Text style={styles.text}>Tapis, bonnets et amortisseurs</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('VendreArticleScreen', {
           categorie: 'Spécial noël'
         })}>

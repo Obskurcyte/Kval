@@ -45,20 +45,28 @@ const InscriptionScreen = (props) => {
               console.log('wola')
               firebase.firestore().collection("users")
                 .doc(firebase.auth().currentUser.uid)
-                .set({
-                  pseudo: values.pseudo,
-                  email: values.email,
-                  IBAN: params.IBAN,
-                  nom: params.nom,
-                  id: firebase.auth().currentUser.uid,
-                  prenom: params.prenom,
-                  postalCode: params.postalCode,
-                  ville: params.ville,
-                  pushToken: pushToken.data,
-                  pays: params.pays,
-                  adresse: params.adresse,
-                  portefeuille: 0
-                })
+                  .collection('unreadMessage')
+                  .doc('firstKey')
+                  .set({
+                      count: 1
+                  }).then(() => {
+                      firebase.firestore().collection('users')
+                          .doc(firebase.auth().currentUser.uid)
+                          .set({
+                              pseudo: values.pseudo,
+                              email: values.email,
+                              IBAN: params.IBAN,
+                              nom: params.nom,
+                              id: firebase.auth().currentUser.uid,
+                              prenom: params.prenom,
+                              postalCode: params.postalCode,
+                              ville: params.ville,
+                              pushToken: pushToken.data,
+                              pays: params.pays,
+                              adresse: params.adresse,
+                              portefeuille: 0
+                          })
+              })
               console.log(result)
             })
           } catch (err) {

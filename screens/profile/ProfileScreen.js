@@ -15,6 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "../../store/actions/users";
 import pick from "react-native-web/dist/modules/pick";
+import * as messageAction from "../../store/actions/messages";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,6 +32,13 @@ const ProfileScreen = (props) => {
   const userData = useSelector((state) => state.user.userData);
 
   console.log(userData);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(messageAction.fetchUnreadMessage())
+    });
+    return unsubscribe
+  }, [props.navigation, dispatch])
 
 
   console.log('wola')
@@ -178,6 +186,12 @@ const ProfileScreen = (props) => {
               onPress={() => props.navigation.navigate("PortefeuilleScreen")}
             >
               <Text style={styles.text}>Mon portefeuille</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.boutonList}
+                onPress={() => props.navigation.navigate("CommentCaMarcheScreen")}
+            >
+              <Text style={styles.text}>Comment ça marche</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.boutonList}
