@@ -64,7 +64,6 @@ const VendreArticleScreen = (props) => {
   console.log("modify", modify);
   console.log("initial", initialValues);
 
-
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
   const [marques, setMarques] = useState(null);

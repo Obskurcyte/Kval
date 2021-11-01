@@ -1885,6 +1885,13 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil",
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="DeleteAnnonceValidationScreen"
+            component={DeleteAnnonceValidationScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="ContactScreen"
         component={ContactScreen}

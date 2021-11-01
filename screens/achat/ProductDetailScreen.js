@@ -331,7 +331,7 @@ const ProductDetailScreen = (props) => {
               <TouchableOpacity
                   style={styles.mettreEnVente}
                   onPress={() => {
-                    deleteAnnonce(product.id, product.categorie)
+                   deleteAnnonce(product.id, product.categorie)
                     props.navigation.navigate('DeleteAnnonceValidationScreen')
                   }}
               >

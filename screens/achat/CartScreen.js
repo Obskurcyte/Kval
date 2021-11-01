@@ -47,6 +47,7 @@ const CartScreen = (props) => {
   }
 
   let total = 0;
+
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
@@ -391,27 +392,33 @@ const CartScreen = (props) => {
               />
               </ScrollView>
 
-              <View
-                style={[
-                  styles.itemForm3,
-                  {
-                    borderTopColor: "lightgrey",
-                    borderTopWidth: 1,
-                    marginTop: 10,
-                  },
-                ]}
-              >
-                <Text style={!livraison ? styles.modeErrors : styles.noError}>
-                  Mode de livraison
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    props.navigation.navigate("LivraisonChoiceScreen");
-                  }}
-                >
-                  {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
-                </TouchableOpacity>
-              </View>
+
+              {idVendeurArray.map((vendeur, index) =>
+                  <View
+                      style={[
+                        styles.itemForm3,
+                        {
+                          borderTopColor: "lightgrey",
+                          borderTopWidth: 1,
+                          marginTop: 10,
+                        },
+                      ]}
+                  >
+                    <Text style={!livraison ? styles.modeErrors : styles.noError}>
+                      Mode de livraison article n° {index}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                          props.navigation.navigate("LivraisonChoiceScreen");
+                        }}
+                    >
+                      {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
+                    </TouchableOpacity>
+                  </View>
+              )}
+
+
+
 
               <View style={styles.itemForm3}>
                 <View style={styles.adresseText}>
