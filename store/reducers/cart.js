@@ -17,7 +17,8 @@ const cartReducer = (state = initialState, action) => {
       const prodImage = addedProduct.downloadURL;
       const idVendeur = addedProduct.idVendeur;
       const pseudoVendeur = addedProduct.pseudoVendeur;
-      const weight = addedProduct.weight;
+      const poids = addedProduct.poids;
+      const livraison = addedProduct.livraison;
 
       let updatedOrNewCartItem;
 
@@ -32,7 +33,8 @@ const cartReducer = (state = initialState, action) => {
           idVendeur,
           pseudoVendeur,
           categorie,
-          weight,
+          poids,
+          livraison,
           state.items[addedProduct.id].quantity * prodPrice
         );
       } else {
@@ -45,7 +47,8 @@ const cartReducer = (state = initialState, action) => {
             idVendeur,
             pseudoVendeur,
           categorie,
-          weight,
+          poids,
+          livraison,
           prodPrice,
         )
       }

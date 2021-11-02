@@ -253,6 +253,7 @@ const VendreArticleScreen = (props) => {
                               poids: values.poids,
                               pushToken,
                               idVendeur: currentUser.id,
+                              livraison: 'Choisir',
                               pseudoVendeur: currentUser.pseudo,
                             });
                         console.log('2')
@@ -273,6 +274,7 @@ const VendreArticleScreen = (props) => {
                               description: values.description,
                               prix: values.price,
                               pushToken,
+                              livraison: 'Choisir',
                               poids: values.poids,
                             });
 
@@ -292,6 +294,7 @@ const VendreArticleScreen = (props) => {
                               title: values.title,
                               description: values.description,
                               prix: values.price,
+                              livraison: 'Choisir',
                               poids: values.poids,
                             });
 

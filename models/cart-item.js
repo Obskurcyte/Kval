@@ -1,5 +1,5 @@
 class CartItem {
-  constructor(quantity, productPrice, productTitle, image, pushToken, idVendeur, pseudoVendeur, categorie, weight, sum) {
+  constructor(quantity, productPrice, productTitle, image, pushToken, idVendeur, pseudoVendeur, categorie, poids, livraison, sum) {
       this.quantity = quantity;
       this.productPrice = productPrice;
       this.productTitle = productTitle;
@@ -8,7 +8,8 @@ class CartItem {
       this.idVendeur = idVendeur;
       this.pseudoVendeur = pseudoVendeur;
       this.categorie = categorie;
-      this.weigth = weight;
+      this.poids = poids;
+      this.livraison = livraison;
       this.sum = sum
   }
 }

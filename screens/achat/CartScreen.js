@@ -13,6 +13,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
 import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
+import * as productActions from '../../store/actions/products';
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
@@ -29,51 +30,62 @@ const CartScreen = (props) => {
   const userData = useSelector((state) => state.user.userData);
 
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      // The screen is focused
-      dispatch(userActions.getUser());
-    });
-    return unsubscribe;
-  }, [props.navigation, dispatch]);
+
 
   let livraison;
+  let cartItems2;
   let adresse;
   let IBAN;
 
   if (props.route.params) {
     livraison = props.route.params.livraison;
     adresse = props.route.params.adresse;
+    cartItems2 = props.route.params.cartItems
   }
 
+    let cartItems = useSelector((state) => {
+      const transformedCartItems = [];
+      for (const key in state.cart.items) {
+        transformedCartItems.push({
+          productId: key,
+          productTitle: state.cart.items[key].productTitle,
+          productPrice: state.cart.items[key].productPrice,
+          quantity: state.cart.items[key].quantity,
+          image: state.cart.items[key].image,
+          idVendeur: state.cart.items[key].idVendeur,
+          pseudoVendeur: state.cart.items[key].pseudoVendeur,
+          categorie: state.cart.items[key].categorie,
+          livraison: state.cart.items[key].livraison,
+          poids: state.cart.items[key].poids,
+          pushToken: state.cart.items[key].pushToken,
+          sum: state.cart.items[key].sum,
+        });
+      }
+      return transformedCartItems;
+    });
+
+  if (cartItems2) {
+    cartItems = cartItems2
+  }
+  console.log('items', cartItems2);
   let total = 0;
 
-  const cartItems = useSelector((state) => {
-    const transformedCartItems = [];
-    for (const key in state.cart.items) {
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
-        quantity: state.cart.items[key].quantity,
-        image: state.cart.items[key].image,
-        idVendeur: state.cart.items[key].idVendeur,
-        pseudoVendeur: state.cart.items[key].pseudoVendeur,
-        pushToken: state.cart.items[key].pushToken,
-        sum: state.cart.items[key].sum,
-      });
-    }
-    return transformedCartItems;
-  });
 
-  const cart = useSelector((state) => {
-    return state.cart;
-  });
 
-  console.log("cartitem", cartItems);
+
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      // The screen is focused
+      dispatch(userActions.getUser());
+      cartItems.map((item, index) => {
+        dispatch(productActions.fetchProducts(item.categorie))
+      })
+    });
+    return unsubscribe;
+  }, [props.navigation, dispatch]);
 
   let idVendeurArray = cartItems.map(item => item.idVendeur)
-  console.log('vendeurArray', idVendeurArray)
 
   let portefeuilleVendeur = 0;
   let portefeuilleAcheteur = 0;
@@ -104,7 +116,6 @@ const CartScreen = (props) => {
   }
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
-  console.log(sousTotal)
 
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
@@ -229,6 +240,7 @@ const CartScreen = (props) => {
   };
 
   const cartTotalAmount = useSelector((state) => state.cart.items);
+
 
   const [errors, setErrors] = useState(false);
   let enteredAdresse = false;
@@ -392,29 +404,36 @@ const CartScreen = (props) => {
               />
               </ScrollView>
 
-
-              {idVendeurArray.map((vendeur, index) =>
-                  <View
-                      style={[
-                        styles.itemForm3,
-                        {
-                          borderTopColor: "lightgrey",
-                          borderTopWidth: 1,
-                          marginTop: 10,
-                        },
-                      ]}
-                  >
-                    <Text style={!livraison ? styles.modeErrors : styles.noError}>
-                      Mode de livraison article n° {index}
-                    </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                          props.navigation.navigate("LivraisonChoiceScreen");
-                        }}
+              {cartItems.map((item, index) => {
+                return (
+                    <View
+                        style={[
+                          styles.itemForm3,
+                          {
+                            borderTopColor: "lightgrey",
+                            borderTopWidth: 1,
+                            marginTop: 10,
+                          },
+                        ]}
                     >
-                      {livraison ? <Text>{livraison}</Text> : <Text>Choisir</Text>}
-                    </TouchableOpacity>
-                  </View>
+                      <Text style={!livraison ? styles.modeErrors : styles.noError}>
+                        Mode de livraison {item.productTitle}
+                      </Text>
+                      <TouchableOpacity
+                          onPress={() => {
+                            props.navigation.navigate("LivraisonChoiceScreen", {
+                              product: cartItems[index],
+                              cartItems: cartItems,
+                              index: index
+                            });
+                          }}
+                      >
+                        {item.livraison ? <Text>{item.livraison}</Text> : <Text>Choisir</Text>}
+                      </TouchableOpacity>
+                    </View>
+                )
+              }
+
               )}
 
 
@@ -522,7 +541,7 @@ const CartScreen = (props) => {
                   if (props.loggedInAsVisit) {
                     props.setLoggedInAsVisit(!props.loggedInAsVisit);
                   } else {
-                    if (!livraison || !toggleCheckBox) {
+                    if (!toggleCheckBox) {
                       setErrors(true);
                     } else if (newTotal == 0.0 && toggleCheckBoxPortefeuille) {
                       setErrors(false)

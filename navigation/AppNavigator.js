@@ -138,6 +138,7 @@ import firebase from "firebase";
 import * as userActions from "../store/actions/users";
 import {set} from "react-native-reanimated";
 import * as messageAction from '../store/actions/messages';
+import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1906,6 +1907,20 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Contactez-nous",
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="CommentCaMarcheScreen"
+            component={CommentCaMarcheScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Comment ca marche",
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="PhotoModifierAnnonceScreen"
         component={PhotoModifierAnnonceScreen}
