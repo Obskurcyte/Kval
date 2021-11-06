@@ -61,7 +61,7 @@ const ArticlesEnVenteScreen = (props) => {
                   price={itemData.item.prix}
                   imageURI={itemData.item.downloadURL}
                   onPress={() =>
-                    props.navigation.navigate("Profil", {
+                    props.navigation.navigate("Acheter", {
                       screen: "ProductDetailScreen",
                       params: { product: itemData.item },
                     })

@@ -52,6 +52,10 @@ const EnterIbanScreen = (props) => {
             html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} a bien été prise en compte</p>
 <p>L'argent sera disponible sur votre compte bancaire sous 48h</p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+
 </div>`
           });
           await axios.post("https://kval-backend.herokuapp.com/send", {

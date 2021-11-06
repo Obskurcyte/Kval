@@ -2551,6 +2551,7 @@ export const TabNavigator = (props) => {
             options={{
               tabBarIcon: ({ color, size }) => (
                   <View>
+                      {messageLength > 1 ?
                       <View
                           style={{
                               backgroundColor: "#D51317",
@@ -2563,9 +2564,10 @@ export const TabNavigator = (props) => {
                           }}
                       >
                               <Text style={{ color: "white", fontWeight: "bold" }}>
-                              {messageLength - 1}
+                                  {messageLength - 1}
                           </Text>
                       </View>
+                          : <View/>}
                       <AntDesign name="message1" size={24} color="black" />
                   </View>
               ),

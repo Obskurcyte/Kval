@@ -67,7 +67,6 @@ const CartScreen = (props) => {
   if (cartItems2) {
     cartItems = cartItems2
   }
-  console.log('items', cartItems2);
   let total = 0;
 
 
@@ -138,7 +137,6 @@ const CartScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
-            console.log(cartItem)
             await firebase
               .firestore()
               .collection("commandes")
@@ -172,6 +170,7 @@ const CartScreen = (props) => {
 
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
+            console.log('token', pushToken)
             await fetch("https://exp.host/--/api/v2/push/send", {
               method: "POST",
               headers: {
@@ -193,8 +192,6 @@ const CartScreen = (props) => {
                 .get()
                 .then((doc) => {
                   portefeuilleVendeur = doc.data().portefeuille;
-                  console.log("doc data", doc.data().portefeuille);
-                  console.log("portefeuille", portefeuilleVendeur);
                 })
                 .then(() => {
                   if (portefeuilleVendeur >= 0) {
@@ -217,6 +214,10 @@ const CartScreen = (props) => {
 <p>Une fois l’article reçu vous disposerez de 2 jours pour faire une réclamation dans la rubrique « signaler un litige » de votre profil.</p>
 <p>Le numéro de suivi vous sera communiqué lorsque l’envoie aura été effectué par ${cartItem.pseudoVendeur}</p>
 <p>N’oubliez pas de vous rendre dans votre profil, rubrique « mes commandes » afin de nous informer de la bonne réception et conformité du colis.</p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+
 </div>`
               })
             } catch (err) {
@@ -306,8 +307,6 @@ const CartScreen = (props) => {
             .get()
             .then((doc) => {
               portefeuilleVendeur = doc.data().portefeuille;
-              console.log("doc data", doc.data().portefeuille);
-              console.log("portefeuille", portefeuilleVendeur);
             })
             .then(() => {
               if (portefeuilleVendeur >= 0) {
@@ -327,8 +326,6 @@ const CartScreen = (props) => {
             .get()
             .then((doc) => {
               portefeuilleAcheteur = doc.data().portefeuille;
-              console.log("doc data", doc.data().portefeuille);
-              console.log("portefeuille", portefeuilleAcheteur);
             })
             .then(() => {
               if (portefeuilleAcheteur > 0) {
@@ -370,7 +367,6 @@ const CartScreen = (props) => {
   };
 
   const paymentUI = (props) => {
-    console.log(makePayment);
 
     if (portefeuillePayment) {
       return <ViewPortefeuille />;

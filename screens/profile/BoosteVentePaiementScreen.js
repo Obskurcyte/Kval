@@ -96,6 +96,10 @@ const BoosteVentePaiementScreen = (props) => {
               html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
 <p>Votre article ${articles[data].title}  est boosté pour une durée de ${dureeBoost} jours.</p>
 <p>Votre article se trouve dès à présent dans la rubrique « Annonce en avant-première »</p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+
 </div>`
             })
           }

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  Modal
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +17,6 @@ import firebase from "firebase";
 import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
-import ProfileScreen from "../profile/ProfileScreen";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -236,10 +236,42 @@ const ProductDetailScreen = (props) => {
 
   const initial = product.pseudoVendeur.charAt(0);
 
+  // ----------------- MODAL ---------------- //
+  const [modalVisible, setModalVisible] = useState(false);
+  console.log('modal', modalVisible)
+
   return (
     <View>
       <View style={styles.container}>
         <ScrollView>
+          <Modal
+              transparent={true}
+              visible={modalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Etes-vous sur de vouloir supprimer votre offre ?</Text>
+                <TouchableOpacity
+                    style={styles.mettreEnVentePopup}
+                    onPress={() => {
+                      setModalVisible(false)
+                      deleteAnnonce(product.id, product.categorie)
+                      props.navigation.navigate('DeleteAnnonceValidationScreen')
+                    }}
+                >
+                  <Text style={styles.mettreEnVenteText}>Supprimer mon offre</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.reset}
+                    onPress={() => {
+                      setModalVisible(false)
+                    }}
+                >
+                  <Text style={styles.resetText}>Annuler</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
           <View style={styles.imgContainer}>
             <Carousel
               keyExtractor={(item) => item?.id}
@@ -331,8 +363,7 @@ const ProductDetailScreen = (props) => {
               <TouchableOpacity
                   style={styles.mettreEnVente}
                   onPress={() => {
-                   deleteAnnonce(product.id, product.categorie)
-                    props.navigation.navigate('DeleteAnnonceValidationScreen')
+                   setModalVisible(true)
                   }}
               >
                 <Text style={styles.mettreEnVenteText}>Supprimer mon offre</Text>
@@ -481,6 +512,13 @@ const styles = StyleSheet.create({
     width: windowWidth / 1.1,
     paddingVertical: "5%",
   },
+  mettreEnVentePopup: {
+    backgroundColor: "#D51317",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.5,
+    paddingVertical: "5%",
+  },
   mettreEnVenteText: {
     color: "white",
     textAlign: "center",
@@ -551,17 +589,6 @@ const styles = StyleSheet.create({
 
     color: "#A0A0A0",
   },
-  button: {
-    width: "40%",
-    marginLeft: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderColor: "#585B60",
-  },
   buttonText: {
     fontWeight: "bold",
     fontSize: 16,
@@ -595,6 +622,48 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#1C2127",
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center"
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  }
+
 });
 
 export default ProductDetailScreen;

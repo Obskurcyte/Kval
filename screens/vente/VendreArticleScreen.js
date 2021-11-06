@@ -381,11 +381,14 @@ const VendreArticleScreen = (props) => {
                       setEtat(null);
                       await axios.post("https://kval-backend.herokuapp.com/send", {
                         mail: currentUser.email,
-                        subject: 'Confirmation de vente',
+                        subject: 'Confirmation de mise en vente',
                         html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
 <p>Votre article ${values.title} a bien été mis en vente.</p>
 <p>Vous pouvez dès à présent le retrouver dans la rubrique « Mes articles en vente » de votre profil pour le consulter, le modifier ou le supprimer.</p>
 <p>Vous pouvez également booster cet article à tout moment afin d’améliorer sa visibilité</p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
 </div>`
                       });
                       props.navigation.navigate("ValidationScreen", {
