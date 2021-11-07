@@ -5,7 +5,6 @@ const CartItem = (props) => {
 
   return (
     <View style={styles.cardContainer}>
-      <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
       <View style={styles.imgContainer}>
         <Image
           source={{uri: props.image}}
@@ -14,9 +13,9 @@ const CartItem = (props) => {
       </View>
       <View style={styles.priceContainer}>
         <Text style={styles.cardTitle}>{props.title}</Text>
-        <Text style={styles.price}>{props.price} €</Text>
+        <Text style={styles.price}>Prix : {props.price} €</Text>
       </View>
-
+      <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
     </View>
   );
 };
@@ -24,10 +23,10 @@ const CartItem = (props) => {
 const styles = StyleSheet.create({
   price: {
     color: '#D51317',
-    fontSize: 14
+    fontSize: 20
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 22,
     fontWeight: 'bold'
   },
   vendeurContainer: {
@@ -36,7 +35,13 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: 'white',
     paddingHorizontal: '5%',
-    marginTop: '5%'
+    marginTop: '5%',
+    display: 'flex',
+    height: 150,
+    flexDirection: 'row'
+  },
+  cross: {
+    marginLeft: 50
   },
   imgContainer: {
     alignItems: 'center',
@@ -44,11 +49,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   image: {
-    height: 180,
-    width: 180
-  },
-  cross: {
-    marginLeft: '85%'
+    height: 130,
+    width: 130
   },
   deleteContainer: {
     position: 'absolute',
@@ -62,7 +64,8 @@ const styles = StyleSheet.create({
     color: '#A7A9BE'
   },
   priceContainer: {
-    marginLeft: '10%'
+    marginLeft: '10%',
+    marginTop: '10%'
   }
 });
 
