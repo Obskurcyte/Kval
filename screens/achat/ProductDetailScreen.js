@@ -49,8 +49,6 @@ const ProductDetailScreen = (props) => {
     testData.push({ id: "item5", image: product.downloadURL4 });
   }
 
-  console.log("test", testData);
-
   const carouselRef = React.useRef(null);
 
   function renderItem({ item, index, navigation }) {
@@ -101,7 +99,6 @@ const ProductDetailScreen = (props) => {
 
   let commentaires = useSelector((state) => state.commandes.commentaires);
 
-  console.log("product", product);
 
   let ratings = [];
   for (let data in commentaires) {
@@ -182,6 +179,7 @@ const ProductDetailScreen = (props) => {
         image: state.cart.items[key].image,
         idVendeur: state.cart.items[key].idVendeur,
         pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        emailVendeur: state.cart.items[key].emailVendeur,
         pushToken: state.cart.items[key].pushToken,
         categorie: state.cart.items[key].categorie,
         sum: state.cart.items[key].sum,
@@ -197,11 +195,9 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
   const currentUser = useSelector((state) => state.user.userData);
-  console.log("curr", currentUser);
-  console.log(product.idVendeur, idAcheteur);
+
 
   const onMessagePressed = () => {
-    console.log(product.pseudoVendeur);
     firebase
       .firestore()
       .collection("MESSAGE_THREADS")
@@ -238,7 +234,6 @@ const ProductDetailScreen = (props) => {
 
   // ----------------- MODAL ---------------- //
   const [modalVisible, setModalVisible] = useState(false);
-  console.log('modal', modalVisible)
 
   return (
     <View>
@@ -388,18 +383,18 @@ const ProductDetailScreen = (props) => {
                 onPress={() => {
                   if (cartItems.length !== 0) {
                     for (const key in cartItems) {
-                      console.log("wola");
-                      console.log("id1", product.id);
-                      console.log("id2", cartItems[key].productId);
+
                       if (product.id == cartItems[key].productId) {
                         setErrorAdded(
                           "Ce produit est déjà présent dans votre panier"
                         );
                       } else {
+                        console.log('product', product)
                         dispatch(cartActions.addToCart(product));
                       }
                     }
                   } else {
+                    console.log('product', product)
                     dispatch(cartActions.addToCart(product));
                   }
                 }}

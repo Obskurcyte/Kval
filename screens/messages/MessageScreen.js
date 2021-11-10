@@ -4,6 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Image,
+  ScrollView,
   Dimensions,
   FlatList,
 } from "react-native";
@@ -15,25 +17,28 @@ import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
 import * as messageAction from "../../store/actions/messages";
 
+
+
+const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const MessageScreen = (props) => {
-
   const [messageActive, setMessageActive] = useState(true);
-  const [notifActive, setNotifActive] = useState(false);
 
   const [action, setAction] = useState(false);
 
   const dispatch = useDispatch();
+  const [notificationsTitle, setNotificationsTitle] = useState([]);
   useEffect(() => {
     dispatch(notifsActions.fetchNotifs());
   }, []);
 
   const notifsList = useSelector((state) => state.notifs.notifs);
 
+  console.log("notifs", notifsList);
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   let finalThreads = [];
 
@@ -44,151 +49,153 @@ const MessageScreen = (props) => {
     return unsubscribe
   }, [props.navigation, dispatch])
 
+
   useEffect(() => {
+
     const threads = [];
 
     const unsubscribe = props.navigation.addListener("focus", () => {
-      //setLoading(true);
+      setLoading(true);
       firebase
-        .firestore()
-        .collection("MESSAGE_THREADS")
-        .where("idVendeur", "==", firebase.auth().currentUser.uid)
-        .get()
-        .then((querySnapshot) => {
-          const threads = [];
-          querySnapshot.docs.map((documentSnapshot) => {
-            firebase
-              .firestore()
-              .collection("users")
-              .where("id", "==", documentSnapshot.data().idAcheteur)
-              .get()
-              .then((userSnapshot) => {
-                const newPseudoVendeur = userSnapshot.docs.map(
-                  (doc) => doc.data().pseudo
-                )[0];
-                threads.push({
-                  ...documentSnapshot.data(),
-                  _id: documentSnapshot.id,
-                  pseudoVendeur: newPseudoVendeur,
-                });
-                if (loading) {
-                  setLoading(false);
-                }
-                setThreads(threads);
-              });
+          .firestore()
+          .collection("MESSAGE_THREADS")
+          .where("idVendeur", "==", firebase.auth().currentUser.uid)
+          .get()
+          .then((querySnapshot) => {
+            const threads = [];
+            querySnapshot.docs.map((documentSnapshot) => {
+              firebase
+                  .firestore()
+                  .collection("users")
+                  .where("id", "==", documentSnapshot.data().idAcheteur)
+                  .get()
+                  .then((userSnapshot) => {
+                    const newPseudoVendeur = userSnapshot.docs.map(
+                        (doc) => doc.data().pseudo
+                    )[0];
+                    threads.push({
+                      ...documentSnapshot.data(),
+                      _id: documentSnapshot.id,
+                      pseudoVendeur: newPseudoVendeur,
+                    });
+                    if (loading) {
+                      setLoading(false);
+                    }
+                    setThreads(threads);
+                  });
+            });
           });
-        });
     });
     return unsubscribe;
   }, [props.navigation, action]);
 
   useEffect(() => {
-    //setLoading(true);
+    setLoading(true);
 
+    console.log("woskdls");
     const threads = [];
     const unsubscribe = props.navigation.addListener("focus", () => {
       firebase
-        .firestore()
-        .collection("MESSAGE_THREADS")
-        .where("idAcheteur", "==", firebase.auth().currentUser.uid)
-        .get()
-        .then((querySnapshot) => {
-          const threads = [];
-          querySnapshot.docs.map((documentSnapshot) => {
-            threads.push({
-              ...documentSnapshot.data(),
-              _id: documentSnapshot.id,
-              pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+          .firestore()
+          .collection("MESSAGE_THREADS")
+          .where("idAcheteur", "==", firebase.auth().currentUser.uid)
+          .get()
+          .then((querySnapshot) => {
+            const threads = [];
+            querySnapshot.docs.map((documentSnapshot) => {
+              threads.push({
+                ...documentSnapshot.data(),
+                _id: documentSnapshot.id,
+                pseudoVendeur: documentSnapshot.data().pseudoVendeur,
+              });
             });
+            if (loading) {
+              setLoading(false);
+            }
+            setThreads2(threads);
           });
-          if (loading) {
-            setLoading(false);
-          }
-          setThreads2(threads);
-        });
     });
     return unsubscribe;
   }, [props.navigation, action]);
 
   finalThreads = [...threads, ...threads2];
 
-  console.log('notifs', notifsList)
 
-  console.log('active', notifActive)
   return (
-    <View style={styles.container}>
-      <View style={styles.messagesContainer}>
-        <TouchableOpacity
-          style={messageActive ? styles.messageBorder : styles.message}
-          onPress={() => {
-            setMessageActive(true);
-            setNotifActive(false);
-          }}
-        >
-          <Text style={styles.messageText}>Messagerie</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={notifActive ? styles.messageBorder : styles.message}
-          onPress={() => {
-            setMessageActive(false);
-            setNotifActive(true);
-          }}
-        >
-          <Text style={styles.messageText}>Notifications</Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.messagesContainer}>
+          <TouchableOpacity
+              style={messageActive ? styles.messageBorder : styles.message}
+              onPress={() => {
+                setMessageActive(true);
+              }}
+          >
+            <Text style={styles.messageText}>Messagerie</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={!messageActive ? styles.messageBorder : styles.message}
+              onPress={() => {
+                setMessageActive(false);
+              }}
+          >
+            <Text style={styles.messageText}>Notifications</Text>
+          </TouchableOpacity>
+        </View>
+
+        {!loading ? (
+            <>
+              {messageActive ?
+                  <FlatList
+                      data={finalThreads}
+                      style={styles.flatList}
+                      keyExtractor={(item) => item?._id}
+                      renderItem={(itemData) => {
+                        return (
+                            <CardMessage
+                                pseudoVendeur={itemData.item?.pseudoVendeur}
+                                setAction={setAction}
+                                action={action}
+                                idVendeur={itemData.item?.idVendeur}
+                                idAcheteur={itemData.item?.idAcheteur}
+                                latestMessage={itemData.item?.latestMessage.text}
+                                onPress={() => {
+
+                                  props.navigation.navigate("ChatScreen", {
+                                    thread: itemData.item,
+                                  })
+                                }
+                                }
+                            />
+                        );
+                      }}
+                  /> :
+                  <FlatList
+                      data={notifsList}
+                      style={styles.flatList}
+                      keyExtractor={() => (Math.random() * 100000).toString()}
+                      renderItem={(itemData) => {
+                        console.log('item', itemData.item)
+                        return (
+                            <CardNotif
+                                title={itemData.item.notificationsTitle}
+                                body={itemData.item.notificationsBody}
+                                image={itemData.item.image}
+                            />
+                        );
+                      }}
+                  />
+              }
+
+            </>
+
+        ) : (
+            <ActivityIndicator
+                color="#D51317"
+                size={40}
+                style={{ marginTop: 40 }}
+            />
+        )}
       </View>
-
-      {!loading ? (
-          <>
-            {messageActive ?    <FlatList
-                data={finalThreads}
-                style={styles.flatList}
-                keyExtractor={(item) => item?._id}
-                renderItem={(itemData) => {
-                  return (
-                      <CardMessage
-                          pseudoVendeur={itemData.item?.pseudoVendeur}
-                          setAction={setAction}
-                          action={action}
-                          idVendeur={itemData.item?.idVendeur}
-                          idAcheteur={itemData.item?.idAcheteur}
-                          latestMessage={itemData.item?.latestMessage.text}
-                          onPress={() => {
-
-                            props.navigation.navigate("ChatScreen", {
-                              thread: itemData.item,
-                            })
-                          }
-                          }
-                      />
-                  );
-                }}
-            /> : <View/>}
-
-            {notifActive ? <FlatList
-                data={notifsList}
-                style={styles.notifsList}
-                keyExtractor={() => (Math.random() * 100000).toString()}
-                renderItem={(itemData) => {
-                  console.log(itemData.item)
-                  return (
-                      <CardNotif
-                          title={itemData.item.notificationsTitle}
-                          body={itemData.item.notificationsBody}
-                          image={itemData.item.image}
-                      />
-                  );
-                }}
-            /> : <View/>}
-          </>
-      ) : (
-        <ActivityIndicator
-          color="#D51317"
-          size={40}
-          style={{ marginTop: 40 }}
-        />
-      )}
-    </View>
   );
 };
 

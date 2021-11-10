@@ -192,7 +192,6 @@ const AccueilScreen = (props) => {
               <Text>Soins et écuries</Text>
             </View>
 
-
             <View style={styles.categoriesInnerContainer}>
               <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChienAccueilScreen'})}>
                 <MaterialCommunityIcons name="dog" size={34} color="white" />

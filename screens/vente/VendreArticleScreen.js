@@ -253,6 +253,7 @@ const VendreArticleScreen = (props) => {
                               poids: values.poids,
                               pushToken,
                               idVendeur: currentUser.id,
+                              emailVendeur: currentUser.email,
                               livraison: 'Choisir',
                               pseudoVendeur: currentUser.pseudo,
                             });
@@ -270,6 +271,7 @@ const VendreArticleScreen = (props) => {
                               etat,
                               date: date,
                               idVendeur: currentUser.id,
+                              emailVendeur: currentUser.email,
                               title: values.title,
                               description: values.description,
                               prix: values.price,
@@ -291,6 +293,7 @@ const VendreArticleScreen = (props) => {
                               pushToken,
                               date: date,
                               idVendeur: currentUser.id,
+                              emailVendeur: currentUser.email,
                               title: values.title,
                               description: values.description,
                               prix: values.price,

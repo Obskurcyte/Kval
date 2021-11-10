@@ -73,8 +73,9 @@ const LivraisonChoiceScreen = (props) => {
         onPress={async () => {
            // await updateLivraison("Livraison Article Lourd");
             cartItems[index].livraison = "Livraison Article Lourd"
-            props.navigation.navigate("LivraisonArticleLourdScreen", {
-                cartItems: cartItems
+            props.navigation.navigate("CartScreen", {
+                adresse: null,
+                cartItems: cartItems,
             });
         }}
       >

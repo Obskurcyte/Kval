@@ -17,6 +17,7 @@ const cartReducer = (state = initialState, action) => {
       const prodImage = addedProduct.downloadURL;
       const idVendeur = addedProduct.idVendeur;
       const pseudoVendeur = addedProduct.pseudoVendeur;
+      const emailVendeur = addedProduct.emailVendeur;
       const poids = addedProduct.poids;
       const livraison = addedProduct.livraison;
 
@@ -32,6 +33,7 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
           idVendeur,
           pseudoVendeur,
+          emailVendeur,
           categorie,
           poids,
           livraison,
@@ -46,6 +48,7 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
             idVendeur,
             pseudoVendeur,
+          emailVendeur,
           categorie,
           poids,
           livraison,

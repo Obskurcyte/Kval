@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+
 const CartItem = (props) => {
 
   return (
@@ -12,6 +13,7 @@ const CartItem = (props) => {
         />
       </View>
       <View style={styles.priceContainer}>
+        <Text>{props.pseudoVendeur}</Text>
         <Text style={styles.cardTitle}>{props.title}</Text>
         <Text style={styles.price}>Prix : {props.price} €</Text>
       </View>
@@ -26,8 +28,9 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   cardTitle: {
-    fontSize: 22,
-    fontWeight: 'bold'
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 15
   },
   vendeurContainer: {
     backgroundColor: '#F9F9FA'
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   cross: {
-    marginLeft: 50
+    marginLeft: 30
   },
   imgContainer: {
     alignItems: 'center',
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     marginLeft: '10%',
-    marginTop: '10%'
+    marginTop: '5%'
   }
 });
 

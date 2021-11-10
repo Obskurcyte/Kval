@@ -20,6 +20,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import firebase from "firebase";
 import * as userActions from "../../store/actions/users";
+import RecapCommandeItem from "../../components/RecapCommandeItem";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -41,6 +42,8 @@ const CartScreen = (props) => {
     cartItems2 = props.route.params.cartItems
   }
 
+  console.log(adresse);
+  console.log(enteredAdresse)
     let cartItems = useSelector((state) => {
       const transformedCartItems = [];
       for (const key in state.cart.items) {
@@ -52,6 +55,7 @@ const CartScreen = (props) => {
           image: state.cart.items[key].image,
           idVendeur: state.cart.items[key].idVendeur,
           pseudoVendeur: state.cart.items[key].pseudoVendeur,
+            emailVendeur: state.cart.items[key].emailVendeur,
           categorie: state.cart.items[key].categorie,
           livraison: state.cart.items[key].livraison,
           poids: state.cart.items[key].poids,
@@ -110,6 +114,7 @@ const CartScreen = (props) => {
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
 
+
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -164,7 +169,6 @@ const CartScreen = (props) => {
 
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
-            console.log('token', pushToken)
             await fetch("https://exp.host/--/api/v2/push/send", {
               method: "POST",
               headers: {
@@ -211,14 +215,23 @@ const CartScreen = (props) => {
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
-
 </div>`
               })
+                await axios.post("https://kval-backend.herokuapp.com/send", {
+                    mail: cartItem.emailVendeur,
+                    subject: "Un des vos articles a été acheté",
+                    html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons que l'article ${cartItem.productTitle} a bien été acheté par ${userData.pseudo}.</p>
+<p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+</div>`
+                })
             } catch (err) {
               console.log(err);
             }
           }
-
           setPaymentStatus(
             "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
           );
@@ -360,6 +373,7 @@ const CartScreen = (props) => {
     );
   };
 
+  console.log('cart', cartItems)
   const [goPaiement, setGoPaiement] = useState(false);
   const [goConfirmation, setGoConfirmation] = useState(false);
 
@@ -391,6 +405,7 @@ const CartScreen = (props) => {
                                   title={itemData.item.productTitle}
                                   price={itemData.item.productPrice}
                                   image={itemData.item.image}
+                                  pseudoVendeur={itemData.item.pseudoVendeur}
                                   onDelete={() => {
                                     dispatch(
                                         cartActions.removeFromCart(itemData.item.productId)
@@ -400,7 +415,7 @@ const CartScreen = (props) => {
                           );
                         }}
                     />
-                    <Text style={styles.subTotal}>Total articles : {total}</Text>
+                    <Text style={styles.subTotal}>Total articles : {total} €</Text>
                     <Text style={styles.subTotal}>Prix protection acheteur : {(total * 0.095).toFixed(2)} € </Text>
                     <TouchableOpacity
                         style={styles.mettreEnVente}
@@ -426,19 +441,14 @@ const CartScreen = (props) => {
                       const price = parseFloat(item.productPrice)
                       const sousTotal = (price + protectionAcheteur).toFixed(2)
 
-                      console.log(item)
                       return (
                           <View style={{marginBottom: 50}}>
                             <Text style={styles.articleTitle}>Article {index + 1}</Text>
-                            <CartItem
+                            <RecapCommandeItem
                                 title={item.productTitle}
                                 price={item.productPrice}
                                 image={item.image}
-                                onDelete={() => {
-                                  dispatch(
-                                      cartActions.removeFromCart(itemData.item.productId)
-                                  );
-                                }}
+                                key={index}
                             />
                             <View
                                 style={[
@@ -447,6 +457,8 @@ const CartScreen = (props) => {
                                     borderTopColor: "lightgrey",
                                     borderTopWidth: 1,
                                     marginTop: 10,
+                                      display: 'flex',
+                                      flexDirection: 'column'
                                   },
                                 ]}
                             >
@@ -463,12 +475,13 @@ const CartScreen = (props) => {
                                   }}
                               >
                                 {item.livraison ? <Text>{item.livraison}</Text> : <Text>Choisir</Text>}
-                              </TouchableOpacity>
-                            </View>
 
+                              </TouchableOpacity>
+                                {item.livraison === "Livraison Article Lourd" ? <Text style={{textAlign: 'center'}}>Nous reviendrons vers vous dans les plus bref délais avec une estimation du prix</Text> : <Text/>}
+                            </View>
                             <View style={styles.itemForm3}>
                               <View style={styles.adresseText}>
-                                <Text style={!enteredAdresse ? styles.modeErrors : styles.noError}>Adresse</Text>
+                                <Text style={!enteredAdresse || !adresse ? styles.modeErrors : styles.noError}>Adresse</Text>
                               </View>
                               <View style={styles.adresseContainer}>
                                 <Text style={styles.adresseInner}>
@@ -533,10 +546,18 @@ const CartScreen = (props) => {
                     }
                 )}
 
+                  {errors ? <Text style={{textAlign: 'center', color: 'red'}}>Veuillez remplir tous les champs</Text> : <Text/>}
                 <TouchableOpacity
                     style={styles.mettreEnVente}
                     onPress={async () => {
-                      setGoConfirmation(true)
+
+                        for (let item of cartItems) {
+                            if (item.livraison === "Choisir") {
+                                setErrors(true)
+                            } else {
+                                setGoConfirmation(true)
+                            }
+                        }
                     }}
                 >
                   <Text style={styles.mettreEnVenteText}>
@@ -554,17 +575,13 @@ const CartScreen = (props) => {
                       const protectionAcheteur = parseFloat(item.productPrice * 0.095)
                       const price = parseFloat(item.productPrice)
                       const sousTotal = (price + protectionAcheteur).toFixed(2)
-                      console.log(item)
+
                       return (
-                            <CartItem
+                            <RecapCommandeItem
                                 title={item.productTitle}
                                 price={item.productPrice}
                                 image={item.image}
-                                onDelete={() => {
-                                  dispatch(
-                                      cartActions.removeFromCart(itemData.item.productId)
-                                  );
-                                }}
+                                key={index}
                             />
                       )
                     }
