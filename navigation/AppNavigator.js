@@ -2456,6 +2456,7 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Vendre"
+            listeners={resetStackOnTabPress}
             children={() => <></>}
             options={{
               tabBarIcon: ({ color, size }) => (
@@ -2472,6 +2473,7 @@ export const TabNavigator = (props) => {
           <AppTabNavigator.Screen
             name="Message"
             children={() => <></>}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                   <View>
@@ -2504,6 +2506,7 @@ export const TabNavigator = (props) => {
           <AppTabNavigator.Screen
             name="Profil"
             children={() => <></>}
+            listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <AntDesign name="user" size={24} color="black" />
@@ -2569,6 +2572,7 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Message"
+            listeners={resetStackOnTabPress}
             component={MessageNavigator}
             options={{
               tabBarIcon: ({ color, size }) => (
