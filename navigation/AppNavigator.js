@@ -139,6 +139,7 @@ import * as userActions from "../store/actions/users";
 import {set} from "react-native-reanimated";
 import * as messageAction from '../store/actions/messages';
 import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
+import FirstCartScreen from "../screens/achat/FirstCartScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -976,7 +977,7 @@ export const AchatNavigator = (props) => {
                 name="shopping-basket"
                 size={24}
                 color="#D51317"
-                onPress={() => props.navigation.navigate("CartScreen")}
+                onPress={() => props.navigation.navigate("FirstCartScreen")}
               />
             </View>
           ),
@@ -1702,7 +1703,7 @@ export const AchatNavigator = (props) => {
                 name="shopping-basket"
                 size={24}
                 color="#D51317"
-                onPress={() => props.navigation.navigate("CartScreen")}
+                onPress={() => props.navigation.navigate("FirstCartScreen")}
               />
             </View>
           ),
@@ -1769,7 +1770,7 @@ export const AchatNavigator = (props) => {
                 name="shopping-basket"
                 size={24}
                 color="#D51317"
-                onPress={() => props.navigation.navigate("CartScreen")}
+                onPress={() => props.navigation.navigate("FirstCartScreen")}
               />
             </View>
           ),
@@ -1817,6 +1818,27 @@ export const AchatNavigator = (props) => {
           },
         }}
       />
+        <AchatStackNavigator.Screen
+            name="FirstCartScreen"
+            children={(props
+            ) => (
+                <FirstCartScreen
+                    {...props}
+                    loggedInAsVisit={loggedInAsVisit}
+                    setLoggedInAsVisit={setLoggedInAsVisit}
+                />
+            )}
+            options={{
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerBackTitle: "Retour",
+                headerTitle: "Panier",
+                headerTitleStyle: {
+                    textAlign: "center",
+                },
+            }}
+        />
       <AchatStackNavigator.Screen
         name="LivraisonChoiceScreen"
         component={LivraisonChoiceScreen}
@@ -2303,7 +2325,7 @@ export const AccueilNavigator = (props) => {
                 size={24}
                 color="#D51317"
                 onPress={() =>
-                  props.navigation.navigate("Acheter", { screen: "CartScreen" })
+                  props.navigation.navigate("Acheter", { screen: "FirstCartScreen" })
                 }
               />
             </View>
@@ -2342,7 +2364,7 @@ export const AccueilNavigator = (props) => {
                 name="shopping-basket"
                 size={24}
                 color="#D51317"
-                onPress={() => props.navigation.navigate("CartScreen")}
+                onPress={() => props.navigation.navigate("FirstCartScreen")}
               />
             </View>
           ),

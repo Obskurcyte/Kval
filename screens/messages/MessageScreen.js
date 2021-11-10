@@ -159,7 +159,6 @@ const MessageScreen = (props) => {
                                 idAcheteur={itemData.item?.idAcheteur}
                                 latestMessage={itemData.item?.latestMessage.text}
                                 onPress={() => {
-
                                   props.navigation.navigate("ChatScreen", {
                                     thread: itemData.item,
                                   })

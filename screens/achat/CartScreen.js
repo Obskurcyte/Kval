@@ -390,48 +390,6 @@ const CartScreen = (props) => {
     }
 
     if (!makePayment) {
-      if (!goPaiement) {
-        return (
-            <ScrollView style={styles.container}>
-              {cartItems.length !== 0 ? (
-                  <View>
-                    <FlatList
-                        style={styles.list}
-                        data={cartItems}
-                        keyExtractor={(item) => item.productId}
-                        renderItem={(itemData) => {
-                          return (
-                              <CartItem
-                                  title={itemData.item.productTitle}
-                                  price={itemData.item.productPrice}
-                                  image={itemData.item.image}
-                                  pseudoVendeur={itemData.item.pseudoVendeur}
-                                  onDelete={() => {
-                                    dispatch(
-                                        cartActions.removeFromCart(itemData.item.productId)
-                                    );
-                                  }}
-                              />
-                          );
-                        }}
-                    />
-                    <Text style={styles.subTotal}>Total articles : {total} €</Text>
-                    <Text style={styles.subTotal}>Prix protection acheteur : {(total * 0.095).toFixed(2)} € </Text>
-                    <TouchableOpacity
-                        style={styles.mettreEnVente}
-                        onPress={() => setGoPaiement(true)}
-                    >
-                      <Text style={styles.mettreEnVenteText}>
-                        Payer mes articles
-                      </Text>
-                    </TouchableOpacity>
-
-                  </View>
-              ) : <Text>Vous n'avez pas d'articles dans votre panier</Text>}
-            </ScrollView>
-        )
-      }
-
         if (!goConfirmation) {
           return (
               <ScrollView>
@@ -443,7 +401,8 @@ const CartScreen = (props) => {
 
                       return (
                           <View style={{marginBottom: 50}}>
-                            <Text style={styles.articleTitle}>Article {index + 1}</Text>
+                              {cartItems.length > 1 ?   <Text style={styles.articleTitle}>Article {index + 1}</Text> : <Text/>}
+
                             <RecapCommandeItem
                                 title={item.productTitle}
                                 price={item.productPrice}
@@ -527,12 +486,6 @@ const CartScreen = (props) => {
                               </Text>
                             </View>
 
-                            <View style={styles.itemForm3}>
-                              <Text style={{ fontSize: 18 }}>Prix livraison</Text>
-                              <Text style={{ fontSize: 18 }}>
-                                {(item.productPrice * 0.095).toFixed(2)} €
-                              </Text>
-                            </View>
 
                             <View style={styles.itemForm3}>
                               <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Sous-total</Text>

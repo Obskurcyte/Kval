@@ -10,7 +10,9 @@ const CardMessage = ({
   idAcheteur,
   idVendeur,
 }) => {
+
   const [visible, setVisible] = useState(true);
+
   const deleteMessage = () => {
     firebase
       .firestore()
