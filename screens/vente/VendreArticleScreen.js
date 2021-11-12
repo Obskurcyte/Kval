@@ -6,12 +6,14 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Pressable,
   Keyboard,
   ScrollView,
   Image,
   ActivityIndicator,
   TouchableOpacity,
   Dimensions,
+  Modal,
 } from "react-native";
 import { Formik, setIn } from "formik";
 import { AntDesign } from "@expo/vector-icons";
@@ -24,9 +26,25 @@ import * as Yup from "yup";
 import PhotoArticleScreen from "./PhotoArticleScreen";
 import axios from "axios";
 import * as messageAction from "../../store/actions/messages";
+import { set } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+
+function get_mondial_relay_price(poids) {
+  const prices = [4.4, 4.9, 6.3, 6.5, 6.9, 9.9, 11.9, 13.5, 17.9, 19.9, 24.9];
+  const ranges = [0.5, 1, 2, 3, 4, 5, 7, 10, 15, 20, 30];
+  if (Number(poids) <= 0.5) {
+    return prices[0];
+  }
+  for (let k = 0; k < prices.length - 1; k++) {
+    if (Number(poids) > ranges[k] && Number(poids) <= ranges[k + 1]) {
+      console.log("test");
+      return prices[k + 1];
+    }
+  }
+  return "Veuillez nous contacter";
+}
 
 const uploadSchema = Yup.object().shape({
   title: Yup.string().required("Veuillez rentrer un titre"),
@@ -39,18 +57,20 @@ const VendreArticleScreen = (props) => {
   const [modify, setModify] = useState(
     props.route.params ? props.route.params.modify : null
   );
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [shippinPrice, setShippingPrice] = useState("");
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(messageAction.fetchUnreadMessage())
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      dispatch(messageAction.fetchUnreadMessage());
     });
-    return unsubscribe
-  }, [props.navigation, dispatch])
+    return unsubscribe;
+  }, [props.navigation, dispatch]);
 
   let initialValues = {
     title: "",
     description: "",
     price: "",
+    shipping_price: "",
     poids: "",
   };
 
@@ -58,6 +78,7 @@ const VendreArticleScreen = (props) => {
     title: "",
     description: "",
     price: "",
+    shipping_price: "",
     poids: "",
   };
 
@@ -96,7 +117,7 @@ const VendreArticleScreen = (props) => {
     console.log(props.route.params);
   }, [props.route.params]);
 
-  console.log('current', currentUser)
+  console.log("current", currentUser);
   console.log("cat", categorie);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -156,7 +177,7 @@ const VendreArticleScreen = (props) => {
     console.log(imagesTableau);
   };
 
-  console.log(firebase.auth().currentUser.uid)
+  console.log(firebase.auth().currentUser.uid);
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -191,7 +212,7 @@ const VendreArticleScreen = (props) => {
   };
 
   const [error, setError] = useState("");
-  const [errors, setErrors] = useState(false)
+  const [errors, setErrors] = useState(false);
   const date = new Date();
   return (
     <View style={{ flex: 1 }}>
@@ -200,9 +221,11 @@ const VendreArticleScreen = (props) => {
           {isLoading ? (
             <View style={styles.containerLoading}>
               <Text style={styles.loadingText}>
-                Cette opération peut prendre plusieurs minutes en fonction de la taille de vos photos, merci de ne pas interrompre la mise en vente…
+                Cette opération peut prendre plusieurs minutes en fonction de la
+                taille de vos photos, merci de ne pas interrompre la mise en
+                vente…
               </Text>
-              <ActivityIndicator color="red"/>
+              <ActivityIndicator color="red" />
             </View>
           ) : (
             <View>
@@ -210,9 +233,9 @@ const VendreArticleScreen = (props) => {
                 initialValues={initialValues}
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
-                  setErrors(false)
+                  setErrors(false);
                   if (!etat || !categorie || !marques) {
-                    setErrors(true)
+                    setErrors(true);
                   }
 
                   console.log("values", values);
@@ -226,7 +249,7 @@ const VendreArticleScreen = (props) => {
                     if (statusObj.status !== "granted") {
                       pushToken = null;
                     } else {
-                      pushToken = await Notifications.getExpoPushTokenAsync()
+                      pushToken = await Notifications.getExpoPushTokenAsync();
                     }
 
                     const id = Math.random() * 300000000;
@@ -236,70 +259,70 @@ const VendreArticleScreen = (props) => {
                     } else {
                       try {
                         setIsLoading(true);
-                        console.log('1')
+                        console.log("1");
                         await firebase
-                            .firestore()
-                            .collection(`${categorie}`)
-                            .doc(`${id}`)
-                            .set({
-                              categorie,
-                              etat,
-                              id,
-                              marques,
-                              date: date,
-                              title: values.title,
-                              description: values.description,
-                              prix: values.price,
-                              poids: values.poids,
-                              pushToken,
-                              idVendeur: currentUser.id,
-                              emailVendeur: currentUser.email,
-                              livraison: 'Choisir',
-                              pseudoVendeur: currentUser.pseudo,
-                            });
-                        console.log('2')
+                          .firestore()
+                          .collection(`${categorie}`)
+                          .doc(`${id}`)
+                          .set({
+                            categorie,
+                            etat,
+                            id,
+                            marques,
+                            date: date,
+                            title: values.title,
+                            description: values.description,
+                            prix: values.price,
+                            poids: values.poids,
+                            pushToken,
+                            idVendeur: currentUser.id,
+                            emailVendeur: currentUser.email,
+                            livraison: "Choisir",
+                            pseudoVendeur: currentUser.pseudo,
+                          });
+                        console.log("2");
                         await firebase
-                            .firestore()
-                            .collection("posts")
-                            .doc(currentUser.id)
-                            .collection("userPosts")
-                            .doc(`${id}`)
-                            .set({
-                              pseudoVendeur: currentUser.pseudo,
-                              categorie,
-                              marques,
-                              etat,
-                              date: date,
-                              idVendeur: currentUser.id,
-                              emailVendeur: currentUser.email,
-                              title: values.title,
-                              description: values.description,
-                              prix: values.price,
-                              pushToken,
-                              livraison: 'Choisir',
-                              poids: values.poids,
-                            });
+                          .firestore()
+                          .collection("posts")
+                          .doc(currentUser.id)
+                          .collection("userPosts")
+                          .doc(`${id}`)
+                          .set({
+                            pseudoVendeur: currentUser.pseudo,
+                            categorie,
+                            marques,
+                            etat,
+                            date: date,
+                            idVendeur: currentUser.id,
+                            emailVendeur: currentUser.email,
+                            title: values.title,
+                            description: values.description,
+                            prix: values.price,
+                            pushToken,
+                            livraison: "Choisir",
+                            poids: values.poids,
+                          });
 
-                        console.log('3')
+                        console.log("3");
                         await firebase
-                            .firestore()
-                            .collection("allProducts")
-                            .doc(`${id}`)
-                            .set({
-                              pseudoVendeur: currentUser.pseudo,
-                              categorie,
-                              marques,
-                              etat,
-                              pushToken,
-                              date: date,
-                              idVendeur: currentUser.id,
-                              emailVendeur: currentUser.email,
-                              title: values.title,
-                              description: values.description,
-                              prix: values.price,
-                              livraison: 'Choisir',
-                              poids: values.poids,
-                            });
+                          .firestore()
+                          .collection("allProducts")
+                          .doc(`${id}`)
+                          .set({
+                            pseudoVendeur: currentUser.pseudo,
+                            categorie,
+                            marques,
+                            etat,
+                            pushToken,
+                            date: date,
+                            idVendeur: currentUser.id,
+                            emailVendeur: currentUser.email,
+                            title: values.title,
+                            description: values.description,
+                            prix: values.price,
+                            livraison: "Choisir",
+                            poids: values.poids,
+                          });
 
                         const uploadImage = async (index) => {
                           return new Promise(async (resolve) => {
@@ -308,25 +331,27 @@ const VendreArticleScreen = (props) => {
                             const blob = await response.blob();
 
                             const task = firebase
-                                .storage()
-                                .ref()
-                                .child(`${categorie}/${Math.random().toString(36)}`)
-                                .put(blob);
+                              .storage()
+                              .ref()
+                              .child(
+                                `${categorie}/${Math.random().toString(36)}`
+                              )
+                              .put(blob);
 
                             const taskProgress = (snapshot) => {
                               console.log(
-                                  `transferred: ${snapshot.bytesTransferred}`
+                                `transferred: ${snapshot.bytesTransferred}`
                               );
                             };
 
                             const taskCompleted = (snapshot) => {
                               task.snapshot.ref
-                                  .getDownloadURL()
-                                  .then((snapshot) => {
-                                    saveImageData(snapshot, index);
-                                    console.log("snapshot", snapshot);
-                                    resolve();
-                                  });
+                                .getDownloadURL()
+                                .then((snapshot) => {
+                                  saveImageData(snapshot, index);
+                                  console.log("snapshot", snapshot);
+                                  resolve();
+                                });
                             };
 
                             const taskError = (snapshot) => {
@@ -334,46 +359,46 @@ const VendreArticleScreen = (props) => {
                             };
 
                             task.on(
-                                "state_changed",
-                                taskProgress,
-                                taskError,
-                                taskCompleted
+                              "state_changed",
+                              taskProgress,
+                              taskError,
+                              taskCompleted
                             );
                           });
                         };
 
                         const saveImageData = (downloadURL, index) => {
                           const property_name =
-                              index === 0 ? "downloadURL" : `downloadURL${index}`;
+                            index === 0 ? "downloadURL" : `downloadURL${index}`;
                           const data = {};
                           data[property_name] = downloadURL;
                           firebase
-                              .firestore()
-                              .collection(`${categorie}`)
-                              .doc(`${id}`)
-                              .update(data);
+                            .firestore()
+                            .collection(`${categorie}`)
+                            .doc(`${id}`)
+                            .update(data);
                           firebase
-                              .firestore()
-                              .collection("posts")
-                              .doc(currentUser.id)
-                              .collection("userPosts")
-                              .doc(`${id}`)
-                              .update(data);
+                            .firestore()
+                            .collection("posts")
+                            .doc(currentUser.id)
+                            .collection("userPosts")
+                            .doc(`${id}`)
+                            .update(data);
                           firebase
-                              .firestore()
-                              .collection("allProducts")
-                              .doc(`${id}`)
-                              .update(data);
+                            .firestore()
+                            .collection("allProducts")
+                            .doc(`${id}`)
+                            .update(data);
                         };
 
                         await Promise.all(
-                            imagesTableau.map(async (image, index) => {
-                              console.log("test");
-                              await uploadImage(index);
-                            })
+                          imagesTableau.map(async (image, index) => {
+                            console.log("test");
+                            await uploadImage(index);
+                          })
                         );
-                      } catch(err) {
-                        console.log(err)
+                      } catch (err) {
+                        console.log(err);
                       }
 
                       setIsLoading(false);
@@ -382,25 +407,27 @@ const VendreArticleScreen = (props) => {
                       setCategorie(null);
                       setMarques(null);
                       setEtat(null);
-                      await axios.post("https://kval-backend.herokuapp.com/send", {
-                        mail: currentUser.email,
-                        subject: 'Confirmation de mise en vente',
-                        html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
+                      await axios.post(
+                        "https://kval-backend.herokuapp.com/send",
+                        {
+                          mail: currentUser.email,
+                          subject: "Confirmation de mise en vente",
+                          html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
 <p>Votre article ${values.title} a bien été mis en vente.</p>
 <p>Vous pouvez dès à présent le retrouver dans la rubrique « Mes articles en vente » de votre profil pour le consulter, le modifier ou le supprimer.</p>
 <p>Vous pouvez également booster cet article à tout moment afin d’améliorer sa visibilité</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
-</div>`
-                      });
+</div>`,
+                        }
+                      );
                       props.navigation.navigate("ValidationScreen", {
                         props: props,
                         modify: false,
                       });
                     }
                   }
-
                 }}
               >
                 {(props) => (
@@ -424,7 +451,9 @@ const VendreArticleScreen = (props) => {
                       style={styles.itemForm3}
                       onPress={() => navigateCategories()}
                     >
-                      <Text style={categorie ? styles.noErrors : styles.errors}>Catégorie</Text>
+                      <Text style={categorie ? styles.noErrors : styles.errors}>
+                        Catégorie
+                      </Text>
                       {categorie ? (
                         <Text style={{ color: "black" }}>{categorie}</Text>
                       ) : (
@@ -437,7 +466,9 @@ const VendreArticleScreen = (props) => {
                       style={styles.itemForm3}
                       onPress={() => navigateMarques()}
                     >
-                      <Text style={marques ? styles.noErrors : styles.errors}>Marques</Text>
+                      <Text style={marques ? styles.noErrors : styles.errors}>
+                        Marques
+                      </Text>
                       {marques ? (
                         <Text style={{ color: "black" }}>{marques}</Text>
                       ) : (
@@ -452,7 +483,9 @@ const VendreArticleScreen = (props) => {
                         navigateEtat();
                       }}
                     >
-                      <Text style={etat ? styles.noErrors : styles.errors}>Etat</Text>
+                      <Text style={etat ? styles.noErrors : styles.errors}>
+                        Etat
+                      </Text>
                       {etat ? (
                         <Text style={{ color: "black" }}>{etat}</Text>
                       ) : (
@@ -498,10 +531,63 @@ const VendreArticleScreen = (props) => {
                         placeholder="Ex: 30kg"
                         style={styles.input}
                         value={props.values.poids}
-                        onChangeText={props.handleChange("poids")}
+                        onChangeText={(value) => {
+                          props.handleChange("poids")(value);
+                          console.log(value);
+                          setShippingPrice(get_mondial_relay_price(value));
+                        }}
                       />
                     </View>
-
+                    <View style={styles.itemForm3}>
+                      <Text>Coût d'envoi Mondial Relay €</Text>
+                      <Text style={styles.input}>{shippinPrice}</Text>
+                    </View>
+                    <View style={{ flex: 1, margin: 5 }}>
+                      <Text onPress={() => setModalVisible(!modalVisible)}>
+                        Le prix indiqué doit inclure les potentiels frais
+                        d'envois. Lorsque vous vous rendrez en point relais
+                        aucun argent ne vous sera demandé. Les frais d'envoi
+                        seront retenus sur le prix indiqué lorsque nous
+                        créditerons votre compte une fois la commande livrée.
+                        Ils sont calculés en se basant sur la grille. Veillez à
+                        le prendre en compte lorsque vous saissisez votre prix.
+                      </Text>
+                      <Pressable
+                        style={[styles.button, styles.buttonOpen]}
+                        onPress={() => setModalVisible(!modalVisible)}
+                      >
+                        <Text style={styles.textStyle}>Voir la grille</Text>
+                      </Pressable>
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                          setModalVisible(!modalVisible);
+                        }}
+                      >
+                        <View style={styles.centeredView}>
+                          <View style={styles.modalView}>
+                            <Image
+                              style={{
+                                width: "90%",
+                                height: "90%",
+                                resizeMode: "contain",
+                              }}
+                              source={{
+                                uri: "https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2Fmondial_relay_prices.png?alt=media&token=ba29b550-b8c6-4cd6-ac54-360c45d2c3c4",
+                              }}
+                            />
+                            <Pressable
+                              style={[styles.button, styles.buttonClose]}
+                              onPress={() => setModalVisible(!modalVisible)}
+                            >
+                              <Text style={styles.textStyle}>Fermer</Text>
+                            </Pressable>
+                          </View>
+                        </View>
+                      </Modal>
+                    </View>
                     <ScrollView
                       horizontal={true}
                       style={styles.horizontalScrollList}
@@ -572,22 +658,21 @@ const VendreArticleScreen = (props) => {
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={styles.reset}
-                        onPress={() => {
-                          console.log("hey");
-                          props.resetForm({
-                            values: nonValues,
-                          });
-                          resetForm();
-                          //  props.handleReset();
-                          //navigateVendre();
-                        }}
+                      style={styles.reset}
+                      onPress={() => {
+                        console.log("hey");
+                        props.resetForm({
+                          values: nonValues,
+                        });
+                        resetForm();
+                        //  props.handleReset();
+                        //navigateVendre();
+                      }}
                     >
                       <Text style={styles.resetText}>
                         Réinitialiser le formulaire
                       </Text>
                     </TouchableOpacity>
-
                   </View>
                 )}
               </Formik>
@@ -621,10 +706,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   noErrors: {
-    color: 'black'
+    color: "black",
   },
   errors: {
-    color: 'red'
+    color: "red",
   },
   photoBigContainer: {
     display: "flex",
@@ -718,14 +803,14 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 20,
-    textAlign: 'center',
-    maxWidth: '90%',
-    marginBottom: 20
+    textAlign: "center",
+    maxWidth: "90%",
+    marginBottom: 20,
   },
   containerLoading: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: '20%'
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "20%",
   },
   reset: {
     backgroundColor: "#fff",
@@ -751,6 +836,49 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    flex: 1,
+    width: "90%",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#D51317",
+  },
+  buttonClose: {
+    backgroundColor: "#D51317",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
   },
 });
 
