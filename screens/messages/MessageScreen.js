@@ -136,7 +136,6 @@ const MessageScreen = (props) => {
 
   finalThreads = [...threads, ...threads2];
 
-
   return (
       <View style={styles.container}>
         <View style={styles.messagesContainer}>
