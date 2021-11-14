@@ -98,7 +98,7 @@ const BoosteVentePaiementScreen = (props) => {
 <p>Votre article se trouve dès à présent dans la rubrique « Annonce en avant-première »</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 
 </div>`
             })

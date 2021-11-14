@@ -1,25 +1,69 @@
-import React from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View, StyleSheet} from "react-native";
+import React, {useState} from 'react';
+import {Image, ScrollView, Text, TouchableOpacity, View, StyleSheet, Alert} from "react-native";
+import firebase from "firebase";
+
 
 const CardNotif = (props) => {
 
   console.log(props.image)
   console.log(props.title)
+
+  const [visible, setVisible] = useState(true);
+
+  const deleteNotifs = () => {
+    firebase
+        .firestore()
+        .collection("notifications")
+        .doc(firebase.auth().currentUser.uid)
+        .collection("listeNotifs")
+        .doc(props.id)
+        .delete()
+        .then(() => {
+          setVisible(false);
+          console.log("deleted");
+        });
+  }
+
+  const createTwoButtonAlert = () =>
+      Alert.alert(
+          "Supprimer la conversation",
+          "Vous êtes sur le point de supprimer une conversation, Etes vous sur de vouloir la supprimer? (cette action est irréversible).",
+          [
+            {
+              text: "Annuler",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "OK", onPress: () => deleteNotifs() },
+          ]
+      );
+
   return (
-    <TouchableOpacity style={styles.messageSuperContainer} onPress={() => props.navigation.navigate('ChatScreen')}>
-      <View style={styles.messageContainer}>
-        <Image
-          source={{uri: props.image}}
-          style={styles.image}
-        />
-        <View style={styles.nameContainer}>
-          <Text style={styles.pseudoText}>{props.title}</Text>
+      <View>
+        {visible ? (
+        <View style={styles.messageHyperContainer}>
+          <TouchableOpacity style={styles.messageSuperContainer} onPress={props.handleNavigation}>
+            <View style={styles.messageContainer}>
+              <Image
+                source={{uri: props.image}}
+                style={styles.image}
+              />
+              <View style={styles.nameContainer}>
+                <Text style={styles.pseudoText}>{props.title}</Text>
+              </View>
+            </View>
+            <View style={styles.previewMessage}>
+              <Text style={styles.timeText}>{props.body}</Text>
+              <TouchableOpacity onPress={createTwoButtonAlert}>
+                <Text style={styles.suppr}>Supprimer</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
         </View>
+        ) : (
+            <></>
+        )}
       </View>
-      <View style={styles.previewMessage}>
-        <Text style={styles.timeText}>{props.body}</Text>
-      </View>
-    </TouchableOpacity>
   );
 };
 
@@ -61,11 +105,17 @@ const styles = StyleSheet.create({
   },
   previewMessage: {
     marginTop: '5%',
-    marginLeft: '10%'
+    marginLeft: '10%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: "space-between"
   },
   messageSuperContainer: {
     padding: '5%',
     width: '90%'
+  },
+  suppr: {
+    color: "red"
   },
   timeText: {
     fontSize: 14,
