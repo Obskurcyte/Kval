@@ -16,6 +16,7 @@ import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
 import * as messageAction from "../../store/actions/messages";
+import {GET_NOTIFICATIONS} from "../../store/actions/notifications";
 
 
 
@@ -28,20 +29,15 @@ const MessageScreen = (props) => {
   const [action, setAction] = useState(false);
 
   const dispatch = useDispatch();
-  const [notificationsTitle, setNotificationsTitle] = useState([]);
-  useEffect(() => {
-    dispatch(notifsActions.fetchNotifs());
-  }, []);
 
-  const notifsList = useSelector((state) => state.notifs.notifs);
-
-  console.log("notifs", notifsList);
+  const [notifsList, setNotifsList] = useState([])
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(true);
 
   let finalThreads = [];
 
+  console.log("notifs", notifsList);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
       dispatch(messageAction.fetchUnreadMessage())
@@ -51,9 +47,6 @@ const MessageScreen = (props) => {
 
 
   useEffect(() => {
-
-    const threads = [];
-
     const unsubscribe = props.navigation.addListener("focus", () => {
       setLoading(true);
       firebase
@@ -84,6 +77,29 @@ const MessageScreen = (props) => {
                     setThreads(threads);
                   });
             });
+          });
+      firebase.firestore()
+          .collection('notifications')
+          .doc(firebase.auth().currentUser.uid)
+          .collection('listeNotifs')
+          .get()
+          .then((querySnapshot) => {
+            const threads = [];
+            querySnapshot.forEach((doc) => {
+              threads.push({
+                id: doc.id,
+                image: doc.data().image,
+                notificationsBody: doc.data().notificationsBody,
+                notificationsTitle: doc.data().notificationsTitle
+              })
+            });
+            if (loading) {
+              setLoading(false);
+            }
+            setNotifsList(threads)
+          })
+          .catch((error) => {
+            console.log("Error getting documents: ", error);
           });
     });
     return unsubscribe;
@@ -179,6 +195,21 @@ const MessageScreen = (props) => {
                                 title={itemData.item.notificationsTitle}
                                 body={itemData.item.notificationsBody}
                                 image={itemData.item.image}
+                                id={itemData.item.id}
+                                handleNavigation={async () => {
+                                  await firebase.firestore()
+                                      .collection('users')
+                                      .doc(`${firebase.auth().currentUser.uid}`)
+                                      .collection('unreadMessage')
+                                      .doc(firebase.auth().currentUser.uid)
+                                      .delete()
+                                      .catch((error) => {
+                                        console.log("Error getting document:", error);
+                                      });
+                                  props.navigation.navigate('Profil', {
+                                    screen: 'ArticlesEnVenteScreen'
+                                  })
+                                }}
                             />
                         );
                       }}

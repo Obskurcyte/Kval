@@ -43,7 +43,6 @@ const CartScreen = (props) => {
   }
 
   console.log(adresse);
-  console.log(enteredAdresse)
     let cartItems = useSelector((state) => {
       const transformedCartItems = [];
       for (const key in state.cart.items) {
@@ -71,6 +70,7 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
+  console.log('email', userData.email)
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -81,8 +81,6 @@ const CartScreen = (props) => {
     });
     return unsubscribe;
   }, [props.navigation, dispatch]);
-
-  let idVendeurArray = cartItems.map(item => item.idVendeur)
 
   let portefeuilleVendeur = 0;
   let portefeuilleAcheteur = 0;
@@ -131,7 +129,6 @@ const CartScreen = (props) => {
           amount: toggleCheckBoxPortefeuille ? (newTotal * 100) : (sousTotal * 100),
         }
       );
-
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
@@ -166,7 +163,35 @@ const CartScreen = (props) => {
               .set({
                 test: "test",
               });
-
+              await firebase.firestore()
+                  .collection('users')
+                  .doc(firebase.auth().currentUser.uid)
+                  .collection('unreadMessage')
+                  .doc(firebase.auth().currentUser.uid)
+                  .get().then(async (doc) => {
+                      if (doc.exists) {
+                          await firebase.firestore()
+                              .collection('users')
+                              .doc(cartItem.idVendeur)
+                              .collection('unreadMessage')
+                              .doc(cartItem.idVendeur)
+                              .update({
+                                  count: doc.data().count + 1
+                              })
+                      } else {
+                          await firebase.firestore()
+                              .collection('users')
+                              .doc(cartItem.idVendeur)
+                              .collection('unreadMessage')
+                              .doc(cartItem.idVendeur)
+                              .set({
+                                  count: 1
+                              })
+                          console.log("New doc created !");
+                      }
+                  }).catch((error) => {
+                      console.log("Error getting document:", error);
+                  });
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
@@ -182,7 +207,6 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
             });
-            try {
               await firebase
                 .firestore()
                 .collection("users")
@@ -203,33 +227,43 @@ const CartScreen = (props) => {
                       })
                   }
                 });
-              await axios.post("https://kval-backend.herokuapp.com/send", {
-                mail: userData.email,
-                subject: "Confirmation d'achat",
-                html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+                await axios.post("https://kval-backend.herokuapp.com/send", {
+                    mail: userData.email,
+                    subject: "Confirmation d'achat",
+                    html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons l'achat de l'article ${cartItem.productTitle} à ${cartItem.pseudoVendeur}.</p>
+<p>Récapitulatif de l'achat : </p>
+<img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
+<p>Titre : ${cartItem.productTitle}</p>
+<p>Prix : ${cartItem.productPrice} €</p>
+<p>Livraison: ${cartItem.livraison}</p>
+</div>
 <p>A présent, ${cartItem.pseudoVendeur} dispose de 5 jours ouvrés pour vous envoyer l'article</p>
 <p>Une fois l’article reçu vous disposerez de 2 jours pour faire une réclamation dans la rubrique « signaler un litige » de votre profil.</p>
 <p>Le numéro de suivi vous sera communiqué lorsque l’envoie aura été effectué par ${cartItem.pseudoVendeur}</p>
 <p>N’oubliez pas de vous rendre dans votre profil, rubrique « mes commandes » afin de nous informer de la bonne réception et conformité du colis.</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
-              })
+                });
                 await axios.post("https://kval-backend.herokuapp.com/send", {
                     mail: cartItem.emailVendeur,
                     subject: "Un des vos articles a été acheté",
                     html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons que l'article ${cartItem.productTitle} a bien été acheté par ${userData.pseudo}.</p>
+<p>Récapitulatif de la vente : </p>
+<img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
+<p>Titre : ${cartItem.productTitle}</p>
+<p>Prix : ${cartItem.productPrice} €</p>
+<p>Livraison: ${cartItem.livraison}</p>
+</div>
 <p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=7f48744a-0a90-499b-b43b-a9cbd728fa90" alt="">
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
-                })
-            } catch (err) {
-              console.log(err);
+                });
             }
           }
           setPaymentStatus(
@@ -238,9 +272,6 @@ const CartScreen = (props) => {
         } else {
           setPaymentStatus("Le paiement a échoué");
         }
-      } else {
-        setPaymentStatus("Le paiement a échoué");
-      }
     } catch (error) {
       console.log(error);
       setPaymentStatus("Le paiement a échoué");

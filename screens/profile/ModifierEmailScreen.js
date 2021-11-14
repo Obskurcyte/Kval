@@ -37,7 +37,8 @@ const ModifierEmailScreen = (props) => {
                 .doc(firebase.auth().currentUser.uid)
                 .update({
                         email: values.initial
-                }).then(() => props.navigation.navigate('InformationsScreen'))
+                })
+            await firebase.auth().currentUser.updateEmail(values.initial).then(() => props.navigation.navigate('InformationsScreen'))
         }}
        >
            {props => (

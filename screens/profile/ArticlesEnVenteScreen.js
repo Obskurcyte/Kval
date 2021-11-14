@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardVente from "../../components/CardVente";
+import * as messageAction from "../../store/actions/messages";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -24,6 +25,13 @@ const ArticlesEnVenteScreen = (props) => {
   }, [dispatch]);
 
   const articles = useSelector((state) => state.articles.mesVentes);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(messageAction.fetchUnreadMessage())
+    });
+    return unsubscribe
+  }, [props.navigation, dispatch]);
 
   console.log(articles);
   return (
