@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
-  Modal
+  Modal,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import firebase from "firebase";
 import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
+import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -67,29 +68,33 @@ const ProductDetailScreen = (props) => {
   //-----------------DELETE ANNONCE---------------//
 
   const deleteAnnonce = (id, categorie) => {
-    firebase.firestore().collection('allProducts')
-        .doc(`${id}`)
-        .delete()
-        .then(() => console.log('productDeleted'))
-    firebase.firestore().collection(`${categorie}`)
-        .doc(`${id}`)
-        .delete()
-        .then(() => console.log('productDeleted'))
     firebase
-        .firestore()
-        .collection("posts")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("userPosts")
-        .doc(`${id}`)
-        .delete()
-        .then(() => console.log('productDeleted'))
+      .firestore()
+      .collection("allProducts")
+      .doc(`${id}`)
+      .delete()
+      .then(() => console.log("productDeleted"));
     firebase
-        .firestore()
-        .collection("BoostedVentes")
-        .doc(`${id}`)
-        .delete()
-        .then(() => console.log('productDeleted'))
-  }
+      .firestore()
+      .collection(`${categorie}`)
+      .doc(`${id}`)
+      .delete()
+      .then(() => console.log("productDeleted"));
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("userPosts")
+      .doc(`${id}`)
+      .delete()
+      .then(() => console.log("productDeleted"));
+    firebase
+      .firestore()
+      .collection("BoostedVentes")
+      .doc(`${id}`)
+      .delete()
+      .then(() => console.log("productDeleted"));
+  };
 
   //-----------------COMMENTAIRES-----------------//
 
@@ -98,7 +103,6 @@ const ProductDetailScreen = (props) => {
   }, [dispatch]);
 
   let commentaires = useSelector((state) => state.commandes.commentaires);
-
 
   let ratings = [];
   for (let data in commentaires) {
@@ -196,7 +200,6 @@ const ProductDetailScreen = (props) => {
   const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
   const currentUser = useSelector((state) => state.user.userData);
 
-
   const onMessagePressed = () => {
     firebase
       .firestore()
@@ -239,28 +242,29 @@ const ProductDetailScreen = (props) => {
     <View>
       <View style={styles.container}>
         <ScrollView>
-          <Modal
-              transparent={true}
-              visible={modalVisible}
-          >
+          <Modal transparent={true} visible={modalVisible}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>Etes-vous sur de vouloir supprimer votre offre ?</Text>
+                <Text style={styles.modalText}>
+                  Etes-vous sur de vouloir supprimer votre offre ?
+                </Text>
                 <TouchableOpacity
-                    style={styles.mettreEnVentePopup}
-                    onPress={() => {
-                      setModalVisible(false)
-                      deleteAnnonce(product.id, product.categorie)
-                      props.navigation.navigate('DeleteAnnonceValidationScreen')
-                    }}
+                  style={styles.mettreEnVentePopup}
+                  onPress={() => {
+                    setModalVisible(false);
+                    deleteAnnonce(product.id, product.categorie);
+                    props.navigation.navigate("DeleteAnnonceValidationScreen");
+                  }}
                 >
-                  <Text style={styles.mettreEnVenteText}>Supprimer mon offre</Text>
+                  <Text style={styles.mettreEnVenteText}>
+                    Supprimer mon offre
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.reset}
-                    onPress={() => {
-                      setModalVisible(false)
-                    }}
+                  style={styles.reset}
+                  onPress={() => {
+                    setModalVisible(false);
+                  }}
                 >
                   <Text style={styles.resetText}>Annuler</Text>
                 </TouchableOpacity>
@@ -286,6 +290,10 @@ const ProductDetailScreen = (props) => {
           <View style={styles.titleAndPrixContainer}>
             <Text style={styles.title}>{product.title}</Text>
             <Text style={styles.prix}>{product.prix} €</Text>
+            <Text style={styles.shipping_price}>
+              (+ {get_mondial_relay_price(product.poids)} € livraison Mondial
+              Relay)
+            </Text>
           </View>
           <View style={styles.descriptionContainer}>
             <Text style={styles.description}>{product.description}</Text>
@@ -356,12 +364,14 @@ const ProductDetailScreen = (props) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                  style={styles.mettreEnVente}
-                  onPress={() => {
-                   setModalVisible(true)
-                  }}
+                style={styles.mettreEnVente}
+                onPress={() => {
+                  setModalVisible(true);
+                }}
               >
-                <Text style={styles.mettreEnVenteText}>Supprimer mon offre</Text>
+                <Text style={styles.mettreEnVenteText}>
+                  Supprimer mon offre
+                </Text>
               </TouchableOpacity>
             </View>
           ) : (
@@ -383,18 +393,17 @@ const ProductDetailScreen = (props) => {
                 onPress={() => {
                   if (cartItems.length !== 0) {
                     for (const key in cartItems) {
-
                       if (product.id == cartItems[key].productId) {
                         setErrorAdded(
                           "Ce produit est déjà présent dans votre panier"
                         );
                       } else {
-                        console.log('product', product)
+                        console.log("product", product);
                         dispatch(cartActions.addToCart(product));
                       }
                     }
                   } else {
-                    console.log('product', product)
+                    console.log("product", product);
                     dispatch(cartActions.addToCart(product));
                   }
                 }}
@@ -476,6 +485,10 @@ const styles = StyleSheet.create({
     color: "#737379",
     fontWeight: "bold",
     fontSize: 17,
+  },
+  shipping_price: {
+    color: "#737379",
+    fontSize: 14,
   },
   titleAndPrixContainer: {
     marginLeft: "5%",
@@ -621,7 +634,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -632,16 +645,16 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   button: {
     borderRadius: 20,
     padding: 10,
-    elevation: 2
+    elevation: 2,
   },
   buttonOpen: {
     backgroundColor: "#F194FF",
@@ -652,13 +665,12 @@ const styles = StyleSheet.create({
   textStyle: {
     color: "white",
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: "center"
-  }
-
+    textAlign: "center",
+  },
 });
 
 export default ProductDetailScreen;

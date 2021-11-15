@@ -7,13 +7,13 @@ import {
   FlatList,
   ScrollView,
   Dimensions,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
 import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
-import * as productActions from '../../store/actions/products';
+import * as productActions from "../../store/actions/products";
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
@@ -21,15 +21,16 @@ import { Feather } from "@expo/vector-icons";
 import firebase from "firebase";
 import * as userActions from "../../store/actions/users";
 import RecapCommandeItem from "../../components/RecapCommandeItem";
+import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const CartScreen = (props) => {
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] = useState(false);
+  const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] =
+    useState(false);
   const userData = useSelector((state) => state.user.userData);
-
 
   let livraison;
   let cartItems2;
@@ -39,45 +40,46 @@ const CartScreen = (props) => {
   if (props.route.params) {
     livraison = props.route.params.livraison;
     adresse = props.route.params.adresse;
-    cartItems2 = props.route.params.cartItems
+    cartItems2 = props.route.params.cartItems;
   }
 
   console.log(adresse);
-    let cartItems = useSelector((state) => {
-      const transformedCartItems = [];
-      for (const key in state.cart.items) {
-        transformedCartItems.push({
-          productId: key,
-          productTitle: state.cart.items[key].productTitle,
-          productPrice: state.cart.items[key].productPrice,
-          quantity: state.cart.items[key].quantity,
-          image: state.cart.items[key].image,
-          idVendeur: state.cart.items[key].idVendeur,
-          pseudoVendeur: state.cart.items[key].pseudoVendeur,
-            emailVendeur: state.cart.items[key].emailVendeur,
-          categorie: state.cart.items[key].categorie,
-          livraison: state.cart.items[key].livraison,
-          poids: state.cart.items[key].poids,
-          pushToken: state.cart.items[key].pushToken,
-          sum: state.cart.items[key].sum,
-        });
-      }
-      return transformedCartItems;
-    });
+  let cartItems = useSelector((state) => {
+    const transformedCartItems = [];
+    for (const key in state.cart.items) {
+      transformedCartItems.push({
+        productId: key,
+        productTitle: state.cart.items[key].productTitle,
+        productPrice: state.cart.items[key].productPrice,
+        quantity: state.cart.items[key].quantity,
+        image: state.cart.items[key].image,
+        idVendeur: state.cart.items[key].idVendeur,
+        pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        emailVendeur: state.cart.items[key].emailVendeur,
+        categorie: state.cart.items[key].categorie,
+        livraison: state.cart.items[key].livraison,
+        poids: state.cart.items[key].poids,
+        pushToken: state.cart.items[key].pushToken,
+        sum: state.cart.items[key].sum,
+      });
+    }
+    return transformedCartItems;
+  });
 
   if (cartItems2) {
-    cartItems = cartItems2
+    cartItems = cartItems2;
+    console.log(cartItems);
   }
   let total = 0;
 
-  console.log('email', userData.email)
+  console.log("email", userData.email);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
       dispatch(userActions.getUser());
       cartItems.map((item, index) => {
-        dispatch(productActions.fetchProducts(item.categorie))
-      })
+        dispatch(productActions.fetchProducts(item.categorie));
+      });
     });
     return unsubscribe;
   }, [props.navigation, dispatch]);
@@ -112,7 +114,6 @@ const CartScreen = (props) => {
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
 
-
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -126,7 +127,7 @@ const CartScreen = (props) => {
           email: `${userData.email}`,
           product: cartInfo,
           authToken: jsonResponse,
-          amount: toggleCheckBoxPortefeuille ? (newTotal * 100) : (sousTotal * 100),
+          amount: toggleCheckBoxPortefeuille ? newTotal * 100 : sousTotal * 100,
         }
       );
       if (stripeResponse) {
@@ -164,35 +165,40 @@ const CartScreen = (props) => {
               .set({
                 test: "test",
               });
-              await firebase.firestore()
-                  .collection('users')
-                  .doc(firebase.auth().currentUser.uid)
-                  .collection('unreadMessage')
-                  .doc(firebase.auth().currentUser.uid)
-                  .get().then(async (doc) => {
-                      if (doc.exists) {
-                          await firebase.firestore()
-                              .collection('users')
-                              .doc(cartItem.idVendeur)
-                              .collection('unreadMessage')
-                              .doc(cartItem.idVendeur)
-                              .update({
-                                  count: doc.data().count + 1
-                              })
-                      } else {
-                          await firebase.firestore()
-                              .collection('users')
-                              .doc(cartItem.idVendeur)
-                              .collection('unreadMessage')
-                              .doc(cartItem.idVendeur)
-                              .set({
-                                  count: 1
-                              })
-                          console.log("New doc created !");
-                      }
-                  }).catch((error) => {
-                      console.log("Error getting document:", error);
-                  });
+            await firebase
+              .firestore()
+              .collection("users")
+              .doc(firebase.auth().currentUser.uid)
+              .collection("unreadMessage")
+              .doc(firebase.auth().currentUser.uid)
+              .get()
+              .then(async (doc) => {
+                if (doc.exists) {
+                  await firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(cartItem.idVendeur)
+                    .collection("unreadMessage")
+                    .doc(cartItem.idVendeur)
+                    .update({
+                      count: doc.data().count + 1,
+                    });
+                } else {
+                  await firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(cartItem.idVendeur)
+                    .collection("unreadMessage")
+                    .doc(cartItem.idVendeur)
+                    .set({
+                      count: 1,
+                    });
+                  console.log("New doc created !");
+                }
+              })
+              .catch((error) => {
+                console.log("Error getting document:", error);
+              });
             dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
@@ -208,30 +214,30 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
             });
-              await firebase
-                .firestore()
-                .collection("users")
-                .doc(cartItem.idVendeur)
-                .get()
-                .then((doc) => {
-                  portefeuilleVendeur = doc.data().portefeuille;
-                })
-                .then(() => {
-                  if (portefeuilleVendeur >= 0) {
-                    firebase
-                      .firestore()
-                      .collection("users")
-                      .doc(cartItem.idVendeur)
-                      .update({
-                        portefeuille:
-                          portefeuilleVendeur + parseInt(cartItem.sum),
-                      })
-                  }
-                });
-                await axios.post("https://kval-backend.herokuapp.com/send", {
-                    mail: userData.email,
-                    subject: "Confirmation d'achat",
-                    html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+            await firebase
+              .firestore()
+              .collection("users")
+              .doc(cartItem.idVendeur)
+              .get()
+              .then((doc) => {
+                portefeuilleVendeur = doc.data().portefeuille;
+              })
+              .then(() => {
+                if (portefeuilleVendeur >= 0) {
+                  firebase
+                    .firestore()
+                    .collection("users")
+                    .doc(cartItem.idVendeur)
+                    .update({
+                      portefeuille:
+                        portefeuilleVendeur + parseInt(cartItem.sum),
+                    });
+                }
+              });
+            await axios.post("https://kval-backend.herokuapp.com/send", {
+              mail: userData.email,
+              subject: "Confirmation d'achat",
+              html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons l'achat de l'article ${cartItem.productTitle} à ${cartItem.pseudoVendeur}.</p>
 <p>Récapitulatif de l'achat : </p>
 <img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
@@ -246,12 +252,12 @@ const CartScreen = (props) => {
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`
-                });
-                await axios.post("https://kval-backend.herokuapp.com/send", {
-                    mail: cartItem.emailVendeur,
-                    subject: "Un des vos articles a été acheté",
-                    html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+</div>`,
+            });
+            await axios.post("https://kval-backend.herokuapp.com/send", {
+              mail: cartItem.emailVendeur,
+              subject: "Un des vos articles a été acheté",
+              html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons que l'article ${cartItem.productTitle} a bien été acheté par ${userData.pseudo}.</p>
 <p>Récapitulatif de la vente : </p>
 <img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
@@ -263,16 +269,16 @@ const CartScreen = (props) => {
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`
-                });
-            }
+</div>`,
+            });
           }
-          setPaymentStatus(
-            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
-          );
-        } else {
-          setPaymentStatus("Le paiement a échoué");
         }
+        setPaymentStatus(
+          "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
+        );
+      } else {
+        setPaymentStatus("Le paiement a échoué");
+      }
     } catch (error) {
       console.log(error);
       setPaymentStatus("Le paiement a échoué");
@@ -280,7 +286,6 @@ const CartScreen = (props) => {
   };
 
   const cartTotalAmount = useSelector((state) => state.cart.items);
-
 
   const [errors, setErrors] = useState(false);
   let enteredAdresse = false;
@@ -406,282 +411,316 @@ const CartScreen = (props) => {
     );
   };
 
-  console.log('cart', cartItems)
+  console.log("cart", cartItems);
   const [goPaiement, setGoPaiement] = useState(false);
   const [goConfirmation, setGoConfirmation] = useState(false);
 
   let totalProtectionAcheteur = 0;
   for (let item of cartItems) {
-    totalProtectionAcheteur += (parseFloat(item.productPrice * 0.095))
+    totalProtectionAcheteur += parseFloat(item.productPrice * 0.095);
   }
-  totalProtectionAcheteur = totalProtectionAcheteur.toFixed(2)
+  totalProtectionAcheteur = totalProtectionAcheteur.toFixed(2);
 
   const paymentUI = (props) => {
-
     if (portefeuillePayment) {
       return <ViewPortefeuille />;
     }
 
     if (!makePayment) {
-        if (!goConfirmation) {
-          return (
-              <ScrollView>
-                {cartItems.map((item, index) => {
+      if (!goConfirmation) {
+        return (
+          <ScrollView>
+            {cartItems.map((item, index) => {
+              const protectionAcheteur = parseFloat(item.productPrice * 0.095);
+              const price = parseFloat(item.productPrice);
+              const sousTotal = (
+                price +
+                protectionAcheteur +
+                (item.livraison === "MondialRelay" &&
+                  get_mondial_relay_price(item.poids))
+              ).toFixed(2);
 
-                      const protectionAcheteur = parseFloat(item.productPrice * 0.095)
-                      const price = parseFloat(item.productPrice)
-                      const sousTotal = (price + protectionAcheteur).toFixed(2)
+              return (
+                <View style={{ marginBottom: 50 }}>
+                  {cartItems.length > 1 ? (
+                    <Text style={styles.articleTitle}>Article {index + 1}</Text>
+                  ) : (
+                    <Text />
+                  )}
 
-                      return (
-                          <View style={{marginBottom: 50}}>
-                              {cartItems.length > 1 ?   <Text style={styles.articleTitle}>Article {index + 1}</Text> : <Text/>}
-
-                            <RecapCommandeItem
-                                title={item.productTitle}
-                                price={item.productPrice}
-                                image={item.image}
-                                key={index}
-                            />
-                            <View
-                                style={[
-                                  styles.itemForm3,
-                                  {
-                                    borderTopColor: "lightgrey",
-                                    borderTopWidth: 1,
-                                    marginTop: 10,
-                                      display: 'flex',
-                                      flexDirection: 'column'
-                                  },
-                                ]}
-                            >
-                              <Text style={!livraison ? styles.modeErrors : styles.noError}>
-                                Mode de livraison {item.productTitle}
-                              </Text>
-                              <TouchableOpacity
-                                  onPress={() => {
-                                    props.navigation.navigate("LivraisonChoiceScreen", {
-                                      product: cartItems[index],
-                                      cartItems: cartItems,
-                                      index: index
-                                    });
-                                  }}
-                              >
-                                {item.livraison ? <Text>{item.livraison}</Text> : <Text>Choisir</Text>}
-
-                              </TouchableOpacity>
-                                {item.livraison === "Livraison Article Lourd" ? <Text style={{textAlign: 'center'}}>Nous reviendrons vers vous dans les plus bref délais avec une estimation du prix</Text> : <Text/>}
-                            </View>
-                            <View style={styles.itemForm3}>
-                              <View style={styles.adresseText}>
-                                <Text style={!enteredAdresse || !adresse ? styles.modeErrors : styles.noError}>Adresse</Text>
-                              </View>
-                              <View style={styles.adresseContainer}>
-                                <Text style={styles.adresseInner}>
-                                  {adresse ? (
-                                      `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
-                                  ) : (
-                                      <Text />
-                                  )}
-
-                                  {enteredAdresse && !adresse ? (
-                                      `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `
-                                  ) : (
-                                      <Text />
-                                  )}
-
-                                  {adresse || enteredAdresse ? (
-                                      <TouchableOpacity
-                                          onPress={() =>
-                                              props.navigation.navigate("AdresseChoiceScreen")
-                                          }
-                                          style={styles.modifierAdresse}
-                                      >
-                                        <Text>Modifier</Text>
-                                      </TouchableOpacity>
-                                  ) : (
-                                      <Text />
-                                  )}
-                                </Text>
-                              </View>
-                            </View>
-
-                            <View style={styles.itemForm3}>
-                              <Text style={{ fontSize: 18 }}>Prix de l'article</Text>
-                              <Text style={{ fontSize: 18 }}>
-                                {item.productPrice} €
-                              </Text>
-                            </View>
-
-                            <View style={styles.itemForm3}>
-                              <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
-                              <Text style={{ fontSize: 18 }}>
-                                {(item.productPrice * 0.095).toFixed(2)} €
-                              </Text>
-                            </View>
-
-
-                            <View style={styles.itemForm3}>
-                              <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Sous-total</Text>
-                              <Text style={{ fontSize: 18 }}>
-                                {sousTotal} €
-                              </Text>
-                            </View>
-
-                          </View>
-                      )
-                    }
-                )}
-
-                  {errors ? <Text style={{textAlign: 'center', color: 'red'}}>Veuillez remplir tous les champs</Text> : <Text/>}
-                <TouchableOpacity
-                    style={styles.mettreEnVente}
-                    onPress={async () => {
-
-                        for (let item of cartItems) {
-                            if (item.livraison === "Choisir") {
-                                setErrors(true)
-                            } else {
-                                setGoConfirmation(true)
-                            }
-                        }
-                    }}
-                >
-                  <Text style={styles.mettreEnVenteText}>
-                    Finaliser ma commande
-                  </Text>
-                </TouchableOpacity>
-              </ScrollView>
-          )
-        }
-        else {
-          return (
-              <ScrollView>
-                <Text style={styles.articleTitle}>Récapitulatif de votre commande</Text>
-                {cartItems.map((item, index) => {
-                      const protectionAcheteur = parseFloat(item.productPrice * 0.095)
-                      const price = parseFloat(item.productPrice)
-                      const sousTotal = (price + protectionAcheteur).toFixed(2)
-
-                      return (
-                            <RecapCommandeItem
-                                title={item.productTitle}
-                                price={item.productPrice}
-                                image={item.image}
-                                key={index}
-                            />
-                      )
-                    }
-                )}
-
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Total articles</Text>
-                  <Text style={{ fontSize: 18 }}>
-                    {(total).toFixed(2)} €
-                  </Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
-                  <Text style={{ fontSize: 18 }}>
-                    {totalProtectionAcheteur} €
-                  </Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Total livraison</Text>
-                  <Text style={{ fontSize: 18 }}>
-                    {totalProtectionAcheteur} €
-                  </Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Dans le portefeuille</Text>
-                  <Text style={{ fontSize: 18 }}>
-                    {userData?.portefeuille.toFixed(2)} €
-                  </Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18 }}>Sous-Total</Text>
-                  <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <BouncyCheckbox
-                      size={25}
-                      fillColor="red"
-                      unfillColor="#FFFFFF"
-                      iconStyle={{ borderColor: "red" }}
-                      onPress={() => setToggleCheckBoxPortefeuille(!toggleCheckBoxPortefeuille)}
+                  <RecapCommandeItem
+                    title={item.productTitle}
+                    price={item.productPrice}
+                    image={item.image}
+                    key={index}
                   />
-                  <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
-                  <Text style={{ fontSize: 18 }}>
-                    - {reductionPortefeuille} €
-                  </Text>
-                </View>
-
-                <View style={styles.itemForm3}>
-                  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total</Text>
-                  <Text style={styles.totalPrice}>{toggleCheckBoxPortefeuille ? newTotal : sousTotal} €</Text>
-                </View>
-
-                <View style={styles.checkBoxContainer}>
-                  <View style={styles.checkboxInner}>
-                    <BouncyCheckbox
-                        size={25}
-                        fillColor="red"
-                        unfillColor="#FFFFFF"
-                        iconStyle={{ borderColor: "red" }}
-                        onPress={() => setToggleCheckBox(!toggleCheckBox)}
-                    />
-                  </View>
-                  <Text style={styles.acceptGeneralConditions}>
-                    J’accepte les conditions générales de vente, cliques{" "}
+                  <View
+                    style={[
+                      styles.itemForm3,
+                      {
+                        borderTopColor: "lightgrey",
+                        borderTopWidth: 1,
+                        marginTop: 10,
+                        display: "flex",
+                        flexDirection: "column",
+                      },
+                    ]}
+                  >
                     <Text
-                        style={styles.ici}
-                        onPress={() =>
-                            props.navigation.navigate("Profil", {
-                              screen: "CGUScreen",
-                              params: { from: "CartScreen" },
-                            })
-                        }
-                    >
-                      ici
-                    </Text>{" "}
-                    pour les consulter{" "}
-                  </Text>
-                </View>
-
-                <TouchableOpacity
-                    style={styles.mettreEnVente}
-                    onPress={async () => {
-                      if (props.loggedInAsVisit) {
-                        props.setLoggedInAsVisit(!props.loggedInAsVisit);
-                      } else {
-                        if (!toggleCheckBox) {
-                          setErrors(true);
-                        } else if (newTotal == 0.0 && toggleCheckBoxPortefeuille) {
-                          setErrors(false)
-                          setPortefeuillePayment(true);
-                        } else {
-                          setErrors(false)
-                          setMakePayment(true);
-                        }
+                      style={
+                        !item.livraison ? styles.modeErrors : styles.noError
                       }
-                    }}
+                    >
+                      Mode de livraison {item.productTitle}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        props.navigation.navigate("LivraisonChoiceScreen", {
+                          product: cartItems[index],
+                          cartItems: cartItems,
+                          index: index,
+                        });
+                      }}
+                    >
+                      {item.livraison ? (
+                        <Text>{item.livraison}</Text>
+                      ) : (
+                        <Text>Choisir</Text>
+                      )}
+                    </TouchableOpacity>
+                    {item.livraison === "Livraison Article Lourd" ? (
+                      <Text style={{ textAlign: "center" }}>
+                        Nous reviendrons vers vous dans les plus bref délais
+                        avec une estimation du prix
+                      </Text>
+                    ) : (
+                      <Text />
+                    )}
+                  </View>
+                  {item.livraison === "MondialRelay" && (
+                    <View style={styles.itemForm3}>
+                      <View style={styles.adresseText}>
+                        <Text
+                          style={
+                            !enteredAdresse || !adresse
+                              ? styles.modeErrors
+                              : styles.noError
+                          }
+                        >
+                          Adresse
+                        </Text>
+                      </View>
+
+                      <View style={styles.adresseContainer}>
+                        <Text style={styles.adresseInner}>
+                          {adresse ? (
+                            `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
+                          ) : (
+                            <Text />
+                          )}
+
+                          {enteredAdresse && !adresse ? (
+                            `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `
+                          ) : (
+                            <Text />
+                          )}
+
+                          {adresse || enteredAdresse ? (
+                            <TouchableOpacity
+                              onPress={() =>
+                                props.navigation.navigate("AdresseChoiceScreen")
+                              }
+                              style={styles.modifierAdresse}
+                            >
+                              <Text>Modifier</Text>
+                            </TouchableOpacity>
+                          ) : (
+                            <Text />
+                          )}
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+
+                  <View style={styles.itemForm3}>
+                    <Text style={{ fontSize: 18 }}>Prix de l'article</Text>
+                    <Text style={{ fontSize: 18 }}>{item.productPrice} €</Text>
+                  </View>
+
+                  {item.livraison === "MondialRelay" && (
+                    <View style={styles.itemForm3}>
+                      <Text style={{ fontSize: 18 }}>
+                        + Frais de livraison Mondial Relay
+                      </Text>
+                      <Text style={{ fontSize: 18 }}>
+                        {get_mondial_relay_price(item.poids)} €
+                      </Text>
+                    </View>
+                  )}
+
+                  <View style={styles.itemForm3}>
+                    <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
+                    <Text style={{ fontSize: 18 }}>
+                      {(item.productPrice * 0.095).toFixed(2)} €
+                    </Text>
+                  </View>
+
+                  <View style={styles.itemForm3}>
+                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                      Sous-total
+                    </Text>
+                    <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
+                  </View>
+                </View>
+              );
+            })}
+
+            {errors ? (
+              <Text style={{ textAlign: "center", color: "red" }}>
+                Veuillez remplir tous les champs
+              </Text>
+            ) : (
+              <Text />
+            )}
+            <TouchableOpacity
+              style={styles.mettreEnVente}
+              onPress={async () => {
+                for (let item of cartItems) {
+                  if (item.livraison === "Choisir") {
+                    setErrors(true);
+                  } else {
+                    setGoConfirmation(true);
+                  }
+                }
+              }}
+            >
+              <Text style={styles.mettreEnVenteText}>
+                Finaliser ma commande
+              </Text>
+            </TouchableOpacity>
+          </ScrollView>
+        );
+      } else {
+        return (
+          <ScrollView>
+            <Text style={styles.articleTitle}>
+              Récapitulatif de votre commande
+            </Text>
+            {cartItems.map((item, index) => {
+              const protectionAcheteur = parseFloat(item.productPrice * 0.095);
+              const price = parseFloat(item.productPrice);
+              const sousTotal = (price + protectionAcheteur).toFixed(2);
+
+              return (
+                <RecapCommandeItem
+                  title={item.productTitle}
+                  price={item.productPrice}
+                  image={item.image}
+                  key={index}
+                />
+              );
+            })}
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18 }}>Total articles</Text>
+              <Text style={{ fontSize: 18 }}>{total.toFixed(2)} €</Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
+              <Text style={{ fontSize: 18 }}>{totalProtectionAcheteur} €</Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18 }}>Total livraison</Text>
+              <Text style={{ fontSize: 18 }}>{totalProtectionAcheteur} €</Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18 }}>Dans le portefeuille</Text>
+              <Text style={{ fontSize: 18 }}>
+                {userData?.portefeuille.toFixed(2)} €
+              </Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18 }}>Sous-Total</Text>
+              <Text style={{ fontSize: 18 }}>{sousTotal} €</Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <BouncyCheckbox
+                size={25}
+                fillColor="red"
+                unfillColor="#FFFFFF"
+                iconStyle={{ borderColor: "red" }}
+                onPress={() =>
+                  setToggleCheckBoxPortefeuille(!toggleCheckBoxPortefeuille)
+                }
+              />
+              <Text style={{ fontSize: 18 }}>Déduction Portefeuille</Text>
+              <Text style={{ fontSize: 18 }}>- {reductionPortefeuille} €</Text>
+            </View>
+
+            <View style={styles.itemForm3}>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>Total</Text>
+              <Text style={styles.totalPrice}>
+                {toggleCheckBoxPortefeuille ? newTotal : sousTotal} €
+              </Text>
+            </View>
+
+            <View style={styles.checkBoxContainer}>
+              <View style={styles.checkboxInner}>
+                <BouncyCheckbox
+                  size={25}
+                  fillColor="red"
+                  unfillColor="#FFFFFF"
+                  iconStyle={{ borderColor: "red" }}
+                  onPress={() => setToggleCheckBox(!toggleCheckBox)}
+                />
+              </View>
+              <Text style={styles.acceptGeneralConditions}>
+                J’accepte les conditions générales de vente, cliques{" "}
+                <Text
+                  style={styles.ici}
+                  onPress={() =>
+                    props.navigation.navigate("Profil", {
+                      screen: "CGUScreen",
+                      params: { from: "CartScreen" },
+                    })
+                  }
                 >
-                  <Text style={styles.mettreEnVenteText}>
-                    Payer ma commande
-                  </Text>
-                </TouchableOpacity>
+                  ici
+                </Text>{" "}
+                pour les consulter{" "}
+              </Text>
+            </View>
 
-              </ScrollView>
-          )
+            <TouchableOpacity
+              style={styles.mettreEnVente}
+              onPress={async () => {
+                if (props.loggedInAsVisit) {
+                  props.setLoggedInAsVisit(!props.loggedInAsVisit);
+                } else {
+                  if (!toggleCheckBox) {
+                    setErrors(true);
+                  } else if (newTotal == 0.0 && toggleCheckBoxPortefeuille) {
+                    setErrors(false);
+                    setPortefeuillePayment(true);
+                  } else {
+                    setErrors(false);
+                    setMakePayment(true);
+                  }
+                }
+              }}
+            >
+              <Text style={styles.mettreEnVenteText}>Payer ma commande</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        );
       }
-    }
-
-                  /*  {cartItems.map((item, index) => {
+    } else {
+      /*  {cartItems.map((item, index) => {
                           return (
                               <View
                                   style={[
@@ -848,7 +887,6 @@ const CartScreen = (props) => {
       }
 
                    */
-    else {
       if (response !== undefined) {
         return (
           <View
@@ -1241,16 +1279,16 @@ const styles = StyleSheet.create({
     color: "blue",
   },
   subTotal: {
-    textAlign: 'center',
-    fontSize: 20
+    textAlign: "center",
+    fontSize: 20,
   },
   list: {
-    marginBottom: 50
+    marginBottom: 50,
   },
   articleTitle: {
-    textAlign: 'center',
-    fontSize: 25
-  }
+    textAlign: "center",
+    fontSize: 25,
+  },
 });
 
 export default CartScreen;

@@ -27,24 +27,10 @@ import PhotoArticleScreen from "./PhotoArticleScreen";
 import axios from "axios";
 import * as messageAction from "../../store/actions/messages";
 import { set } from "react-native-reanimated";
+import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-
-function get_mondial_relay_price(poids) {
-  const prices = [4.4, 4.9, 6.3, 6.5, 6.9, 9.9, 11.9, 13.5, 17.9, 19.9, 24.9];
-  const ranges = [0.5, 1, 2, 3, 4, 5, 7, 10, 15, 20, 30];
-  if (Number(poids) <= 0.5) {
-    return prices[0];
-  }
-  for (let k = 0; k < prices.length - 1; k++) {
-    if (Number(poids) > ranges[k] && Number(poids) <= ranges[k + 1]) {
-      console.log("test");
-      return prices[k + 1];
-    }
-  }
-  return "Veuillez nous contacter";
-}
 
 const uploadSchema = Yup.object().shape({
   title: Yup.string().required("Veuillez rentrer un titre"),
@@ -541,24 +527,33 @@ const VendreArticleScreen = (props) => {
                       />
                     </View>
                     <View style={styles.itemForm3}>
-                      <Text>Coût d'envoi Mondial Relay €</Text>
+                      <Text>Frais d'envoi Mondial Relay €</Text>
                       <Text style={styles.input}>{shippinPrice}</Text>
                     </View>
                     <View style={{ flex: 1, margin: 5 }}>
-                      <Text onPress={() => setModalVisible(!modalVisible)}>
-                        Le prix indiqué doit inclure les potentiels frais
-                        d'envois. Lorsque vous vous rendrez en point relais
-                        aucun argent ne vous sera demandé. Les frais d'envoi
-                        seront retenus sur le prix indiqué lorsque nous
-                        créditerons votre compte une fois la commande livrée.
-                        Ils sont calculés en se basant sur la grille. Veillez à
-                        le prendre en compte lorsque vous saissisez votre prix.
+                      <Text>
+                        Si l'acheteur choisit l'option de livraison MONDIAL
+                        RELAY, il devra également payer les frais d'envoi
+                        calculés à partir du poids du colis. Ce montant sera
+                        retenu par Kval pour payer les frais d'éxpéditions.
+                      </Text>
+                      <Text>
+                        Lorsque vous vous rendrez en point relais pour expédier
+                        votre colis, rien ne vous sera jamais demandé.
+                        Cependant, si vous indiquez un mauvais poids pour votre
+                        colis nous nous octroyons le droit de retenir ce qui
+                        nous aura été facturé en plus.
+                      </Text>
+                      <Text>
+                        SOYEZ VIGILEANT EN INDIQUANT LE POIDS DE VOTRE COLIS
                       </Text>
                       <Pressable
                         style={[styles.button, styles.buttonOpen]}
                         onPress={() => setModalVisible(!modalVisible)}
                       >
-                        <Text style={styles.textStyle}>Voir la grille</Text>
+                        <Text style={styles.textStyle}>
+                          Grille des frais MONDIAL RELAY{" "}
+                        </Text>
                       </Pressable>
                       <Modal
                         animationType="slide"
