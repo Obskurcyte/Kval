@@ -82,8 +82,6 @@ const VendreArticleScreen = (props) => {
     poids: "",
   };
 
-  console.log("modify", modify);
-  console.log("initial", initialValues);
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -114,11 +112,8 @@ const VendreArticleScreen = (props) => {
         images.push(props.route.params.downloadURL4);
       setImagesTableau(images);
     }
-    console.log(props.route.params);
   }, [props.route.params]);
 
-  console.log("current", currentUser);
-  console.log("cat", categorie);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
@@ -174,10 +169,9 @@ const VendreArticleScreen = (props) => {
     if (!result.cancelled) {
       setImage(result.uri);
     }
-    console.log(imagesTableau);
   };
 
-  console.log(firebase.auth().currentUser.uid);
+
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -211,9 +205,12 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate("EtatChoiceScreen");
   };
 
+
   const [error, setError] = useState("");
   const [errors, setErrors] = useState(false);
   const date = new Date();
+  const [imageEmail, setImageMail] = useState('');
+
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -238,7 +235,6 @@ const VendreArticleScreen = (props) => {
                     setErrors(true);
                   }
 
-                  console.log("values", values);
 
                   if (!errors) {
                     let pushToken;
@@ -349,7 +345,8 @@ const VendreArticleScreen = (props) => {
                                 .getDownloadURL()
                                 .then((snapshot) => {
                                   saveImageData(snapshot, index);
-                                  console.log("snapshot", snapshot);
+                                  setImageMail(snapshot)
+                                  console.log('image', imageEmail)
                                   resolve();
                                 });
                             };
@@ -367,10 +364,10 @@ const VendreArticleScreen = (props) => {
                           });
                         };
 
+                        let data = {};
                         const saveImageData = (downloadURL, index) => {
                           const property_name =
                             index === 0 ? "downloadURL" : `downloadURL${index}`;
-                          const data = {};
                           data[property_name] = downloadURL;
                           firebase
                             .firestore()
@@ -391,6 +388,7 @@ const VendreArticleScreen = (props) => {
                             .update(data);
                         };
 
+                        console.log('data', data)
                         await Promise.all(
                           imagesTableau.map(async (image, index) => {
                             console.log("test");
@@ -414,6 +412,11 @@ const VendreArticleScreen = (props) => {
                           subject: "Confirmation de mise en vente",
                           html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
 <p>Votre article ${values.title} a bien été mis en vente.</p>
+<p>Détails de la mise en vente : </p>
+<img src="${imageEmail}" alt="" style="width: 300px; height: 300px">
+<p>Description : ${values.description}</p>
+<p>Poids: ${values.poids}</p>
+<p>Prix : ${values.price}</p>
 <p>Vous pouvez dès à présent le retrouver dans la rubrique « Mes articles en vente » de votre profil pour le consulter, le modifier ou le supprimer.</p>
 <p>Vous pouvez également booster cet article à tout moment afin d’améliorer sa visibilité</p>
 <br>
@@ -533,7 +536,6 @@ const VendreArticleScreen = (props) => {
                         value={props.values.poids}
                         onChangeText={(value) => {
                           props.handleChange("poids")(value);
-                          console.log(value);
                           setShippingPrice(get_mondial_relay_price(value));
                         }}
                       />
@@ -660,7 +662,6 @@ const VendreArticleScreen = (props) => {
                     <TouchableOpacity
                       style={styles.reset}
                       onPress={() => {
-                        console.log("hey");
                         props.resetForm({
                           values: nonValues,
                         });

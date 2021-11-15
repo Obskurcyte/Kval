@@ -26,8 +26,8 @@ const CardNotif = (props) => {
 
   const createTwoButtonAlert = () =>
       Alert.alert(
-          "Supprimer la conversation",
-          "Vous êtes sur le point de supprimer une conversation, Etes vous sur de vouloir la supprimer? (cette action est irréversible).",
+          "Supprimer la notification",
+          "Vous êtes sur le point de supprimer une notification, Etes vous sur de vouloir la supprimer? (cette action est irréversible).",
           [
             {
               text: "Annuler",

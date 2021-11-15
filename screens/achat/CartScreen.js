@@ -145,6 +145,7 @@ const CartScreen = (props) => {
                 image: cartItem.image,
                 vendeur: cartItem.idVendeur,
                 pseudoVendeur: cartItem.pseudoVendeur,
+                  emailVendeur: cartItem.emailVendeur,
               });
             await firebase
               .firestore()
@@ -303,6 +304,7 @@ const CartScreen = (props) => {
             image: cartItem.image,
             vendeur: cartItem.idVendeur,
             pseudoVendeur: cartItem.pseudoVendeur,
+              emailVendeur: cartItem.emailVendeur,
           });
 
         await firebase
