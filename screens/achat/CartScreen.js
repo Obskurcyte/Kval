@@ -147,6 +147,11 @@ const CartScreen = (props) => {
                 vendeur: cartItem.idVendeur,
                 pseudoVendeur: cartItem.pseudoVendeur,
                   emailVendeur: cartItem.emailVendeur,
+                  categorie: cartItem.categorie,
+                  livraison: cartItem.livraison,
+                  prixProtectionAcheteur: totalProtectionAcheteur,
+                  productTitle: cartItem.productTitle,
+                  total: sousTotal
               });
             await firebase
               .firestore()
@@ -242,8 +247,11 @@ const CartScreen = (props) => {
 <p>Récapitulatif de l'achat : </p>
 <img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
 <p>Titre : ${cartItem.productTitle}</p>
+<p>Catégorie : ${cartItem.categorie}</p>
 <p>Prix : ${cartItem.productPrice} €</p>
+<p>Prix protection acheteur : ${totalProtectionAcheteur} €</p>
 <p>Livraison: ${cartItem.livraison}</p>
+<p>Total: ${sousTotal} €</p>
 </div>
 <p>A présent, ${cartItem.pseudoVendeur} dispose de 5 jours ouvrés pour vous envoyer l'article</p>
 <p>Une fois l’article reçu vous disposerez de 2 jours pour faire une réclamation dans la rubrique « signaler un litige » de votre profil.</p>
@@ -257,13 +265,16 @@ const CartScreen = (props) => {
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: cartItem.emailVendeur,
               subject: "Un des vos articles a été acheté",
-              html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+              html_output: `<div><p>Bonjour, ${cartItem.pseudoVendeur}, <br></p> 
 <p>Nous vous confirmons que l'article ${cartItem.productTitle} a bien été acheté par ${userData.pseudo}.</p>
 <p>Récapitulatif de la vente : </p>
 <img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
 <p>Titre : ${cartItem.productTitle}</p>
+<p>Catégorie : ${cartItem.categorie}</p>
+<p>Prix protection acheteur : ${totalProtectionAcheteur} €</p>
 <p>Prix : ${cartItem.productPrice} €</p>
 <p>Livraison: ${cartItem.livraison}</p>
+<p>Total: ${sousTotal} €</p>
 </div>
 <p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
 <br>

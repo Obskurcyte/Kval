@@ -15,6 +15,7 @@ import CommandeItem from "../../components/CommandeItem";
 import {Formik} from 'formik';
 import EvalueItem from "../../components/EvalueItem";
 import firebase from "firebase";
+import axios from "axios";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -28,7 +29,6 @@ const EvaluationScreen = (props) => {
 
     const product = props.route.params.product;
     console.log('product', product)
-    console.log(rating)
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
@@ -63,7 +63,27 @@ const EvaluationScreen = (props) => {
                                         commentaire: values.commentaire,
                                         rating,
                                         rateur: product.pseudoVendeur
-                                    })
+                                    });
+                                await axios.post("https://kval-backend.herokuapp.com/send", {
+                                    mail: product.emailVendeur,
+                                    subject: "Un de vos article a été reçu",
+                                    html_output: `<div><p>Bonjour, ${product.pseudoVendeur}, <br></p> 
+<p>Nous vous confirmons que l'article ${product.title} a bien été reçu et conforme.</p>
+<p>Récapitulatif de la vente : </p>
+<img src="${product.image}" alt="" style="width: 300px; height: 300px"/>
+<p>Titre : ${product.productTitle}</p>
+<p>Catégorie : ${product.categorie}</p>
+<p>Prix protection acheteur : ${product.prixProtectionAcheteur} €</p>
+<p>Prix : ${product.prix} €</p>
+<p>Livraison: ${product.livraison}</p>
+<p>Total: ${product.total} €</p>
+</div>
+<p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
+<br>
+<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                                });
                                 props.navigation.navigate('ValidationEvaluationScreen')
                             }}
                         >
