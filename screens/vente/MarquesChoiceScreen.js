@@ -23,7 +23,7 @@ const MarquesChoiceScreen = (props) => {
         querySnapshot.docs.map((doc) => {
           marques.push(doc.data());
         });
-        setMarques(["Autres marques", ...marques]);
+        setMarques([{ name: "Autres marques" }, ...marques]);
       });
   }, []);
 
