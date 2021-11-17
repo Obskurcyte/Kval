@@ -44,7 +44,7 @@ const InformationsScreen = (props) => {
                 <Text style={styles.infosText}>{userData.email}</Text>
               </View>
               <View>
-                <TouchableOpacity onPress={() => props.navigation.navigate('ModifierEmailScreen')}>
+                <TouchableOpacity onPress={() => props.navigation.navigate('PreAuthScreen')}>
                   <Text style={styles.modify}>Modifier</Text>
                 </TouchableOpacity>
               </View>

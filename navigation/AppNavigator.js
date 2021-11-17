@@ -140,6 +140,8 @@ import {set} from "react-native-reanimated";
 import * as messageAction from '../store/actions/messages';
 import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 import FirstCartScreen from "../screens/achat/FirstCartScreen";
+import ModifierEmailConfirmationScreen from "../screens/profile/ModifierEmailConfirmationScreen";
+import PreAuthScreen from "../screens/profile/PreAuthScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1930,6 +1932,27 @@ export const ProfileNavigator = (props) => {
         }}
       />
         <ProfileStackNavigator.Screen
+            name="ModifierEmailConfirmationScreen"
+            component={ModifierEmailConfirmationScreen}
+            options={{
+                headerShown: false
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="PreAuthScreen"
+            component={PreAuthScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerBackTitle: "Retour",
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerTitle: "Identification",
+            }}
+        />
+        <ProfileStackNavigator.Screen
             name="CommentCaMarcheScreen"
             component={CommentCaMarcheScreen}
             options={{
@@ -2505,6 +2528,7 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Profil"
+            component={ProfileScreen}
             children={() => <></>}
             listeners={resetStackOnTabPress}
             options={{

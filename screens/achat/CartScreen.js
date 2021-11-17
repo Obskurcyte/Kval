@@ -239,7 +239,7 @@ const CartScreen = (props) => {
                     });
                 }
               });
-            let etiquette_url = "";
+           /* let etiquette_url = "";
             if ((livraison = "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -330,6 +330,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                   console.log(error);
                 });
             }
+
+            */
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: userData.email,
               subject: "Confirmation d'achat",
@@ -371,7 +373,6 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p>Livraison: ${cartItem.livraison}</p>
 <p>Total: ${sousTotal} €</p>
 </div>
-${livraison === "MondialRelay" && `Etiquette MONDIALRELAY : $ ${etiquette_url}`}
 <p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
