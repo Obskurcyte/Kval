@@ -146,12 +146,12 @@ const CartScreen = (props) => {
                 image: cartItem.image,
                 vendeur: cartItem.idVendeur,
                 pseudoVendeur: cartItem.pseudoVendeur,
-                  emailVendeur: cartItem.emailVendeur,
-                  categorie: cartItem.categorie,
-                  livraison: cartItem.livraison,
-                  prixProtectionAcheteur: totalProtectionAcheteur,
-                  productTitle: cartItem.productTitle,
-                  total: sousTotal
+                emailVendeur: cartItem.emailVendeur,
+                categorie: cartItem.categorie,
+                livraison: cartItem.livraison,
+                prixProtectionAcheteur: totalProtectionAcheteur,
+                productTitle: cartItem.productTitle,
+                total: sousTotal,
               });
             await firebase
               .firestore()
@@ -239,6 +239,97 @@ const CartScreen = (props) => {
                     });
                 }
               });
+            let etiquette_url = "";
+            if ((livraison = "MondialRelay")) {
+              const data = `<?xml version="1.0" encoding="utf-8"?>
+<ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Request">
+    <Context>
+        <Login>MRKVALOC@business-api.mondialrelay.com</Login>
+        <Password>:0qjMV1DpHrMJPymQBkq</Password>
+        <CustomerId>MRKVALOC</CustomerId>
+        <Culture>fr-FR</Culture>
+        <VersionAPI>1.0</VersionAPI>
+    </Context>
+    <OutputOptions>
+        <OutputFormat>10x15</OutputFormat>
+        <OutputType>PdfUrl</OutputType>
+    </OutputOptions>
+    <ShipmentsList>
+        <Shipment>
+            <OrderNo></OrderNo>
+            <CustomerNo></CustomerNo>
+            <ParcelCount>1</ParcelCount>
+            <DeliveryMode Mode="24R" Location="${adresse.ID}" />
+            <CollectionMode Mode="REL" Location="" />
+            <Parcels>
+                <Parcel>
+                    <Content>Materiel Equitation</Content>
+                    <Weight Value="${
+                      Number(cartItem.poids) * 1000
+                    }" Unit="gr" />
+                </Parcel>
+            </Parcels>
+            <DeliveryInstruction></DeliveryInstruction>
+            <Sender>
+                <Address>
+                    <Title />
+                    <Firstname> Kval Occaz</Firstname>
+                    <Lastname />
+                    <Streetname> Les termes</Streetname>
+                    <HouseNo>17 bis</HouseNo>
+                    <CountryCode>FR</CountryCode>
+                    <PostCode>13124</PostCode>
+                    <City>PEYPIN</City>
+                    <AddressAdd1></AddressAdd1>
+                    <AddressAdd2 />
+                    <AddressAdd3></AddressAdd3>
+                    <PhoneNo />
+                    <MobileNo></MobileNo>
+                    <Email>info@k-val.com</Email>
+                </Address>
+            </Sender>
+            <Recipient>
+                <Address>
+                    <Title></Title>
+                    <Firstname>${userData.prenom}</Firstname>
+                    <Lastname>${userData.nom}</Lastname>
+                    <Streetname></Streetname>
+                    <HouseNo></HouseNo>
+                    <CountryCode>FR</CountryCode>
+                    <PostCode>${adresse.CP}</PostCode>
+                    <City>${adresse.Ville}</City>
+                    <AddressAdd1 />
+                    <AddressAdd2 />
+                    <AddressAdd3 />
+                    <PhoneNo></PhoneNo>
+                    <MobileNo />
+                    <Email></Email>
+                </Address>
+            </Recipient>
+        </Shipment>
+    </ShipmentsList>
+</ShipmentCreationRequest>
+                                                `;
+
+              var config = {
+                method: "post",
+                url: "https://connect-api.mondialrelay.com/api/shipment",
+                headers: {
+                  "Content-Type": "text/xml",
+                },
+                data: data,
+              };
+
+              etiquette_url = await axios(config)
+                .then(function (response) {
+                  return response
+                    .data.shipmentsListField[0].labelListField.labelField.outputField;
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+            }
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: userData.email,
               subject: "Confirmation d'achat",
@@ -265,8 +356,12 @@ const CartScreen = (props) => {
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: cartItem.emailVendeur,
               subject: "Un des vos articles a été acheté",
-              html_output: `<div><p>Bonjour, ${cartItem.pseudoVendeur}, <br></p> 
-<p>Nous vous confirmons que l'article ${cartItem.productTitle} a bien été acheté par ${userData.pseudo}.</p>
+              html_output: `<div><p>Bonjour, ${
+                cartItem.pseudoVendeur
+              }, <br></p> 
+<p>Nous vous confirmons que l'article ${
+                cartItem.productTitle
+              } a bien été acheté par ${userData.pseudo}.</p>
 <p>Récapitulatif de la vente : </p>
 <img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
 <p>Titre : ${cartItem.productTitle}</p>
@@ -276,6 +371,7 @@ const CartScreen = (props) => {
 <p>Livraison: ${cartItem.livraison}</p>
 <p>Total: ${sousTotal} €</p>
 </div>
+${livraison === "MondialRelay" && `Etiquette MONDIALRELAY : $ ${etiquette_url}`}
 <p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
@@ -320,7 +416,7 @@ const CartScreen = (props) => {
             image: cartItem.image,
             vendeur: cartItem.idVendeur,
             pseudoVendeur: cartItem.pseudoVendeur,
-              emailVendeur: cartItem.emailVendeur,
+            emailVendeur: cartItem.emailVendeur,
           });
 
         await firebase
