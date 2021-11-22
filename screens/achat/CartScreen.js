@@ -335,48 +335,68 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: userData.email,
               subject: "Confirmation d'achat",
-              html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons l'achat de l'article ${cartItem.productTitle} à ${cartItem.pseudoVendeur}.</p>
-<p>Récapitulatif de l'achat : </p>
-<img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
-<p>Titre : ${cartItem.productTitle}</p>
-<p>Catégorie : ${cartItem.categorie}</p>
-<p>Prix : ${cartItem.productPrice} €</p>
-<p>Prix protection acheteur : ${totalProtectionAcheteur} €</p>
-<p>Livraison: ${cartItem.livraison}</p>
-<p>Total: ${sousTotal} €</p>
-</div>
-<p>A présent, ${cartItem.pseudoVendeur} dispose de 5 jours ouvrés pour vous envoyer l'article</p>
-<p>Une fois l’article reçu vous disposerez de 2 jours pour faire une réclamation dans la rubrique « signaler un litige » de votre profil.</p>
-<p>Le numéro de suivi vous sera communiqué lorsque l’envoie aura été effectué par ${cartItem.pseudoVendeur}</p>
-<p>N’oubliez pas de vous rendre dans votre profil, rubrique « mes commandes » afin de nous informer de la bonne réception et conformité du colis.</p>
-<br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+              html_output: `
+<div>
+    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
+    <p>Récapitulatif de l'achat : </p>
+    <hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
+            <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
+            <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
+            <p style="margin: 0">Livraison: ${cartItem.livraison} à l'adresse suivante : ${userData.adresse}</p>
+            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} €</p>
+        </div>
+    </div>
+    
+    <hr>
+    
+    <p>Le vendeur à 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
+    <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
+    <br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 200px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
             });
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: cartItem.emailVendeur,
-              subject: "Un des vos articles a été acheté",
-              html_output: `<div><p>Bonjour, ${
-                cartItem.pseudoVendeur
-              }, <br></p> 
-<p>Nous vous confirmons que l'article ${
-                cartItem.productTitle
-              } a bien été acheté par ${userData.pseudo}.</p>
-<p>Récapitulatif de la vente : </p>
-<img src="${cartItem.image}" alt="" style="width: 300px; height: 300px"/>
-<p>Titre : ${cartItem.productTitle}</p>
-<p>Catégorie : ${cartItem.categorie}</p>
-<p>Prix protection acheteur : ${totalProtectionAcheteur} €</p>
-<p>Prix : ${cartItem.productPrice} €</p>
-<p>Livraison: ${cartItem.livraison}</p>
-<p>Total: ${sousTotal} €</p>
+              subject: "Confirmation de vente",
+              html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+<p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
+<p>Résumé de votre article : </p>
+
+<hr>
+
+<div style="display: flex">
+    <div style="margin-right: 30px">
+        <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+    </div>
+    <div style="margin-top: 20px">
+        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
+        <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
+        <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
+        <p style="margin: 0">Prix de la livraison: ${cartItem.livraison}</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
+    </div>
 </div>
-<p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
+
+<hr>
+
+<p>Vous avez 5 jours pour expédier votre article et l’acheteur à 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+<p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
+<p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 200px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
             });
           }

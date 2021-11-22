@@ -87,7 +87,6 @@ const AccueilScreen = (props) => {
    return unsubscribe
   }, [props.navigation])
 
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView
@@ -101,7 +100,7 @@ const AccueilScreen = (props) => {
         >
 
     <View style={styles.container}>
-      <Text style={styles.attendent}>Annonces en avant première </Text>
+      <Text style={styles.attendent}>Annonces en avant première</Text>
 
       <FlatList
         data={productsBoosted}

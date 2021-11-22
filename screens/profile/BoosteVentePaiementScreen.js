@@ -89,13 +89,30 @@ const BoosteVentePaiementScreen = (props) => {
               categorie: articles[data].categorie,
               pseudoVendeur: articles[data].pseudoVendeur,
               time: new Date()
-            })
+            });
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
-              subject: "Confirmation de boost d'articles",
-              html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
-<p>Votre article ${articles[data].title}  est boosté pour une durée de ${dureeBoost} jours.</p>
-<p>Votre article se trouve dès à présent dans la rubrique « Annonce en avant-première »</p>
+              subject: "Confirmation de mise en avant première",
+              html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+<p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours.</p>
+<p>Résumé de votre article : </p>
+<hr>
+
+<div style="display: flex">
+    <div style="margin-right: 30px">
+        <img src="${articles[data].downloadURL}" alt="" style="width: 200px; height: 200px"/>
+    </div>
+
+    <div>
+        <p>${articles[data].title}</p>
+        <p>Catégorie : ${articles[data].categorie}</p>
+        <p>Prix net vendeur: ${articles[data].prix} €</p>
+    </div>
+</div>
+
+<hr>
+
+<p>Vous pouvez retrouver cet article dans la page d’accueil dans la catégorie : Annonces en avant première</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">

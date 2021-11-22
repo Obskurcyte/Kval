@@ -66,7 +66,7 @@ const EvaluationScreen = (props) => {
                                     });
                                 await axios.post("https://kval-backend.herokuapp.com/send", {
                                     mail: product.emailVendeur,
-                                    subject: "Un de vos article a été reçu",
+                                    subject: "Confirmation de réception",
                                     html_output: `<div><p>Bonjour, ${product.pseudoVendeur}, <br></p> 
 <p>Nous vous confirmons que l'article ${product.title} a bien été reçu et conforme.</p>
 <p>Récapitulatif de la vente : </p>

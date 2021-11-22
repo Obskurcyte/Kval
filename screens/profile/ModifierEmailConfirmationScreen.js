@@ -16,6 +16,7 @@ const ModifierEmailConfirmationScreen = (props) => {
             </TouchableOpacity>
         </View>
     );
+
 };
 
 const styles = StyleSheet.create({

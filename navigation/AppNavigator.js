@@ -135,8 +135,6 @@ import ForgotPasswordScreen from "../screens/inscription/ForgotPasswordScreen";
 import TapisAccueilScreen from "../screens/achat/sousCategoriesChevalEtTextile/TapisAccueilScreen";
 import TapisScreen from "../screens/vente/sousCategoriesChevalEtTextile/TapisScreen";
 import firebase from "firebase";
-import * as userActions from "../store/actions/users";
-import {set} from "react-native-reanimated";
 import * as messageAction from '../store/actions/messages';
 import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 import FirstCartScreen from "../screens/achat/FirstCartScreen";
@@ -1910,13 +1908,13 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil",
         }}
       />
-        <ProfileStackNavigator.Screen
+      <ProfileStackNavigator.Screen
             name="DeleteAnnonceValidationScreen"
             component={DeleteAnnonceValidationScreen}
             options={{
                 headerShown: false,
             }}
-        />
+      />
       <ProfileStackNavigator.Screen
         name="ContactScreen"
         component={ContactScreen}
