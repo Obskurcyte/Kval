@@ -43,7 +43,7 @@ const CartScreen = (props) => {
     cartItems2 = props.route.params.cartItems;
   }
 
-  console.log(adresse);
+  console.log('adresse', adresse);
   let cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
@@ -68,11 +68,9 @@ const CartScreen = (props) => {
 
   if (cartItems2) {
     cartItems = cartItems2;
-    console.log(cartItems);
   }
   let total = 0;
 
-  console.log("email", userData.email);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -332,10 +330,12 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             }
 
             */
-            await axios.post("https://kval-backend.herokuapp.com/send", {
-              mail: userData.email,
-              subject: "Confirmation d'achat",
-              html_output: `
+              if (adresse) {
+                  console.log('yes')
+                  await axios.post("https://kval-backend.herokuapp.com/send", {
+                      mail: userData.email,
+                      subject: "Confirmation d'achat",
+                      html_output: `
 <div>
     <p>Félicitations, ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
@@ -351,25 +351,94 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-            <p style="margin: 0">Livraison: ${cartItem.livraison} à l'adresse suivante : ${userData.adresse}</p>
-            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} €</p>
+            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${adresse}</p>
+            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
         </div>
     </div>
     
     <hr>
     
-    <p>Le vendeur à 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
-    <img style="width: 200px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
-            });
-            await axios.post("https://kval-backend.herokuapp.com/send", {
-              mail: cartItem.emailVendeur,
-              subject: "Confirmation de vente",
-              html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+                  });
+                  await axios.post("https://kval-backend.herokuapp.com/send", {
+                      mail: cartItem.emailVendeur,
+                      subject: "Confirmation de vente",
+                      html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+<p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
+<p>Résumé de votre article : </p>
+
+<hr>
+
+<div style="display: flex">
+    <div style="margin-right: 30px">
+        <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+    </div>
+    <div style="margin-top: 20px">
+        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
+        <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
+        <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${adresse}</p>
+        <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
+    </div>
+</div>
+
+<hr>
+
+<p>Vous avez 5 jours pour expédier votre article et l’acheteur à 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+<p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
+<p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
+<br>
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
+</div>`,
+                  });
+              } else {
+                  console.log('wola')
+                  await axios.post("https://kval-backend.herokuapp.com/send", {
+                      mail: userData.email,
+                      subject: "Confirmation d'achat",
+                      html_output: `
+<div>
+    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
+    <p>Récapitulatif de l'achat : </p>
+    <hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
+            <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
+            <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
+            <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
+            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
+        </div>
+    </div>
+    
+    <hr>
+    
+    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
+    <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
+    <br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                  });
+                  await axios.post("https://kval-backend.herokuapp.com/send", {
+                      mail: cartItem.emailVendeur,
+                      subject: "Confirmation de vente",
+                      html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 <p>Résumé de votre article : </p>
 
@@ -384,7 +453,6 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
-        <p style="margin: 0">Prix de la livraison: ${cartItem.livraison}</p>
         <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
     </div>
 </div>
@@ -396,9 +464,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
 <p style="margin: 0">L'équipe KVal Occaz</p>
-<img style="width: 200px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-            });
+                  });
+              }
+
           }
         }
         setPaymentStatus(
@@ -539,7 +609,6 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     );
   };
 
-  console.log("cart", cartItems);
   const [goPaiement, setGoPaiement] = useState(false);
   const [goConfirmation, setGoConfirmation] = useState(false);
 
