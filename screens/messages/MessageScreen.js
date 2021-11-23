@@ -24,12 +24,10 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const MessageScreen = (props) => {
+
   const [messageActive, setMessageActive] = useState(true);
-
   const [action, setAction] = useState(false);
-
   const dispatch = useDispatch();
-
   const [notifsList, setNotifsList] = useState([])
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);

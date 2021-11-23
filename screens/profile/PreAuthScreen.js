@@ -17,6 +17,7 @@ const PreAuthScreen = (props) => {
         password: "",
     };
 
+
     const [err, setErr] = useState(null);
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

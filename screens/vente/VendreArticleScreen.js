@@ -157,7 +157,6 @@ const VendreArticleScreen = (props) => {
     }
   };
 
-
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -331,8 +330,6 @@ const VendreArticleScreen = (props) => {
                                 .getDownloadURL()
                                 .then((snapshot) => {
                                   saveImageData(snapshot, index);
-                                  setImageMail(snapshot)
-                                  console.log('image', imageEmail)
                                   resolve();
                                 });
                             };
@@ -355,6 +352,7 @@ const VendreArticleScreen = (props) => {
                           const property_name =
                             index === 0 ? "downloadURL" : `downloadURL${index}`;
                           data[property_name] = downloadURL;
+                          setImageMail(downloadURL)
                           firebase
                             .firestore()
                             .collection(`${categorie}`)
@@ -374,7 +372,6 @@ const VendreArticleScreen = (props) => {
                             .update(data);
                         };
 
-                        console.log('data', data)
                         await Promise.all(
                           imagesTableau.map(async (image, index) => {
                             console.log("test");
@@ -396,18 +393,30 @@ const VendreArticleScreen = (props) => {
                         {
                           mail: currentUser.email,
                           subject: "Confirmation de mise en vente",
-                          html_output: `<div><p>Bonjour, ${currentUser.pseudo}, <br></p> 
-<p>Votre article ${values.title} a bien été mis en vente.</p>
-<p>Détails de la mise en vente : </p>
-<img src="${imageEmail}" alt="" style="width: 300px; height: 300px">
-<p>Description : ${values.description}</p>
-<p>Poids: ${values.poids}</p>
-<p>Prix : ${values.price}</p>
-<p>Vous pouvez dès à présent le retrouver dans la rubrique « Mes articles en vente » de votre profil pour le consulter, le modifier ou le supprimer.</p>
-<p>Vous pouvez également booster cet article à tout moment afin d’améliorer sa visibilité</p>
+                          html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+<p>Votre article vient d'être mis en vente.</p>
+<p>Résumé de votre article : </p>
+<hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${imageEmail}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${values.title}</p>
+            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
+            <p style="margin: 0">Poids : ${values.poids} kgs</p>
+            <p style="margin: 0">Catégorie: ${categorie}</p>
+        </div>
+    </div>
+<hr>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
+<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
+<p style="margin: 0">« Annonce en avant première » du menu d’accueil de l’application.
+</p>
 <br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
                       });
                       props.navigation.navigate("ValidationScreen", {

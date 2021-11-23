@@ -73,14 +73,14 @@ const InscriptionScreen = (props) => {
                       subject: "Confirmation de création de compte",
                       html_output: `<div><p>Félicitations, ${values.pseudo}, <br></p> 
 <p>Votre compte vient d'être créé.</p><br>
-<p>Votre pseudo : ${values.pseudo}</p>
-<p>Votre adresse mail : ${values.email}</p>
-<p>Votre mot de passe : ${values.password}</p>
+<p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
+<p style="margin: 0">Votre adresse mail : ${values.email}</p>
+<p style="margin: 0">Votre mot de passe : ${values.password}</p>
 
 <br>
 <p>Il ne vous reste plus qu'à utiliser l'application... bon shopping</p>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
                   });
               })

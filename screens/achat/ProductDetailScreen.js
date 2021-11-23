@@ -18,6 +18,8 @@ import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
+import axios from "axios";
+import * as userActions from "../../store/actions/users";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -29,6 +31,12 @@ const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(userActions.getUser());
+  }, [dispatch]);
+  const userData = useSelector((state) => state.user.userData);
+  console.log('user', userData);
+  console.log('product', product);
   //-------------CAROUSEL----------------//
 
   let testData = [];
@@ -67,7 +75,37 @@ const ProductDetailScreen = (props) => {
 
   //-----------------DELETE ANNONCE---------------//
 
-  const deleteAnnonce = (id, categorie) => {
+  const deleteAnnonce = async (id, categorie) => {
+    await axios.post("https://kval-backend.herokuapp.com/send", {
+      mail: product.emailVendeur,
+      subject: "Confirmation de suppression",
+      html_output: `
+<div>
+    <p>${userData.pseudo}, <br></p> 
+    <p>Votre article vient d'être supprimé.</p>
+    <p>Résumé de votre article : </p>
+    <hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${product.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${product.title}</p>
+            <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
+            <p style="margin: 0">Poids: ${product.poids} kgs</p>
+            <p style="margin: 0">Catégrorie: ${product.categorie}</p>
+        </div>
+    </div>
+    
+    <hr>
+    
+    <p>Nous vous remercions pour votre confiance et espérons vous revoir bientôt.</p>
+    <br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+    });
     firebase
       .firestore()
       .collection("allProducts")
@@ -221,6 +259,9 @@ const ProductDetailScreen = (props) => {
             pseudoVendeur: product.pseudoVendeur,
             idVendeur: product.idVendeur,
             idAcheteur: firebase.auth().currentUser.uid,
+            emailAcheteur: userData.email,
+            emailVendeur: product.emailVendeur,
+            pseudoAcheteur: userData.pseudo,
             id: `${product.idVendeur}` + `${firebase.auth().currentUser.uid}`,
             reverse_id:
               `${firebase.auth().currentUser.uid}` + `${product.idVendeur}`,

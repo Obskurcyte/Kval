@@ -147,9 +147,11 @@ const CartScreen = (props) => {
                 emailVendeur: cartItem.emailVendeur,
                 categorie: cartItem.categorie,
                 livraison: cartItem.livraison,
+                  poids: cartItem.poids,
                 prixProtectionAcheteur: totalProtectionAcheteur,
                 productTitle: cartItem.productTitle,
                 total: sousTotal,
+                  moyenPaiement: 'CB'
               });
             await firebase
               .firestore()
@@ -409,6 +411,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     <p>Félicitations, ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
     <p>Récapitulatif de l'achat : </p>
+    
     <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">
@@ -443,6 +446,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p>Résumé de votre article : </p>
 
 <hr>
+
 
 <div style="display: flex">
     <div style="margin-right: 30px">

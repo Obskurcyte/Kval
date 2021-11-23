@@ -6,6 +6,7 @@ import firebase from "firebase";
 import {useDispatch} from "react-redux";
 import * as userActions from '../../store/actions/users';
 import * as messageAction from "../../store/actions/messages";
+import axios from "axios";
 
 const ChatScreen = (props) => {
 
@@ -28,10 +29,16 @@ const ChatScreen = (props) => {
         return unsubscribe
     }, [props.navigation, dispatch])
 
+    let email = '';
+    let pseudo = '';
   if (userId === thread.idAcheteur) {
       docId = thread.idVendeur
+      email = thread.emailVendeur
+      pseudo = thread.pseudoVendeur
   } else {
       docId = thread.idAcheteur
+      email = thread.emailAcheteur
+      pseudo = thread.pseudoAcheteur
   }
     console.log('dicId', docId)
 
@@ -184,6 +191,23 @@ const ChatScreen = (props) => {
         },
         { merge: true }
       )
+
+      await axios.post("https://kval-backend.herokuapp.com/send", {
+          mail: email,
+          subject: "Confirmation de message",
+          html_output: `
+<div>
+    <p>${pseudo}, <br></p> 
+    <p>Un message vient déposé a votre attention, vous pouvez le retrouver dans l’application et y répondre.</p>
+    <p>Détails du message : </p>
+ 
+    
+    <p>${text}</p>
+   
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+      });
   }
 
   function renderSend(props) {

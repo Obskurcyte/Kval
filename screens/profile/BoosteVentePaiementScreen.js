@@ -100,13 +100,13 @@ const BoosteVentePaiementScreen = (props) => {
 
 <div style="display: flex">
     <div style="margin-right: 30px">
-        <img src="${articles[data].downloadURL}" alt="" style="width: 200px; height: 200px"/>
+        <img src="${articles[data].downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
 
-    <div>
-        <p>${articles[data].title}</p>
-        <p>Catégorie : ${articles[data].categorie}</p>
-        <p>Prix net vendeur: ${articles[data].prix} €</p>
+    <div style="margin-top: 20px">
+        <p style="margin: 0">${articles[data].title}</p>
+        <p style="margin: 0">Catégorie : ${articles[data].categorie}</p>
+        <p style="margin: 0">Prix net vendeur: ${articles[data].prix} €</p>
     </div>
 </div>
 
@@ -114,8 +114,8 @@ const BoosteVentePaiementScreen = (props) => {
 
 <p>Vous pouvez retrouver cet article dans la page d’accueil dans la catégorie : Annonces en avant première</p>
 <br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 
 </div>`
             })

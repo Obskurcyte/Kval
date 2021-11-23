@@ -16,6 +16,7 @@ import {Formik} from 'formik';
 import EvalueItem from "../../components/EvalueItem";
 import firebase from "firebase";
 import axios from "axios";
+import {useSelector} from "react-redux";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -27,6 +28,8 @@ const EvaluationScreen = (props) => {
         setRating(rating)
     }
 
+    const currentUser = useSelector((state) => state.user.userData);
+    console.log('user', currentUser)
     const product = props.route.params.product;
     console.log('product', product)
     return (
@@ -68,22 +71,63 @@ const EvaluationScreen = (props) => {
                                     mail: product.emailVendeur,
                                     subject: "Confirmation de réception",
                                     html_output: `<div><p>Bonjour, ${product.pseudoVendeur}, <br></p> 
-<p>Nous vous confirmons que l'article ${product.title} a bien été reçu et conforme.</p>
-<p>Récapitulatif de la vente : </p>
-<img src="${product.image}" alt="" style="width: 300px; height: 300px"/>
-<p>Titre : ${product.productTitle}</p>
-<p>Catégorie : ${product.categorie}</p>
-<p>Prix protection acheteur : ${product.prixProtectionAcheteur} €</p>
-<p>Prix : ${product.prix} €</p>
-<p>Livraison: ${product.livraison}</p>
-<p>Total: ${product.total} €</p>
+<p>Votre article vient d’être reçu par ${currentUser.email} et conforme à sa description.</p>
+<p>Résumé de votre article : </p>
+
+<hr>
+
+<div style="display: flex">
+    <div style="margin-right: 30px">
+        <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+    </div>
+    <div style="margin-top: 20px">
+        <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
+        <p style="margin: 0">Poids: ${product.poids} kgs</p>
+        <p style="margin: 0">Catégorie: ${product.categorie}</p>
+    </div>
 </div>
-<p>N'hésitez pas à revenir sur l'application pour effectuer de nouvelles ventes ! </p>
+
+<hr>
+
+<p>Votre portefeuille sera crédité de la valeur de votre article d’ici 48h,</p>
+<p>Nous vous remercions pour votre confiance,</p>
 <br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
+<p style="color: red">L'équipe KVal Occaz</p>
 <img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
                                 });
+                                await axios.post("https://kval-backend.herokuapp.com/send", {
+                                    mail: currentUser.email,
+                                    subject: "Confirmation de réception",
+                                    html_output: `<div><p>${currentUser.pseudo}, <br></p> 
+<p>Vous venez de déclarer votre article comme étant reçu et conforme à sa description.</p>
+<p>Résumé de votre article : </p>
+<hr>
+
+<div style="display: flex">
+    <div style="margin-right: 30px">
+        <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+    </div>
+    <div style="margin-top: 20px">
+        <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Prix de l'article: ${product.prix} €</p>
+         <p style="margin: 0">Protection acheteur: ${product.prixProtectionAcheteur} €</p>
+        <p style="margin: 0">Poids: ${product.poids} kgs</p>
+        <p style="margin: 0">Livraison: ${product.livraison}</p>
+        <p style="font-weight: bold; margin: 0">Total: ${product.total} € payé par ${product.moyenPaiement}</p>
+    </div>
+</div>
+
+<hr>
+
+<p>Le vendeur sera crédité de la valeur de l’article d’ici 48h,</p>
+<p>Nous vous remercions pour votre confiance,</p>
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                                });
+
                                 props.navigation.navigate('ValidationEvaluationScreen')
                             }}
                         >

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
@@ -19,10 +19,23 @@ const ModifierEmailScreen = (props) => {
 
     useEffect(() => {
         dispatch(userActions.getUser())
+        firebase.firestore()
+            .collection('allProducts')
+            .where("emailVendeur", "==", userData.email)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    setProductByEmail(oldState => [...oldState, {id : doc.id, data: doc.data()}])
+                });
+            })
+            .catch((error) => {
+                console.log("Error getting documents: ", error);
+            });
     }, [dispatch]);
 
     const userData = useSelector(state => state.user.userData);
-    console.log(userData)
+
+    const [productByEmail, setProductByEmail] = useState([]);
 
   return (
    <View style={styles.container}>
@@ -33,6 +46,24 @@ const ModifierEmailScreen = (props) => {
         initialValues={initialValues}
         onSubmit={async (values) => {
             console.log(values)
+
+
+            for (let product of productByEmail) {
+                console.log(product)
+                await firebase.firestore()
+                    .collection('allProducts')
+                    .doc(product.id)
+                    .update({
+                        emailVendeur: values.initial
+                    })
+                await firebase.firestore()
+                    .collection(`${product.data.categorie}`)
+                    .doc(product.id)
+                    .update({
+                        emailVendeur: values.initial
+                    })
+            }
+
             await firebase.firestore().collection('users')
                 .doc(firebase.auth().currentUser.uid)
                 .update({
