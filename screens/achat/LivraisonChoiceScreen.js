@@ -19,6 +19,7 @@ const LivraisonChoiceScreen = (props) => {
       livraison: "MondialRelay",
       cartItems: cartItems,
       adresse: data,
+      index: index,
     });
   };
 

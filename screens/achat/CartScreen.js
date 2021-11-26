@@ -39,11 +39,14 @@ const CartScreen = (props) => {
 
   if (props.route.params) {
     livraison = props.route.params.livraison;
-    adresse = props.route.params.adresse;
     cartItems2 = props.route.params.cartItems;
+    if (props.route.params.index != undefined) {
+      cartItems2[props.route.params.index].adresse = props.route.params.adresse;
+      console.log(cartItems2);
+    }
   }
 
-  console.log('adresse', adresse);
+  console.log("adresse", adresse);
   let cartItems = useSelector((state) => {
     const transformedCartItems = [];
     for (const key in state.cart.items) {
@@ -101,7 +104,7 @@ const CartScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState("");
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
-  const sousTotal = (total * 1.095).toFixed(2);
+  let sousTotal = (total * 1.095).toFixed(2);
   let reductionPortefeuille;
 
   if (userData?.portefeuille <= sousTotal) {
@@ -147,11 +150,11 @@ const CartScreen = (props) => {
                 emailVendeur: cartItem.emailVendeur,
                 categorie: cartItem.categorie,
                 livraison: cartItem.livraison,
-                  poids: cartItem.poids,
+                poids: cartItem.poids,
                 prixProtectionAcheteur: totalProtectionAcheteur,
                 productTitle: cartItem.productTitle,
                 total: sousTotal,
-                  moyenPaiement: 'CB'
+                moyenPaiement: "CB",
               });
             await firebase
               .firestore()
@@ -239,7 +242,7 @@ const CartScreen = (props) => {
                     });
                 }
               });
-           /* let etiquette_url = "";
+            let etiquette_url = "";
             if ((livraison = "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -260,7 +263,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <OrderNo></OrderNo>
             <CustomerNo></CustomerNo>
             <ParcelCount>1</ParcelCount>
-            <DeliveryMode Mode="24R" Location="${adresse.ID}" />
+            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
             <CollectionMode Mode="REL" Location="" />
             <Parcels>
                 <Parcel>
@@ -297,8 +300,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                     <Streetname></Streetname>
                     <HouseNo></HouseNo>
                     <CountryCode>FR</CountryCode>
-                    <PostCode>${adresse.CP}</PostCode>
-                    <City>${adresse.Ville}</City>
+                    <PostCode>${cartItem.adresse.CP}</PostCode>
+                    <City>${cartItem.adresse.Ville}</City>
                     <AddressAdd1 />
                     <AddressAdd2 />
                     <AddressAdd3 />
@@ -321,23 +324,27 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                 data: data,
               };
 
-              etiquette_url = await axios(config)
-                .then(function (response) {
-                  return response
-                    .data.shipmentsListField[0].labelListField.labelField.outputField;
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
+              etiquette_url = await new Promise((resolve) =>
+                axios(config)
+                  .then(function (response) {
+                    console.log(JSON.stringify(response.data));
+                    resolve(
+                      response.data.shipmentsListField[0].labelListField
+                        .labelField.outputField
+                    );
+                  })
+                  .catch(function (error) {
+                    console.log("Mondial relay error :", error);
+                  })
+              );
             }
 
-            */
-              if (adresse) {
-                  console.log('yes')
-                  await axios.post("https://kval-backend.herokuapp.com/send", {
-                      mail: userData.email,
-                      subject: "Confirmation d'achat",
-                      html_output: `
+            if (cartItem.adresse) {
+              console.log("yes");
+              await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: userData.email,
+                subject: "Confirmation d'achat",
+                html_output: `
 <div>
     <p>Félicitations, ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
@@ -353,7 +360,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${adresse}</p>
+            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${cartItem.adresse}</p>
             <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
         </div>
     </div>
@@ -367,11 +374,13 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
-                  });
-                  await axios.post("https://kval-backend.herokuapp.com/send", {
-                      mail: cartItem.emailVendeur,
-                      subject: "Confirmation de vente",
-                      html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+              });
+              await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: cartItem.emailVendeur,
+                subject: "Confirmation de vente",
+                html_output: `<div><p>Félicitations, ${
+                  cartItem.pseudoVendeur
+                },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 <p>Résumé de votre article : </p>
 
@@ -379,13 +388,17 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 
 <div style="display: flex">
     <div style="margin-right: 30px">
-        <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        <img src="${
+          cartItem.image
+        }" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${cartItem.productTitle}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-        <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${adresse}</p>
+        <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${
+          cartItem.adresse
+        }</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
         <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
     </div>
@@ -397,16 +410,21 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
+${
+  livraison === "MondialRelay"
+    ? `<a href="${etiquette_url}">ETIQUETTE MONDIAL RELAY A UTILISER POUR L'EXPEDITION</p>`
+    : ``
+}
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                  });
-              } else {
-                  console.log('wola')
-                  await axios.post("https://kval-backend.herokuapp.com/send", {
-                      mail: userData.email,
-                      subject: "Confirmation d'achat",
-                      html_output: `
+              });
+            } else {
+              console.log("wola");
+              await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: userData.email,
+                subject: "Confirmation d'achat",
+                html_output: `
 <div>
     <p>Félicitations, ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
@@ -437,11 +455,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
-                  });
-                  await axios.post("https://kval-backend.herokuapp.com/send", {
-                      mail: cartItem.emailVendeur,
-                      subject: "Confirmation de vente",
-                      html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+              });
+              await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: cartItem.emailVendeur,
+                subject: "Confirmation de vente",
+                html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 <p>Résumé de votre article : </p>
 
@@ -470,9 +488,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                  });
-              }
-
+              });
+            }
           }
         }
         setPaymentStatus(
@@ -617,10 +634,16 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
   const [goConfirmation, setGoConfirmation] = useState(false);
 
   let totalProtectionAcheteur = 0;
+  let totalLivraison = 0;
   for (let item of cartItems) {
     totalProtectionAcheteur += parseFloat(item.productPrice * 0.095);
+    if (item.livraison === "MondialRelay") {
+      totalLivraison += Number(get_mondial_relay_price(item.poids));
+    }
   }
   totalProtectionAcheteur = totalProtectionAcheteur.toFixed(2);
+  totalLivraison = totalLivraison.toFixed(2);
+  sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
 
   const paymentUI = (props) => {
     if (portefeuillePayment) {
@@ -638,7 +661,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                 price +
                 protectionAcheteur +
                 (item.livraison === "MondialRelay" &&
-                  get_mondial_relay_price(item.poids))
+                  Number(get_mondial_relay_price(item.poids)))
               ).toFixed(2);
 
               return (
@@ -703,7 +726,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                       <View style={styles.adresseText}>
                         <Text
                           style={
-                            !enteredAdresse || !adresse
+                            !enteredAdresse || !item.adresse
                               ? styles.modeErrors
                               : styles.noError
                           }
@@ -714,19 +737,13 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 
                       <View style={styles.adresseContainer}>
                         <Text style={styles.adresseInner}>
-                          {adresse ? (
-                            `Point Relais : n°${adresse.ID} \n${adresse.Nom}\n${adresse.Adresse1}\n${adresse.CP} \n ${adresse.Ville}`
+                          {item.adresse ? (
+                            `Point Relais : n°${item.adresse.ID} \n${item.adresse.Nom}\n${item.adresse.Adresse1}\n${item.adresse.CP} \n ${item.adresse.Ville}`
                           ) : (
                             <Text />
                           )}
 
-                          {enteredAdresse && !adresse ? (
-                            `${userData?.adresse} \n${userData?.postalCode}\n${userData?.ville}\n${userData?.pays} `
-                          ) : (
-                            <Text />
-                          )}
-
-                          {adresse || enteredAdresse ? (
+                          {item.adresse || enteredAdresse ? (
                             <TouchableOpacity
                               onPress={() =>
                                 props.navigation.navigate("AdresseChoiceScreen")
@@ -834,7 +851,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 
             <View style={styles.itemForm3}>
               <Text style={{ fontSize: 18 }}>Total livraison</Text>
-              <Text style={{ fontSize: 18 }}>{totalProtectionAcheteur} €</Text>
+              <Text style={{ fontSize: 18 }}>{totalLivraison} €</Text>
             </View>
 
             <View style={styles.itemForm3}>
@@ -1148,11 +1165,17 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
       } else {
         return (
           <View style={{ flex: 1, padding: 10 }}>
+            <Text style={{ textAlign: "center", fontSize: 18 }}>
+              Montant à régler : {sousTotal}€
+            </Text>
             <PaymentView
               onCheckStatus={onCheckStatus}
               product={"Paiement unique"}
-              amount={total}
+              amount={sousTotal}
             />
+            <Text style={{ textAlign: "center", fontSize: 18 }}>
+              Payment Powered by Stripe
+            </Text>
             <TouchableOpacity
               style={styles.mettreEnVenteOptional}
               onPress={() => {
