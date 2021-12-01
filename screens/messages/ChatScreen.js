@@ -198,10 +198,9 @@ const ChatScreen = (props) => {
           html_output: `
 <div>
     <p>${pseudo}, <br></p> 
-    <p>Un message vient déposé a votre attention, vous pouvez le retrouver dans l’application et y répondre.</p>
+    <p>Un message vient d'être déposé a votre attention, vous pouvez le retrouver dans l’application et y répondre.</p>
     <p>Détails du message : </p>
  
-    
     <p>${text}</p>
    
     <p style="margin: 0">L'équipe KVal Occaz</p>

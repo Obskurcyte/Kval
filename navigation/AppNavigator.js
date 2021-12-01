@@ -1734,13 +1734,7 @@ export const AchatNavigator = (props) => {
       />
       <AchatStackNavigator.Screen
         name="ProductDetailScreen"
-        children={(props) => (
-          <ProductDetailScreen
-            {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        )}
+        component={ProductDetailScreen}
         options={{
           headerRightContainerStyle: {
             paddingRight: 10,
@@ -1887,6 +1881,21 @@ export const MessageNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <MessageStackNavigator.Screen
+            name="ArticlesEnVenteScreen"
+            component={ArticlesEnVenteScreen}
+            options={{
+                headerRightContainerStyle: {
+                    paddingRight: 10,
+                },
+                headerLeftContainerStyle: {
+                    paddingLeft: 10,
+                },
+                headerBackTitle: "Retour",
+                headerTitle: "Articles en Vente",
+                headerTitleAlign: "center",
+            }}
+        />
     </MessageStackNavigator.Navigator>
   );
 };

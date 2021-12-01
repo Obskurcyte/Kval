@@ -46,18 +46,24 @@ const EnterIbanScreen = (props) => {
         validationSchema={IBANSchema}
         onSubmit={async (values) => {
           console.log(values);
-          await axios.post("https://kval-backend.herokuapp.com/send", {
-            mail: userData.email,
-            subject: "Confirmation de boost d'articles",
-            html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} a bien été prise en compte</p>
-<p>L'argent sera disponible sur votre compte bancaire sous 48h</p>
+          await axios.post(
+              "https://kval-backend.herokuapp.com/send",
+              {
+                mail: userData.email,
+                subject: "Confirmation de virement",
+                html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} a bien été prise en compte.</p>
+<p>Les fonds seront disponibles d’ici 72h00 sur le compte bancaire suivant :
+</p>
+        <div style="margin-top: 20px">
+            <p style="margin: 0">IBAN : ${values.IBAN}</p>
+            <p style="margin: 0">BIC: ${values.BIC} €</p>
+        </div>
 <br>
-<p style="color: red">L'équipe KVal Occaz vous remercie de votre confiance</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
-          });
+              });
           await axios.post("https://kval-backend.herokuapp.com/send", {
             mail: 'info@k-val.com',
             subject: "Demande de transfert d'argent",
@@ -73,6 +79,7 @@ const EnterIbanScreen = (props) => {
             .doc(firebase.auth().currentUser.uid)
             .update({
               IBAN: values.IBAN,
+              portefeuille: 0
             })
             .then(() => props.navigation.navigate("ValidationIBANScreen"));
         }}

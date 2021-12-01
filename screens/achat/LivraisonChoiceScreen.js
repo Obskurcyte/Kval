@@ -71,6 +71,20 @@ const LivraisonChoiceScreen = (props) => {
         <Text style={styles.text}>Remise en main propre</Text>
       </TouchableOpacity>
 
+        <TouchableOpacity
+            style={styles.itemForm3}
+            onPress={async () => {
+                // await updateLivraison("Remise en main propre");
+                cartItems[index].livraison = "Livraison par un transporteur de mon choix";
+                props.navigation.navigate("CartScreen", {
+                    adresse: null,
+                    cartItems: cartItems,
+                });
+            }}
+        >
+            <Text style={styles.text}>Livraison par un transporteur de mon choix</Text>
+        </TouchableOpacity>
+
       <TouchableOpacity
         style={styles.itemForm3}
         onPress={async () => {

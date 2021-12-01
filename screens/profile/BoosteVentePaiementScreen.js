@@ -32,7 +32,6 @@ const BoosteVentePaiementScreen = (props) => {
   }
   const currentUser = useSelector((state) => state.user.userData);
 
-  console.log('articles', articles)
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
 
@@ -48,22 +47,14 @@ const BoosteVentePaiementScreen = (props) => {
   const [price, setPrice] = useState(0)
   const [paymentStatus, setPaymentStatus] = useState('')
 
-  let dureeBoost = 0;
-  if (checked1) {
-    dureeBoost = 3
-  }
-  if (checked2) {
-    dureeBoost = 7
-  }
+  const [dureeBoost, setDureeBoost] = useState(0);
 
-  console.log((price*100).toFixed(0))
-  console.log('wola', articles)
+  console.log('duree', dureeBoost)
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus('Votre paiement est en cours de traitement')
     setResponse(paymentResponse)
 
     let jsonResponse = JSON.parse(paymentResponse);
-    console.log('paymentresponse', paymentResponse)
     // perform operation to check payment status
 
     try {
@@ -74,8 +65,6 @@ const BoosteVentePaiementScreen = (props) => {
         amount: (price*100).toFixed(0)
       })
 
-      console.log('TSRIPE RESPONSE', stripeResponse)
-
       if (stripeResponse) {
         const {paid} = stripeResponse.data;
         if (paid === true) {
@@ -85,6 +74,7 @@ const BoosteVentePaiementScreen = (props) => {
               etat: articles[data].etat,
               prix: articles[data].prix,
               title: articles[data].title,
+              poids: articles[data].poids,
               image: articles[data].downloadURL,
               categorie: articles[data].categorie,
               pseudoVendeur: articles[data].pseudoVendeur,
@@ -139,7 +129,7 @@ const BoosteVentePaiementScreen = (props) => {
 
 
   const cartTotalAmount = useSelector(state => state.cart.items)
-  console.log(cartTotalAmount)
+
 
   const paymentUI = props => {
     console.log(makePayment)
@@ -153,7 +143,6 @@ const BoosteVentePaiementScreen = (props) => {
               data={articles}
               keyExtractor={item => item.id}
               renderItem={itemData => {
-                console.log('wola', articles)
                 return (
                   <View style={styles.cardContainer}>
                     <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
@@ -181,8 +170,9 @@ const BoosteVentePaiementScreen = (props) => {
               <Text>1,15 €</Text>
               <RoundedCheckbox onPress={(checked1) => {
                 setChecked1(!checked1)
-                setChecked2(false)
+                setChecked2(!checked2)
                 setPrice(1.15)
+                setDureeBoost(3)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>
@@ -192,8 +182,9 @@ const BoosteVentePaiementScreen = (props) => {
               <Text>1,95 €</Text>
               <RoundedCheckbox onPress={(checked2) => {
                 setChecked2(!checked2)
-                setChecked1(false)
+                setChecked1(!checked1)
                 setPrice(1.95)
+                setDureeBoost(7)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>
@@ -210,8 +201,6 @@ const BoosteVentePaiementScreen = (props) => {
     } else {
 
       if (response !== undefined) {
-        console.log('paimentstatus', paymentStatus)
-        console.log(response)
         return <View style={{
           display: 'flex',
           flexDirection: 'column',
@@ -238,7 +227,6 @@ const BoosteVentePaiementScreen = (props) => {
         </View>
 
       } else {
-        console.log('wola')
         return (
           <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
         )

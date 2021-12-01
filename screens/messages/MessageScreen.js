@@ -203,9 +203,7 @@ const MessageScreen = (props) => {
                                       .catch((error) => {
                                         console.log("Error getting document:", error);
                                       });
-                                  props.navigation.navigate('Profil', {
-                                    screen: 'ArticlesEnVenteScreen'
-                                  })
+                                  props.navigation.navigate('ArticlesEnVenteScreen')
                                 }}
                             />
                         );

@@ -99,6 +99,7 @@ const CartScreen = (props) => {
     amount: 1,
   };
 
+
   const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -115,6 +116,7 @@ const CartScreen = (props) => {
 
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
 
+  console.log('cart', cartItems)
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -243,7 +245,7 @@ const CartScreen = (props) => {
                 }
               });
             let etiquette_url = "";
-            if ((livraison = "MondialRelay")) {
+            if ((livraison == "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Request">
