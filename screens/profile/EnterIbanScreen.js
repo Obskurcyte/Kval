@@ -98,7 +98,7 @@ const EnterIbanScreen = (props) => {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <Text style={styles.modalText}>
-                    Vous êtes sur le point de faire un virement bancaire pour ${userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
+                    Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
                   </Text>
                   <TouchableOpacity
                       style={styles.mettreEnVentePopup}

@@ -115,7 +115,7 @@ const AccueilScreen = (props) => {
               pseudo={itemData.item.pseudoVendeur}
               onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                   productId: itemData.item.id,
-                  product: productsBoosted[itemData.index]
+                  product: productsUne[itemData.index]
                 }
               })
               }
@@ -132,7 +132,6 @@ const AccueilScreen = (props) => {
           horizontal={true}
           renderItem={itemData => {
             console.log('normal', itemData)
-
             return (
                 <BoostedProductCard
                     title={itemData.item.title}
@@ -148,7 +147,6 @@ const AccueilScreen = (props) => {
                 />
             )
           }}
-
       />
 
       <Text style={styles.attendent}>Rechercher dans les catégories</Text>
