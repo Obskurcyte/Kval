@@ -77,7 +77,7 @@ const FirstCartScreen = (props) => {
                         }}
                     />
                     <Text style={styles.subTotal}>Total articles : {total} €</Text>
-                    <Text style={styles.subTotal}>Prix protection acheteur : {(total * 0.095).toFixed(2)} € </Text>
+                    <Text style={styles.subTotal}>Prix protection acheteur : {(total * 0.05).toFixed(2)} € </Text>
                     <TouchableOpacity
                         style={styles.mettreEnVente}
                         onPress={() => props.navigation.navigate('CartScreen')}

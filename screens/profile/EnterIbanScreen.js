@@ -1,11 +1,11 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Dimensions,
+  Dimensions, Modal, ScrollView,
 } from "react-native";
 import { Formik } from "formik";
 import firebase from "firebase";
@@ -19,6 +19,7 @@ const windowHeight = Dimensions.get("window").height;
 const EnterIbanScreen = (props) => {
   const dispatch = useDispatch();
 
+  let bigProps = props
   useEffect(() => {
     dispatch(userActions.getUser());
   }, [dispatch]);
@@ -37,6 +38,47 @@ const EnterIbanScreen = (props) => {
   };
 
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [BIC, setBIC] = useState("");
+  const [IBAN, setIBAN] = useState("");
+
+  const askMoney = async (BIC, IBAN) => {
+    await axios.post(
+        "https://kval-backend.herokuapp.com/send",
+        {
+          mail: userData.email,
+          subject: "Confirmation de virement",
+          html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} euros a bien été prise en compte.</p>
+<p>Les fonds seront disponibles d’ici 72h00 sur le compte bancaire suivant :
+</p>
+        <div style="margin-top: 20px">
+            <p style="margin: 0">IBAN : ${IBAN}</p>
+            <p style="margin: 0">BIC: ${BIC} €</p>
+        </div>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`
+        });
+    await axios.post("https://kval-backend.herokuapp.com/send", {
+      mail: 'info@k-val.com',
+      subject: "Demande de transfert d'argent",
+      html_output: `<div><p>Bonjour, <br></p> 
+<p>Une nouvelle de demande de transfert d'argent : </p>
+<p>BIC : ${BIC}</p>
+<p>IBAN : ${IBAN}</p>
+</div>`
+    });
+    await firebase
+        .firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .update({
+          IBAN: IBAN,
+          portefeuille: 0
+        })
+  }
 
   return (
     <View style={styles.container}>
@@ -44,48 +86,43 @@ const EnterIbanScreen = (props) => {
       <Formik
         initialValues={initialValues}
         validationSchema={IBANSchema}
-        onSubmit={async (values) => {
-          console.log(values);
-          await axios.post(
-              "https://kval-backend.herokuapp.com/send",
-              {
-                mail: userData.email,
-                subject: "Confirmation de virement",
-                html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} a bien été prise en compte.</p>
-<p>Les fonds seront disponibles d’ici 72h00 sur le compte bancaire suivant :
-</p>
-        <div style="margin-top: 20px">
-            <p style="margin: 0">IBAN : ${values.IBAN}</p>
-            <p style="margin: 0">BIC: ${values.BIC} €</p>
-        </div>
-<br>
-    <p style="margin: 0">L'équipe KVal Occaz</p>
-    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`
-              });
-          await axios.post("https://kval-backend.herokuapp.com/send", {
-            mail: 'info@k-val.com',
-            subject: "Demande de transfert d'argent",
-            html_output: `<div><p>Bonjour, <br></p> 
-<p>Une nouvelle de demande de transfert d'argent : </p>
-<p>BIC : ${values.BIC}</p>
-<p>IBAN : ${values.IBAN}</p>
-</div>`
-          });
-          await firebase
-            .firestore()
-            .collection("users")
-            .doc(firebase.auth().currentUser.uid)
-            .update({
-              IBAN: values.IBAN,
-              portefeuille: 0
-            })
-            .then(() => props.navigation.navigate("ValidationIBANScreen"));
+        onSubmit={(values) => {
+          setBIC(values.BIC)
+          setIBAN(values.IBAN)
+          setModalVisible(true)
         }}
       >
         {(props) => (
           <View>
+            <Modal transparent={true} visible={modalVisible}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Vous êtes sur le point de faire un virement bancaire pour ${userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
+                  </Text>
+                  <TouchableOpacity
+                      style={styles.mettreEnVentePopup}
+                      onPress={async () => {
+                        await askMoney(BIC, IBAN)
+                        setModalVisible(false);
+                        bigProps.navigation.navigate("ValidationIBANScreen");
+                      }}
+                  >
+                    <Text style={styles.mettreEnVenteText}>
+                      Oui
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      style={styles.reset}
+                      onPress={() => {
+                        setModalVisible(false);
+                      }}
+                  >
+                    <Text style={styles.resetText}>Annuler</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
             <TextInput
               placeholder="IBAN"
               style={styles.input}
@@ -132,6 +169,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
   },
+  modalText: {
+    textAlign: 'center',
+    marginBottom: 10
+  },
   container: {
     paddingHorizontal: "6%",
     paddingVertical: "7%",
@@ -150,6 +191,57 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: "3%",
     marginBottom: "5%",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  mettreEnVentePopup: {
+    backgroundColor: "#D51317",
+    marginTop: "5%",
+    width: windowWidth / 1.5,
+    paddingVertical: "5%",
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    width: windowWidth / 1.5,
+    borderColor: "#D51317",
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
 });
 

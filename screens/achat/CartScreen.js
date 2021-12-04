@@ -316,7 +316,6 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     </ShipmentsList>
 </ShipmentCreationRequest>
                                                 `;
-
               var config = {
                 method: "post",
                 url: "https://connect-api.mondialrelay.com/api/shipment",
@@ -638,7 +637,7 @@ ${
   let totalProtectionAcheteur = 0;
   let totalLivraison = 0;
   for (let item of cartItems) {
-    totalProtectionAcheteur += parseFloat(item.productPrice * 0.095);
+    totalProtectionAcheteur += parseFloat(item.productPrice * 0.05);
     if (item.livraison === "MondialRelay") {
       totalLivraison += Number(get_mondial_relay_price(item.poids));
     }
@@ -781,7 +780,7 @@ ${
                   <View style={styles.itemForm3}>
                     <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
                     <Text style={{ fontSize: 18 }}>
-                      {(item.productPrice * 0.095).toFixed(2)} €
+                      {(item.productPrice * 0.05).toFixed(2)} €
                     </Text>
                   </View>
 

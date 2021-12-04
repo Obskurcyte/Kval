@@ -1881,6 +1881,7 @@ export const MessageNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+
         <MessageStackNavigator.Screen
             name="ArticlesEnVenteScreen"
             component={ArticlesEnVenteScreen}
