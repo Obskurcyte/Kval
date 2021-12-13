@@ -68,7 +68,6 @@ const VendreArticleScreen = (props) => {
     poids: "",
   };
 
-
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
   const [marques, setMarques] = useState(null);
@@ -190,11 +189,10 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate("EtatChoiceScreen");
   };
 
-
   const [error, setError] = useState("");
   const [errors, setErrors] = useState(false);
   const date = new Date();
-  const [imageEmail, setImageMail] = useState('');
+  const [imageEmail, setImageMail] = useState("");
 
   return (
     <View style={{ flex: 1 }}>
@@ -220,7 +218,6 @@ const VendreArticleScreen = (props) => {
                     setErrors(true);
                   }
 
-
                   if (!errors) {
                     let pushToken;
                     let statusObj = await Notifications.getPermissionsAsync();
@@ -243,7 +240,7 @@ const VendreArticleScreen = (props) => {
                         console.log("1");
                         await firebase
                           .firestore()
-                          .collection(`${categorie}`)
+                          .collection("products")
                           .doc(`${id}`)
                           .set({
                             categorie,
@@ -352,10 +349,10 @@ const VendreArticleScreen = (props) => {
                           const property_name =
                             index === 0 ? "downloadURL" : `downloadURL${index}`;
                           data[property_name] = downloadURL;
-                          setImageMail(downloadURL)
+                          setImageMail(downloadURL);
                           firebase
                             .firestore()
-                            .collection(`${categorie}`)
+                            .collection("products")
                             .doc(`${id}`)
                             .update(data);
                           firebase
@@ -417,15 +414,15 @@ const VendreArticleScreen = (props) => {
 <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`
-                      });
+</div>`,
+                        }
+                      );
                       props.navigation.navigate("ValidationScreen", {
                         props: props,
                         modify: false,
                       });
                     }
                   }
-
                 }}
               >
                 {(props) => (
@@ -678,7 +675,6 @@ const VendreArticleScreen = (props) => {
                         Réinitialiser le formulaire
                       </Text>
                     </TouchableOpacity>
-
                   </View>
                 )}
               </Formik>
@@ -712,10 +708,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   noErrors: {
-    color: 'black'
+    color: "black",
   },
   errors: {
-    color: 'red'
+    color: "red",
   },
   photoBigContainer: {
     display: "flex",

@@ -50,15 +50,14 @@ const ModifierAnnonceScreen = (props) => {
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
   const [marques, setMarques] = useState(null);
-  const [titre, setTitre] = useState('');
-  const [description, setDescription] = useState('');
-  const [prix, setPrix] = useState('');
-  const [poids, setPoids] = useState('');
+  const [titre, setTitre] = useState("");
+  const [description, setDescription] = useState("");
+  const [prix, setPrix] = useState("");
+  const [poids, setPoids] = useState("");
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
-
 
   console.log(titre);
   useEffect(() => {
@@ -86,7 +85,6 @@ const ModifierAnnonceScreen = (props) => {
       setImagesTableau(images);
     }
   }, [props.route.params]);
-
 
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
@@ -127,7 +125,6 @@ const ModifierAnnonceScreen = (props) => {
     console.log(imagesTableau);
   };
 
-
   const takePicture = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -159,7 +156,7 @@ const ModifierAnnonceScreen = (props) => {
 
   const [error, setError] = useState("");
 
-  console.log('go', goMessagePayment)
+  console.log("go", goMessagePayment);
   const date = new Date();
 
   const onCheckStatus = async (paymentResponse) => {
@@ -181,20 +178,15 @@ const ModifierAnnonceScreen = (props) => {
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
-
           let pushToken;
-          let statusObj =
-              await Notifications.getPermissionsAsync();
+          let statusObj = await Notifications.getPermissionsAsync();
           if (statusObj.status !== "granted") {
-            statusObj =
-                await Notifications.requestPermissionsAsync();
+            statusObj = await Notifications.requestPermissionsAsync();
           }
           if (statusObj.status !== "granted") {
             pushToken = null;
           } else {
-            pushToken = (
-                await Notifications.getExpoPushTokenAsync()
-            ).data;
+            pushToken = (await Notifications.getExpoPushTokenAsync()).data;
           }
 
           const old_id = product_id;
@@ -206,24 +198,24 @@ const ModifierAnnonceScreen = (props) => {
             console.log("1");
             try {
               await firebase
-                  .firestore()
-                  .collection(`${old_categorie}`)
-                  .doc(`${old_id}`)
-                  .delete();
+                .firestore()
+                .collection("products")
+                .doc(`${old_id}`)
+                .delete();
 
               await firebase
-                  .firestore()
-                  .collection("posts")
-                  .doc(firebase.auth().currentUser.uid)
-                  .collection("userPosts")
-                  .doc(`${old_id}`)
-                  .delete();
+                .firestore()
+                .collection("posts")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("userPosts")
+                .doc(`${old_id}`)
+                .delete();
 
               await firebase
-                  .firestore()
-                  .collection("allProducts")
-                  .doc(`${old_id}`)
-                  .delete();
+                .firestore()
+                .collection("allProducts")
+                .doc(`${old_id}`)
+                .delete();
             } catch (err) {
               console.log(err);
             }
@@ -231,64 +223,64 @@ const ModifierAnnonceScreen = (props) => {
             console.log("2");
             try {
               await firebase
-                  .firestore()
-                  .collection(`${categorie}`)
-                  .doc(`${id}`)
-                  .set({
-                    categorie,
-                    etat,
-                    id,
-                    marques,
-                    date: date,
-                    title: titre,
-                    description: description,
-                    prix: price,
-                    poids: poids,
-                    pushToken,
-                    idVendeur: firebase.auth().currentUser.uid,
-                    pseudoVendeur: currentUser.pseudo,
-                  });
+                .firestore()
+                .collection("products")
+                .doc(`${id}`)
+                .set({
+                  categorie,
+                  etat,
+                  id,
+                  marques,
+                  date: date,
+                  title: titre,
+                  description: description,
+                  prix: price,
+                  poids: poids,
+                  pushToken,
+                  idVendeur: firebase.auth().currentUser.uid,
+                  pseudoVendeur: currentUser.pseudo,
+                });
             } catch (err) {
               console.log(err);
             }
 
             console.log("3");
             await firebase
-                .firestore()
-                .collection("posts")
-                .doc(firebase.auth().currentUser.uid)
-                .collection("userPosts")
-                .doc(`${id}`)
-                .set({
-                  pseudoVendeur: currentUser.pseudo,
-                  categorie,
-                  marques,
-                  etat,
-                  date: date,
-                  title: titre,
-                  idVendeur: firebase.auth().currentUser.uid,
-                  description: description,
-                  prix: prix,
-                  poids: poids,
-                });
+              .firestore()
+              .collection("posts")
+              .doc(firebase.auth().currentUser.uid)
+              .collection("userPosts")
+              .doc(`${id}`)
+              .set({
+                pseudoVendeur: currentUser.pseudo,
+                categorie,
+                marques,
+                etat,
+                date: date,
+                title: titre,
+                idVendeur: firebase.auth().currentUser.uid,
+                description: description,
+                prix: prix,
+                poids: poids,
+              });
 
             console.log("4");
             await firebase
-                .firestore()
-                .collection("allProducts")
-                .doc(`${id}`)
-                .set({
-                  pseudoVendeur: currentUser.pseudo,
-                  categorie,
-                  marques,
-                  etat,
-                  date: date,
-                  title: titre,
-                  idVendeur: firebase.auth().currentUser.uid,
-                  description: description,
-                  prix: prix,
-                  poids: poids,
-                });
+              .firestore()
+              .collection("allProducts")
+              .doc(`${id}`)
+              .set({
+                pseudoVendeur: currentUser.pseudo,
+                categorie,
+                marques,
+                etat,
+                date: date,
+                title: titre,
+                idVendeur: firebase.auth().currentUser.uid,
+                description: description,
+                prix: prix,
+                poids: poids,
+              });
 
             console.log("5");
             const uploadImage = async (index) => {
@@ -298,27 +290,21 @@ const ModifierAnnonceScreen = (props) => {
                 const blob = await response.blob();
 
                 const task = firebase
-                    .storage()
-                    .ref()
-                    .child(
-                        `${categorie}/${Math.random().toString(36)}`
-                    )
-                    .put(blob);
+                  .storage()
+                  .ref()
+                  .child(`${categorie}/${Math.random().toString(36)}`)
+                  .put(blob);
 
                 const taskProgress = (snapshot) => {
-                  console.log(
-                      `transferred: ${snapshot.bytesTransferred}`
-                  );
+                  console.log(`transferred: ${snapshot.bytesTransferred}`);
                 };
 
                 const taskCompleted = (snapshot) => {
-                  task.snapshot.ref
-                      .getDownloadURL()
-                      .then((snapshot) => {
-                        saveImageData(snapshot, index);
-                        console.log("snapshot", snapshot);
-                        resolve();
-                      });
+                  task.snapshot.ref.getDownloadURL().then((snapshot) => {
+                    saveImageData(snapshot, index);
+                    console.log("snapshot", snapshot);
+                    resolve();
+                  });
                 };
 
                 const taskError = (snapshot) => {
@@ -326,10 +312,10 @@ const ModifierAnnonceScreen = (props) => {
                 };
 
                 task.on(
-                    "state_changed",
-                    taskProgress,
-                    taskError,
-                    taskCompleted
+                  "state_changed",
+                  taskProgress,
+                  taskError,
+                  taskCompleted
                 );
               });
             };
@@ -337,41 +323,40 @@ const ModifierAnnonceScreen = (props) => {
             console.log("6");
             const saveImageData = (downloadURL, index) => {
               const property_name =
-                  index === 0
-                      ? "downloadURL"
-                      : `downloadURL${index}`;
+                index === 0 ? "downloadURL" : `downloadURL${index}`;
               const data = {};
               data[property_name] = downloadURL;
               setImageEmail(downloadURL);
               firebase
-                  .firestore()
-                  .collection(`${categorie}`)
-                  .doc(`${id}`)
-                  .update(data);
+                .firestore()
+                .collection("products")
+                .doc(`${id}`)
+                .update(data);
               firebase
-                  .firestore()
-                  .collection("posts")
-                  .doc(firebase.auth().currentUser.uid)
-                  .collection("userPosts")
-                  .doc(`${id}`)
-                  .update(data);
+                .firestore()
+                .collection("posts")
+                .doc(firebase.auth().currentUser.uid)
+                .collection("userPosts")
+                .doc(`${id}`)
+                .update(data);
               firebase
-                  .firestore()
-                  .collection("allProducts")
-                  .doc(`${id}`)
-                  .update(data);
+                .firestore()
+                .collection("allProducts")
+                .doc(`${id}`)
+                .update(data);
             };
 
             await Promise.all(
-                imagesTableau.map(async (image, index) => {
-                  console.log("test");
-                  await uploadImage(index);
-                })
+              imagesTableau.map(async (image, index) => {
+                console.log("test");
+                await uploadImage(index);
+              })
             );
-          setPaymentStatus(
-            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
-          );
-        }} else {
+            setPaymentStatus(
+              "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
+            );
+          }
+        } else {
           setPaymentStatus("Le paiement a échoué");
         }
       } else {
@@ -409,10 +394,10 @@ const ModifierAnnonceScreen = (props) => {
                     onSubmit={async (values) => {
                       if (price !== values.price) {
                         setGoMessagePayment(true);
-                        setTitre(values.title)
-                        setDescription(values.description)
-                        setPrix(values.price)
-                        setPoids(values.poids)
+                        setTitre(values.title);
+                        setDescription(values.description);
+                        setPrix(values.price);
+                        setPoids(values.poids);
                       } else {
                         setIsLoading(true);
 
@@ -466,7 +451,7 @@ const ModifierAnnonceScreen = (props) => {
                           try {
                             await firebase
                               .firestore()
-                              .collection(`${categorie}`)
+                              .collection("products")
                               .doc(`${id}`)
                               .set({
                                 categorie,
@@ -578,7 +563,7 @@ const ModifierAnnonceScreen = (props) => {
                             data[property_name] = downloadURL;
                             firebase
                               .firestore()
-                              .collection(`${categorie}`)
+                              .collection("products")
                               .doc(`${id}`)
                               .update(data);
                             firebase
@@ -606,11 +591,11 @@ const ModifierAnnonceScreen = (props) => {
                           setImage(null);
 
                           await axios.post(
-                              "https://kval-backend.herokuapp.com/send",
-                              {
-                                mail: currentUser.email,
-                                subject: "Confirmation de modification ",
-                                html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+                            "https://kval-backend.herokuapp.com/send",
+                            {
+                              mail: currentUser.email,
+                              subject: "Confirmation de modification ",
+                              html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
 <p>Votre article vient d'être mis en vente.</p>
 <p>Résumé de votre article : </p>
 <hr>
@@ -634,8 +619,9 @@ const ModifierAnnonceScreen = (props) => {
 <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`
-                              });
+</div>`,
+                            }
+                          );
                           props.navigation.navigate(
                             "ValidationAnnonceModifieeScreen"
                           );
@@ -651,7 +637,7 @@ const ModifierAnnonceScreen = (props) => {
                             value={props.values.title}
                             style={styles.input}
                             placeholder="Ex: Selle Randol's"
-                            onChangeText={props.handleChange('title')}
+                            onChangeText={props.handleChange("title")}
                           />
                         </View>
                         {props.errors.title && props.touched.title ? (
@@ -831,27 +817,28 @@ const ModifierAnnonceScreen = (props) => {
           </ScrollView>
         </View>
       );
-    } if (goMessagePayment) {
-      return (
-          <View style={styles.container}>
-            <Text style={styles.intermediateMessage}>Vous avez changé le prix de votre annonce. Vous devez en conséquence payer 2,5€.</Text>
-            <TouchableOpacity
-                style={styles.mettreEnVenteIntermediate}
-                onPress={() => {
-                  setGoMessagePayment(false)
-                  setMakePayment(true)
-                }}
-            >
-              <Text style={styles.mettreEnVenteText}>
-                Poursuivre vers le paiement
-              </Text>
-            </TouchableOpacity>
-          </View>
-      )
     }
-
-
-    else {
+    if (goMessagePayment) {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.intermediateMessage}>
+            Vous avez changé le prix de votre annonce. Vous devez en conséquence
+            payer 2,5€.
+          </Text>
+          <TouchableOpacity
+            style={styles.mettreEnVenteIntermediate}
+            onPress={() => {
+              setGoMessagePayment(false);
+              setMakePayment(true);
+            }}
+          >
+            <Text style={styles.mettreEnVenteText}>
+              Poursuivre vers le paiement
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
       if (response !== undefined) {
         console.log("paimentstatus", paymentStatus);
         return (
@@ -859,7 +846,7 @@ const ModifierAnnonceScreen = (props) => {
             {paymentStatus === "Votre paiement est en cours de traitement" ? (
               <View>
                 <Text style={styles.paymentStatus}>{paymentStatus}</Text>
-                <ActivityIndicator style={styles.indicator}/>
+                <ActivityIndicator style={styles.indicator} />
               </View>
             ) : (
               <Text></Text>
@@ -883,7 +870,12 @@ const ModifierAnnonceScreen = (props) => {
             {paymentStatus ===
             "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
               <View style={styles.container2}>
-                <AntDesign name="checkcircleo" size={200} color="white" style={styles.icon}/>
+                <AntDesign
+                  name="checkcircleo"
+                  size={200}
+                  color="white"
+                  style={styles.icon}
+                />
                 <Text style={styles.text3}>
                   Votre annonce a bien été modifiée
                 </Text>
@@ -936,16 +928,16 @@ const styles = StyleSheet.create({
   },
   container2: {
     backgroundColor: "#D51317",
-    height: '100%'
+    height: "100%",
   },
   icon: {
     marginLeft: "22%",
-    marginTop: 20
+    marginTop: 20,
   },
   indicator: {
     width: 30,
     marginLeft: "45%",
-    marginTop: "10%"
+    marginTop: "10%",
   },
   closeIcon: {
     position: "relative",
@@ -958,15 +950,15 @@ const styles = StyleSheet.create({
   },
   paymentStatus: {
     fontSize: 20,
-    textAlign: 'center',
-    maxWidth: '90%',
-    marginLeft: 10
+    textAlign: "center",
+    maxWidth: "90%",
+    marginLeft: 10,
   },
   text2: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 4
+    fontWeight: "bold",
+    marginTop: 4,
   },
   formContainer: {
     display: "flex",
@@ -1140,10 +1132,10 @@ const styles = StyleSheet.create({
   },
   intermediateMessage: {
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 50,
-    marginBottom: 70
-  }
+    marginBottom: 70,
+  },
 });
 
 export default ModifierAnnonceScreen;

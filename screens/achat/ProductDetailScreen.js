@@ -35,8 +35,8 @@ const ProductDetailScreen = (props) => {
     dispatch(userActions.getUser());
   }, [dispatch]);
   const userData = useSelector((state) => state.user.userData);
-  console.log('user', userData);
-  console.log('product', product);
+  console.log("user", userData);
+  console.log("product", product);
   //-------------CAROUSEL----------------//
 
   let testData = [];
@@ -114,7 +114,7 @@ const ProductDetailScreen = (props) => {
       .then(() => console.log("productDeleted"));
     firebase
       .firestore()
-      .collection(`${categorie}`)
+      .collection("products")
       .doc(`${id}`)
       .delete()
       .then(() => console.log("productDeleted"));

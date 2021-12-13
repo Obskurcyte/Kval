@@ -27,16 +27,22 @@ const ViewProductsScreen = (props) => {
   const isFocused = useIsFocused();
   console.log("focused", isFocused);
 
+  console.log("wola");
+  const categorie = props.route.params ? props.route.params.categorie : "";
+  const query = props.route.params ? props.route.params.query : "";
+
   useEffect(() => {
     dispatch(productsActions.fetchProducts(categorie));
   }, [isFocused]);
+
+  useEffect(() => {
+    dispatch(productsActions.fetchProductsByName(query));
+  }, [props.route.params.query]);
 
   const updateSearch = (search) => {
     setSearch(search);
   };
 
-  console.log("wola");
-  const categorie = props.route.params.categorie;
   console.log("categorie", categorie);
   const productArray = useSelector((state) => state.products.products);
   console.log(productArray);
