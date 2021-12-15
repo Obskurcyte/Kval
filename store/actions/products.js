@@ -114,7 +114,6 @@ export const fetchProductsByCat = (categorie) => {
           const id = doc.id;
           return { id, ...data };
         });
-        console.log("produits", products);
         let filteredProducts = products.filter(
           (prod) => prod.categorie === categorie
         );

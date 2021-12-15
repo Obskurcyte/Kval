@@ -106,7 +106,6 @@ const AccueilScreen = (props) => {
         horizontal={true}
         style={styles.flatList}
         renderItem={itemData => {
-          console.log('boosted', itemData)
           return (
             <BoostedProductCard
               title={itemData.item.title}
@@ -131,7 +130,6 @@ const AccueilScreen = (props) => {
           data={productsUne}
           horizontal={true}
           renderItem={itemData => {
-            console.log('normal', itemData)
             return (
                 <BoostedProductCard
                     title={itemData.item.title}

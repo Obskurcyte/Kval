@@ -2361,7 +2361,7 @@ export const AccueilNavigator = (props) => {
               />
             </View>
           ),
-          headerTitle: "Kval-Occaz",
+            headerTitle: () => <CustomHeader {...props}/>,
         }}
       />
       <AccueilStackNavigator.Screen

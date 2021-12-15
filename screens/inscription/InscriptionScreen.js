@@ -41,37 +41,34 @@ const InscriptionScreen = (props) => {
           } else {
             pushToken = await Notifications.getExpoPushTokenAsync()
           }
-          try  {
-            firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
-              console.log('wola')
-              firebase.firestore().collection("users")
-                .doc(firebase.auth().currentUser.uid)
-                  .collection('unreadMessage')
-                  .doc('firstKey')
-                  .set({
-                      count: 1
-                  }).then(() => {
-                      firebase.firestore().collection('users')
-                          .doc(firebase.auth().currentUser.uid)
-                          .set({
-                              pseudo: values.pseudo,
-                              email: values.email,
-                              IBAN: params.IBAN,
-                              nom: params.nom,
-                              id: firebase.auth().currentUser.uid,
-                              prenom: params.prenom,
-                              postalCode: params.postalCode,
-                              ville: params.ville,
-                              pushToken: pushToken.data,
-                              pays: params.pays,
-                              adresse: params.adresse,
-                              portefeuille: 0
-                          })
-              }).then(() => {
-                  axios.post("https://kval-backend.herokuapp.com/send", {
-                      mail: values.email,
-                      subject: "Confirmation de création de compte",
-                      html_output: `<div><p>Félicitations, ${values.pseudo}, <br></p> 
+          await firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
+                    firebase.firestore().collection("users")
+                        .doc(firebase.auth().currentUser.uid)
+                        .collection('unreadMessage')
+                        .doc('firstKey')
+                        .set({
+                            count: 1
+                        })
+                }).then(() => {
+                    firebase.firestore().collection('users')
+                        .doc(firebase.auth().currentUser.uid)
+                        .set({
+                            pseudo: values.pseudo,
+                            email: values.email,
+                            IBAN: params.IBAN,
+                            nom: params.nom,
+                            id: firebase.auth().currentUser.uid,
+                            prenom: params.prenom,
+                            pushToken: pushToken.data,
+                            pays: params.pays,
+                            adresse: params.adresse,
+                            portefeuille: 0
+                        })
+                }).then(() => {
+                    axios.post("https://kval-backend.herokuapp.com/send", {
+                        mail: values.email,
+                        subject: "Confirmation de création de compte",
+                        html_output: `<div><p>Félicitations, ${values.pseudo}, <br></p> 
 <p>Votre compte vient d'être créé.</p><br>
 <p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
 <p style="margin: 0">Votre adresse mail : ${values.email}</p>
@@ -82,14 +79,10 @@ const InscriptionScreen = (props) => {
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                  });
-              })
-              console.log(result)
-            })
-          } catch (err) {
-            setErr(err)
+                    })
+                })
           }
-        }}
+        }
       >
         {props => (
           <View style={styles.formContainer}>

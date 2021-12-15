@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import { View, TextInput, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { Searchbar } from "react-native-paper";
 import * as productsActions from "../store/actions/products";
@@ -35,12 +35,14 @@ const CustomHeader = (props) => {
 
   return (
     <View style={styles.searchBarContainer}>
-      <Searchbar
-        placeholder="Rechercher"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-        style={styles.searchBar}
-      />
+      <TouchableOpacity onPress={() => props.onPress} style={styles.searchBar}>
+        <Searchbar
+          placeholder="Rechercher"
+          onChangeText={onChangeSearch}
+          value={searchQuery}
+          style={styles.grey}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -53,12 +55,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   searchBar: {
-    width: "100%",
+    width: "95%",
     borderRadius: 80,
-    height: "80%",
     shadowColor: "white",
     backgroundColor: "lightgrey",
   },
+  grey: {
+    backgroundColor: "lightgrey",
+    borderRadius: 80,
+    height: "99%"
+  }
 });
 
 export default CustomHeader;
