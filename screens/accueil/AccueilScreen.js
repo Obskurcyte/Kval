@@ -106,6 +106,7 @@ const AccueilScreen = (props) => {
         horizontal={true}
         style={styles.flatList}
         renderItem={itemData => {
+          console.log('data', itemData.item)
           return (
             <BoostedProductCard
               title={itemData.item.title}
@@ -114,7 +115,7 @@ const AccueilScreen = (props) => {
               pseudo={itemData.item.pseudoVendeur}
               onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                   productId: itemData.item.id,
-                  product: productsUne[itemData.index]
+                  product: productsBoosted[itemData.index]
                 }
               })
               }
