@@ -140,6 +140,7 @@ import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 import FirstCartScreen from "../screens/achat/FirstCartScreen";
 import ModifierEmailConfirmationScreen from "../screens/profile/ModifierEmailConfirmationScreen";
 import PreAuthScreen from "../screens/profile/PreAuthScreen";
+import ValidationLitigeScreen from "../screens/profile/ValidationLitigeScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1942,6 +1943,13 @@ export const ProfileNavigator = (props) => {
         <ProfileStackNavigator.Screen
             name="ModifierEmailConfirmationScreen"
             component={ModifierEmailConfirmationScreen}
+            options={{
+                headerShown: false
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ValidationLitigeScreen"
+            component={ValidationLitigeScreen}
             options={{
                 headerShown: false
             }}

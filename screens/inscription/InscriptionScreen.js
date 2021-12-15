@@ -31,7 +31,7 @@ const InscriptionScreen = (props) => {
         initialValues={initialValues}
         onSubmit={async (values) => {
           console.log(values)
-          let pushToken;
+        let pushToken;
           let statusObj = await Notifications.getPermissionsAsync();
           if (statusObj.status !== "granted") {
             statusObj = await Notifications.requestPermissionsAsync();
@@ -42,7 +42,7 @@ const InscriptionScreen = (props) => {
             pushToken = await Notifications.getExpoPushTokenAsync()
           }
           await firebase.auth().createUserWithEmailAndPassword(values.email, values.password).then((result) => {
-                    firebase.firestore().collection("users")
+                    return firebase.firestore().collection("users")
                         .doc(firebase.auth().currentUser.uid)
                         .collection('unreadMessage')
                         .doc('firstKey')

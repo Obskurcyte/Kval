@@ -92,7 +92,7 @@ const ContactScreen = (props) => {
                     </Formik>
 
                     <View style={styles.contact}>
-                        <Text style={styles.contactText}>Contact : </Text>
+                        <Text style={styles.contactText}>Contact téléphonique: </Text>
                         <TouchableOpacity onPress={() => call(args).catch(console.error)}>
                             <Text style={styles.contactTextBlue}>07 60 58 67 48</Text>
                         </TouchableOpacity>
