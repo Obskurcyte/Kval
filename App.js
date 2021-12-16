@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import firebase from "firebase/app";
 import { TabNavigator, AuthNavigator } from "./navigation/AppNavigator";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import {Provider, useSelector} from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { LogBox } from "react-native";
 import ReduxThunk from "redux-thunk";
 import productReducer from "./store/reducers/products";
@@ -23,7 +23,7 @@ const firebaseConfig = {
   projectId: "kval-occaz",
   storageBucket: "kval-occaz.appspot.com",
   messagingSenderId: "40095874290",
-  appId: "1:40095874290:web:9ae177535c519f10ec646b"
+  appId: "1:40095874290:web:9ae177535c519f10ec646b",
 };
 
 // Initialize Firebase
@@ -44,7 +44,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   notifs: notifReducer,
   commandes: articleCommandeReducer,
-  messages: messageReducer
+  messages: messageReducer,
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -61,15 +61,14 @@ export default function App() {
         setIsLoaded(true);
         setIsLoggedIn(false);
       } else {
-        setIsLoaded(true);
-        setIsLoggedIn(true);
+        setIsLoaded(false);
+        setTimeout(() => {
+          setIsLoaded(true);
+          setIsLoggedIn(true);
+        }, 5000);
       }
     });
   });
-
-  if (!loaded) {
-    return <ActivityIndicator />;
-  }
 
   return (
     <Provider store={store}>
