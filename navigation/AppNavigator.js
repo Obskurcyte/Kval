@@ -1030,13 +1030,6 @@ export const AchatNavigator = (props) => {
                 headerTitleAlign: "center",
             }}
         />
-        <AchatStackNavigator.Screen
-            name="DeleteAnnonceValidationScreen"
-            component={DeleteAnnonceValidationScreen}
-            options={{
-                headerShown: false,
-            }}
-        />
       <AchatStackNavigator.Screen
         name="DeleteAnnonceValidationScreen"
         component={DeleteAnnonceValidationScreen}
