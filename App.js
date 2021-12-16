@@ -50,7 +50,6 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default function App() {
-  const [loaded, setIsLoaded] = useState(false);
   const [loggedIn, setIsLoggedIn] = useState(false);
   const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
   const [firstLaunch, setFirstLaunch] = useState(true);
@@ -58,14 +57,11 @@ export default function App() {
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
-        setIsLoaded(true);
         setIsLoggedIn(false);
       } else {
-        setIsLoaded(false);
         setTimeout(() => {
-          setIsLoaded(true);
           setIsLoggedIn(true);
-        }, 5000);
+        }, 10000);
       }
     });
   });
@@ -83,6 +79,7 @@ export default function App() {
             firstLaunch={firstLaunch}
             setFirstLaunch={setFirstLaunch}
             loggedInAsVisit={loggedInAsVisit}
+            setIsLoggedIn={setIsLoggedIn}
             setLoggedInAsVisit={setLoggedInAsVisit}
           />
         )}
