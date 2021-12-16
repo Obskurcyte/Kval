@@ -75,7 +75,7 @@ const BoosteVentePaiementScreen = (props) => {
               prix: articles[data].prix,
               title: articles[data].title,
               poids: articles[data].poids,
-              image: articles[data].downloadURL,
+              downloadURL: articles[data].downloadURL,
               categorie: articles[data].categorie,
               pseudoVendeur: articles[data].pseudoVendeur,
               time: new Date()

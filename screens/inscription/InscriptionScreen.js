@@ -30,7 +30,7 @@ const InscriptionScreen = (props) => {
       <Formik
         initialValues={initialValues}
         onSubmit={async (values) => {
-          console.log(values)
+            console.log(values)
         let pushToken;
           let statusObj = await Notifications.getPermissionsAsync();
           if (statusObj.status !== "granted") {

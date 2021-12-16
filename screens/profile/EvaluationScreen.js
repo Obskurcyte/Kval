@@ -71,7 +71,7 @@ const EvaluationScreen = (props) => {
                                     mail: product.emailVendeur,
                                     subject: "Confirmation de réception",
                                     html_output: `<div><p>Bonjour, ${product.pseudoVendeur}, <br></p> 
-<p>Votre article vient d’être reçu par ${currentUser.email} et conforme à sa description.</p>
+<p>Votre article vient d’être reçu par ${currentUser.pseudo} et conforme à sa description.</p>
 <p>Résumé de votre article : </p>
 
 <hr>

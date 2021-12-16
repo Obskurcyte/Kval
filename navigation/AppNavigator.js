@@ -141,6 +141,7 @@ import FirstCartScreen from "../screens/achat/FirstCartScreen";
 import ModifierEmailConfirmationScreen from "../screens/profile/ModifierEmailConfirmationScreen";
 import PreAuthScreen from "../screens/profile/PreAuthScreen";
 import ValidationLitigeScreen from "../screens/profile/ValidationLitigeScreen";
+import ModifierOffrePaiementScreen from "../screens/achat/ModifierOffrePaiementScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1003,6 +1004,24 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <AchatStackNavigator.Screen
+            name="ModifierOffrePaiementScreen"
+            component={ModifierOffrePaiementScreen}
+            options={{
+                title: "Paiement",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
         <AchatStackNavigator.Screen
             name="DeleteAnnonceValidationScreen"
             component={DeleteAnnonceValidationScreen}

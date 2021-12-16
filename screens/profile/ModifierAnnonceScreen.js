@@ -596,8 +596,7 @@ const ModifierAnnonceScreen = (props) => {
                               mail: currentUser.email,
                               subject: "Confirmation de modification ",
                               html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
-<p>Votre article vient d'être mis en vente.</p>
-<p>Résumé de votre article : </p>
+<p>Nous vous confirmons la modification de votre article comme suit :</p>
 <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">

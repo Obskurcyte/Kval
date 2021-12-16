@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Dimensions, Modal, ScrollView,
+  Dimensions, Modal, ScrollView, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView,
 } from "react-native";
 import { Formik } from "formik";
 import firebase from "firebase";
@@ -37,11 +37,18 @@ const EnterIbanScreen = (props) => {
     BIC: "",
   };
 
+  const initialValues2 = {
+    email: "",
+    password: "",
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
   const [BIC, setBIC] = useState("");
   const [IBAN, setIBAN] = useState("");
 
+  const [auth, setAuth] = useState(false);
+  const [confirmAuth, setConfirmAuth] = useState(false);
+  const [err, setErr] = useState(null);
   const askMoney = async (BIC, IBAN) => {
     await axios.post(
         "https://kval-backend.herokuapp.com/send",
@@ -82,74 +89,151 @@ const EnterIbanScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>IBAN</Text>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={IBANSchema}
-        onSubmit={(values) => {
-          setBIC(values.BIC)
-          setIBAN(values.IBAN)
-          setModalVisible(true)
-        }}
-      >
-        {(props) => (
-          <View>
-            <Modal transparent={true} visible={modalVisible}>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
-                    Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
-                  </Text>
-                  <TouchableOpacity
-                      style={styles.mettreEnVentePopup}
-                      onPress={async () => {
-                        await askMoney(BIC, IBAN)
-                        setModalVisible(false);
-                        bigProps.navigation.navigate("ValidationIBANScreen");
-                      }}
-                  >
-                    <Text style={styles.mettreEnVenteText}>
-                      Oui
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                      style={styles.reset}
-                      onPress={() => {
-                        setModalVisible(false);
-                      }}
-                  >
-                    <Text style={styles.resetText}>Annuler</Text>
-                  </TouchableOpacity>
-                </View>
+      {auth ? <View>
+        <Text style={styles.title}>IBAN</Text>
+        <Formik
+            initialValues={initialValues}
+            validationSchema={IBANSchema}
+            onSubmit={(values) => {
+              setBIC(values.BIC)
+              setIBAN(values.IBAN)
+              setModalVisible(true)
+            }}
+        >
+          {(props) => (
+              <View>
+                <Modal transparent={true} visible={modalVisible}>
+                  <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                      <Text style={styles.modalText}>
+                        Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
+                      </Text>
+                      <TouchableOpacity
+                          style={styles.mettreEnVentePopup}
+                          onPress={async () => {
+                            await askMoney(BIC, IBAN)
+                            setModalVisible(false);
+                            bigProps.navigation.navigate("ValidationIBANScreen");
+                          }}
+                      >
+                        <Text style={styles.mettreEnVenteText}>
+                          Oui
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                          style={styles.reset}
+                          onPress={() => {
+                            setModalVisible(false);
+                          }}
+                      >
+                        <Text style={styles.resetText}>Annuler</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </Modal>
+                <TextInput
+                    placeholder="IBAN"
+                    style={styles.input}
+                    value={props.values.IBAN}
+                    onChangeText={props.handleChange("IBAN")}
+                />
+                {props.errors.IBAN && props.errors.IBAN ? (
+                    <Text style={styles.errors}>{props.errors.IBAN}</Text>
+                ) : null}
+                <Text style={styles.title}>BIC</Text>
+                <TextInput
+                    placeholder="BIC"
+                    style={styles.input}
+                    value={props.values.BIC}
+                    onChangeText={props.handleChange("BIC")}
+                />
+                {props.errors.BIC && props.errors.BIC ? (
+                    <Text style={styles.errors}>{props.errors.BIC}</Text>
+                ) : null}
+                <TouchableOpacity
+                    style={styles.mettreEnVente}
+                    onPress={props.handleSubmit}
+                >
+                  <Text style={styles.mettreEnVenteText}>Soumettre</Text>
+                </TouchableOpacity>
               </View>
-            </Modal>
-            <TextInput
-              placeholder="IBAN"
-              style={styles.input}
-              value={props.values.IBAN}
-              onChangeText={props.handleChange("IBAN")}
-            />
-            {props.errors.IBAN && props.errors.IBAN ? (
-                <Text style={styles.errors}>{props.errors.IBAN}</Text>
-            ) : null}
-            <TextInput
-              placeholder="BIC"
-              style={styles.input}
-              value={props.values.BIC}
-              onChangeText={props.handleChange("BIC")}
-            />
-            {props.errors.BIC && props.errors.BIC ? (
-                <Text style={styles.errors}>{props.errors.BIC}</Text>
-            ) : null}
-            <TouchableOpacity
+          )}
+        </Formik>
+      </View> : <View>
+        {!confirmAuth ? <View>
+          <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
+          <TouchableOpacity
               style={styles.mettreEnVente}
-              onPress={props.handleSubmit}
+              onPress={() => setConfirmAuth(true)}
+          >
+            <Text style={styles.mettreEnVenteText}>
+              M'authentifier
+            </Text>
+          </TouchableOpacity>
+        </View> :    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
+          <KeyboardAvoidingView style={styles.container3} behavior="padding">
+            <Text style={styles.title2}>Se connecter</Text>
+            <Formik
+                initialValues={initialValues2}
+                onSubmit={async (values) => {
+                  console.log(values);
+                  try {
+                    await firebase
+                        .auth()
+                        .signInWithEmailAndPassword(values.email, values.password);
+                    setAuth(true);
+                  } catch (err) {
+                    console.log(err);
+                    setErr(err);
+                  }
+                }}
             >
-              <Text style={styles.mettreEnVenteText}>Soumettre</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </Formik>
+              {(props) => (
+                  <View style={styles.formContainer}>
+                    <View>
+                      <Text style={styles.text4}>Email</Text>
+                      <TextInput
+                          placeholder="Email"
+                          keyboardType="email-address"
+                          autoCompleteType="email"
+                          placeholderTextColor="white"
+                          value={props.values.email}
+                          style={styles.textInput}
+                          onChangeText={props.handleChange("email")}
+                      />
+                    </View>
+
+                    <View>
+                      <Text style={styles.text4}>Mot de passe</Text>
+                      <TextInput
+                          placeholder="Mot de passe"
+                          placeholderTextColor="white"
+                          value={props.values.password}
+                          style={styles.textInput}
+                          secureTextEntry={true}
+                          onChangeText={props.handleChange("password")}
+                      />
+                    </View>
+
+                    {err ? (
+                        <Text style={styles.err}>Vos identifiants sont incorrects</Text>
+                    ) : (
+                        <Text />
+                    )}
+                    <TouchableOpacity
+                        style={styles.buttonContainer}
+                        onPress={props.handleSubmit}
+                    >
+                      <Text style={styles.createCompte}>Valider</Text>
+                    </TouchableOpacity>
+                  </View>
+              )}
+            </Formik>
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>}
+
+      </View>}
+
     </View>
   );
 };
@@ -160,6 +244,7 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     width: windowWidth / 1.1,
     paddingVertical: "5%",
+    alignSelf: 'center'
   },
   errors: {
     color: 'red'
@@ -173,16 +258,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10
   },
-  container: {
-    paddingHorizontal: "6%",
-    paddingVertical: "7%",
-    alignItems: "center",
-    justifyContent: "center",
-  },
   title: {
     fontSize: 24,
     textAlign: "justify",
     fontWeight: "bold",
+    marginLeft: 20,
+    marginVertical: 5
   },
   input: {
     borderWidth: 1,
@@ -191,6 +272,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: "3%",
     marginBottom: "5%",
+    maxWidth: "90%",
+    marginLeft: 20
   },
   centeredView: {
     flex: 1,
@@ -242,6 +325,69 @@ const styles = StyleSheet.create({
     borderColor: "#D51317",
     paddingVertical: "5%",
     marginBottom: 15,
+  },
+  authText: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
+  container3: {
+    backgroundColor: "#D51317",
+    alignItems: "center",
+  },
+  title2: {
+    fontSize: 27,
+    marginTop: 15,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+  },
+  textInput: {
+    borderColor: "white",
+    borderWidth: 1,
+    borderRadius: 10,
+    color: 'white',
+    paddingVertical: "4%",
+    marginTop: 10,
+    paddingLeft: "8%",
+  },
+  buttonContainer: {
+    backgroundColor: "white",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 1,
+    shadowColor: "grey",
+    width: "100%",
+    paddingVertical: "5%",
+    borderRadius: 10,
+    marginTop: 15,
+    marginBottom: "100%"
+  },
+  err: {
+    color: "black",
+    fontSize: 15,
+    textAlign: "center",
+    marginTop: 20,
+  },
+  createCompte: {
+    color: "black",
+    fontSize: 18,
+    textAlign: "center",
+  },
+  text4: {
+    color: "white",
+    fontSize: 18,
+    marginTop: 35,
+  },
+  connecteContainer: {
+    display: "flex",
+    flexDirection: "row",
+  },
+  formContainer: {
+    width: "70%",
+  },
+  connecte: {
+    marginBottom: "1%",
   },
 });
 

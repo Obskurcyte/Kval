@@ -395,10 +395,15 @@ const ProductDetailScreen = (props) => {
               <TouchableOpacity
                 style={styles.reset}
                 onPress={() => {
-                  props.navigation.navigate("Profil", {
+                  /*props.navigation.navigate("Profil", {
                     screen: "ModifierAnnonceScreen",
                     params: { ...product, modify: true },
                   });
+                   */
+                  props.navigation.navigate("Acheter", {
+                    screen : "ModifierOffrePaiementScreen",
+                    params: { product: product, modify: true }
+                  })
                 }}
               >
                 <Text style={styles.resetText}>Modifier mon offre</Text>
