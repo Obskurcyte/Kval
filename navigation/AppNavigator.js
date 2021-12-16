@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -95,7 +95,7 @@ const AchatStackNavigator = createStackNavigator();
 const MessageStackNavigator = createStackNavigator();
 const ProfileStackNavigator = createStackNavigator();
 const AccueilStackNavigator = createStackNavigator();
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ArticlesEnVenteScreen from "../screens/profile/ArticlesEnVenteScreen";
 import BoosteVenteScreen from "../screens/profile/BoosteVenteScreen";
 import InformationsScreen from "../screens/profile/InformationsScreen";
@@ -135,7 +135,7 @@ import ForgotPasswordScreen from "../screens/inscription/ForgotPasswordScreen";
 import TapisAccueilScreen from "../screens/achat/sousCategoriesChevalEtTextile/TapisAccueilScreen";
 import TapisScreen from "../screens/vente/sousCategoriesChevalEtTextile/TapisScreen";
 import firebase from "firebase";
-import * as messageAction from '../store/actions/messages';
+import * as messageAction from "../store/actions/messages";
 import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 import FirstCartScreen from "../screens/achat/FirstCartScreen";
 import ModifierEmailConfirmationScreen from "../screens/profile/ModifierEmailConfirmationScreen";
@@ -146,8 +146,13 @@ import ModifierOffrePaiementScreen from "../screens/achat/ModifierOffrePaiementS
 const AppTabNavigator = createBottomTabNavigator();
 
 export const AuthNavigator = (props) => {
-  const { loggedInAsVisit, setLoggedInAsVisit, firstLaunch, setFirstLaunch } =
-    props;
+  const {
+    loggedInAsVisit,
+    setLoggedInAsVisit,
+    firstLaunch,
+    setFirstLaunch,
+    setIsLoggedIn,
+  } = props;
   setFirstLaunch(false);
   const classes = {
     header: {
@@ -199,14 +204,16 @@ export const AuthNavigator = (props) => {
       />
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
-        component={InscriptionScreen}
+        children={(props) => (
+          <InscriptionScreen {...props} setIsLoggedIn={setIsLoggedIn} />
+        )}
         options={classes.header}
       />
-        <AuthStackNavigator.Screen
-            name="ForgotPasswordScreen"
-            component={ForgotPasswordScreen}
-            options={classes.header}
-        />
+      <AuthStackNavigator.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={classes.header}
+      />
       <AuthStackNavigator.Screen
         name="ConnectionScreen"
         children={(props) => (
@@ -214,6 +221,7 @@ export const AuthNavigator = (props) => {
             {...props}
             loggedInAsVisit={loggedInAsVisit}
             setLoggedInAsVisit={setLoggedInAsVisit}
+            setIsLoggedIn={setIsLoggedIn}
           />
         )}
         options={classes.header}
@@ -553,24 +561,24 @@ export const SellNavigator = () => {
           headerTitleAlign: "center",
         }}
       />
-        <SellStackNavigator.Screen
-            name="TapisScreen"
-            component={TapisScreen}
-            options={{
-                title: "Tapis, bonnets et amortisseurs",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
+      <SellStackNavigator.Screen
+        name="TapisScreen"
+        component={TapisScreen}
+        options={{
+          title: "Tapis, bonnets et amortisseurs",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
       <SellStackNavigator.Screen
         name="CavalierScreen"
         component={CavalierScreen}
@@ -1030,6 +1038,13 @@ export const AchatNavigator = (props) => {
             }}
         />
       <AchatStackNavigator.Screen
+        name="DeleteAnnonceValidationScreen"
+        component={DeleteAnnonceValidationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <AchatStackNavigator.Screen
         name="AdresseChoiceScreen"
         component={AdresseChoiceScreen}
         options={{
@@ -1097,24 +1112,24 @@ export const AchatNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
-        <AchatStackNavigator.Screen
-            name="TapisAccueilScreen"
-            component={TapisAccueilScreen}
-            options={{
-                title: "Tapis",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="TapisAccueilScreen"
+        component={TapisAccueilScreen}
+        options={{
+          title: "Tapis",
+          headerStyle: {
+            backgroundColor: "white",
+          },
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerBackTitle: "Retour",
+          headerBackTitleStyle: {
+            color: "black",
+          },
+          headerTitleAlign: "center",
+        }}
+      />
       <AchatStackNavigator.Screen
         name="AvisScreen"
         component={AvisScreen}
@@ -1832,27 +1847,26 @@ export const AchatNavigator = (props) => {
           },
         }}
       />
-        <AchatStackNavigator.Screen
-            name="FirstCartScreen"
-            children={(props
-            ) => (
-                <FirstCartScreen
-                    {...props}
-                    loggedInAsVisit={loggedInAsVisit}
-                    setLoggedInAsVisit={setLoggedInAsVisit}
-                />
-            )}
-            options={{
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerBackTitle: "Retour",
-                headerTitle: "Panier",
-                headerTitleStyle: {
-                    textAlign: "center",
-                },
-            }}
-        />
+      <AchatStackNavigator.Screen
+        name="FirstCartScreen"
+        children={(props) => (
+          <FirstCartScreen
+            {...props}
+            loggedInAsVisit={loggedInAsVisit}
+            setLoggedInAsVisit={setLoggedInAsVisit}
+          />
+        )}
+        options={{
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerBackTitle: "Retour",
+          headerTitle: "Panier",
+          headerTitleStyle: {
+            textAlign: "center",
+          },
+        }}
+      />
       <AchatStackNavigator.Screen
         name="LivraisonChoiceScreen"
         component={LivraisonChoiceScreen}
@@ -1902,21 +1916,21 @@ export const MessageNavigator = (props) => {
         }}
       />
 
-        <MessageStackNavigator.Screen
-            name="ArticlesEnVenteScreen"
-            component={ArticlesEnVenteScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerBackTitle: "Retour",
-                headerTitle: "Articles en Vente",
-                headerTitleAlign: "center",
-            }}
-        />
+      <MessageStackNavigator.Screen
+        name="ArticlesEnVenteScreen"
+        component={ArticlesEnVenteScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerBackTitle: "Retour",
+          headerTitle: "Articles en Vente",
+          headerTitleAlign: "center",
+        }}
+      />
     </MessageStackNavigator.Navigator>
   );
 };
@@ -1939,11 +1953,11 @@ export const ProfileNavigator = (props) => {
         }}
       />
       <ProfileStackNavigator.Screen
-            name="DeleteAnnonceValidationScreen"
-            component={DeleteAnnonceValidationScreen}
-            options={{
-                headerShown: false,
-            }}
+        name="DeleteAnnonceValidationScreen"
+        component={DeleteAnnonceValidationScreen}
+        options={{
+          headerShown: false,
+        }}
       />
       <ProfileStackNavigator.Screen
         name="ContactScreen"
@@ -1959,48 +1973,48 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Contactez-nous",
         }}
       />
-        <ProfileStackNavigator.Screen
-            name="ModifierEmailConfirmationScreen"
-            component={ModifierEmailConfirmationScreen}
-            options={{
-                headerShown: false
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ValidationLitigeScreen"
-            component={ValidationLitigeScreen}
-            options={{
-                headerShown: false
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="PreAuthScreen"
-            component={PreAuthScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Identification",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="CommentCaMarcheScreen"
-            component={CommentCaMarcheScreen}
-            options={{
-                headerRightContainerStyle: {
-                    paddingRight: 10,
-                },
-                headerBackTitle: "Retour",
-                headerLeftContainerStyle: {
-                    paddingLeft: 10,
-                },
-                headerTitle: "Comment ca marche",
-            }}
-        />
+      <ProfileStackNavigator.Screen
+        name="ModifierEmailConfirmationScreen"
+        component={ModifierEmailConfirmationScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="ValidationLitigeScreen"
+        component={ValidationLitigeScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="PreAuthScreen"
+        component={PreAuthScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Identification",
+        }}
+      />
+      <ProfileStackNavigator.Screen
+        name="CommentCaMarcheScreen"
+        component={CommentCaMarcheScreen}
+        options={{
+          headerRightContainerStyle: {
+            paddingRight: 10,
+          },
+          headerBackTitle: "Retour",
+          headerLeftContainerStyle: {
+            paddingLeft: 10,
+          },
+          headerTitle: "Comment ca marche",
+        }}
+      />
       <ProfileStackNavigator.Screen
         name="PhotoModifierAnnonceScreen"
         component={PhotoModifierAnnonceScreen}
@@ -2220,7 +2234,7 @@ export const ProfileNavigator = (props) => {
           },
         }}
       />
-        
+
       <ProfileStackNavigator.Screen
         name="ModifierAdresseScreen"
         component={ModifierAdresseScreen}
@@ -2383,12 +2397,14 @@ export const AccueilNavigator = (props) => {
                 size={24}
                 color="#D51317"
                 onPress={() =>
-                  props.navigation.navigate("Acheter", { screen: "FirstCartScreen" })
+                  props.navigation.navigate("Acheter", {
+                    screen: "FirstCartScreen",
+                  })
                 }
               />
             </View>
           ),
-            headerTitle: () => <CustomHeader {...props}/>,
+          headerTitle: () => <CustomHeader {...props} />,
         }}
       />
       <AccueilStackNavigator.Screen
@@ -2462,21 +2478,19 @@ const resetStackOnTabPress = ({ navigation, route }) => ({
 export const TabNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
+  const dispatch = useDispatch();
+  //console.log("auth", firebase.auth().currentUser.uid);
+  const [count, setCount] = useState(0);
 
+  useEffect(() => {
+    dispatch(messageAction.fetchUnreadMessage());
+  }, [dispatch]);
 
-    const dispatch = useDispatch();
-    console.log('auth', firebase.auth().currentUser.uid)
-    const [count, setCount] = useState(0)
+  const message = useSelector((state) => state.messages.unreadMessages);
+  console.log("message", message);
+  const messageLength = message.length;
 
-    useEffect(() => {
-        dispatch(messageAction.fetchUnreadMessage())
-    }, [dispatch]);
-
-    const message = useSelector(state => state.messages.unreadMessages)
-    console.log('message', message)
-    const messageLength = message.length;
-
-    return (
+  return (
     <>
       {props.loggedInAsVisit ? (
         <AppTabNavigator.Navigator
@@ -2534,24 +2548,24 @@ export const TabNavigator = (props) => {
             listeners={resetStackOnTabPress}
             options={{
               tabBarIcon: ({ color, size }) => (
-                  <View>
-                      <View
-                          style={{
-                              backgroundColor: "#D51317",
-                              borderRadius: 30,
-                              alignItems: "center",
-                              position: "absolute",
-                              width: 20,
-                              bottom: "65%",
-                              right: "55%",
-                          }}
-                      >
-                          <Text style={{ color: "white", fontWeight: "bold" }}>
-                              1
-                          </Text>
-                      </View>
-                        <AntDesign name="message1" size={24} color="black" />
+                <View>
+                  <View
+                    style={{
+                      backgroundColor: "#D51317",
+                      borderRadius: 30,
+                      alignItems: "center",
+                      position: "absolute",
+                      width: 20,
+                      bottom: "65%",
+                      right: "55%",
+                    }}
+                  >
+                    <Text style={{ color: "white", fontWeight: "bold" }}>
+                      1
+                    </Text>
                   </View>
+                  <AntDesign name="message1" size={24} color="black" />
+                </View>
               ),
               tabBarButton: (props) => (
                 <TouchableOpacity
@@ -2563,7 +2577,6 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Profil"
-            component={ProfileScreen}
             children={() => <></>}
             listeners={resetStackOnTabPress}
             options={{
@@ -2635,26 +2648,28 @@ export const TabNavigator = (props) => {
             component={MessageNavigator}
             options={{
               tabBarIcon: ({ color, size }) => (
-                  <View>
-                      {messageLength > 1 ?
-                      <View
-                          style={{
-                              backgroundColor: "#D51317",
-                              borderRadius: 30,
-                              alignItems: "center",
-                              position: "absolute",
-                              width: 18,
-                              bottom: "45%",
-                              left: "25%",
-                          }}
-                      >
-                              <Text style={{ color: "white", fontWeight: "bold" }}>
-                                  {messageLength - 1}
-                          </Text>
-                      </View>
-                          : <View/>}
-                      <AntDesign name="message1" size={24} color="black" />
-                  </View>
+                <View>
+                  {messageLength > 1 ? (
+                    <View
+                      style={{
+                        backgroundColor: "#D51317",
+                        borderRadius: 30,
+                        alignItems: "center",
+                        position: "absolute",
+                        width: 18,
+                        bottom: "45%",
+                        left: "25%",
+                      }}
+                    >
+                      <Text style={{ color: "white", fontWeight: "bold" }}>
+                        {messageLength - 1}
+                      </Text>
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+                  <AntDesign name="message1" size={24} color="black" />
+                </View>
               ),
             }}
           />

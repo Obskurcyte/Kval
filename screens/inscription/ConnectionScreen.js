@@ -32,7 +32,10 @@ const ConnectionScreen = (props) => {
             try {
               await firebase
                 .auth()
-                .signInWithEmailAndPassword(values.email, values.password);
+                .signInWithEmailAndPassword(values.email, values.password)
+                .then((result) => {
+                  props.setIsLoggedIn(true);
+                });
             } catch (err) {
               console.log(err);
               setErr(err);
@@ -98,8 +101,8 @@ const ConnectionScreen = (props) => {
           <View style={styles.connecte}>
             <TouchableOpacity
               onPress={() => {
-                console.log('hey')
-                props.navigation.navigate("ForgotPasswordScreen")
+                console.log("hey");
+                props.navigation.navigate("ForgotPasswordScreen");
               }}
             >
               <Text style={styles.text}>Mot de passe oublié ?</Text>
@@ -135,7 +138,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 1,
     borderRadius: 10,
-    color: 'white',
+    color: "white",
     paddingVertical: "4%",
     marginTop: 10,
     paddingLeft: "8%",
