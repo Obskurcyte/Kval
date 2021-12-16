@@ -58,10 +58,6 @@ export default function App() {
     firebase.auth().onAuthStateChanged((user) => {
       if (!user) {
         setIsLoggedIn(false);
-      } else {
-        setTimeout(() => {
-          setIsLoggedIn(true);
-        }, 10000);
       }
     });
   });

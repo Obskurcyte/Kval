@@ -220,6 +220,7 @@ export const AuthNavigator = (props) => {
             {...props}
             loggedInAsVisit={loggedInAsVisit}
             setLoggedInAsVisit={setLoggedInAsVisit}
+            setIsLoggedIn={setIsLoggedIn}
           />
         )}
         options={classes.header}
@@ -2452,7 +2453,7 @@ export const TabNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
   const dispatch = useDispatch();
-  console.log("auth", firebase.auth().currentUser.uid);
+  //console.log("auth", firebase.auth().currentUser.uid);
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -2550,7 +2551,6 @@ export const TabNavigator = (props) => {
           />
           <AppTabNavigator.Screen
             name="Profil"
-            component={ProfileScreen}
             children={() => <></>}
             listeners={resetStackOnTabPress}
             options={{

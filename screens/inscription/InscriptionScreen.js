@@ -51,8 +51,8 @@ const InscriptionScreen = (props) => {
             await firebase
               .auth()
               .createUserWithEmailAndPassword(values.email, values.password)
-              .then((result) => {
-                firebase
+              .then(async (result) => {
+                await firebase
                   .firestore()
                   .collection("users")
                   .doc(firebase.auth().currentUser.uid)
@@ -62,7 +62,7 @@ const InscriptionScreen = (props) => {
                     count: 1,
                   });
 
-                firebase
+                await firebase
                   .firestore()
                   .collection("users")
                   .doc(firebase.auth().currentUser.uid)
@@ -79,7 +79,7 @@ const InscriptionScreen = (props) => {
                     portefeuille: 0,
                   });
 
-                axios
+                await axios
                   .post("https://kval-backend.herokuapp.com/send", {
                     mail: values.email,
                     subject: "Confirmation de création de compte",
