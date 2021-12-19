@@ -111,7 +111,7 @@ const AccueilScreen = (props) => {
             <BoostedProductCard
               title={itemData.item.title}
               prix={itemData.item.prix}
-              image={itemData.item.image}
+              image={itemData.item.downloadURL}
               pseudo={itemData.item.pseudoVendeur}
               onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                   productId: itemData.item.id,
