@@ -1070,6 +1070,7 @@ ${
                   title={item.productTitle}
                   price={item.productPrice}
                   image={item.image}
+                  poids={item.poids}
                   key={index}
                 />
               );
