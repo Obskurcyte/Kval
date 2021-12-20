@@ -216,6 +216,12 @@ const ModifierAnnonceScreen = (props) => {
                 .collection("allProducts")
                 .doc(`${old_id}`)
                 .delete();
+
+              await firebase
+                  .firestore()
+                  .collection("BoostedVentes")
+                  .doc(`${old_id}`)
+                  .delete();
             } catch (err) {
               console.log(err);
             }
@@ -477,6 +483,11 @@ const ModifierAnnonceScreen = (props) => {
                               .collection("allProducts")
                               .doc(`${old_id}`)
                               .delete();
+                            await firebase
+                                .firestore()
+                                .collection("BoostedVentes")
+                                .doc(`${old_id}`)
+                                .delete();
                           } catch (err) {
                             console.log(err);
                           }
@@ -542,6 +553,28 @@ const ModifierAnnonceScreen = (props) => {
                               prix: values.price,
                               poids: values.poids,
                             });
+
+                          await firebase
+                              .firestore()
+                              .collection("BoostedVentes")
+                              .doc(`${id}`)
+                              .set({
+                                pseudoVendeur: currentUser.pseudo,
+                                categorie,
+                                marques,
+                                etat,
+                                date: date,
+                                title: values.title,
+                                description: values.description,
+                                idVendeur: currentUser.id,
+                                prix: values.price,
+                                poids: values.poids,
+                              }).then((docRef) => {
+                                console.log("Document written with ID: ");
+                              })
+                              .catch((error) => {
+                                console.error("Error adding document: ", error);
+                              });
 
                           console.log("5");
                           const uploadImage = async (index) => {
@@ -612,6 +645,18 @@ const ModifierAnnonceScreen = (props) => {
                               .collection("allProducts")
                               .doc(`${id}`)
                               .update(data);
+                            firebase
+                                .firestore()
+                                .collection("BoostedVentes")
+                                .doc(`${id}`)
+                                .update(data)
+                                .then(() => {
+                                  console.log("Document successfully updated!");
+                                })
+                                .catch((error) => {
+                                  // The document probably doesn't exist.
+                                  console.error("Error updating document: ", error);
+                                });
                           };
 
                           await Promise.all(

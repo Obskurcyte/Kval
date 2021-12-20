@@ -16,6 +16,7 @@ const CartItem = (props) => {
         <Text>{props.pseudoVendeur}</Text>
         <Text style={styles.cardTitle}>{props.title}</Text>
         <Text style={styles.price}>Prix : {props.price} €</Text>
+        <Text style={styles.price}>Poids : {props.poids} kgs</Text>
       </View>
       <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
     </View>

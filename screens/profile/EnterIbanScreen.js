@@ -25,7 +25,7 @@ const EnterIbanScreen = (props) => {
   }, [dispatch]);
 
   const userData = useSelector((state) => state.user.userData);
-  console.log(userData);
+  console.log('user', userData);
 
   const IBANSchema = Yup.object().shape({
     IBAN: Yup.string().required("Veuillez rentrer un IBAN"),
@@ -56,14 +56,15 @@ const EnterIbanScreen = (props) => {
           mail: userData.email,
           subject: "Confirmation de virement",
           html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} euros a bien été prise en compte.</p>
+<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} € a bien été prise en compte.</p>
 <p>Les fonds seront disponibles d’ici 72h00 sur le compte bancaire suivant :
 </p>
         <div style="margin-top: 20px">
             <p style="margin: 0">IBAN : ${IBAN}</p>
-            <p style="margin: 0">BIC: ${BIC} €</p>
+            <p style="margin: 0">BIC: ${BIC}</p>
         </div>
 <br>
+<p>Le service client prendra contact avec vous sous peu afin de confirmer cette demande.</p>
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
@@ -72,9 +73,14 @@ const EnterIbanScreen = (props) => {
       mail: 'contact@kvaloccaz.com',
       subject: "Demande de transfert d'argent",
       html_output: `<div><p>Bonjour, <br></p> 
-<p>Une nouvelle de demande de transfert d'argent : </p>
-<p>BIC : ${BIC}</p>
-<p>IBAN : ${IBAN}</p>
+<p>L’utilisateur ${userData.pseudo}, mail ${userData.email}, demande un virement de ${userData.portefeuille} € sur le compte bancaire suivant :</p>
+  <div style="margin-top: 20px">
+            <p style="margin: 0">IBAN : ${IBAN}</p>
+            <p style="margin: 0">BIC: ${BIC}</p>
+  </div>
+    <br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
     });
     await firebase

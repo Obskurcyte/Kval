@@ -66,6 +66,7 @@ const FirstCartScreen = (props) => {
                                     title={itemData.item.productTitle}
                                     price={itemData.item.productPrice}
                                     image={itemData.item.image}
+                                    poids={itemData.item.poids}
                                     pseudoVendeur={itemData.item.pseudoVendeur}
                                     onDelete={() => {
                                         dispatch(
