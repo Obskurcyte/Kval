@@ -31,6 +31,7 @@ const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     dispatch(userActions.getUser());
   }, [dispatch]);
@@ -353,6 +354,10 @@ const ProductDetailScreen = (props) => {
               <Text>{product.marques}</Text>
             </View>
           )}
+          <View style={styles.itemForm3}>
+            <Text>Poids</Text>
+            <Text>{product.poids} kgs</Text>
+          </View>
           <View style={styles.vendeurContainer}>
             {product.imageURL ? (
               <Image source={require("../../assets/photoProfile.png")} />
@@ -395,15 +400,10 @@ const ProductDetailScreen = (props) => {
               <TouchableOpacity
                 style={styles.reset}
                 onPress={() => {
-                  /*props.navigation.navigate("Profil", {
+                  props.navigation.navigate("Profil", {
                     screen: "ModifierAnnonceScreen",
                     params: { ...product, modify: true },
                   });
-                   */
-                  props.navigation.navigate("Acheter", {
-                    screen : "ModifierOffrePaiementScreen",
-                    params: { product: product, modify: true }
-                  })
                 }}
               >
                 <Text style={styles.resetText}>Modifier mon offre</Text>

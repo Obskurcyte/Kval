@@ -48,19 +48,23 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
-                        await firebase
-                            .auth()
-                            .createUserWithEmailAndPassword(values.email, values.password)
-                            .then(async (result) => {
-                                await firebase
-                                    .firestore()
-                                    .collection("users")
-                                    .doc(firebase.auth().currentUser.uid)
-                                    .collection("unreadMessage")
-                                    .doc("firstKey")
-                                    .set({
-                                        count: 1,
-                                    });
+                            await firebase
+                                .auth()
+                                .createUserWithEmailAndPassword(values.email, values.password)
+                                .catch(err => {
+                                    console.log(err)
+                                    setErr(true)
+                                }).then(async (result) => {
+                                    await firebase
+                                        .firestore()
+                                        .collection("users")
+                                        .doc(firebase.auth().currentUser.uid)
+                                        .collection("unreadMessage")
+                                        .doc("firstKey")
+                                        .set({
+                                            count: 1,
+                                        });
+                                });
 
                                 await firebase
                                     .firestore()
@@ -97,10 +101,11 @@ const InscriptionScreen = (props) => {
                                     .then(() => props.setIsLoggedIn(true))
                                     .catch((err) => {
                                         console.log(err);
+                                        setErr(true)
                                         props.setIsLoggedIn(true);
                                     });
-                            });
-                    }}
+                            }}
+
                 >
                     {(props) => (
                         <View style={styles.formContainer}>

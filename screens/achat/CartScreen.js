@@ -105,14 +105,7 @@ const CartScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState("");
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
-  let sousTotal = (total * 1.095).toFixed(2);
-  let reductionPortefeuille;
-
-  if (userData?.portefeuille <= sousTotal) {
-    reductionPortefeuille = userData.portefeuille;
-  } else {
-    reductionPortefeuille = sousTotal;
-  }
+  let sousTotal = (total * 1.095).toFixed(2)
 
 
 
@@ -730,6 +723,13 @@ ${
   totalLivraison = totalLivraison.toFixed(2);
 
   sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
+    let reductionPortefeuille;
+
+    if (userData?.portefeuille <= sousTotal) {
+        reductionPortefeuille = userData.portefeuille;
+    } else {
+        reductionPortefeuille = sousTotal;
+    }
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
 
   const paymentUI = (props) => {

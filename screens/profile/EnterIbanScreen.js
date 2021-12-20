@@ -69,7 +69,7 @@ const EnterIbanScreen = (props) => {
 </div>`
         });
     await axios.post("https://kval-backend.herokuapp.com/send", {
-      mail: 'info@k-val.com',
+      mail: 'contact@kvaloccaz.com',
       subject: "Demande de transfert d'argent",
       html_output: `<div><p>Bonjour, <br></p> 
 <p>Une nouvelle de demande de transfert d'argent : </p>

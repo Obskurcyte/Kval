@@ -171,7 +171,7 @@ const ModifierAnnonceScreen = (props) => {
         {
           email: "hadrien.jaubert@gmail.com",
           authToken: jsonResponse,
-          amount: 2500,
+          amount: 999,
         }
       );
 
@@ -282,6 +282,28 @@ const ModifierAnnonceScreen = (props) => {
                 poids: poids,
               });
 
+            await firebase
+                .firestore()
+                .collection("BoostedVentes")
+                .doc(`${id}`)
+                .set({
+                  pseudoVendeur: currentUser.pseudo,
+                  categorie,
+                  marques,
+                  etat,
+                  date: date,
+                  title: titre,
+                  idVendeur: firebase.auth().currentUser.uid,
+                  description: description,
+                  prix: prix,
+                  poids: poids,
+                }).then((docRef) => {
+                  console.log("Document written with ID: ");
+                })
+                .catch((error) => {
+                  console.error("Error adding document: ", error);
+                });
+
             console.log("5");
             const uploadImage = async (index) => {
               return new Promise(async (resolve) => {
@@ -344,6 +366,18 @@ const ModifierAnnonceScreen = (props) => {
                 .collection("allProducts")
                 .doc(`${id}`)
                 .update(data);
+              firebase
+                  .firestore()
+                  .collection("BoostedVentes")
+                  .doc(`${id}`)
+                  .update(data)
+                  .then(() => {
+                    console.log("Document successfully updated!");
+                  })
+                  .catch((error) => {
+                    // The document probably doesn't exist.
+                    console.error("Error updating document: ", error);
+                  });
             };
 
             await Promise.all(
@@ -898,7 +932,7 @@ const ModifierAnnonceScreen = (props) => {
             <PaymentView
               onCheckStatus={onCheckStatus}
               product={"Paiement unique"}
-              amount={2.5}
+              amount={0.99}
             />
             <TouchableOpacity
               style={styles.mettreEnVenteOptional}
