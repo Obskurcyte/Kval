@@ -856,7 +856,7 @@ const ModifierAnnonceScreen = (props) => {
         <View style={styles.container}>
           <Text style={styles.intermediateMessage}>
             Vous avez changé le prix de votre annonce. Vous devez en conséquence
-            payer 2,5€.
+            payer 0.99€.
           </Text>
           <TouchableOpacity
             style={styles.mettreEnVenteIntermediate}
