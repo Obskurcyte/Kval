@@ -171,34 +171,24 @@ const CartScreen = (props) => {
             await firebase
               .firestore()
               .collection("users")
-              .doc(firebase.auth().currentUser.uid)
+              .doc(cartItem.idVendeur)
               .collection("unreadMessage")
-              .doc(firebase.auth().currentUser.uid)
-              .get()
-              .then(async (doc) => {
-                if (doc.exists) {
-                  await firebase
-                    .firestore()
-                    .collection("users")
-                    .doc(cartItem.idVendeur)
-                    .collection("unreadMessage")
-                    .doc(cartItem.idVendeur)
-                    .update({
-                      count: doc.data().count + 1,
-                    });
-                } else {
-                  await firebase
-                    .firestore()
-                    .collection("users")
-                    .doc(cartItem.idVendeur)
-                    .collection("unreadMessage")
-                    .doc(cartItem.idVendeur)
-                    .set({
-                      count: 1,
-                    });
-                  console.log("New doc created !");
-                }
-              })
+              .doc(cartItem.idVendeur)
+                .get().then(async (doc) => {
+                    if (doc.exists) {
+                        console.log('yeah')
+                    } else {
+                        await firebase.firestore()
+                            .collection('users')
+                            .doc(cartItem.idVendeur)
+                            .collection('unreadMessage')
+                            .doc(cartItem.idVendeur)
+                            .set({
+                                count: 1
+                            })
+                        console.log("New doc created !");
+                    }
+                })
               .catch((error) => {
                 console.log("Error getting document:", error);
               });
@@ -549,6 +539,30 @@ ${
           .set({
             test: "test",
           });
+          await firebase
+              .firestore()
+              .collection("users")
+              .doc(cartItem.idVendeur)
+              .collection("unreadMessage")
+              .doc(cartItem.idVendeur)
+              .get().then(async (doc) => {
+                  if (doc.exists) {
+                      console.log('yeah')
+                  } else {
+                      await firebase.firestore()
+                          .collection('users')
+                          .doc(cartItem.idVendeur)
+                          .collection('unreadMessage')
+                          .doc(cartItem.idVendeur)
+                          .set({
+                              count: 1
+                          })
+                      console.log("New doc created !");
+                  }
+              })
+              .catch((error) => {
+                  console.log("Error getting document:", error);
+              });
         dispatch(cartActions.deleteCart());
         const pushToken = cartItem.pushToken;
         await fetch("https://exp.host/--/api/v2/push/send", {
@@ -629,7 +643,7 @@ ${
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
             <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${cartItem.adresse}</p>
-            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
+            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé avec le portefeuille</p>
         </div>
     </div>
     
@@ -709,7 +723,7 @@ ${
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
             <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
-            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
+            <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé avec le portefeuille</p>
         </div>
     </div>
     

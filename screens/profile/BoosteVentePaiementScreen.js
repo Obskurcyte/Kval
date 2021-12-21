@@ -9,10 +9,6 @@ import {
   ActivityIndicator,
   ScrollView, Image
 } from 'react-native';
-import Booste from "../../components/CartItem";
-import * as cartActions from "../../store/actions/cart";
-import CartItem from "../../components/CartItem";
-import BoosteVentePaiementItem from "../../components/BoosteVentePaiementItem";
 import RoundedCheckbox from "react-native-rounded-checkbox";
 import {AntDesign, Entypo} from "@expo/vector-icons";
 import {PaymentView} from "../../components/PaymentView";
@@ -48,8 +44,17 @@ const BoosteVentePaiementScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState('')
 
   const [dureeBoost, setDureeBoost] = useState(0);
+  const [numberOfDaysToAdd, setNumberOfDayToAdd] = useState(0);
 
-  console.log('duree', dureeBoost)
+  let someDate = new Date();
+  let hours = someDate.getHours();
+  let minutes = someDate.getMinutes();
+  someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+  let dd = someDate.getDate();
+  let mm = someDate.getMonth() + 1;
+  let y = someDate.getFullYear();
+  let someFormattedDate = dd + '/'+ mm + '/'+ y;
+  console.log('duree', dureeBoost);
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus('Votre paiement est en cours de traitement')
     setResponse(paymentResponse)
@@ -84,7 +89,7 @@ const BoosteVentePaiementScreen = (props) => {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
               html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
-<p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours.</p>
+<p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours jusqu'au ${someFormattedDate} à ${hours}:${minutes}.</p>
 <p>Résumé de votre article : </p>
 <hr>
 
@@ -103,6 +108,7 @@ const BoosteVentePaiementScreen = (props) => {
 <hr>
 
 <p>Vous pouvez retrouver cet article dans la page d’accueil dans la catégorie : Annonces en avant première</p>
+<p>A savoir : Si vous boostez de nouveau votre annonce avant la fin de la période ci-dessus mentionnée, la durée du nouveau boost partira de cette nouvelle date. S'il restait du temps sur le boost initial, il sera définitivement perdu.</p>
 <br>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
@@ -173,6 +179,7 @@ const BoosteVentePaiementScreen = (props) => {
                 setChecked2(!checked2)
                 setPrice(1.15)
                 setDureeBoost(3)
+                setNumberOfDayToAdd(3)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>
@@ -185,6 +192,7 @@ const BoosteVentePaiementScreen = (props) => {
                 setChecked1(!checked1)
                 setPrice(1.95)
                 setDureeBoost(7)
+                setNumberOfDayToAdd(7)
                 setGoPaiement(!goPaiement)
               }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
             </View>

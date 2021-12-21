@@ -196,7 +196,7 @@ const MessageScreen = (props) => {
                                 handleNavigation={async () => {
                                   await firebase.firestore()
                                       .collection('users')
-                                      .doc(`${firebase.auth().currentUser.uid}`)
+                                      .doc(firebase.auth().currentUser.uid)
                                       .collection('unreadMessage')
                                       .doc(firebase.auth().currentUser.uid)
                                       .delete()
