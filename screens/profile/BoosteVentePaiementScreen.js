@@ -260,13 +260,10 @@ const BoosteVentePaiementScreen = (props) => {
                 <TouchableOpacity
                   style={styles.retourContainer}
                   onPress={() => {
-                    props.navigation.navigate("Profil", {
-                      screen: "ProfileScreen",
-                      params: {
-                        productId: itemData.item.id,
-                        product: productsUne[itemData.index],
-                      },
-                    });
+                    props.navigation.navigate("ProfileScreen")
+                    props.navigation.navigate("Accueil", {
+                        screen: 'AcceuilScreen'
+                      })
                   }}
                 >
                   <Text style={styles.text2}>Retour au menu principal</Text>
