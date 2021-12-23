@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,24 +7,23 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
-  ScrollView, Image
-} from 'react-native';
+  ScrollView,
+  Image,
+} from "react-native";
 import RoundedCheckbox from "react-native-rounded-checkbox";
-import {AntDesign, Entypo} from "@expo/vector-icons";
-import {PaymentView} from "../../components/PaymentView";
+import { AntDesign, Entypo } from "@expo/vector-icons";
+import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const BoosteVentePaiementScreen = (props) => {
-
   let articles;
   if (props.route.params && props.route.params.articles) {
-    articles = props.route.params.articles
+    articles = props.route.params.articles;
   }
   const currentUser = useSelector((state) => state.user.userData);
 
@@ -34,14 +33,14 @@ const BoosteVentePaiementScreen = (props) => {
   const [goPaiement, setGoPaiement] = useState(false);
 
   const cartInfo = {
-    id: '5eruyt35eggr76476236523t3',
-    description: 'T Shirt - With react Native Logo',
-    amount: 1
-  }
-  const [response, setResponse] = useState()
+    id: "5eruyt35eggr76476236523t3",
+    description: "T Shirt - With react Native Logo",
+    amount: 1,
+  };
+  const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
-  const [price, setPrice] = useState(0)
-  const [paymentStatus, setPaymentStatus] = useState('')
+  const [price, setPrice] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState("");
 
   const [dureeBoost, setDureeBoost] = useState(0);
   const [numberOfDaysToAdd, setNumberOfDayToAdd] = useState(0);
@@ -53,38 +52,45 @@ const BoosteVentePaiementScreen = (props) => {
   let dd = someDate.getDate();
   let mm = someDate.getMonth() + 1;
   let y = someDate.getFullYear();
-  let someFormattedDate = dd + '/'+ mm + '/'+ y;
-  console.log('duree', dureeBoost);
+  let someFormattedDate = dd + "/" + mm + "/" + y;
+  console.log("duree", dureeBoost);
   const onCheckStatus = async (paymentResponse) => {
-    setPaymentStatus('Votre paiement est en cours de traitement')
-    setResponse(paymentResponse)
+    setPaymentStatus("Votre paiement est en cours de traitement");
+    setResponse(paymentResponse);
 
     let jsonResponse = JSON.parse(paymentResponse);
     // perform operation to check payment status
 
     try {
-      const stripeResponse = await axios.post('https://kval-backend.herokuapp.com/paymentonetime', {
-        email: 'hadrien.jaubert99@gmail.com',
-        product: cartInfo,
-        authToken: jsonResponse,
-        amount: (price*100).toFixed(0)
-      })
+      const stripeResponse = await axios.post(
+        "https://kval-backend.herokuapp.com/paymentonetime",
+        {
+          email: "hadrien.jaubert99@gmail.com",
+          product: cartInfo,
+          authToken: jsonResponse,
+          amount: (price * 100).toFixed(0),
+        }
+      );
 
       if (stripeResponse) {
-        const {paid} = stripeResponse.data;
+        const { paid } = stripeResponse.data;
         if (paid === true) {
           for (let data in articles) {
-            firebase.firestore().collection('BoostedVentes').doc(articles[data].id).set({
-              description: articles[data].description,
-              etat: articles[data].etat,
-              prix: articles[data].prix,
-              title: articles[data].title,
-              poids: articles[data].poids,
-              downloadURL: articles[data].downloadURL,
-              categorie: articles[data].categorie,
-              pseudoVendeur: articles[data].pseudoVendeur,
-              time: new Date()
-            });
+            firebase
+              .firestore()
+              .collection("BoostedVentes")
+              .doc(articles[data].id)
+              .set({
+                description: articles[data].description,
+                etat: articles[data].etat,
+                prix: articles[data].prix,
+                title: articles[data].title,
+                poids: articles[data].poids,
+                downloadURL: articles[data].downloadURL,
+                categorie: articles[data].categorie,
+                pseudoVendeur: articles[data].pseudoVendeur,
+                time: new Date(),
+              });
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
@@ -113,32 +119,29 @@ const BoosteVentePaiementScreen = (props) => {
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 
-</div>`
-            })
+</div>`,
+            });
           }
 
-          setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
+          setPaymentStatus(
+            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
+          );
         } else {
-          setPaymentStatus('Le paiement a échoué')
+          setPaymentStatus("Le paiement a échoué");
         }
       } else {
-        setPaymentStatus('Le paiement a échoué')
+        setPaymentStatus("Le paiement a échoué");
       }
     } catch (error) {
-
-      console.log(error)
-      setPaymentStatus('Le paiement a échoué')
-
+      console.log(error);
+      setPaymentStatus("Le paiement a échoué");
     }
+  };
 
-  }
+  const cartTotalAmount = useSelector((state) => state.cart.items);
 
-
-  const cartTotalAmount = useSelector(state => state.cart.items)
-
-
-  const paymentUI = props => {
-    console.log(makePayment)
+  const paymentUI = (props) => {
+    console.log(makePayment);
     if (!makePayment) {
       return (
         <ScrollView>
@@ -147,26 +150,32 @@ const BoosteVentePaiementScreen = (props) => {
               horizontal={true}
               style={styles.list}
               data={articles}
-              keyExtractor={item => item.id}
-              renderItem={itemData => {
+              keyExtractor={(item) => item.id}
+              renderItem={(itemData) => {
                 return (
                   <View style={styles.cardContainer}>
-                    <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
+                    <Entypo
+                      name="circle-with-cross"
+                      size={30}
+                      color="black"
+                      style={styles.cross}
+                      onPress={props.onDelete}
+                    />
                     <View style={styles.imgContainer}>
                       <Image
-                        source={{uri: itemData.item.downloadURL}}
+                        source={{ uri: itemData.item.downloadURL }}
                         style={styles.image}
                       />
                     </View>
                     <View style={styles.priceContainer}>
-                      <Text style={styles.cardTitle}>{itemData.item.title}</Text>
+                      <Text style={styles.cardTitle}>
+                        {itemData.item.title}
+                      </Text>
                       <Text style={styles.price}>{itemData.item.prix} €</Text>
                     </View>
-
                   </View>
-                )
-              }
-              }
+                );
+              }}
             />
           </View>
 
@@ -174,363 +183,396 @@ const BoosteVentePaiementScreen = (props) => {
             <View style={styles.choicePaiement}>
               <Text>3 jours</Text>
               <Text>1,15 €</Text>
-              <RoundedCheckbox onPress={(checked1) => {
-                setChecked1(!checked1)
-                setChecked2(!checked2)
-                setPrice(1.15)
-                setDureeBoost(3)
-                setNumberOfDayToAdd(3)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+              <RoundedCheckbox
+                onPress={(checked1) => {
+                  setChecked1(!checked1);
+                  setChecked2(!checked2);
+                  setPrice(1.15);
+                  setDureeBoost(3);
+                  setNumberOfDayToAdd(3);
+                  setGoPaiement(!goPaiement);
+                }}
+                text=""
+                outerBorderColor="black"
+                uncheckedColor="white"
+                outerSize={40}
+                innerSize={30}
+              />
             </View>
 
             <View style={styles.choicePaiement}>
               <Text>7 jours</Text>
               <Text>1,95 €</Text>
-              <RoundedCheckbox onPress={(checked2) => {
-                setChecked2(!checked2)
-                setChecked1(!checked1)
-                setPrice(1.95)
-                setDureeBoost(7)
-                setNumberOfDayToAdd(7)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+              <RoundedCheckbox
+                onPress={(checked2) => {
+                  setChecked2(!checked2);
+                  setChecked1(!checked1);
+                  setPrice(1.95);
+                  setDureeBoost(7);
+                  setNumberOfDayToAdd(7);
+                  setGoPaiement(!goPaiement);
+                }}
+                text=""
+                outerBorderColor="black"
+                uncheckedColor="white"
+                outerSize={40}
+                innerSize={30}
+              />
             </View>
 
             {goPaiement && (
-
-              <TouchableOpacity style={styles.mettreEnVente} onPress={() => setMakePayment(true)}>
+              <TouchableOpacity
+                style={styles.mettreEnVente}
+                onPress={() => setMakePayment(true)}
+              >
                 <Text style={styles.mettreEnVenteText}>Payer</Text>
               </TouchableOpacity>
             )}
           </View>
         </ScrollView>
-      )
+      );
     } else {
-
       if (response !== undefined) {
-        return <View style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flex: 1,
-        }}>
-          {paymentStatus === 'Votre paiement est en cours de traitement' ?
-            <View>
-              <Text>{paymentStatus}</Text>
-              <ActivityIndicator/>
-            </View> : <Text></Text>}
+        return (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+            }}
+          >
+            {paymentStatus === "Votre paiement est en cours de traitement" ? (
+              <View>
+                <Text>{paymentStatus}</Text>
+                <ActivityIndicator />
+              </View>
+            ) : (
+              <Text></Text>
+            )}
 
-          {paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro' ?
-            <View style={styles.container2}>
-              <AntDesign name="checkcircleo" size={200} color="white" />
-              <Text style={styles.text2}>Boost validé !</Text>
-              <TouchableOpacity style={styles.retourContainer} onPress={() => {
-                props.navigation.navigate('AccueilScreen')
-              }}>
-                <Text style={styles.text2}>Retour au menu principal</Text>
-              </TouchableOpacity>
-            </View> : <Text></Text>}
-        </View>
-
+            {paymentStatus ===
+            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
+              <View style={styles.container2}>
+                <AntDesign name="checkcircleo" size={200} color="white" />
+                <Text style={styles.text2}>Boost validé !</Text>
+                <TouchableOpacity
+                  style={styles.retourContainer}
+                  onPress={() => {
+                    props.navigation.navigate("Profil", {
+                      screen: "ProfileScreen",
+                      params: {
+                        productId: itemData.item.id,
+                        product: productsUne[itemData.index],
+                      },
+                    });
+                  }}
+                >
+                  <Text style={styles.text2}>Retour au menu principal</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text></Text>
+            )}
+          </View>
+        );
       } else {
         return (
-          <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
-        )
-
+          <PaymentView
+            onCheckStatus={onCheckStatus}
+            product={"Paiement unique"}
+            amount={2}
+          />
+        );
       }
     }
-  }
+  };
 
-  return (
-    <View style={styles.container}>
-      {paymentUI(props)}
-    </View>
-  );
-}
+  return <View style={styles.container}>{paymentUI(props)}</View>;
+};
 
 const styles = StyleSheet.create({
   flatlistContainer: {
-    width: '100%'
+    width: "100%",
   },
   list: {
-    width: '100%'
+    width: "100%",
   },
   choicePaiementContainer: {
-    display: 'flex',
-    flexDirection: 'column'
+    display: "flex",
+    flexDirection: "column",
   },
   choicePaiement: {
-    borderBottomColor: '#E0ECF8',
+    borderBottomColor: "#E0ECF8",
     borderBottomWidth: 3,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: '5%'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingVertical: "5%",
   },
   suivantContainer: {
-    position: 'absolute',
-    top: '92%',
-    width: '100%',
-    paddingVertical: '3%',
-    alignItems: 'center',
-    backgroundColor: '#0d1b3d'
+    position: "absolute",
+    top: "92%",
+    width: "100%",
+    paddingVertical: "3%",
+    alignItems: "center",
+    backgroundColor: "#0d1b3d",
   },
   itemForm3: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    marginLeft: '5%',
-    height: windowHeight/14,
-    alignItems: 'center',
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginLeft: "5%",
+    height: windowHeight / 14,
+    alignItems: "center",
+    borderBottomColor: "lightgrey",
+    borderBottomWidth: 1,
   },
   totalPrice: {
-    color: '#D51317',
-    fontSize: 18
+    color: "#D51317",
+    fontSize: 18,
   },
   mettreEnVente: {
     backgroundColor: "#D51317",
-    marginTop: '5%',
-    marginLeft: '5%',
-    width: windowWidth/1.1,
-    paddingVertical: '5%'
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.1,
+    paddingVertical: "5%",
   },
   mettreEnVenteText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
   },
   startContainer: {
-    position: 'absolute',
-    top: '900%',
-    width: windowWidth/1.2,
-    left: '4%',
-    paddingVertical: '3%',
-    alignItems: 'center',
-    backgroundColor: '#0d1b3d'
+    position: "absolute",
+    top: "900%",
+    width: windowWidth / 1.2,
+    left: "4%",
+    paddingVertical: "3%",
+    alignItems: "center",
+    backgroundColor: "#0d1b3d",
   },
   suivantText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 20,
-    textAlign: 'center'
+    textAlign: "center",
   },
   suivantText2: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 20
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 20,
   },
   paiementstatus: {
     fontSize: 20,
-    color: 'white',
-    textAlign: 'center'
+    color: "white",
+    textAlign: "center",
   },
   container: {
     flex: 1,
   },
   container2: {
-    backgroundColor: '#D51317',
+    backgroundColor: "#D51317",
     flex: 1,
-    alignItems: 'center',
-    paddingTop: windowHeight/4
+    alignItems: "center",
+    paddingTop: windowHeight / 4,
   },
   image: {
     height: 150,
-    width: 180
+    width: 180,
   },
   text2: {
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
     fontSize: 24,
-    marginTop: '3%',
-    color: 'white'
+    marginTop: "3%",
+    color: "white",
   },
-  retourContainer : {
+  retourContainer: {
     borderWidth: 5,
-    borderColor: 'white',
+    borderColor: "white",
     borderRadius: 20,
-    paddingHorizontal: windowWidth/17,
-    width: windowWidth/1.1,
-    alignItems: 'center',
+    paddingHorizontal: windowWidth / 17,
+    width: windowWidth / 1.1,
+    alignItems: "center",
     paddingBottom: "2%",
-    marginTop: windowHeight/9
+    marginTop: windowHeight / 9,
   },
   ombre: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   ombreContainer: {
-    position: 'absolute',
-    top: '6%',
-    alignItems: 'center',
-    left: '5%'
+    position: "absolute",
+    top: "6%",
+    alignItems: "center",
+    left: "5%",
   },
   innerText: {
-    color: 'white',
-    fontSize: 16
+    color: "white",
+    fontSize: 16,
   },
   innerTextPlus: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    marginTop: '10%'
+    marginTop: "10%",
   },
   innerText2: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    textDecorationLine: 'underline'
+    textDecorationLine: "underline",
   },
   innerContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around'
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   textContainer: {
-    width: '90%'
+    width: "90%",
   },
   superContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    height: '40%',
-    borderTopColor: 'white',
-    borderTopWidth: 1
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-around",
+    height: "40%",
+    borderTopColor: "white",
+    borderTopWidth: 1,
   },
   boutonContainer: {
-    textAlign: 'center',
-    justifyContent: 'space-around',
-    marginBottom: '5%',
-    display: 'flex',
-    flexDirection: 'row'
+    textAlign: "center",
+    justifyContent: "space-around",
+    marginBottom: "5%",
+    display: "flex",
+    flexDirection: "row",
   },
   decline: {
-    backgroundColor: 'black',
-    paddingHorizontal: '10%',
-    paddingVertical: '5%',
-    alignItems: 'center',
-    marginTop: '5%',
+    backgroundColor: "black",
+    paddingHorizontal: "10%",
+    paddingVertical: "5%",
+    alignItems: "center",
+    marginTop: "5%",
   },
   text: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
     borderBottomWidth: 5,
-    borderBottomColor: 'white'
+    borderBottomColor: "white",
   },
   paiementContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginTop: '20%'
+    display: "flex",
+    flexDirection: "row",
+    marginTop: "20%",
   },
   textEntrainement: {
-    color: 'white',
-    fontSize: 16
+    color: "white",
+    fontSize: 16,
   },
   entrainementCherContainer: {
     borderWidth: 1,
-    borderColor: 'white',
-    display: 'flex',
-    flexDirection: 'row',
-    width: '110%',
-    marginTop: '10%'
+    borderColor: "white",
+    display: "flex",
+    flexDirection: "row",
+    width: "110%",
+    marginTop: "10%",
   },
-  entrainementPasClicked : {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '110%',
-    marginTop: '10%'
+  entrainementPasClicked: {
+    display: "flex",
+    flexDirection: "row",
+    width: "110%",
+    marginTop: "10%",
   },
   entrainementPasCher: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   entrainementPasCherClicked: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: "white",
   },
   paymentStatusText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
-  codePromoContainer : {
+  codePromoContainer: {
     borderWidth: 1,
-    borderColor: 'white',
-    width: '60%',
-    padding: '2% 2%',
-    marginLeft: '20%',
-    alignItems: 'center',
-    margin: '2%'
+    borderColor: "white",
+    width: "60%",
+    padding: "2% 2%",
+    marginLeft: "20%",
+    alignItems: "center",
+    margin: "2%",
   },
-  codePromo : {
-    color: 'white'
+  codePromo: {
+    color: "white",
   },
   suivantContainer2: {
-    width: '60%',
-    paddingVertical: '3%',
-    marginLeft: '20%',
-    alignItems: 'center',
-    backgroundColor: '#0d1b3d'
+    width: "60%",
+    paddingVertical: "3%",
+    marginLeft: "20%",
+    alignItems: "center",
+    backgroundColor: "#0d1b3d",
   },
   modalContainer: {
-    backgroundColor: 'black',
-    alignItems: 'center',
+    backgroundColor: "black",
+    alignItems: "center",
     flex: 1,
-    paddingTop: '20%',
-    paddingHorizontal: '10%'
+    paddingTop: "20%",
+    paddingHorizontal: "10%",
   },
   modalTextContainer: {
-    marginTop: '20%',
-    textAlign: 'center',
+    marginTop: "20%",
+    textAlign: "center",
   },
   price: {
-    color: '#D51317',
-    fontSize: 14
+    color: "#D51317",
+    fontSize: 14,
   },
   cardTitle: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   vendeurContainer: {
-    backgroundColor: '#F9F9FA'
+    backgroundColor: "#F9F9FA",
   },
   cardContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     width: 200,
     height: 250,
-    marginTop: '5%',
+    marginTop: "5%",
     borderLeftWidth: 3,
-    borderLeftColor: 'black'
+    borderLeftColor: "black",
   },
   imgContainer: {
-    alignItems: 'center',
-    paddingTop: '5%',
-    overflow: 'hidden'
+    alignItems: "center",
+    paddingTop: "5%",
+    overflow: "hidden",
   },
   cross: {
-    marginLeft: '85%'
+    marginLeft: "85%",
   },
   deleteContainer: {
-    position: 'absolute',
-    right: '5%',
-    width: '12%',
-    alignItems: 'center',
-    top: '2%'
+    position: "absolute",
+    right: "5%",
+    width: "12%",
+    alignItems: "center",
+    top: "2%",
   },
   crossText: {
     fontSize: 20,
-    color: '#A7A9BE'
+    color: "#A7A9BE",
   },
   priceContainer: {
-    marginLeft: '10%'
-  }
+    marginLeft: "10%",
+  },
 });
 export default BoosteVentePaiementScreen;
