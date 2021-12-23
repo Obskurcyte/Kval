@@ -70,6 +70,13 @@ const EvaluationScreen = (props) => {
                                     });
                                 await firebase
                                     .firestore()
+                                    .collection("commandes")
+                                    .doc(firebase.auth().currentUser.uid)
+                                    .collection("userCommandes")
+                                    .doc(`${product.id}`)
+                                    .delete()
+                                await firebase
+                                    .firestore()
                                     .collection("users")
                                     .doc(product.vendeur)
                                     .get()

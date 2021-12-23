@@ -21,6 +21,7 @@ const MarquesChoiceScreen = (props) => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.docs.map((doc) => {
+          console.log(doc.id, doc.data().name)
           marques.push(doc.data());
         });
         setMarques([{ name: "Autres marques" }, ...marques]);
@@ -30,8 +31,9 @@ const MarquesChoiceScreen = (props) => {
   return (
     <ScrollView style={styles.container}>
       {marques &&
-        marques.map((marques_obj) => (
+        marques.map((marques_obj, index) => (
           <TouchableOpacity
+              key={index}
             style={styles.itemForm3}
             onPress={() => {
               setMarque(marques_obj.name);
