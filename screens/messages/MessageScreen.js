@@ -90,6 +90,7 @@ const MessageScreen = (props) => {
                 notificationsBody: doc.data().notificationsBody,
                 notificationsTitle: doc.data().notificationsTitle
               })
+
             });
             if (loading) {
               setLoading(false);

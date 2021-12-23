@@ -92,27 +92,22 @@ const BoosteVentePaiementScreen = (props) => {
 <p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours jusqu'au ${someFormattedDate} à ${hours}:${minutes}.</p>
 <p>Résumé de votre article : </p>
 <hr>
-
 <div style="display: flex">
     <div style="margin-right: 30px">
         <img src="${articles[data].downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
-
     <div style="margin-top: 20px">
         <p style="margin: 0">${articles[data].title}</p>
         <p style="margin: 0">Catégorie : ${articles[data].categorie}</p>
         <p style="margin: 0">Prix net vendeur: ${articles[data].prix} €</p>
     </div>
 </div>
-
 <hr>
-
 <p>Vous pouvez retrouver cet article dans la page d’accueil dans la catégorie : Annonces en avant première</p>
 <p>A savoir : Si vous boostez de nouveau votre annonce avant la fin de la période ci-dessus mentionnée, la durée du nouveau boost partira de cette nouvelle date. S'il restait du temps sur le boost initial, il sera définitivement perdu.</p>
 <br>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
-
 </div>`
             })
           }
@@ -141,70 +136,70 @@ const BoosteVentePaiementScreen = (props) => {
     console.log(makePayment)
     if (!makePayment) {
       return (
-        <ScrollView>
-          <View style={styles.flatlistContainer}>
-            <FlatList
-              horizontal={true}
-              style={styles.list}
-              data={articles}
-              keyExtractor={item => item.id}
-              renderItem={itemData => {
-                return (
-                  <View style={styles.cardContainer}>
-                    <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
-                    <View style={styles.imgContainer}>
-                      <Image
-                        source={{uri: itemData.item.downloadURL}}
-                        style={styles.image}
-                      />
-                    </View>
-                    <View style={styles.priceContainer}>
-                      <Text style={styles.cardTitle}>{itemData.item.title}</Text>
-                      <Text style={styles.price}>{itemData.item.prix} €</Text>
-                    </View>
+          <ScrollView>
+            <View style={styles.flatlistContainer}>
+              <FlatList
+                  horizontal={true}
+                  style={styles.list}
+                  data={articles}
+                  keyExtractor={item => item.id}
+                  renderItem={itemData => {
+                    return (
+                        <View style={styles.cardContainer}>
+                          <Entypo name="circle-with-cross" size={30} color="black" style={styles.cross} onPress={props.onDelete}/>
+                          <View style={styles.imgContainer}>
+                            <Image
+                                source={{uri: itemData.item.downloadURL}}
+                                style={styles.image}
+                            />
+                          </View>
+                          <View style={styles.priceContainer}>
+                            <Text style={styles.cardTitle}>{itemData.item.title}</Text>
+                            <Text style={styles.price}>{itemData.item.prix} €</Text>
+                          </View>
 
-                  </View>
-                )
-              }
-              }
-            />
-          </View>
-
-          <View style={styles.choicePaiementContainer}>
-            <View style={styles.choicePaiement}>
-              <Text>3 jours</Text>
-              <Text>1,15 €</Text>
-              <RoundedCheckbox onPress={(checked1) => {
-                setChecked1(!checked1)
-                setChecked2(!checked2)
-                setPrice(1.15)
-                setDureeBoost(3)
-                setNumberOfDayToAdd(3)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+                        </View>
+                    )
+                  }
+                  }
+              />
             </View>
 
-            <View style={styles.choicePaiement}>
-              <Text>7 jours</Text>
-              <Text>1,95 €</Text>
-              <RoundedCheckbox onPress={(checked2) => {
-                setChecked2(!checked2)
-                setChecked1(!checked1)
-                setPrice(1.95)
-                setDureeBoost(7)
-                setNumberOfDayToAdd(7)
-                setGoPaiement(!goPaiement)
-              }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+            <View style={styles.choicePaiementContainer}>
+              <View style={styles.choicePaiement}>
+                <Text>3 jours</Text>
+                <Text>1,15 €</Text>
+                <RoundedCheckbox onPress={(checked1) => {
+                  setChecked1(!checked1)
+                  setChecked2(!checked2)
+                  setPrice(1.15)
+                  setDureeBoost(3)
+                  setNumberOfDayToAdd(3)
+                  setGoPaiement(!goPaiement)
+                }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+              </View>
+
+              <View style={styles.choicePaiement}>
+                <Text>7 jours</Text>
+                <Text>1,95 €</Text>
+                <RoundedCheckbox onPress={(checked2) => {
+                  setChecked2(!checked2)
+                  setChecked1(!checked1)
+                  setPrice(1.95)
+                  setDureeBoost(7)
+                  setNumberOfDayToAdd(7)
+                  setGoPaiement(!goPaiement)
+                }} text="" outerBorderColor="black" uncheckedColor="white" outerSize={40} innerSize={30}/>
+              </View>
+
+              {goPaiement && (
+
+                  <TouchableOpacity style={styles.mettreEnVente} onPress={() => setMakePayment(true)}>
+                    <Text style={styles.mettreEnVenteText}>Payer</Text>
+                  </TouchableOpacity>
+              )}
             </View>
-
-            {goPaiement && (
-
-              <TouchableOpacity style={styles.mettreEnVente} onPress={() => setMakePayment(true)}>
-                <Text style={styles.mettreEnVenteText}>Payer</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </ScrollView>
+          </ScrollView>
       )
     } else {
 
@@ -217,26 +212,26 @@ const BoosteVentePaiementScreen = (props) => {
           flex: 1,
         }}>
           {paymentStatus === 'Votre paiement est en cours de traitement' ?
-            <View>
-              <Text>{paymentStatus}</Text>
-              <ActivityIndicator/>
-            </View> : <Text></Text>}
+              <View>
+                <Text>{paymentStatus}</Text>
+                <ActivityIndicator/>
+              </View> : <Text></Text>}
 
           {paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro' ?
-            <View style={styles.container2}>
-              <AntDesign name="checkcircleo" size={200} color="white" />
-              <Text style={styles.text2}>Boost validé !</Text>
-              <TouchableOpacity style={styles.retourContainer} onPress={() => {
-                props.navigation.navigate('AccueilScreen')
-              }}>
-                <Text style={styles.text2}>Retour au menu principal</Text>
-              </TouchableOpacity>
-            </View> : <Text></Text>}
+              <View style={styles.container2}>
+                <AntDesign name="checkcircleo" size={200} color="white" />
+                <Text style={styles.text2}>Boost validé !</Text>
+                <TouchableOpacity style={styles.retourContainer} onPress={() => {
+                  props.navigation.navigate('AccueilScreen')
+                }}>
+                  <Text style={styles.text2}>Retour au menu principal</Text>
+                </TouchableOpacity>
+              </View> : <Text></Text>}
         </View>
 
       } else {
         return (
-          <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
+            <PaymentView onCheckStatus={onCheckStatus} product={"Paiement unique"} amount={2}/>
         )
 
       }
@@ -244,9 +239,9 @@ const BoosteVentePaiementScreen = (props) => {
   }
 
   return (
-    <View style={styles.container}>
-      {paymentUI(props)}
-    </View>
+      <View style={styles.container}>
+        {paymentUI(props)}
+      </View>
   );
 }
 
