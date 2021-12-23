@@ -84,7 +84,6 @@ const CartScreen = (props) => {
     return unsubscribe;
   }, [props.navigation, dispatch]);
 
-  let portefeuilleVendeur = 0;
   let portefeuilleAcheteur = 0;
   for (let data in cartItems) {
     total +=
@@ -104,9 +103,7 @@ const CartScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState("");
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
-  let sousTotal = (total * 1.095).toFixed(2)
-
-
+  let sousTotal = (total * 1.095).toFixed(2);
 
   console.log('soustotal', sousTotal);
 
@@ -207,26 +204,6 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
             });
-            await firebase
-              .firestore()
-              .collection("users")
-              .doc(cartItem.idVendeur)
-              .get()
-              .then((doc) => {
-                portefeuilleVendeur = doc.data().portefeuille;
-              })
-              .then(() => {
-                if (portefeuilleVendeur >= 0) {
-                  firebase
-                    .firestore()
-                    .collection("users")
-                    .doc(cartItem.idVendeur)
-                    .update({
-                      portefeuille:
-                        portefeuilleVendeur + Number(sousTotal),
-                    });
-                }
-              });
             let etiquette_url = "";
             if ((livraison == "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
@@ -514,12 +491,19 @@ ${
           .collection("userCommandes")
           .doc(`${cartItem.productId}`)
           .set({
-            title: cartItem.productTitle,
-            prix: cartItem.productPrice,
-            image: cartItem.image,
-            vendeur: cartItem.idVendeur,
-            pseudoVendeur: cartItem.pseudoVendeur,
-            emailVendeur: cartItem.emailVendeur,
+              title: cartItem.productTitle,
+              prix: cartItem.productPrice,
+              image: cartItem.image,
+              vendeur: cartItem.idVendeur,
+              pseudoVendeur: cartItem.pseudoVendeur,
+              emailVendeur: cartItem.emailVendeur,
+              categorie: cartItem.categorie,
+              livraison: cartItem.livraison,
+              poids: cartItem.poids,
+              prixProtectionAcheteur: totalProtectionAcheteur,
+              productTitle: cartItem.productTitle,
+              total: sousTotal,
+              moyenPaiement: "portefeuille",
           });
 
         await firebase
@@ -579,25 +563,6 @@ ${
           }),
         });
         try {
-          await firebase
-            .firestore()
-            .collection("users")
-            .doc(cartItem.idVendeur)
-            .get()
-            .then((doc) => {
-              portefeuilleVendeur = doc.data().portefeuille;
-            })
-            .then(() => {
-              if (portefeuilleVendeur >= 0) {
-                firebase
-                  .firestore()
-                  .collection("users")
-                  .doc(cartItem.idVendeur)
-                  .update({
-                    portefeuille: portefeuilleVendeur + Number(sousTotal),
-                  });
-              }
-            });
           await firebase
             .firestore()
             .collection("users")

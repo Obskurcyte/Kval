@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, Image, Text, TouchableOpacity, Dimensions} from "react-native";
+import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 
 
@@ -11,7 +11,12 @@ const ValidationEvaluationScreen = (props) => {
         <View style={styles.container}>
             <AntDesign name="checkcircleo" size={200} color="white" />
             <Text style={styles.text}>Evaluation prise en compte !</Text>
-            <TouchableOpacity style={styles.retourContainer} onPress={() => props.navigation.navigate('Accueil', {screen: 'AccueilScreen'})}>
+            <TouchableOpacity style={styles.retourContainer} onPress={() => {
+                props.navigation.navigate("ProfileScreen")
+                props.navigation.navigate("Accueil", {
+                    screen: 'AcceuilScreen'
+                })
+            }}>
                 <Text style={styles.text}>Retour au menu principal</Text>
             </TouchableOpacity>
         </View>
