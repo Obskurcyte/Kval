@@ -361,7 +361,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
           cartItem.adresse
         }</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
 </div>
 
