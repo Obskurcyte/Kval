@@ -32,12 +32,12 @@ const ProductDetailScreen = (props) => {
   const dispatch = useDispatch();
 
 
+  console.log('product', product);
   useEffect(() => {
     dispatch(userActions.getUser());
   }, [dispatch]);
   const userData = useSelector((state) => state.user.userData);
-  console.log("user", userData);
-  console.log("product", product);
+
   //-------------CAROUSEL----------------//
 
   let testData = [];
@@ -143,6 +143,7 @@ const ProductDetailScreen = (props) => {
 
   let commentaires = useSelector((state) => state.commandes.commentaires);
 
+  console.log('commentaires', commentaires);
   let ratings = [];
   for (let data in commentaires) {
     ratings.push(commentaires[data].rating);
@@ -444,12 +445,10 @@ const ProductDetailScreen = (props) => {
                           "Ce produit est déjà présent dans votre panier"
                         );
                       } else {
-                        console.log("product", product);
                         dispatch(cartActions.addToCart(product));
                       }
                     }
                   } else {
-                    console.log("product", product);
                     dispatch(cartActions.addToCart(product));
                   }
                 }}

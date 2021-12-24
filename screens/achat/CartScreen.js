@@ -741,6 +741,7 @@ ${
               });
           }
       }
+      props.navigation.navigate("PortefeuilleThankYouScreen");
     };
     return (
       <View>
@@ -763,7 +764,6 @@ ${
                               onPress={async () => {
                                   setIsLoading(true);
                                   await PaymentPortefeuille();
-                                  props.navigation.navigate("PortefeuilleThankYouScreen");
                                   setIsLoading(false);
                               }}
                           >
@@ -853,7 +853,6 @@ ${
     );
   };
 
-  const [goPaiement, setGoPaiement] = useState(false);
   const [goConfirmation, setGoConfirmation] = useState(false);
 
   let totalProtectionAcheteur = 0;

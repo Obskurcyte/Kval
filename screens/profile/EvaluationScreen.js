@@ -29,6 +29,7 @@ const EvaluationScreen = (props) => {
     }
 
     const currentUser = useSelector((state) => state.user.userData);
+
     console.log('user', currentUser)
     const product = props.route.params.product;
     console.log('product', product);
@@ -66,7 +67,13 @@ const EvaluationScreen = (props) => {
                                     .add({
                                         commentaire: values.commentaire,
                                         rating,
-                                        rateur: product.pseudoVendeur
+                                        rateur: currentUser.pseudo
+                                    });
+                                await firebase.firestore()
+                                    .collection('commentaires')
+                                    .doc(`${product.vendeur}`)
+                                    .set({
+                                        rating: rating
                                     });
                                 await firebase
                                     .firestore()
