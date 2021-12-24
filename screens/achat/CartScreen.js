@@ -104,6 +104,7 @@ const CartScreen = (props) => {
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
   let sousTotal = (total * 1.095).toFixed(2);
+  let netVendeur = Number(total).toFixed(2);
 
   console.log('soustotal', sousTotal);
 
@@ -328,7 +329,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -361,7 +362,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
           cartItem.adresse
         }</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
 </div>
 
@@ -408,7 +409,7 @@ ${
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -435,7 +436,7 @@ ${
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
 </div>
 
@@ -473,15 +474,18 @@ ${
     IBAN = userData.IBAN;
   }
 
+
   const ViewPortefeuille = () => {
       const [auth, setAuth] = useState(false);
       const [confirmAuth, setConfirmAuth] = useState(false);
+      const [isLoading, setIsLoading] = useState(false);
       const initialValues = {
           email: "",
           password: "",
       };
       console.log('auth', auth);
       const [err, setErr] = useState(null);
+
     const PaymentPortefeuille = async () => {
       for (const cartItem of cartItems) {
         await firebase
@@ -614,7 +618,7 @@ ${
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -647,7 +651,7 @@ ${
                       cartItem.adresse
                   }</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille</p>
     </div>
 </div>
 
@@ -694,7 +698,7 @@ ${
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et vous avez 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
+    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -721,7 +725,7 @@ ${
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${sousTotal} € net vendeur crédité dans votre portefeuille</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille</p>
     </div>
 </div>
 
@@ -740,97 +744,111 @@ ${
     };
     return (
       <View>
-          {auth ? <View>
-              <Text style={styles.portefeuilleText}>
-                  Vous avez suffisamment d'argent sur votre portefeuille
-              </Text>
-              <TouchableOpacity
-                  style={styles.mettreEnVente}
-                  onPress={async () => {
-                      await PaymentPortefeuille().then(() =>
-                          props.navigation.navigate("PortefeuilleThankYouScreen")
-                      );
-                  }}
-              >
-                  <Text style={styles.mettreEnVenteText}>
-                      Procéder au paiement avec l'argent de mon portefeuille
-                  </Text>
-              </TouchableOpacity>
-          </View> : <View>
-              {!confirmAuth ? <View>
-                  <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
-                  <TouchableOpacity
-                      style={styles.mettreEnVente}
-                      onPress={() => setConfirmAuth(true)}
-                  >
-                      <Text style={styles.mettreEnVenteText}>
-                          M'authentifier
+          <View>
+
+              {isLoading ?
+                  <View style={styles.containerLoading}>
+                      <Text style={styles.loadingText}>
+                          Veuillez patientez...
                       </Text>
-                  </TouchableOpacity>
-              </View> :    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
-                  <KeyboardAvoidingView style={styles.container3} behavior="padding">
-                      <Text style={styles.title}>Se connecter</Text>
-                      <Formik
-                          initialValues={initialValues}
-                          onSubmit={async (values) => {
+                      <ActivityIndicator color="red"/>
+                  </View>
+                  : <View>
+                      {auth ? <View>
+                          <Text style={styles.portefeuilleText}>
+                              Vous avez suffisamment d'argent sur votre portefeuille
+                          </Text>
+                          <TouchableOpacity
+                              style={styles.mettreEnVente}
+                              onPress={async () => {
+                                  setIsLoading(true);
+                                  await PaymentPortefeuille();
+                                  props.navigation.navigate("PortefeuilleThankYouScreen");
+                                  setIsLoading(false);
+                              }}
+                          >
+                              <Text style={styles.mettreEnVenteText}>
+                                  Procéder au paiement avec l'argent de mon portefeuille
+                              </Text>
+                          </TouchableOpacity>
+                      </View> : <View>
+                          {!confirmAuth ? <View>
+                              <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
+                              <TouchableOpacity
+                                  style={styles.mettreEnVente}
+                                  onPress={() => setConfirmAuth(true)}
+                              >
+                                  <Text style={styles.mettreEnVenteText}>
+                                      M'authentifier
+                                  </Text>
+                              </TouchableOpacity>
+                          </View> :    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
+                              <KeyboardAvoidingView style={styles.container3} behavior="padding">
+                                  <Text style={styles.title}>Se connecter</Text>
+                                  <Formik
+                                      initialValues={initialValues}
+                                      onSubmit={async (values) => {
 
-                              try {
-                                  await firebase
-                                      .auth()
-                                      .signInWithEmailAndPassword(values.email, values.password);
-                                  setAuth(true);
-                              } catch (err) {
-                                  console.log(err);
-                                  setErr(err);
-                              }
-                          }}
-                      >
-                          {(props) => (
-                              <View style={styles.formContainer}>
-                                  <View>
-                                      <Text style={styles.text4}>Email</Text>
-                                      <TextInput
-                                          placeholder="Email"
-                                          keyboardType="email-address"
-                                          autoCompleteType="email"
-                                          placeholderTextColor="white"
-                                          value={props.values.email}
-                                          style={styles.textInput}
-                                          onChangeText={props.handleChange("email")}
-                                      />
-                                  </View>
-
-                                  <View>
-                                      <Text style={styles.text4}>Mot de passe</Text>
-                                      <TextInput
-                                          placeholder="Mot de passe"
-                                          placeholderTextColor="white"
-                                          value={props.values.password}
-                                          style={styles.textInput}
-                                          secureTextEntry={true}
-                                          onChangeText={props.handleChange("password")}
-                                      />
-                                  </View>
-
-                                  {err ? (
-                                      <Text style={styles.err}>Vos identifiants sont incorrects</Text>
-                                  ) : (
-                                      <Text />
-                                  )}
-                                  <TouchableOpacity
-                                      style={styles.buttonContainer}
-                                      onPress={props.handleSubmit}
+                                          try {
+                                              await firebase
+                                                  .auth()
+                                                  .signInWithEmailAndPassword(values.email, values.password);
+                                              setAuth(true);
+                                          } catch (err) {
+                                              console.log(err);
+                                              setErr(err);
+                                          }
+                                      }}
                                   >
-                                      <Text style={styles.createCompte}>Valider</Text>
-                                  </TouchableOpacity>
-                              </View>
-                          )}
-                      </Formik>
-                  </KeyboardAvoidingView>
-              </TouchableWithoutFeedback>}
+                                      {(props) => (
+                                          <View style={styles.formContainer}>
+                                              <View>
+                                                  <Text style={styles.text4}>Email</Text>
+                                                  <TextInput
+                                                      placeholder="Email"
+                                                      keyboardType="email-address"
+                                                      autoCompleteType="email"
+                                                      placeholderTextColor="white"
+                                                      value={props.values.email}
+                                                      style={styles.textInput}
+                                                      onChangeText={props.handleChange("email")}
+                                                  />
+                                              </View>
 
-          </View>}
+                                              <View>
+                                                  <Text style={styles.text4}>Mot de passe</Text>
+                                                  <TextInput
+                                                      placeholder="Mot de passe"
+                                                      placeholderTextColor="white"
+                                                      value={props.values.password}
+                                                      style={styles.textInput}
+                                                      secureTextEntry={true}
+                                                      onChangeText={props.handleChange("password")}
+                                                  />
+                                              </View>
 
+                                              {err ? (
+                                                  <Text style={styles.err}>Vos identifiants sont incorrects</Text>
+                                              ) : (
+                                                  <Text />
+                                              )}
+                                              <TouchableOpacity
+                                                  style={styles.buttonContainer}
+                                                  onPress={props.handleSubmit}
+                                              >
+                                                  <Text style={styles.createCompte}>Valider</Text>
+                                              </TouchableOpacity>
+                                          </View>
+                                      )}
+                                  </Formik>
+                              </KeyboardAvoidingView>
+                          </TouchableWithoutFeedback>}
+
+                      </View>}
+                  </View>
+              }
+
+          </View>
       </View>
     );
   };
@@ -850,6 +868,7 @@ ${
   totalLivraison = totalLivraison.toFixed(2);
 
   sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
+  netVendeur = (Number(total) + Number(totalLivraison)).toFixed(2)
   let reductionPortefeuille;
   if (userData?.portefeuille <= sousTotal) {
         reductionPortefeuille = userData.portefeuille;
@@ -1552,6 +1571,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "white",
   },
+    loadingText: {
+        fontSize: 20,
+        textAlign: "center",
+        maxWidth: "90%",
+        marginBottom: 20,
+    },
+    containerLoading: {
+        alignItems: "center",
+        justifyContent: "center",
+        paddingTop: "20%",
+    },
   paymentStatusText: {
     color: "white",
     fontSize: 20,

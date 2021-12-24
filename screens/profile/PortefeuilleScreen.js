@@ -26,7 +26,7 @@ const PortefeuilleScreen = (props) => {
     return (
         <View>
             {userData ? <View>
-                <Text style={styles.argent}>{userData.portefeuille} €</Text>
+                <Text style={styles.argent}>{userData.portefeuille.toFixed(2)} €</Text>
                 <Text style={styles.montant}>Montant disponible</Text>
                 <TouchableOpacity  style={styles.mettreEnVente} onPress={() => {
                     if (userData.portefeuille === 0) {
