@@ -25,6 +25,7 @@ const BoosteVentePaiementScreen = (props) => {
   if (props.route.params && props.route.params.articles) {
     articles = props.route.params.articles;
   }
+  console.log('articles', articles);
   const currentUser = useSelector((state) => state.user.userData);
 
   const [checked1, setChecked1] = useState(false);
@@ -106,6 +107,7 @@ const BoosteVentePaiementScreen = (props) => {
 
     <div style="margin-top: 20px">
         <p style="margin: 0">${articles[data].title}</p>
+        <p style="margin: 0">Description : ${articles[data].description}</p>
         <p style="margin: 0">Catégorie : ${articles[data].categorie}</p>
         <p style="margin: 0">Prix net vendeur: ${articles[data].prix} €</p>
     </div>

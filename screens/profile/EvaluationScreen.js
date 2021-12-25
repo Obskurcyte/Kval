@@ -116,6 +116,7 @@ const EvaluationScreen = (props) => {
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
         <p style="margin: 0">Poids: ${product.poids} kgs</p>
         <p style="margin: 0">Catégorie: ${product.categorie}</p>
@@ -145,6 +146,7 @@ const EvaluationScreen = (props) => {
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix de l'article: ${product.prix} €</p>
          <p style="margin: 0">Protection acheteur: ${product.prixProtectionAcheteur} €</p>
         <p style="margin: 0">Poids: ${product.poids} kgs</p>

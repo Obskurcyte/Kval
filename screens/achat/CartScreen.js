@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
-import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
 import * as productActions from "../../store/actions/products";
 import { PaymentView } from "../../components/PaymentView";
@@ -63,6 +62,7 @@ const CartScreen = (props) => {
         poids: state.cart.items[key].poids,
         pushToken: state.cart.items[key].pushToken,
         sum: state.cart.items[key].sum,
+          description: state.cart.items[key].description,
       });
     }
     return transformedCartItems;
@@ -98,6 +98,8 @@ const CartScreen = (props) => {
     amount: 1,
   };
 
+
+  console.log('cartItems', cartItems);
 
   const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
@@ -147,6 +149,7 @@ const CartScreen = (props) => {
                 categorie: cartItem.categorie,
                 livraison: cartItem.livraison,
                 poids: cartItem.poids,
+                  description: cartItem.description,
                 prixProtectionAcheteur: totalProtectionAcheteur,
                 productTitle: cartItem.productTitle,
                 total: sousTotal,
@@ -323,6 +326,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                 
         <div style="margin-top: 20px">
             <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -360,6 +364,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${
@@ -403,6 +408,7 @@ ${
                 
         <div style="margin-top: 20px">
             <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -437,6 +443,7 @@ ${
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
@@ -508,6 +515,7 @@ ${
               categorie: cartItem.categorie,
               livraison: cartItem.livraison,
               poids: cartItem.poids,
+              description: cartItem.description,
               prixProtectionAcheteur: totalProtectionAcheteur,
               productTitle: cartItem.productTitle,
               total: sousTotal,
@@ -613,6 +621,7 @@ ${
                 
         <div style="margin-top: 20px">
             <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -650,6 +659,7 @@ ${
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${
@@ -693,6 +703,7 @@ ${
                 
         <div style="margin-top: 20px">
             <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -727,6 +738,7 @@ ${
     </div>
     <div style="margin-top: 20px">
         <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>

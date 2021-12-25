@@ -33,6 +33,7 @@ const ProductDetailScreen = (props) => {
 
 
   console.log('product', product);
+  console.log('product', product);
   useEffect(() => {
     dispatch(userActions.getUser());
   }, [dispatch]);
@@ -227,6 +228,7 @@ const ProductDetailScreen = (props) => {
         pushToken: state.cart.items[key].pushToken,
         categorie: state.cart.items[key].categorie,
         sum: state.cart.items[key].sum,
+        description: state.cart.items[key].description
       });
     }
     return transformedCartItems;

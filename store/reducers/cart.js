@@ -1,5 +1,6 @@
 import {ADD_TO_CART, DELETE_CART, REMOVE_FROM_CART} from "../actions/cart";
 import CartItem from "../../models/cart-item";
+import {add} from "react-native-reanimated";
 
 const initialState = {
   items: {},
@@ -10,6 +11,7 @@ const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
+      console.log('added', addedProduct)
       const categorie = addedProduct.categorie;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
@@ -20,6 +22,7 @@ const cartReducer = (state = initialState, action) => {
       const emailVendeur = addedProduct.emailVendeur;
       const poids = addedProduct.poids;
       const livraison = addedProduct.livraison;
+      const description = addedProduct.description;
 
       let updatedOrNewCartItem;
 
@@ -37,7 +40,8 @@ const cartReducer = (state = initialState, action) => {
           categorie,
           poids,
           livraison,
-          state.items[addedProduct.id].quantity * prodPrice
+          state.items[addedProduct.id].quantity * prodPrice,
+            description,
         );
       } else {
         updatedOrNewCartItem = new CartItem(
@@ -53,6 +57,7 @@ const cartReducer = (state = initialState, action) => {
           poids,
           livraison,
           prodPrice,
+            description,
         )
       }
       return {
