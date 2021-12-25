@@ -16,6 +16,7 @@ import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
+import * as Notifications from "expo-notifications";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -77,6 +78,16 @@ const BoosteVentePaiementScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (let data in articles) {
+            let pushToken;
+            let statusObj = await Notifications.getPermissionsAsync();
+            if (statusObj.status !== "granted") {
+              statusObj = await Notifications.requestPermissionsAsync();
+            }
+            if (statusObj.status !== "granted") {
+              pushToken = null;
+            } else {
+              pushToken = await Notifications.getExpoPushTokenAsync();
+            }
             firebase
               .firestore()
               .collection("BoostedVentes")
@@ -90,6 +101,9 @@ const BoosteVentePaiementScreen = (props) => {
                 downloadURL: articles[data].downloadURL,
                 categorie: articles[data].categorie,
                 pseudoVendeur: articles[data].pseudoVendeur,
+                pushToken,
+                idVendeur: firebase.auth().currentUser.uid,
+                emailVendeur: currentUser.email,
                 time: new Date(),
               });
             await axios.post("https://kval-backend.herokuapp.com/send", {

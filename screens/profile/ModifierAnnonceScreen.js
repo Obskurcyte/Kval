@@ -237,6 +237,7 @@ const ModifierAnnonceScreen = (props) => {
                   prix: price,
                   poids: poids,
                   pushToken,
+                  emailVendeur: currentUser.email,
                   idVendeur: firebase.auth().currentUser.uid,
                   pseudoVendeur: currentUser.pseudo,
                 });
@@ -262,6 +263,8 @@ const ModifierAnnonceScreen = (props) => {
                 description: description,
                 prix: prix,
                 poids: poids,
+                pushToken,
+                emailVendeur: currentUser.email
               });
 
             console.log("4");
@@ -280,6 +283,8 @@ const ModifierAnnonceScreen = (props) => {
                 description: description,
                 prix: prix,
                 poids: poids,
+                pushToken,
+                emailVendeur: currentUser.email
               });
 
             await firebase.firestore()
@@ -308,6 +313,8 @@ const ModifierAnnonceScreen = (props) => {
                           description: description,
                           prix: prix,
                           poids: poids,
+                          pushToken,
+                          emailVendeur: currentUser.email
                         }).then((docRef) => {
                       console.log("Document written with ID: ");
                     })
@@ -524,6 +531,7 @@ const ModifierAnnonceScreen = (props) => {
                                 pushToken,
                                 idVendeur: currentUser.id,
                                 pseudoVendeur: currentUser.pseudo,
+                                emailVendeur: currentUser.email
                               });
                           } catch (err) {
                             console.log(err);
@@ -547,6 +555,8 @@ const ModifierAnnonceScreen = (props) => {
                               description: values.description,
                               prix: values.price,
                               poids: values.poids,
+                              pushToken,
+                              emailVendeur: currentUser.email
                             });
 
                           console.log("4");
@@ -565,6 +575,8 @@ const ModifierAnnonceScreen = (props) => {
                               idVendeur: currentUser.id,
                               prix: values.price,
                               poids: values.poids,
+                              pushToken,
+                              emailVendeur: currentUser.email
                             });
 
                           await firebase.firestore()
@@ -593,6 +605,8 @@ const ModifierAnnonceScreen = (props) => {
                                         idVendeur: currentUser.id,
                                         prix: values.price,
                                         poids: values.poids,
+                                        pushToken,
+                                        emailVendeur: currentUser.email
                                       }).then((docRef) => {
                                         console.log("Document written with ID: ");
                                       })
