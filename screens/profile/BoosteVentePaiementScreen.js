@@ -94,7 +94,7 @@ const BoosteVentePaiementScreen = (props) => {
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
-              html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+              html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
 <p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours jusqu'au ${someFormattedDate} à ${hours}:${minutes}.</p>
 <p>Résumé de votre article : </p>
 <hr>

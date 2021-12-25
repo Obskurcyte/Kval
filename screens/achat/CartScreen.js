@@ -73,6 +73,7 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
+  console.log('cart', )
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -125,9 +126,11 @@ const CartScreen = (props) => {
         }
       );
       if (stripeResponse) {
+          console.log(stripeResponse)
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
+              console.log('cartItem', cartItem)
             await firebase
               .firestore()
               .collection("commandes")
@@ -147,6 +150,7 @@ const CartScreen = (props) => {
                 prixProtectionAcheteur: totalProtectionAcheteur,
                 productTitle: cartItem.productTitle,
                 total: sousTotal,
+                  netVendeur,
                 moyenPaiement: "CB",
               });
             await firebase
@@ -308,7 +312,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                 subject: "Confirmation d'achat",
                 html_output: `
 <div>
-    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Félicitations ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
     <p>Récapitulatif de l'achat : </p>
     <hr>
@@ -340,7 +344,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
               await axios.post("https://kval-backend.herokuapp.com/send", {
                 mail: cartItem.emailVendeur,
                 subject: "Confirmation de vente",
-                html_output: `<div><p>Félicitations, ${
+                html_output: `<div><p>Félicitations ${
                   cartItem.pseudoVendeur
                 },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
@@ -387,7 +391,7 @@ ${
                 subject: "Confirmation d'achat",
                 html_output: `
 <div>
-    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Félicitations ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
     <p>Récapitulatif de l'achat : </p>
     
@@ -420,7 +424,7 @@ ${
               await axios.post("https://kval-backend.herokuapp.com/send", {
                 mail: cartItem.emailVendeur,
                 subject: "Confirmation de vente",
-                html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+                html_output: `<div><p>Félicitations ${cartItem.pseudoVendeur},<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 <p>Résumé de votre article : </p>
 
@@ -507,6 +511,7 @@ ${
               prixProtectionAcheteur: totalProtectionAcheteur,
               productTitle: cartItem.productTitle,
               total: sousTotal,
+              netVendeur,
               moyenPaiement: "portefeuille",
           });
 
@@ -597,7 +602,7 @@ ${
                   subject: "Confirmation d'achat",
                   html_output: `
 <div>
-    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Félicitations ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
     <p>Récapitulatif de l'achat : </p>
     <hr>
@@ -629,7 +634,7 @@ ${
               await axios.post("https://kval-backend.herokuapp.com/send", {
                   mail: cartItem.emailVendeur,
                   subject: "Confirmation de vente",
-                  html_output: `<div><p>Félicitations, ${
+                  html_output: `<div><p>Félicitations ${
                       cartItem.pseudoVendeur
                   },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
@@ -676,7 +681,7 @@ ${
                   subject: "Confirmation d'achat",
                   html_output: `
 <div>
-    <p>Félicitations, ${userData.pseudo}, <br></p> 
+    <p>Félicitations ${userData.pseudo}, <br></p> 
     <p>Vous venez d'acheter un article à ${cartItem.pseudoVendeur}.</p>
     <p>Récapitulatif de l'achat : </p>
     
@@ -709,7 +714,7 @@ ${
               await axios.post("https://kval-backend.herokuapp.com/send", {
                   mail: cartItem.emailVendeur,
                   subject: "Confirmation de vente",
-                  html_output: `<div><p>Félicitations, ${cartItem.pseudoVendeur},<br></p> 
+                  html_output: `<div><p>Félicitations ${cartItem.pseudoVendeur},<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 <p>Résumé de votre article : </p>
 

@@ -213,6 +213,7 @@ const VendreArticleScreen = (props) => {
                 initialValues={initialValues}
                 validationSchema={uploadSchema}
                 onSubmit={async (values) => {
+                  let data = {};
                   setErrors(false);
                   if (!etat || !categorie || !marques) {
                     setErrors(true);
@@ -344,12 +345,13 @@ const VendreArticleScreen = (props) => {
                           });
                         };
 
-                        let data = {};
                         const saveImageData = (downloadURL, index) => {
                           const property_name =
                             index === 0 ? "downloadURL" : `downloadURL${index}`;
                           data[property_name] = downloadURL;
-                          setImageMail(downloadURL);
+                          setImageMail(data.downloadURL);
+                          console.log('imageEmail', imageEmail);
+                          console.log('data', data);
                           firebase
                             .firestore()
                             .collection("products")
@@ -390,13 +392,13 @@ const VendreArticleScreen = (props) => {
                         {
                           mail: currentUser.email,
                           subject: "Confirmation de mise en vente",
-                          html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+                          html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
 <p>Votre article vient d'être mis en vente.</p>
 <p>Résumé de votre article : </p>
 <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">
-            <img src="${imageEmail}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+            <img src="${data.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
         </div>
                 
         <div style="margin-top: 20px">
@@ -409,7 +411,7 @@ const VendreArticleScreen = (props) => {
 <hr>
 <p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
 <p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">« Annonce en avant première » du menu d’accueil de l’application.
+<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
 </p>
 <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>

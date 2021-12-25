@@ -87,7 +87,7 @@ const InscriptionScreen = (props) => {
                                     .post("https://kval-backend.herokuapp.com/send", {
                                         mail: values.email,
                                         subject: "Confirmation de création de compte",
-                                        html_output: `<div><p>Félicitations, ${values.pseudo}, <br></p> 
+                                        html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
 <p>Votre compte vient d'être créé.</p><br>
 <p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
 <p style="margin: 0">Votre adresse mail : ${values.email}</p>

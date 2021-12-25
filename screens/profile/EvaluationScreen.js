@@ -97,14 +97,14 @@ const EvaluationScreen = (props) => {
                                                 .collection("users")
                                                 .doc(product.vendeur)
                                                 .update({
-                                                    portefeuille: portefeuilleVendeur + Number(product.total),
+                                                    portefeuille: portefeuilleVendeur + Number(product.netVendeur),
                                                 });
                                         }
                                     });
                                 await axios.post("https://kval-backend.herokuapp.com/send", {
                                     mail: product.emailVendeur,
                                     subject: "Confirmation de réception",
-                                    html_output: `<div><p>Bonjour, ${product.pseudoVendeur}, <br></p> 
+                                    html_output: `<div><p>Bonjour ${product.pseudoVendeur}, <br></p> 
 <p>Votre article vient d’être reçu par ${currentUser.pseudo} et conforme à sa description.</p>
 <p>Résumé de votre article : </p>
 
@@ -124,7 +124,7 @@ const EvaluationScreen = (props) => {
 
 <hr>
 
-<p>Votre portefeuille sera crédité de la valeur de votre article d’ici 48h,</p>
+<p>Votre portefeuille sera crédité de la valeur de votre article d’ici 48h.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz</p>
@@ -155,7 +155,7 @@ const EvaluationScreen = (props) => {
 
 <hr>
 
-<p>Le vendeur sera crédité de la valeur de l’article d’ici 48h,</p>
+<p>Le vendeur sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">

@@ -432,6 +432,7 @@ const ModifierAnnonceScreen = (props) => {
                     initialValues={initialValues}
                     validationSchema={uploadSchema}
                     onSubmit={async (values) => {
+                      let data = {};
                       if (price !== values.price) {
                         setGoMessagePayment(true);
                         setTitre(values.title);
@@ -483,11 +484,6 @@ const ModifierAnnonceScreen = (props) => {
                               .collection("allProducts")
                               .doc(`${old_id}`)
                               .delete();
-                            await firebase
-                                .firestore()
-                                .collection("BoostedVentes")
-                                .doc(`${old_id}`)
-                                .delete();
                           } catch (err) {
                             console.log(err);
                           }
@@ -554,27 +550,44 @@ const ModifierAnnonceScreen = (props) => {
                               poids: values.poids,
                             });
 
-                          await firebase
-                              .firestore()
+                          await firebase.firestore()
                               .collection("BoostedVentes")
-                              .doc(`${id}`)
-                              .set({
-                                pseudoVendeur: currentUser.pseudo,
-                                categorie,
-                                marques,
-                                etat,
-                                date: date,
-                                title: values.title,
-                                description: values.description,
-                                idVendeur: currentUser.id,
-                                prix: values.price,
-                                poids: values.poids,
-                              }).then((docRef) => {
-                                console.log("Document written with ID: ");
+                              .doc(`${old_id}`)
+                              .get()
+                              .then((doc) => {
+                                if (doc.exists) {
+                                  firebase
+                                      .firestore()
+                                      .collection("BoostedVentes")
+                                      .doc(`${old_id}`)
+                                      .delete();
+                                  firebase
+                                      .firestore()
+                                      .collection("BoostedVentes")
+                                      .doc(`${id}`)
+                                      .set({
+                                        pseudoVendeur: currentUser.pseudo,
+                                        categorie,
+                                        marques,
+                                        etat,
+                                        date: date,
+                                        title: values.title,
+                                        description: values.description,
+                                        idVendeur: currentUser.id,
+                                        prix: values.price,
+                                        poids: values.poids,
+                                      }).then((docRef) => {
+                                        console.log("Document written with ID: ");
+                                      })
+                                      .catch((error) => {
+                                        console.error("Error adding document: ", error);
+                                      });
+                                } else {
+                                  // doc.data() will be undefined in this case
+                                  console.log("No such document!");
+                                }
                               })
-                              .catch((error) => {
-                                console.error("Error adding document: ", error);
-                              });
+
 
                           console.log("5");
                           const uploadImage = async (index) => {
@@ -626,7 +639,6 @@ const ModifierAnnonceScreen = (props) => {
                               index === 0
                                 ? "downloadURL"
                                 : `downloadURL${index}`;
-                            const data = {};
                             data[property_name] = downloadURL;
                             firebase
                               .firestore()
@@ -645,18 +657,26 @@ const ModifierAnnonceScreen = (props) => {
                               .collection("allProducts")
                               .doc(`${id}`)
                               .update(data);
-                            firebase
-                                .firestore()
+                            firebase.firestore()
                                 .collection("BoostedVentes")
                                 .doc(`${id}`)
-                                .update(data)
-                                .then(() => {
-                                  console.log("Document successfully updated!");
+                                .get()
+                                .then((doc) => {
+                                  if (doc.exists) {
+                                    firebase
+                                        .firestore()
+                                        .collection("BoostedVentes")
+                                        .doc(`${id}`)
+                                        .update(data)
+                                        .then(() => {
+                                          console.log("Document successfully updated!");
+                                        })
+                                        .catch((error) => {
+                                          // The document probably doesn't exist.
+                                          console.error("Error updating document: ", error);
+                                        });
+                                  }
                                 })
-                                .catch((error) => {
-                                  // The document probably doesn't exist.
-                                  console.error("Error updating document: ", error);
-                                });
                           };
 
                           await Promise.all(
@@ -674,12 +694,12 @@ const ModifierAnnonceScreen = (props) => {
                             {
                               mail: currentUser.email,
                               subject: "Confirmation de modification ",
-                              html_output: `<div><p>Félicitations, ${currentUser.pseudo}, <br></p> 
+                              html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
 <p>Nous vous confirmons la modification de votre article comme suit :</p>
 <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">
-            <img src="${imageEmail}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+            <img src="${data.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
         </div>
                 
         <div style="margin-top: 20px">
@@ -692,7 +712,7 @@ const ModifierAnnonceScreen = (props) => {
 <hr>
 <p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
 <p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">« Annonce en avant première » du menu d’accueil de l’application.
+<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
 </p>
 <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
@@ -960,10 +980,13 @@ const ModifierAnnonceScreen = (props) => {
                 <TouchableOpacity
                   style={styles.retourContainer}
                   onPress={() => {
-                    props.navigation.navigate("ProfileScreen");
+                    props.navigation.navigate("ProfileScreen")
+                    props.navigation.navigate("Accueil", {
+                      screen: 'AcceuilScreen'
+                    })
                   }}
                 >
-                  <Text style={styles.text2}>Retour au profil</Text>
+                  <Text style={styles.text2}>Retour au menu principal</Text>
                 </TouchableOpacity>
               </View>
             ) : (

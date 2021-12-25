@@ -13,9 +13,12 @@ const ValidationAnnonceModifieeScreen = (props) => {
             <AntDesign name="checkcircleo" size={200} color="white" />
             <Text style={styles.text}>Votre modification est effectuée !</Text>
             <TouchableOpacity style={styles.retourContainer} onPress={() => {
-                    props.navigation.navigate('ProfileScreen')
+                props.navigation.navigate("ProfileScreen")
+                props.navigation.navigate("Accueil", {
+                    screen: 'AcceuilScreen'
+                })
             }}>
-                <Text style={styles.text}>Retour au profil</Text>
+                <Text style={styles.text}>Retour au menu principal</Text>
             </TouchableOpacity>
         </View>
     );
