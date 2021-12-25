@@ -106,7 +106,7 @@ const BoosteVentePaiementScreen = (props) => {
     </div>
 
     <div style="margin-top: 20px">
-        <p style="margin: 0">${articles[data].title}</p>
+        <p style="margin: 0">Titre : ${articles[data].title}</p>
         <p style="margin: 0">Description : ${articles[data].description}</p>
         <p style="margin: 0">Catégorie : ${articles[data].categorie}</p>
         <p style="margin: 0">Prix net vendeur: ${articles[data].prix} €</p>

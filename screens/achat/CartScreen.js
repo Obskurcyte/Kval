@@ -153,7 +153,6 @@ const CartScreen = (props) => {
                 prixProtectionAcheteur: totalProtectionAcheteur,
                 productTitle: cartItem.productTitle,
                 total: sousTotal,
-                  netVendeur,
                 moyenPaiement: "CB",
               });
             await firebase
@@ -325,7 +324,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         </div>
                 
         <div style="margin-top: 20px">
-            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
             <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
@@ -363,7 +362,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         }" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -407,7 +406,7 @@ ${
         </div>
                 
         <div style="margin-top: 20px">
-            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
             <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
@@ -442,7 +441,7 @@ ${
         <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -519,7 +518,6 @@ ${
               prixProtectionAcheteur: totalProtectionAcheteur,
               productTitle: cartItem.productTitle,
               total: sousTotal,
-              netVendeur,
               moyenPaiement: "portefeuille",
           });
 
@@ -620,7 +618,7 @@ ${
         </div>
                 
         <div style="margin-top: 20px">
-            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
             <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
@@ -658,7 +656,7 @@ ${
                   }" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
@@ -702,7 +700,7 @@ ${
         </div>
                 
         <div style="margin-top: 20px">
-            <p style="margin: 0">${cartItem.productTitle}</p>
+            <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
             <p style="margin: 0">Description : ${cartItem.description}</p>
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
@@ -737,7 +735,7 @@ ${
         <img src="${cartItem.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${cartItem.productTitle}</p>
+        <p style="margin: 0">Titre : ${cartItem.productTitle}</p>
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>

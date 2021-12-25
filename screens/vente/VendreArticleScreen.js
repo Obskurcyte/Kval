@@ -402,8 +402,8 @@ const VendreArticleScreen = (props) => {
         </div>
                 
         <div style="margin-top: 20px">
-            <p style="margin: 0">${values.title}</p>
-            <p style="margin: 0">${values.description}</p>
+            <p style="margin: 0">Titre : ${values.title}</p>
+            <p style="margin: 0">Description : ${values.description}</p>
             <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
             <p style="margin: 0">Poids : ${values.poids} kgs</p>
             <p style="margin: 0">Catégorie: ${categorie}</p>

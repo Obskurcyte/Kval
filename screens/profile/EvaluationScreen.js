@@ -97,7 +97,7 @@ const EvaluationScreen = (props) => {
                                                 .collection("users")
                                                 .doc(product.vendeur)
                                                 .update({
-                                                    portefeuille: portefeuilleVendeur + Number(product.netVendeur),
+                                                    portefeuille: portefeuilleVendeur + Number(product.prix),
                                                 });
                                         }
                                     });
@@ -115,7 +115,7 @@ const EvaluationScreen = (props) => {
         <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Titre : ${product.productTitle}</p>
         <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
         <p style="margin: 0">Poids: ${product.poids} kgs</p>
@@ -125,7 +125,7 @@ const EvaluationScreen = (props) => {
 
 <hr>
 
-<p>Votre portefeuille sera crédité de la valeur de votre article d’ici 48h.</p>
+<p>Votre portefeuille sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <br>
 <p style="color: red">L'équipe KVal Occaz</p>
@@ -145,7 +145,7 @@ const EvaluationScreen = (props) => {
         <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">${product.productTitle}</p>
+        <p style="margin: 0">Titre : ${product.productTitle}</p>
         <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix de l'article: ${product.prix} €</p>
          <p style="margin: 0">Protection acheteur: ${product.prixProtectionAcheteur} €</p>
