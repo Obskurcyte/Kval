@@ -44,6 +44,10 @@ const CartScreen = (props) => {
     }
   }
 
+    const [auth, setAuth] = useState(false);
+    const [confirmAuth, setConfirmAuth] = useState(false);
+    const [err, setErr] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
   let cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -502,15 +506,12 @@ ${
 
 
   const ViewPortefeuille = () => {
-      const [auth, setAuth] = useState(false);
-      const [confirmAuth, setConfirmAuth] = useState(false);
-      const [isLoading, setIsLoading] = useState(false);
       const initialValues = {
           email: "",
           password: "",
       };
-      console.log('auth', auth);
-      const [err, setErr] = useState(null);
+
+
 
     const PaymentPortefeuille = async () => {
       for (const cartItem of cartItems) {
@@ -1297,95 +1298,208 @@ ${
         );
       }
     } else {
-      if (response !== undefined) {
-        return (
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 1,
-            }}
-          >
-            {paymentStatus === "Votre paiement est en cours de traitement" ? (
-              <View>
-                <Text>{paymentStatus}</Text>
-                <ActivityIndicator />
-              </View>
-            ) : (
-              <Text></Text>
-            )}
+        if (response !== undefined) {
+            return (
+                <View
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        flex: 1,
+                    }}
+                >
+                    {paymentStatus === "Votre paiement est en cours de traitement" ? (
+                        <View>
+                            <Text>{paymentStatus}</Text>
+                            <ActivityIndicator/>
+                        </View>
+                    ) : (
+                        <Text></Text>
+                    )}
 
-            {paymentStatus === "Le paiement a échoué" ? (
-              <View style={styles.container2}>
-                <AntDesign name="close" size={200} color="white" />
-                <Text style={styles.text3}>Le paiment a échoué</Text>
-                <TouchableOpacity
-                  style={styles.retourContainer}
-                  onPress={() => {
-                    props.navigation.navigate("AccueilScreen");
-                  }}
-                >
-                  <Text style={styles.text2}>Retour au menu principal</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Text />
-            )}
-            {paymentStatus ===
-            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
-              <View style={styles.container2}>
-                <AntDesign name="checkcircleo" size={200} color="white" />
-                <Text style={styles.text3}>
-                  Vous avez bien acheté l'article !
-                </Text>
-                <TouchableOpacity
-                  style={styles.retourContainer}
-                  onPress={() => {
-                    props.navigation.navigate("AccueilScreen");
-                  }}
-                >
-                  <Text style={styles.text2}>Retour au menu principal</Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Text></Text>
-            )}
-          </View>
-        );
-      } else {
-        return (
-          <View style={{ flex: 1, padding: 10 }}>
-            <Text style={{ textAlign: "center", fontSize: 18 }}>
-              Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
-            </Text>
-            <PaymentView
-              onCheckStatus={onCheckStatus}
-              product={"Paiement unique"}
-              amount={sousTotal}
-            />
-            <Text style={{ textAlign: "center", fontSize: 18 }}>
-              Payment Powered by Stripe
-            </Text>
-            <TouchableOpacity
-              style={styles.mettreEnVenteOptional}
-              onPress={() => {
-                adresse = null;
-                enteredAdresse = null;
-                setToggleCheckBox(false);
-                setMakePayment(!makePayment);
-              }}
-            >
-              <Text style={styles.mettreEnVenteTextOptional}>
-                Annuler Paiement
-              </Text>
-            </TouchableOpacity>
-          </View>
-        );
-      }
-    }
-  };
+                    {paymentStatus === "Le paiement a échoué" ? (
+                        <View style={styles.container2}>
+                            <AntDesign name="close" size={200} color="white"/>
+                            <Text style={styles.text3}>Le paiment a échoué</Text>
+                            <TouchableOpacity
+                                style={styles.retourContainer}
+                                onPress={() => {
+                                    props.navigation.navigate("AccueilScreen");
+                                }}
+                            >
+                                <Text style={styles.text2}>Retour au menu principal</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <Text/>
+                    )}
+                    {paymentStatus ===
+                    "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
+                        <View style={styles.container2}>
+                            <AntDesign name="checkcircleo" size={200} color="white"/>
+                            <Text style={styles.text3}>
+                                Vous avez bien acheté l'article !
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.retourContainer}
+                                onPress={() => {
+                                    props.navigation.navigate("AccueilScreen");
+                                }}
+                            >
+                                <Text style={styles.text2}>Retour au menu principal</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <Text></Text>
+                    )}
+                </View>
+            );
+        } else {
+
+            if (toggleCheckBoxPortefeuille) {
+                const initialValues = {
+                    email: "",
+                    password: "",
+                };
+
+                return (
+                    <View style={{flex: 1, padding: 10}}>
+                        {!auth ? <View>
+                            {!confirmAuth ? <View>
+                                <Text style={styles.authText}>Pour l'utilisation de votre portefeuille et pour votre
+                                    sécurité nous vous demandons de vous authentifier</Text>
+                                <TouchableOpacity
+                                    style={styles.mettreEnVente}
+                                    onPress={() => setConfirmAuth(true)}
+                                >
+                                    <Text style={styles.mettreEnVenteText}>
+                                        M'authentifier
+                                    </Text>
+                                </TouchableOpacity>
+                            </View> : <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
+                                <KeyboardAvoidingView style={styles.container3} behavior="padding">
+                                    <Text style={styles.title}>Se connecter</Text>
+                                    <Formik
+                                        initialValues={initialValues}
+                                        onSubmit={async (values) => {
+
+                                            try {
+                                                await firebase
+                                                    .auth()
+                                                    .signInWithEmailAndPassword(values.email, values.password);
+                                                setAuth(true);
+                                            } catch (err) {
+                                                console.log(err);
+                                                setErr(err);
+                                            }
+                                        }}
+                                    >
+                                        {(props) => (
+                                            <View style={styles.formContainer}>
+                                                <View>
+                                                    <Text style={styles.text4}>Email</Text>
+                                                    <TextInput
+                                                        placeholder="Email"
+                                                        keyboardType="email-address"
+                                                        autoCompleteType="email"
+                                                        placeholderTextColor="white"
+                                                        value={props.values.email}
+                                                        style={styles.textInput}
+                                                        onChangeText={props.handleChange("email")}
+                                                    />
+                                                </View>
+
+                                                <View>
+                                                    <Text style={styles.text4}>Mot de passe</Text>
+                                                    <TextInput
+                                                        placeholder="Mot de passe"
+                                                        placeholderTextColor="white"
+                                                        value={props.values.password}
+                                                        style={styles.textInput}
+                                                        secureTextEntry={true}
+                                                        onChangeText={props.handleChange("password")}
+                                                    />
+                                                </View>
+
+                                                {err ? (
+                                                    <Text style={styles.err}>Vos identifiants sont incorrects</Text>
+                                                ) : (
+                                                    <Text/>
+                                                )}
+                                                <TouchableOpacity
+                                                    style={styles.buttonContainer}
+                                                    onPress={props.handleSubmit}
+                                                >
+                                                    <Text style={styles.createCompte}>Valider</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+                                    </Formik>
+                                </KeyboardAvoidingView>
+                            </TouchableWithoutFeedback>}
+
+                        </View> :     <>
+                            <Text style={{textAlign: "center", fontSize: 18}}>
+                                Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
+                            </Text>
+                            <PaymentView
+                                onCheckStatus={onCheckStatus}
+                                product={"Paiement unique"}
+                                amount={sousTotal}
+                            />
+                            <Text style={{textAlign: "center", fontSize: 18}}>
+                                Payment Powered by Stripe
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.mettreEnVenteOptional}
+                                onPress={() => {
+                                    adresse = null;
+                                    enteredAdresse = null;
+                                    setToggleCheckBox(false);
+                                    setMakePayment(!makePayment);
+                                }}
+                            >
+                                <Text style={styles.mettreEnVenteTextOptional}>
+                                    Annuler Paiement
+                                </Text>
+                            </TouchableOpacity>
+                        </>}
+
+                    </View>
+                )
+            } else {
+                return (
+                    <View style={{flex: 1, padding: 10}}>
+                        <Text style={{textAlign: "center", fontSize: 18}}>
+                            Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
+                        </Text>
+                        <PaymentView
+                            onCheckStatus={onCheckStatus}
+                            product={"Paiement unique"}
+                            amount={sousTotal}
+                        />
+                        <Text style={{textAlign: "center", fontSize: 18}}>
+                            Payment Powered by Stripe
+                        </Text>
+                        <TouchableOpacity
+                            style={styles.mettreEnVenteOptional}
+                            onPress={() => {
+                                adresse = null;
+                                enteredAdresse = null;
+                                setToggleCheckBox(false);
+                                setMakePayment(!makePayment);
+                            }}
+                        >
+                            <Text style={styles.mettreEnVenteTextOptional}>
+                                Annuler Paiement
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        }
+    }}
 
   return <View style={styles.container}>{paymentUI(props)}</View>;
 };
