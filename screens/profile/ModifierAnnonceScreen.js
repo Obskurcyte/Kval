@@ -216,12 +216,6 @@ const ModifierAnnonceScreen = (props) => {
                 .collection("allProducts")
                 .doc(`${old_id}`)
                 .delete();
-
-              await firebase
-                  .firestore()
-                  .collection("BoostedVentes")
-                  .doc(`${old_id}`)
-                  .delete();
             } catch (err) {
               console.log(err);
             }
@@ -288,29 +282,44 @@ const ModifierAnnonceScreen = (props) => {
                 poids: poids,
               });
 
-            await firebase
-                .firestore()
+            await firebase.firestore()
                 .collection("BoostedVentes")
-                .doc(`${id}`)
-                .set({
-                  pseudoVendeur: currentUser.pseudo,
-                  categorie,
-                  marques,
-                  etat,
-                  date: date,
-                  title: titre,
-                  idVendeur: firebase.auth().currentUser.uid,
-                  description: description,
-                  prix: prix,
-                  poids: poids,
-                }).then((docRef) => {
-                  console.log("Document written with ID: ");
-                })
-                .catch((error) => {
-                  console.error("Error adding document: ", error);
+                .doc(`${old_id}`)
+                .get()
+                .then((doc) => {
+                  if (doc.exists) {
+                    firebase
+                        .firestore()
+                        .collection("BoostedVentes")
+                        .doc(`${old_id}`)
+                        .delete();
+                    firebase
+                        .firestore()
+                        .collection("BoostedVentes")
+                        .doc(`${id}`)
+                        .set({
+                          pseudoVendeur: currentUser.pseudo,
+                          categorie,
+                          marques,
+                          etat,
+                          date: date,
+                          title: titre,
+                          idVendeur: firebase.auth().currentUser.uid,
+                          description: description,
+                          prix: prix,
+                          poids: poids,
+                        }).then((docRef) => {
+                      console.log("Document written with ID: ");
+                    })
+                        .catch((error) => {
+                          console.error("Error adding document: ", error);
+                        });
+                  } else {
+                    // doc.data() will be undefined in this case
+                    console.log("No such document!");
+                  }
                 });
-
-            console.log("5");
+              console.log("5");
             const uploadImage = async (index) => {
               return new Promise(async (resolve) => {
                 const uri = imagesTableau[index];
@@ -372,18 +381,26 @@ const ModifierAnnonceScreen = (props) => {
                 .collection("allProducts")
                 .doc(`${id}`)
                 .update(data);
-              firebase
-                  .firestore()
+              firebase.firestore()
                   .collection("BoostedVentes")
                   .doc(`${id}`)
-                  .update(data)
-                  .then(() => {
-                    console.log("Document successfully updated!");
+                  .get()
+                  .then((doc) => {
+                    if (doc.exists) {
+                      firebase
+                          .firestore()
+                          .collection("BoostedVentes")
+                          .doc(`${id}`)
+                          .update(data)
+                          .then(() => {
+                            console.log("Document successfully updated!");
+                          })
+                          .catch((error) => {
+                            // The document probably doesn't exist.
+                            console.error("Error updating document: ", error);
+                          });
+                    }
                   })
-                  .catch((error) => {
-                    // The document probably doesn't exist.
-                    console.error("Error updating document: ", error);
-                  });
             };
 
             await Promise.all(
