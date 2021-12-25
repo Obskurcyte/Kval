@@ -128,8 +128,8 @@ const EvaluationScreen = (props) => {
 <p>Votre portefeuille sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <br>
-<p style="color: red">L'équipe KVal Occaz</p>
-<img src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
                                 });
                                 await axios.post("https://kval-backend.herokuapp.com/send", {
@@ -160,7 +160,7 @@ const EvaluationScreen = (props) => {
 <p>Le vendeur sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <p style="margin: 0">L'équipe KVal Occaz</p>
-<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
                                 });
 
