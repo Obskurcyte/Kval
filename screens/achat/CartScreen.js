@@ -872,7 +872,6 @@ ${
   totalLivraison = totalLivraison.toFixed(2);
 
   sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
-  netVendeur = (Number(total) + Number(totalLivraison)).toFixed(2)
   let reductionPortefeuille;
   if (userData?.portefeuille <= sousTotal) {
         reductionPortefeuille = userData.portefeuille;
