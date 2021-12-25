@@ -106,11 +106,12 @@ const CartScreen = (props) => {
   const [paymentStatus, setPaymentStatus] = useState("");
   const [portefeuillePayment, setPortefeuillePayment] = useState(false);
 
-  let sousTotal = (total * 1.095).toFixed(2);
+  let sousTotal = (total * 1.05).toFixed(2);
   let netVendeur = Number(total).toFixed(2);
 
+  let deductionPortefeuille = Number(userData?.portefeuille)
   console.log('soustotal', sousTotal);
-
+    let etiquette_url = "";
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -211,7 +212,22 @@ const CartScreen = (props) => {
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
             });
-            let etiquette_url = "";
+
+            if (toggleCheckBoxPortefeuille) {
+                try {
+                    await firebase
+                        .firestore()
+                        .collection("users")
+                        .doc(firebase.auth().currentUser.uid)
+                        .update({
+                            portefeuille : 0
+                        });
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+
+
             if ((livraison == "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -601,6 +617,101 @@ ${
         } catch (err) {
           console.log(err);
         }
+          if ((livraison == "MondialRelay")) {
+              const data = `<?xml version="1.0" encoding="utf-8"?>
+<ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Request">
+    <Context>
+        <Login>MRKVALOC@business-api.mondialrelay.com</Login>
+        <Password>:0qjMV1DpHrMJPymQBkq</Password>
+        <CustomerId>MRKVALOC</CustomerId>
+        <Culture>fr-FR</Culture>
+        <VersionAPI>1.0</VersionAPI>
+    </Context>
+    <OutputOptions>
+        <OutputFormat>10x15</OutputFormat>
+        <OutputType>PdfUrl</OutputType>
+    </OutputOptions>
+    <ShipmentsList>
+        <Shipment>
+            <OrderNo></OrderNo>
+            <CustomerNo></CustomerNo>
+            <ParcelCount>1</ParcelCount>
+            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
+            <CollectionMode Mode="REL" Location="" />
+            <Parcels>
+                <Parcel>
+                    <Content>Materiel Equitation</Content>
+                    <Weight Value="${
+                  Number(cartItem.poids) * 1000
+              }" Unit="gr" />
+                </Parcel>
+            </Parcels>
+            <DeliveryInstruction></DeliveryInstruction>
+            <Sender>
+                <Address>
+                    <Title />
+                    <Firstname> Kval Occaz</Firstname>
+                    <Lastname />
+                    <Streetname> Les termes</Streetname>
+                    <HouseNo>17 bis</HouseNo>
+                    <CountryCode>FR</CountryCode>
+                    <PostCode>13124</PostCode>
+                    <City>PEYPIN</City>
+                    <AddressAdd1></AddressAdd1>
+                    <AddressAdd2 />
+                    <AddressAdd3></AddressAdd3>
+                    <PhoneNo />
+                    <MobileNo></MobileNo>
+                    <Email>info@k-val.com</Email>
+                </Address>
+            </Sender>
+            <Recipient>
+                <Address>
+                    <Title></Title>
+                    <Firstname>${userData.prenom}</Firstname>
+                    <Lastname>${userData.nom}</Lastname>
+                    <Streetname></Streetname>
+                    <HouseNo></HouseNo>
+                    <CountryCode>FR</CountryCode>
+                    <PostCode>${cartItem.adresse.CP}</PostCode>
+                    <City>${cartItem.adresse.Ville}</City>
+                    <AddressAdd1 />
+                    <AddressAdd2 />
+                    <AddressAdd3 />
+                    <PhoneNo></PhoneNo>
+                    <MobileNo />
+                    <Email></Email>
+                </Address>
+            </Recipient>
+        </Shipment>
+    </ShipmentsList>
+</ShipmentCreationRequest>
+                                                `;
+              var config = {
+                  method: "post",
+                  url: "https://connect-api.mondialrelay.com/api/shipment",
+                  headers: {
+                      "Content-Type": "text/xml",
+                  },
+                  data: data,
+              };
+
+              etiquette_url = await new Promise((resolve) =>
+                  axios(config)
+                      .then(function (response) {
+                          console.log(JSON.stringify(response.data));
+                          resolve(
+                              response.data.shipmentsListField[0].labelListField
+                                  .labelField.outputField
+                          );
+                      })
+                      .catch(function (error) {
+                          console.log("Mondial relay error :", error);
+                      })
+              );
+          }
+
           if (cartItem.adresse) {
               console.log("yes");
               await axios.post("https://kval-backend.herokuapp.com/send", {
@@ -664,7 +775,7 @@ ${
                       cartItem.adresse
                   }</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
 </div>
 
@@ -740,7 +851,7 @@ ${
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
         <p style="margin: 0">Livraison: ${cartItem.livraison}</p>
-        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille</p>
+        <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
 </div>
 
@@ -788,7 +899,7 @@ ${
                           </TouchableOpacity>
                       </View> : <View>
                           {!confirmAuth ? <View>
-                              <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
+                              <Text style={styles.authText}>Pour l'utilisation de votre portefeuille et pour votre sécurité nous vous demandons de vous authentifier</Text>
                               <TouchableOpacity
                                   style={styles.mettreEnVente}
                                   onPress={() => setConfirmAuth(true)}
@@ -883,25 +994,27 @@ ${
 
   sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
   let reductionPortefeuille;
+  let goPaymentPortefeuille = userData?.portefeuille >= sousTotal;
+
   if (userData?.portefeuille <= sousTotal) {
-        reductionPortefeuille = userData.portefeuille;
+        reductionPortefeuille = userData.portefeuille.toFixed(2);
   } else {
         reductionPortefeuille = sousTotal;
   }
   const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
-
   const paymentUI = (props) => {
-    if (portefeuillePayment) {
+    if (portefeuillePayment && goPaymentPortefeuille) {
       return <ViewPortefeuille />;
     }
 
+    console.log('makePayment', makePayment)
     if (!makePayment) {
       if (!goConfirmation) {
         return (
           <ScrollView>
             {cartItems.map((item, index) => {
                 console.log('item', item)
-              const protectionAcheteur = parseFloat(item.productPrice * 0.095);
+              const protectionAcheteur = parseFloat(item.productPrice * 0.05);
               const price = parseFloat(item.productPrice);
               const sousTotal = (
                 price +
@@ -910,6 +1023,7 @@ ${
                   Number(get_mondial_relay_price(item.poids)))
               ).toFixed(2);
 
+              console.log('sous', sousTotal)
               return (
                 <View style={{ marginBottom: 50 }}>
                   {cartItems.length > 1 ? (
@@ -1072,11 +1186,7 @@ ${
               Récapitulatif de votre commande
             </Text>
             {cartItems.map((item, index) => {
-              const protectionAcheteur = parseFloat(item.productPrice * 0.095);
-              const price = parseFloat(item.productPrice);
-              const sousTotal = (price + protectionAcheteur).toFixed(2);
-
-              return (
+                return (
                 <RecapCommandeItem
                   title={item.productTitle}
                   price={item.productPrice}
@@ -1171,7 +1281,7 @@ ${
                 } else {
                   if (!toggleCheckBox) {
                     setErrors(true);
-                  } else if (toggleCheckBoxPortefeuille) {
+                  } else if (toggleCheckBoxPortefeuille && goPaymentPortefeuille) {
                     setErrors(false);
                     setPortefeuillePayment(true);
                   } else {
@@ -1248,7 +1358,7 @@ ${
         return (
           <View style={{ flex: 1, padding: 10 }}>
             <Text style={{ textAlign: "center", fontSize: 18 }}>
-              Montant à régler : {sousTotal}€
+              Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
             </Text>
             <PaymentView
               onCheckStatus={onCheckStatus}
