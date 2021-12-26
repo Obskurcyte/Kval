@@ -161,6 +161,7 @@ const ChatScreen = (props) => {
           },
           body: JSON.stringify({
               to: userInfo.pushToken,
+              sound: 'default',
               title: "Vous avez un nouveau message !",
               body: `Revenez vite ! Un utilisateur vous a envoyé un message !`,
           }),
