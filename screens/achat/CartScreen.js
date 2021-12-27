@@ -212,6 +212,7 @@ const CartScreen = (props) => {
               },
               body: JSON.stringify({
                 to: pushToken.data,
+                  sound: 'default',
                 title: "Un de vos articles a été acheté !",
                 body: `L'article ${cartItem.productTitle} a été acheté !`,
               }),
@@ -590,6 +591,7 @@ ${
           },
           body: JSON.stringify({
             to: pushToken.data,
+              sound: "default",
             title: "Un de vos articles a été acheté !",
             body: `L'article ${cartItem.productTitle} a été acheté !`,
           }),
