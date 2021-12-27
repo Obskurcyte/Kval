@@ -142,6 +142,7 @@ import ModifierEmailConfirmationScreen from "../screens/profile/ModifierEmailCon
 import PreAuthScreen from "../screens/profile/PreAuthScreen";
 import ValidationLitigeScreen from "../screens/profile/ValidationLitigeScreen";
 import ModifierOffrePaiementScreen from "../screens/achat/ModifierOffrePaiementScreen";
+import ValidationPhotoProfileScreen from "../screens/profile/ValidationPhotoProfileScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1771,6 +1772,13 @@ export const AchatNavigator = (props) => {
             paddingLeft: 10,
           },
           headerBackTitle: "Retour",
+            headerLeft: () => (
+                <View>
+                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate("Accueil", {
+                        screen : "AccueilScreen"
+                    })}/>
+                </View>
+            ),
           headerRight: () => (
             <View>
               <View
@@ -1952,6 +1960,13 @@ export const ProfileNavigator = (props) => {
           headerShown: false,
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="ValidationPhotoProfileScreen"
+            component={ValidationPhotoProfileScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="ContactScreen"
         component={ContactScreen}

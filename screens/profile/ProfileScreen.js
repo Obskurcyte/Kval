@@ -14,8 +14,8 @@ import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "../../store/actions/users";
-import pick from "react-native-web/dist/modules/pick";
 import * as messageAction from "../../store/actions/messages";
+import pick from "react-native-web/dist/modules/pick";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -25,13 +25,15 @@ const ProfileScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(userActions.getUser());
-  }, [dispatch, isLoading]);
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      dispatch(userActions.getUser());
+    });
+    return unsubscribe
+  }, [dispatch, props.navigation]);
 
-  console.log(firebase.auth().currentUser.uid);
   const userData = useSelector((state) => state.user.userData);
 
-  console.log(userData);
+  console.log('user', userData);
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -41,20 +43,23 @@ const ProfileScreen = (props) => {
   }, [props.navigation, dispatch])
 
 
-  console.log('wola')
+
   const logout = () => {
     firebase.auth().signOut();
   };
 
+  let data = {};
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState("");
+  const [imageEmail, setImageMail] = useState("");
 
-  let imageTrue = "";
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
         const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status_camera } =
+            await ImagePicker.requestCameraPermissionsAsync();
         if (status !== "granted") {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
@@ -65,67 +70,87 @@ const ProfileScreen = (props) => {
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.2,
     });
-    imageTrue = result.uri;
+    console.log("1")
+    setImagesTableau((oldImage) => [...oldImage, result.uri]);
+    console.log(imagesTableau)
     if (!result.cancelled) {
       setImage(result.uri);
-      await uploadImage();
     }
-  };
-
-  const uploadImage = async () => {
-    // setIsLoading(true)
-
-    const uri = imageTrue;
-    console.log("uri", uri);
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    const task = await firebase
-      .storage()
-      .ref()
-      .child(`users/${Math.random().toString(36)}`)
-      .put(blob);
-
-    console.log("task", task);
-    /* const taskProgress = snapshot => {
-      console.log(`transferred: ${snapshot.bytesTransferred}`)
-    }
-
-    const taskCompleted = snapshot => {
-      task.snapshot.ref.getDownloadURL().then((snapshot) => {
-        saveImageData(snapshot)
-        console.log(snapshot)
-      })
-    }
-
-    const taskError = snapshot => {
-      console.log(snapshot)
-    }
-    task.on("state_changed", taskProgress, taskError, taskCompleted)
-
-    */
-  };
-
-  const saveImageData = async (downloadURL) => {
-    await firebase
-      .firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser.uid)
-      .update({
-        downloadURL,
-      });
+    setIsLoading(true);
+    await uploadImage(0)
     setIsLoading(false);
+    props.navigation.navigate("ValidationPhotoProfileScreen")
   };
+
+  const uploadImage = async (index) => {
+    return new Promise(async (resolve) => {
+      const uri = imagesTableau[index];
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      console.log("3")
+      const task = firebase
+          .storage()
+          .ref()
+          .child(
+              `profils/${Math.random().toString(36)}`
+          )
+          .put(blob);
+
+      const taskProgress = (snapshot) => {
+        console.log(
+            `transferred: ${snapshot.bytesTransferred}`
+        );
+      };
+
+      const taskCompleted = (snapshot) => {
+        task.snapshot.ref
+            .getDownloadURL()
+            .then((snapshot) => {
+              saveImageData(snapshot, index);
+              resolve();
+            });
+      };
+
+      const taskError = (snapshot) => {
+        console.log(snapshot);
+      };
+
+      task.on(
+          "state_changed",
+          taskProgress,
+          taskError,
+          taskCompleted
+      );
+    });
+  };
+
+  const saveImageData = async (downloadURL, index) => {
+    const property_name =
+        index === 0 ? "downloadURL" : `downloadURL${index}`;
+    data[property_name] = downloadURL;
+    setImageMail(data.downloadURL);
+    console.log('imageEmail', imageEmail);
+    console.log('data', data);
+    await firebase
+        .firestore()
+        .collection("users")
+        .doc(firebase.auth().currentUser.uid)
+        .update(data);
+  };
+
   if (isLoading) {
     return (
-      <View>
-        <Text>Votre photo se charge, veuillez patientez</Text>
-        <ActivityIndicator size={40} color={"red"} />
-      </View>
+        <View style={styles.containerLoading}>
+          <Text style={styles.loadingText}>
+            Veuillez patientez...
+          </Text>
+          <ActivityIndicator color="red" />
+        </View>
     );
   } else {
     return (
@@ -143,7 +168,7 @@ const ProfileScreen = (props) => {
               ) : (
                 <TouchableOpacity
                   style={styles.addPhoto}
-                  onPress={() => pickImage()}
+                  onPress={pickImage}
                 >
                   <Text style={styles.addPhotoText}>Ajouter une photo</Text>
                   <MaterialIcons
@@ -299,6 +324,17 @@ const styles = StyleSheet.create({
     height: windowHeight / 8,
     width: windowWidth / 4,
     marginRight: "3%",
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: "center",
+    maxWidth: "90%",
+    marginBottom: 20,
+  },
+  containerLoading: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "20%",
   },
 });
 export default ProfileScreen;

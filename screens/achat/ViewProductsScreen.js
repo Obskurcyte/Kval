@@ -23,6 +23,7 @@ const ViewProductsScreen = (props) => {
   const [search, setSearch] = useState("");
 
   const [filter, setFilter] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isFocused = useIsFocused();
   console.log("focused", isFocused);
@@ -33,6 +34,7 @@ const ViewProductsScreen = (props) => {
 
   useEffect(() => {
     dispatch(productsActions.fetchProducts(categorie));
+    setIsLoading(false);
   }, [isFocused]);
 
   useEffect(() => {
@@ -53,78 +55,81 @@ const ViewProductsScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.attendent}>{categorie}</Text>
+      {isLoading ? <ActivityIndicator  size="small" color="#0000ff"/> : <View style={styles.container}>
+        <Text style={styles.attendent}>{categorie}</Text>
 
-      <TouchableOpacity
-        style={styles.backArrowContainer}
-        onPress={() => setFilter(true)}
-      >
-        <Image source={require("../../assets/downArrow.png")} />
-      </TouchableOpacity>
+        <TouchableOpacity
+            style={styles.backArrowContainer}
+            onPress={() => setFilter(true)}
+        >
+          <Image source={require("../../assets/downArrow.png")} />
+        </TouchableOpacity>
 
-      <Text>Classer par</Text>
+        <Text>Classer par</Text>
 
-      {filter ? (
-        <View style={styles.filterContainer}>
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => {
-              productArray.sort((a, b) => {
-                return b.prix - a.prix;
-              });
-              setFilter(false);
-            }}
-          >
-            <Text style={styles.filterText}>Prix décroissant</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => {
-              productArray.sort((a, b) => {
-                return a.prix - b.prix;
-              });
-              setFilter(false);
-            }}
-          >
-            <Text style={styles.filterText}>Prix croissant</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.filterButton}
-            onPress={() => {
-              productArray.sort((a, b) => {
-                return b.date - a.date;
-              });
-              setFilter(false);
-            }}
-          >
-            <Text style={styles.filterText}>Le plus récent</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={productArray}
-          numColumns={2}
-          style={styles.flatList}
-          keyExtractor={(item) => item.title}
-          renderItem={(itemData) => {
-            return (
-              <CardVente
-                pseudo={itemData.item.pseudoVendeur}
-                title={itemData.item.title}
-                price={itemData.item.prix}
-                imageURI={itemData.item.downloadURL}
-                onPress={() => {
-                  props.navigation.navigate("ProductDetailScreen", {
-                    productId: itemData.item.id,
-                    categorie,
-                    product: productArray[itemData.index],
-                  });
+        {filter ? (
+            <View style={styles.filterContainer}>
+              <TouchableOpacity
+                  style={styles.filterButton}
+                  onPress={() => {
+                    productArray.sort((a, b) => {
+                      return b.prix - a.prix;
+                    });
+                    setFilter(false);
+                  }}
+              >
+                <Text style={styles.filterText}>Prix décroissant</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.filterButton}
+                  onPress={() => {
+                    productArray.sort((a, b) => {
+                      return a.prix - b.prix;
+                    });
+                    setFilter(false);
+                  }}
+              >
+                <Text style={styles.filterText}>Prix croissant</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.filterButton}
+                  onPress={() => {
+                    productArray.sort((a, b) => {
+                      return b.date - a.date;
+                    });
+                    setFilter(false);
+                  }}
+              >
+                <Text style={styles.filterText}>Le plus récent</Text>
+              </TouchableOpacity>
+            </View>
+        ) : (
+            <FlatList
+                data={productArray}
+                numColumns={2}
+                style={styles.flatList}
+                keyExtractor={(item) => item.title}
+                renderItem={(itemData) => {
+                  return (
+                      <CardVente
+                          pseudo={itemData.item.pseudoVendeur}
+                          title={itemData.item.title}
+                          price={itemData.item.prix}
+                          imageURI={itemData.item.downloadURL}
+                          onPress={() => {
+                            props.navigation.navigate("ProductDetailScreen", {
+                              productId: itemData.item.id,
+                              categorie,
+                              product: productArray[itemData.index],
+                            });
+                          }}
+                      />
+                  );
                 }}
-              />
-            );
-          }}
-        ></FlatList>
-      )}
+            ></FlatList>
+        )}
+      </View>}
+
     </View>
   );
 };

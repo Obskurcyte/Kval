@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,8 @@ import {Formik} from 'formik';
 import * as cartActions from "../../store/actions/cart";
 import * as Yup from "yup";
 import axios from "axios";
+import * as usersActions from "../../store/actions/users";
+import {useDispatch, useSelector} from "react-redux";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -33,6 +35,14 @@ const SignalerUnLitigeScreen = (props) => {
     probleme: Yup.string().required("Veuillez expliquer le problème")
   });
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(usersActions.getUser());
+  }, []);
+
+  const currentUser = useSelector((state) => state.user.userData);
+
   return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View>
@@ -41,13 +51,43 @@ const SignalerUnLitigeScreen = (props) => {
         validationSchema={LitigeSchema}
         onSubmit={async (values) => {
           await axios.post("https://kval-backend.herokuapp.com/send", {
-            mail: 'info@k-val.com',
+            mail: 'contact@kvaloccaz.com',
             subject: "Signalisation de litige",
             html_output: `<div><p>Bonjour, <br></p> 
 <p>Un nouveau litige a été signalé : </p>
 <p>Utilisateur : ${values.utilisateur}</p>
+<p>Mail : ${currentUser.email}</p>
+<p>Téléphone : ${currentUser.phone}</p>
 <p>Article : ${values.article}</p>
+<br>
+
 <p>Problème : ${values.probleme}</p>
+
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+
+</div>`
+          });
+          await axios.post("https://kval-backend.herokuapp.com/send", {
+            mail: currentUser.email,
+            subject: "Signalisation de litige",
+            html_output: `<div><p>Bonjour ${currentUser.pseudo}, <br></p> 
+<p>Vous avez fait une demande d’ouverture de litige par l’interface de litige, votre message est le suivant :
+<br>
+${values.probleme}
+</p>
+ <div style="margin-top: 20px">
+            <p style="margin: 0">Pseudo de l'utilisateur en litige: ${values.utilisateur}</p>
+            <p style="margin: 0">Article concerné : ${values.article}</p>
+</div>
+
+<p style="margin: 0">Nous vous confirmons que votre message à été reçu par le service contentieux de KvalOccaz,
+celui-ci prendra contact avec vous sous 24h.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
           });
           props.navigation.navigate("ValidationLitigeScreen")

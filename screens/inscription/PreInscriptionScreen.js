@@ -20,16 +20,13 @@ const PreInscriptionScreen = (props) => {
     const initialValues = {
         nom: '',
         prenom: "",
-        IBAN: "",
-        adresse: '',
-        postalCode: '',
-        ville: '',
-        pays: ''
+        phone: ""
     }
 
     const InfoSchema = Yup.object().shape({
         nom: Yup.string().required('Ce champ est requis'),
         prenom: Yup.string().required('Ce champ est requis'),
+        phone: Yup.string().required('Ce champ est requis'),
     });
 
     return (
@@ -46,11 +43,7 @@ const PreInscriptionScreen = (props) => {
                         props.navigation.navigate('InscriptionScreen', {
                             nom: values.nom,
                             prenom: values.prenom,
-                            IBAN: values.IBAN,
-                            adresse: values.adresse,
-                            postalCode: values.postalCode,
-                            ville: values.ville,
-                            pays: values.pays
+                            phone: values.phone
                         })
                     }}
                 >
@@ -83,6 +76,22 @@ const PreInscriptionScreen = (props) => {
                                 />
                             </View>
 
+
+                            <View style={styles.inputContainer}>
+                                <Text style={styles.text}>Téléphone</Text>
+                                <TextInput
+                                    placeholder="Téléphone"
+                                    placeholderTextColor='white'
+                                    keyboardType="numeric"
+                                    value={props.values.phone}
+                                    style={styles.textInput}
+                                    onChangeText={props.handleChange('phone')}
+                                />
+                            </View>
+
+                            {props.errors.phone && props.touched.phone ? (
+                                <Text style={styles.errors}>{props.errors.phone}</Text>
+                            ) : <Text />}
 
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
                                 <Text style={styles.createCompte}>Suivant</Text>

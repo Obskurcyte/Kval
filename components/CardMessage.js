@@ -11,6 +11,7 @@ const CardMessage = ({
   idVendeur,
 }) => {
 
+  let trimedMessage = latestMessage.substring(0, 25);
   const [visible, setVisible] = useState(true);
 
   const deleteMessage = () => {
@@ -55,7 +56,7 @@ const CardMessage = ({
             </View>
             <View style={styles.previewMessageContainer}>
               <View style={styles.previewMessage}>
-                <Text style={styles.timeText}>{latestMessage}</Text>
+                <Text style={styles.timeText}>{trimedMessage}...</Text>
               </View>
               <View>
                 <TouchableOpacity onPress={createTwoButtonAlert}>

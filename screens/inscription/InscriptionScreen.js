@@ -73,13 +73,11 @@ const InscriptionScreen = (props) => {
                                     .set({
                                         pseudo: values.pseudo,
                                         email: values.email,
-                                        IBAN: params.IBAN,
                                         nom: params.nom,
+                                        phone: params.phone,
                                         id: firebase.auth().currentUser.uid,
                                         prenom: params.prenom,
                                         pushToken: pushToken.data,
-                                        pays: params.pays,
-                                        adresse: params.adresse,
                                         portefeuille: 0,
                                     });
 

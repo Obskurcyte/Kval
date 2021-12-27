@@ -14,21 +14,29 @@ import {Formik} from "formik";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import call from 'react-native-phone-call'
+import axios from "axios";
+import * as usersActions from "../../store/actions/users";
+import {useDispatch, useSelector} from "react-redux";
 
 const ContactScreen = (props) => {
 
     const initialValues = {
-        nom: '',
-        prenom: '',
-        phone: '',
         message: '',
-        mail: ''
     }
 
     const args = {
         number: "0760586748", // String value with the number to call
         prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call
     }
+
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(usersActions.getUser());
+    }, []);
+
+    const currentUser = useSelector((state) => state.user.userData);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -38,40 +46,41 @@ const ContactScreen = (props) => {
                     <Formik
                         initialValues={initialValues}
                         onSubmit={async (values) => {
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: currentUser.email,
+                                subject: "Prise de contact",
+                                html_output: `<div><p>Bonjour ${currentUser.pseudo},<br></p> 
+<p>Vous avez fait une demande par l’interface de contact, votre message est le suivant :
+<br>
+${values.message}
+</p>
+<br>
+<p style="margin: 0">Nous vous confirmons que votre message à été reçu par le service client de KvalOccaz,
+celui-ci prendra contact avec vous sous 24h.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`
+                            });
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: 'contact@kvaloccaz.com',
+                                subject: "Prise de contact",
+                                html_output: `<div><p>Bonjour, <br></p> 
+<p>L'utilisateur ${currentUser.pseudo}, mail ${currentUser.email}, téléphone ${currentUser.phone} vous envoie ce message :</p>
+
+<p>${values.message}</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+
+</div>`
+                            });
                             props.navigation.navigate('ValidationContactScreen')
                         }}
                     >
                         {props => (
                             <View>
-                                <Text style={styles.label}>Nom (*)</Text>
-                                <TextInput
-                                    placeholder="Nom"
-                                    style={styles.input}
-                                    value={props.values.nom}
-                                    onChangeText={props.handleChange('nom')}
-                                />
-                                <Text style={styles.label}>Prénom (*)</Text>
-                                <TextInput
-                                    placeholder="Prénom"
-                                    style={styles.input}
-                                    value={props.values.prenom}
-                                    onChangeText={props.handleChange('prenom')}
-                                />
-                                <Text style={styles.label}>Téléphone (*)</Text>
-                                <TextInput
-                                    placeholder="Téléphone"
-                                    style={styles.input}
-                                    keyboardType="numeric"
-                                    value={props.values.phone}
-                                    onChangeText={props.handleChange('phone')}
-                                />
-                                <Text style={styles.label}>Mail (*)</Text>
-                                <TextInput
-                                    placeholder="Mail"
-                                    style={styles.input}
-                                    value={props.values.mail}
-                                    onChangeText={props.handleChange('mail')}
-                                />
                                 <Text style={styles.label}>Message (*)</Text>
                                 <TextInput
                                     multiline={true}

@@ -34,7 +34,7 @@ const ChevalEtTextileAccueilScreen = (props) => {
           <Text style={styles.text}>Tapis, bonnets et amortisseurs</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('VendreArticleAccueilScreen', {
+        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('ViewProductsScreen', {
           categorie: 'Spécial noël'
         })}>
           <Text style={styles.text}>Spécial noël</Text>

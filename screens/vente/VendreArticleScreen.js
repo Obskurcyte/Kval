@@ -113,15 +113,6 @@ const VendreArticleScreen = (props) => {
     props.route.params.etat = null;
     props.route.params.categorie = null;
     props.route.params.marque = null;
-
-    /* setInitialValues({
-      title: "",
-      description: "",
-      price: "",
-      poids: "",
-    });
-
-   */
   };
 
   const removePicture = (index) => {
