@@ -7,7 +7,7 @@ import {
   Dimensions,
   Image,
   ActivityIndicator,
-  ScrollView,
+  ScrollView, Modal,
 } from "react-native";
 import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
@@ -33,7 +33,6 @@ const ProfileScreen = (props) => {
 
   const userData = useSelector((state) => state.user.userData);
 
-  console.log('user', userData);
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -86,9 +85,35 @@ const ProfileScreen = (props) => {
     props.navigation.navigate("ValidationPhotoProfileScreen")
   };
 
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 0.2,
+    });
+
+    console.log("result", result.uri);
+    console.log("yesss");
+    let image = result.uri;
+    console.log("image", image);
+    setImagesTableau(result.uri);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+    console.log("wola")
+    setIsLoading(true);
+    console.log("imageTableau", imagesTableau)
+    await uploadImage(0);
+    setIsLoading(false);
+    props.navigation.navigate("ValidationPhotoProfileScreen")
+  };
+
   const uploadImage = async (index) => {
     return new Promise(async (resolve) => {
+
       const uri = imagesTableau[index];
+      console.log('uri', uri)
       const response = await fetch(uri);
       const blob = await response.blob();
 
@@ -142,6 +167,8 @@ const ProfileScreen = (props) => {
         .doc(firebase.auth().currentUser.uid)
         .update(data);
   };
+  // ----------------- MODAL ---------------- //
+  const [modalVisible, setModalVisible] = useState(false);
 
   if (isLoading) {
     return (
@@ -156,6 +183,34 @@ const ProfileScreen = (props) => {
     return (
       <ScrollView>
         <View style={styles.container}>
+          <Modal transparent={true} visible={modalVisible}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>
+                  Comment souhaitez-vous choisir votre photo ?
+                </Text>
+                <TouchableOpacity
+                    style={styles.mettreEnVentePopup}
+                    onPress={async () => {
+                      setModalVisible(false);
+                      await pickImage();
+                    }}
+                >
+                  <Text style={styles.mettreEnVenteText}>
+                    Depuis la galerie
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.reset}
+                    onPress={async () => {
+                      await takePicture();
+                    }}
+                >
+                  <Text style={styles.resetText}>Prendre une photo</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
           <View style={styles.profileHeader}>
             <View style={styles.imgContainer}>
               {userData && userData.downloadURL ? (
@@ -168,7 +223,7 @@ const ProfileScreen = (props) => {
               ) : (
                 <TouchableOpacity
                   style={styles.addPhoto}
-                  onPress={pickImage}
+                  onPress={() => setModalVisible(true)}
                 >
                   <Text style={styles.addPhotoText}>Ajouter une photo</Text>
                   <MaterialIcons
@@ -335,6 +390,68 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: "20%",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  mettreEnVentePopup: {
+    backgroundColor: "#D51317",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.5,
+    paddingVertical: "5%",
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.1,
+    borderColor: "#D51317",
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
 });
 export default ProfileScreen;

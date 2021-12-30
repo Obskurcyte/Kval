@@ -139,11 +139,11 @@ const ModifierAnnonceScreen = (props) => {
   };
 
   const navigateCategories = () => {
-    props.navigation.navigate("CategoriesChoiceScreen");
+    props.navigation.navigate("CategoriesChoiceProfileScreen");
   };
 
   const navigateMarques = () => {
-    props.navigation.navigate("MarquesChoiceScreen");
+    props.navigation.navigate("MarquesChoiceProfileScreen");
   };
 
   const navigatePhotoScreen = (image) => {
@@ -151,7 +151,7 @@ const ModifierAnnonceScreen = (props) => {
   };
 
   const navigateEtat = () => {
-    props.navigation.navigate("EtatChoiceScreen");
+    props.navigation.navigate("EtatChoiceProfileScreen");
   };
 
   const [error, setError] = useState("");
@@ -867,7 +867,7 @@ const ModifierAnnonceScreen = (props) => {
                             {imagesTableau &&
                               imagesTableau.length <= 5 &&
                               imagesTableau.map((image, index) => (
-                                <View style={styles.imageList}>
+                                <View style={styles.imageList} key={index}>
                                   <TouchableOpacity
                                     onPress={() =>
                                       navigatePhotoScreen(imagesTableau[index])

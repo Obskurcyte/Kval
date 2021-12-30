@@ -143,6 +143,42 @@ import PreAuthScreen from "../screens/profile/PreAuthScreen";
 import ValidationLitigeScreen from "../screens/profile/ValidationLitigeScreen";
 import ModifierOffrePaiementScreen from "../screens/achat/ModifierOffrePaiementScreen";
 import ValidationPhotoProfileScreen from "../screens/profile/ValidationPhotoProfileScreen";
+import ChevalEtCuirProfileScreen from "../screens/profile/categories/ChevalEtCuirScreen";
+import BrideriesProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/BrideriesScreen";
+import MorsProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/MorsScreen";
+import EtriersProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/EtriersScreen";
+import SanglesProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/SanglesScreen";
+import ColiersProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/ColiersScreen";
+import TravailProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/TravailScreen";
+import SelleProfileScreen from "../screens/profile/sousCategoriesChevalEtCuir/SelleScreen";
+import ChevalEtTextileProfileScreen from "../screens/profile/categories/ChevalEtTextileScreen";
+import ChemisesProfileScreen from "../screens/profile/sousCategoriesChevalEtTextile/ChemisesScreen";
+import CouverturesProfileScreen from "../screens/profile/sousCategoriesChevalEtTextile/CouverturesScreen";
+import LicolsProfileScreen from "../screens/profile/sousCategoriesChevalEtTextile/LicolsScreen";
+import ProtectionsProfileScreen from "../screens/profile/sousCategoriesChevalEtTextile/ProtectionsScreen";
+import TapisProfileScreen from "../screens/profile/sousCategoriesChevalEtTextile/TapisScreen";
+import CavalierProfileScreen from "../screens/profile/categories/CavalierScreen";
+import AccessoiresProfileScreen from "../screens/profile/sousCategoriesCavalier/AccessoiresScreen";
+import BottesProfileScreen from "../screens/profile/sousCategoriesCavalier/BottesScreen";
+import CasquesProfileScreen from "../screens/profile/sousCategoriesCavalier/CasquesScreen";
+import EnfantProfileScreen from "../screens/profile/sousCategoriesCavalier/EnfantScreen";
+import HommeProfileScreen from "../screens/profile/sousCategoriesCavalier/HommeScreen";
+import FemmeProfileScreen from "../screens/profile/sousCategoriesCavalier/FemmeScreen";
+import GiletProfileScreen from "../screens/profile/sousCategoriesCavalier/GiletScreen";
+import SoinsEtEcuriesProfileScreen from "../screens/profile/categories/SoinsEtEcuriesScreen";
+import AlimentsProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/AlimentsScreen";
+import ProduitsProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/ProduitsScreen";
+import MaterielProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/MaterielScreen";
+import TenturesProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/TenturesScreen";
+import EquipementsProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/EquipementsScreen";
+import ClotureProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/ClotureScreen";
+import MarechalerieProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/MarechalerieScreen";
+import EntrainementProfileScreen from "../screens/profile/sousCategoriesSoinsEtEcuries/EntrainementScreen";
+import ChienProfileScreen from "../screens/profile/categories/ChienScreen";
+import TransportProfileScreen from "../screens/profile/categories/TransportScreen";
+import CategoriesChoiceProfileScreen from "../screens/profile/CategoriesChoiceScreen";
+import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
+import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1953,6 +1989,601 @@ export const ProfileNavigator = (props) => {
           headerTitle: "Profil",
         }}
       />
+
+        <ProfileStackNavigator.Screen
+            name="ChevalEtCuirProfileScreen"
+            component={ChevalEtCuirProfileScreen}
+            options={{
+                title: "Cheval & Cuir",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="BrideriesProfileScreen"
+            component={BrideriesProfileScreen}
+            options={{
+                title: "Brideries rênes et accessoires",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="MorsProfileScreen"
+            component={MorsProfileScreen}
+            options={{
+                title: "Mors",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EtriersProfileScreen"
+            component={EtriersProfileScreen}
+            options={{
+                title: "Etriers et étrivières",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="SanglesProfileScreen"
+            component={SanglesProfileScreen}
+            options={{
+                title: "Sangles et bavettes",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ColiersProfileScreen"
+            component={ColiersProfileScreen}
+            options={{
+                title: "Colliers de chasses et enrênements",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="TravailProfileScreen"
+            component={TravailProfileScreen}
+            options={{
+                title: "Travail à pied",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="SelleProfileScreen"
+            component={SelleProfileScreen}
+            options={{
+                title: "Selles et accessoires",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ChevalEtTextileProfileScreen"
+            component={ChevalEtTextileProfileScreen}
+            options={{
+                title: "Cheval & Textile",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ChemisesProfileScreen"
+            component={ChemisesProfileScreen}
+            options={{
+                title: "Chemises et séchantes",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="CouverturesProfileScreen"
+            component={CouverturesProfileScreen}
+            options={{
+                title: "Couvertures et couvre-reins",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="LicolsProfileScreen"
+            component={LicolsProfileScreen}
+            options={{
+                title: "Licols et longes",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ProtectionsProfileScreen"
+            component={ProtectionsProfileScreen}
+            options={{
+                title: "Protections des membres",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="TapisProfileScreen"
+            component={TapisProfileScreen}
+            options={{
+                title: "Tapis, bonnets et amortisseurs",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="CavalierProfileScreen"
+            component={CavalierProfileScreen}
+            options={{
+                title: "Cavaliers",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="AccessoiresProfileScreen"
+            component={AccessoiresProfileScreen}
+            options={{
+                title: "Accessoires",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="BottesProfileScreen"
+            component={BottesProfileScreen}
+            options={{
+                title: "Bottes, boots et mini-chaps",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="CasquesProfileScreen"
+            component={CasquesProfileScreen}
+            options={{
+                title: "Casques d’équitation",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EnfantProfileScreen"
+            component={EnfantProfileScreen}
+            options={{
+                title: "Prêt-à-porter enfant",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="HommeProfileScreen"
+            component={HommeProfileScreen}
+            options={{
+                title: "Prêt-à-porter homme",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="FemmeProfileScreen"
+            component={FemmeProfileScreen}
+            options={{
+                title: "Prêt-à-porter femme",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="GiletProfileScreen"
+            component={GiletProfileScreen}
+            options={{
+                title: "Gilets de protection",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="SoinsEtEcuriesProfileScreen"
+            component={SoinsEtEcuriesProfileScreen}
+            options={{
+                title: "Soins et écuries",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="AlimentsProfileScreen"
+            component={AlimentsProfileScreen}
+            options={{
+                title: "Aliments",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ProduitsProfileScreen"
+            component={ProduitsProfileScreen}
+            options={{
+                title: "Produits d'entretien",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="MaterielProfileScreen"
+            component={MaterielProfileScreen}
+            options={{
+                title: "Matériel de pansage",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="TenturesProfileScreen"
+            component={TenturesProfileScreen}
+            options={{
+                title: "Tentures, housses",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EquipementsProfileScreen"
+            component={EquipementsProfileScreen}
+            options={{
+                title: "Equipements box",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ClotureProfileScreen"
+            component={ClotureProfileScreen}
+            options={{
+                title: "Matériels de clôture",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="MarechalerieProfileScreen"
+            component={MarechalerieProfileScreen}
+            options={{
+                title: "Maréchalerie",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EntrainementProfileScreen"
+            component={EntrainementProfileScreen}
+            options={{
+                title: "Matériels d’entrainement",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="ChienProfileScreen"
+            component={ChienProfileScreen}
+            options={{
+                title: "Chiens et autres animaux",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="TransportProfileScreen"
+            component={TransportProfileScreen}
+            options={{
+                title: "Transport",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
       <ProfileStackNavigator.Screen
         name="DeleteAnnonceValidationScreen"
         component={DeleteAnnonceValidationScreen}
@@ -1960,6 +2591,60 @@ export const ProfileNavigator = (props) => {
           headerShown: false,
         }}
       />
+        <ProfileStackNavigator.Screen
+            name="CategoriesChoiceProfileScreen"
+            component={CategoriesChoiceProfileScreen}
+            options={{
+                title: "Catégories",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="EtatChoiceProfileScreen"
+            component={EtatChoiceProfileScreen}
+            options={{
+                title: "Etat",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
+        <ProfileStackNavigator.Screen
+            name="MarquesChoiceProfileScreen"
+            component={MarquesChoiceProfileScreen}
+            options={{
+                title: "Marques",
+                headerStyle: {
+                    backgroundColor: "white",
+                },
+                headerTitleStyle: {
+                    color: "black",
+                },
+                headerBackTitle: "Retour",
+                headerBackTitleStyle: {
+                    color: "black",
+                },
+                headerTitleAlign: "center",
+            }}
+        />
         <ProfileStackNavigator.Screen
             name="ValidationPhotoProfileScreen"
             component={ValidationPhotoProfileScreen}
