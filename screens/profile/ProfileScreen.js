@@ -15,7 +15,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "../../store/actions/users";
 import * as messageAction from "../../store/actions/messages";
-import pick from "react-native-web/dist/modules/pick";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -66,6 +65,7 @@ const ProfileScreen = (props) => {
     })();
   }, []);
 
+  let imageProfil;
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -74,7 +74,7 @@ const ProfileScreen = (props) => {
       quality: 0.2,
     });
     console.log("1")
-    setImagesTableau((oldImage) => [...oldImage, result.uri]);
+    imageProfil = result.uri;
     console.log(imagesTableau)
     if (!result.cancelled) {
       setImage(result.uri);
@@ -92,11 +92,10 @@ const ProfileScreen = (props) => {
       aspect: [4, 3],
       quality: 0.2,
     });
-
     console.log("result", result.uri);
     console.log("yesss");
-    let image = result.uri;
-    console.log("image", image);
+    imageProfil = result.uri;
+    console.log("image", imageProfil);
     setImagesTableau(result.uri);
     if (!result.cancelled) {
       setImage(result.uri);
@@ -106,13 +105,14 @@ const ProfileScreen = (props) => {
     console.log("imageTableau", imagesTableau)
     await uploadImage(0);
     setIsLoading(false);
+    setModalVisible(false);
     props.navigation.navigate("ValidationPhotoProfileScreen")
   };
 
   const uploadImage = async (index) => {
     return new Promise(async (resolve) => {
 
-      const uri = imagesTableau[index];
+      const uri = imageProfil;
       console.log('uri', uri)
       const response = await fetch(uri);
       const blob = await response.blob();
@@ -192,8 +192,8 @@ const ProfileScreen = (props) => {
                 <TouchableOpacity
                     style={styles.mettreEnVentePopup}
                     onPress={async () => {
-                      setModalVisible(false);
                       await pickImage();
+                      setModalVisible(false);
                     }}
                 >
                   <Text style={styles.mettreEnVenteText}>
