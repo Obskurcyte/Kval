@@ -214,7 +214,14 @@ const VendreArticleScreen = (props) => {
                     let pushToken;
                     let statusObj = await Notifications.getPermissionsAsync();
                     if (statusObj.status !== "granted") {
-                      statusObj = await Notifications.requestPermissionsAsync();
+                      statusObj = await Notifications.requestPermissionsAsync({
+                        ios: {
+                          allowAlert: true,
+                          allowBadge: true,
+                          allowSound: true,
+                          allowAnnouncements: true,
+                        },
+                      });
                     }
                     if (statusObj.status !== "granted") {
                       pushToken = null;
