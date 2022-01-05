@@ -5,5 +5,9 @@
       "developmentClient": true,
       "distribution": "internal"
     }
+  },
+  "cli": {
+    "version": ">= 0.42.4",
+    "requireCommit": true
   }
 }
