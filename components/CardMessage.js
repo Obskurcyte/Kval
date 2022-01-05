@@ -15,15 +15,25 @@ const CardMessage = ({
   const [visible, setVisible] = useState(true);
 
   const deleteMessage = () => {
+    firebase.firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('unreadMessage')
+        .doc(firebase.auth().currentUser.uid)
+        .delete()
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
     firebase
-      .firestore()
-      .collection("MESSAGE_THREADS")
-      .doc(`${idVendeur}` + `${idAcheteur}`)
+        .firestore()
+        .collection("MESSAGE_THREADS")
+        .doc(`${idVendeur}` + `${idAcheteur}`)
       .delete()
       .then(() => {
         console.log("deleted");
         setVisible(false);
       });
+
   };
 
   const createTwoButtonAlert = () =>

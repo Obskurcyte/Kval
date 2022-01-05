@@ -125,7 +125,7 @@ const ChatScreen = (props) => {
       })
 
     return () => unsubscribeListener()
-  }, [])
+  }, []);
 
   async function handleSend(messages) {
     const text = messages[0].text

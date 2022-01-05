@@ -65,12 +65,6 @@ const AccueilScreen = (props) => {
             })
             setProductsBoosted(productsBoosted)
           })
-    });
-    return unsubscribe
-  }, [props.navigation, dispatch])
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
       firebase.firestore().collection("allProducts")
           .orderBy('date', "desc")
           .get()
@@ -83,8 +77,8 @@ const AccueilScreen = (props) => {
             setProductsUne(productsBoosted)
           })
     });
-   return unsubscribe
-  }, [props.navigation])
+    return unsubscribe
+  }, [props.navigation, dispatch]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

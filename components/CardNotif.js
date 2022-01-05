@@ -22,6 +22,15 @@ const CardNotif = (props) => {
           setVisible(false);
           console.log("deleted");
         });
+    firebase.firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('unreadMessage')
+        .doc(firebase.auth().currentUser.uid)
+        .delete()
+        .catch((error) => {
+          console.log("Error getting document:", error);
+        });
   }
 
   const createTwoButtonAlert = () =>
