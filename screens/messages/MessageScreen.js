@@ -31,10 +31,11 @@ const MessageScreen = (props) => {
   const [notifsList, setNotifsList] = useState([])
   const [threads, setThreads] = useState([]);
   const [threads2, setThreads2] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   let finalThreads = [];
 
+ console.log('loading', loading)
   console.log("notifs", notifsList);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -46,7 +47,6 @@ const MessageScreen = (props) => {
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
-      setLoading(true);
       firebase
           .firestore()
           .collection("MESSAGE_THREADS")
@@ -69,7 +69,9 @@ const MessageScreen = (props) => {
                       _id: documentSnapshot.id,
                       pseudoVendeur: newPseudoVendeur,
                     });
+                      console.log('wessh')
                     if (loading) {
+
                       setLoading(false);
                     }
                     setThreads(threads);
@@ -105,9 +107,8 @@ const MessageScreen = (props) => {
   }, [props.navigation, action]);
 
   useEffect(() => {
-    setLoading(true);
 
-    console.log("woskdls");
+    console.log("current", firebase.auth().currentUser.uid);
     const threads = [];
     const unsubscribe = props.navigation.addListener("focus", () => {
       firebase
@@ -131,10 +132,10 @@ const MessageScreen = (props) => {
           });
     });
     return unsubscribe;
-  }, [props.navigation, action]);
+  }, [props.navigation, action, finalThreads]);
 
   finalThreads = [...threads, ...threads2];
-
+    console.log('final', finalThreads)
   return (
       <View style={styles.container}>
         <View style={styles.messagesContainer}>
@@ -215,11 +216,16 @@ const MessageScreen = (props) => {
             </>
 
         ) : (
-            <ActivityIndicator
-                color="#D51317"
-                size={40}
-                style={{ marginTop: 40 }}
-            />
+            <View>
+                <Text style={styles.noMessage}>
+                    Il n'y a aucun message à afficher
+                </Text>
+                <ActivityIndicator
+                    color="#D51317"
+                    size={40}
+                    style={{ marginTop: 40 }}
+                />
+            </View>
         )}
       </View>
   );
@@ -284,8 +290,6 @@ const styles = StyleSheet.create({
   noMessage: {
     fontSize: 20,
     textAlign: "center",
-    marginTop: windowHeight / 2.5,
-    marginBottom: windowHeight / 2.5,
   },
 });
 export default MessageScreen;

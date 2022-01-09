@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import UserAvatar from "react-native-user-avatar";
 import firebase from "firebase";
@@ -13,6 +13,11 @@ const CardMessage = ({
 
   let trimedMessage = latestMessage.substring(0, 25);
   const [visible, setVisible] = useState(true);
+
+  const [update, setUpdate] = useState(0)
+  useEffect(() => {
+    console.log('wesssssh')
+  }, [update]);
 
   const deleteMessage = () => {
     firebase.firestore()
@@ -33,7 +38,7 @@ const CardMessage = ({
         console.log("deleted");
         setVisible(false);
       });
-
+      setUpdate(update + 1)
   };
 
   const createTwoButtonAlert = () =>
