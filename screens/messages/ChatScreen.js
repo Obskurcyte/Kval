@@ -152,6 +152,7 @@ const ChatScreen = (props) => {
       }).catch((error) => {
           console.log("Error getting document:", error);
       });
+    console.log("2")
       await fetch("https://exp.host/--/api/v2/push/send", {
           method: "POST",
           headers: {
@@ -168,6 +169,7 @@ const ChatScreen = (props) => {
           }),
       });
 
+    console.log("3")
     await firebase.firestore()
       .collection('MESSAGE_THREADS')
       .doc(thread._id)
@@ -179,8 +181,9 @@ const ChatScreen = (props) => {
           _id: user.uid,
           displayName: user.displayName
         }
-      })
+      });
 
+      console.log("4")
     await firebase.firestore()
       .collection('MESSAGE_THREADS')
       .doc(thread._id)
@@ -194,6 +197,7 @@ const ChatScreen = (props) => {
         { merge: true }
       )
 
+      console.log("5")
       await axios.post("https://kval-backend.herokuapp.com/send", {
           mail: email,
           subject: "Nouveau message KvalOccaz",

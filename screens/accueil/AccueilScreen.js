@@ -17,11 +17,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import firebase from "firebase";
 import BoostedProductCard from "../../components/BoostedProductCard";
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
-import * as userActions from "../../store/actions/users";
 import {useDispatch, useSelector} from "react-redux";
 import * as messageAction from "../../store/actions/messages";
+import * as Notifications from "expo-notifications";
 
 
 const wait = (timeout) => {
@@ -53,9 +52,9 @@ const AccueilScreen = (props) => {
   const currentUser = useSelector((state) => state.user.userData);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
+    const unsubscribe = props.navigation.addListener('focus', async () => {
       dispatch(messageAction.fetchUnreadMessage())
-      firebase.firestore().collection("BoostedVentes")
+     await firebase.firestore().collection("BoostedVentes")
           .get()
           .then(snapshot => {
             let productsBoosted = snapshot.docs.map(doc => {
@@ -65,7 +64,7 @@ const AccueilScreen = (props) => {
             })
             setProductsBoosted(productsBoosted)
           })
-      firebase.firestore().collection("allProducts")
+      await firebase.firestore().collection("allProducts")
           .orderBy('date', "desc")
           .get()
           .then(snapshot => {
@@ -76,6 +75,7 @@ const AccueilScreen = (props) => {
             })
             setProductsUne(productsBoosted)
           })
+      await Notifications.setBadgeCountAsync(0)
     });
     return unsubscribe
   }, [props.navigation, dispatch]);
