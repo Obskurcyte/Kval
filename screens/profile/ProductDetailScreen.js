@@ -27,7 +27,7 @@ const windowHeight = Dimensions.get("window").height;
 const ITEM_WIDTH = 0.7 * windowWidth;
 const SEPARATOR_WIDTH = 10;
 
-const ProductDetailScreen = (props) => {
+const ProductDetailProfileScreen = (props) => {
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
@@ -414,6 +414,7 @@ const ProductDetailScreen = (props) => {
               <TouchableOpacity
                 style={styles.mettreEnVente}
                 onPress={() => {
+                  console.log('clicked')
                   setModalVisible(true);
                 }}
               >
@@ -719,4 +720,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductDetailScreen;
+export default ProductDetailProfileScreen;

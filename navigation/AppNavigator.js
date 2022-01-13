@@ -179,6 +179,7 @@ import TransportProfileScreen from "../screens/profile/categories/TransportScree
 import CategoriesChoiceProfileScreen from "../screens/profile/CategoriesChoiceScreen";
 import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
 import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
+import ProductDetailProfileScreen from "../screens/profile/ProductDetailScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -2779,8 +2780,8 @@ export const ProfileNavigator = (props) => {
         }}
       />
       <ProfileStackNavigator.Screen
-        name="ProductDetailScreen"
-        children={ProductDetailScreen}
+        name="ProductDetailProfileScreen"
+        children={ProductDetailProfileScreen}
         options={{
           title: "Details",
           headerStyle: {
