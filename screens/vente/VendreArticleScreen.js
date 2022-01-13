@@ -250,7 +250,7 @@ const VendreArticleScreen = (props) => {
                             title: values.title,
                             description: values.description,
                             prix: values.price,
-                            poids: values.poids,
+                            poids: values.poids.replace(',', '.'),
                             pushToken,
                             idVendeur: currentUser.id,
                             emailVendeur: currentUser.email,
@@ -277,7 +277,7 @@ const VendreArticleScreen = (props) => {
                             prix: values.price,
                             pushToken,
                             livraison: "Choisir",
-                            poids: values.poids,
+                            poids: values.poids.replace(',', '.'),
                           });
 
                         console.log("3");
@@ -298,7 +298,7 @@ const VendreArticleScreen = (props) => {
                             description: values.description,
                             prix: values.price,
                             livraison: "Choisir",
-                            poids: values.poids,
+                            poids: values.poids.replace(',', '.'),
                           });
 
                         const uploadImage = async (index) => {

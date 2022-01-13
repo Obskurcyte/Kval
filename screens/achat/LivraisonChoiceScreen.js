@@ -14,6 +14,7 @@ const LivraisonChoiceScreen = (props) => {
   const [livraison, setLivraison] = useState("");
   console.log("product", product);
 
+  console.log(product.poids.replace('/', '.') < 30)
   const handleMondialRelay = (data) => {
     props.navigation.navigate("CartScreen", {
       livraison: "MondialRelay",
