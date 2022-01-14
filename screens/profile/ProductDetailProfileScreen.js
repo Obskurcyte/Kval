@@ -282,7 +282,6 @@ const ProductDetailProfileScreen = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <View>
       <View style={styles.container}>
         <ScrollView>
           <Modal transparent={true} visible={modalVisible}>
@@ -301,7 +300,7 @@ const ProductDetailProfileScreen = (props) => {
                   }}
                 >
                   <Text style={styles.mettreEnVenteText}>
-                    Supprimer mon offre
+                    Supprimer mon offre wesh
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -474,7 +473,6 @@ const ProductDetailProfileScreen = (props) => {
           )}
         </ScrollView>
       </View>
-    </View>
   );
 };
 

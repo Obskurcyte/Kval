@@ -179,7 +179,7 @@ import TransportProfileScreen from "../screens/profile/categories/TransportScree
 import CategoriesChoiceProfileScreen from "../screens/profile/CategoriesChoiceScreen";
 import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
 import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
-import ProductDetailProfileScreen from "../screens/profile/ProductDetailScreen";
+import ProductDetailProfileScreen from "../screens/profile/ProductDetailProfileScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 

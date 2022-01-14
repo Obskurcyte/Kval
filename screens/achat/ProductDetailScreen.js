@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
-  Modal,
+  Modal, ActivityIndicator,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,8 +74,10 @@ const ProductDetailScreen = (props) => {
   }
 
   //-----------------DELETE ANNONCE---------------//
+  const [isLoading, setIsLoading] = useState(false);
 
   const deleteAnnonce = async (id, categorie) => {
+    setIsLoading(true)
     await axios.post("https://kval-backend.herokuapp.com/send", {
       mail: product.emailVendeur,
       subject: "Confirmation de suppression",
@@ -284,194 +286,203 @@ const ProductDetailScreen = (props) => {
   return (
     <View>
       <View style={styles.container}>
-        <ScrollView>
-          <Modal transparent={true} visible={modalVisible}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>
-                  Etes-vous sur de vouloir supprimer votre offre ?
-                </Text>
-                <TouchableOpacity
-                  style={styles.mettreEnVentePopup}
-                  onPress={async () => {
-                    setModalVisible(false);
-                    console.log('clicked')
-                    await deleteAnnonce(product.id, product.categorie);
-                    props.navigation.navigate("DeleteAnnonceValidationScreen");
-                  }}
-                >
-                  <Text style={styles.mettreEnVenteText}>
-                    Supprimer mon offre
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.reset}
-                  onPress={() => {
-                    setModalVisible(false);
-                  }}
-                >
-                  <Text style={styles.resetText}>Annuler</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-          <View style={styles.imgContainer}>
-            <Carousel
-              keyExtractor={(item) => item?.id}
-              style={[styles.carousel]}
-              ref={carouselRef}
-              data={testData}
-              renderItem={({ item, index }) =>
-                renderItem({ item, index, navigation: props.navigation })
-              }
-              itemWidth={ITEM_WIDTH}
-              separatorWidth={SEPARATOR_WIDTH}
-              inActiveScale={1}
-              inActiveOpacity={1}
-              containerWidth={windowWidth}
-            />
-          </View>
-          <View style={styles.titleAndPrixContainer}>
-            <Text style={styles.title}>{product.title}</Text>
-            <Text style={styles.prix}>{product.prix} €</Text>
-            <Text style={styles.shipping_price}>
-              (+ {get_mondial_relay_price(product.poids)} € livraison Mondial
-              Relay)
-            </Text>
-          </View>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{product.description}</Text>
-          </View>
-          <View style={styles.itemForm3}>
-            <Text>Etat</Text>
-            <Text>{product.etat}</Text>
-          </View>
-          <View style={styles.itemForm3}>
-            <Text>Catégorie</Text>
-            <Text>{product.categorie}</Text>
-          </View>
-          {product.marques && (
-            <View style={styles.itemForm3}>
-              <Text>Marque</Text>
-              <Text>{product.marques}</Text>
-            </View>
-          )}
-          <View style={styles.itemForm3}>
-            <Text>Poids</Text>
-            <Text>{product.poids} kgs</Text>
-          </View>
-          <View style={styles.vendeurContainer}>
-            {product.imageURL ? (
-              <Image source={require("../../assets/photoProfile.png")} />
-            ) : (
-              <UserAvatar size={50} name={initial} />
-            )}
-
-            <View>
-              <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              {commentaires?.length ? (
-                <View>
-                  {trueRating === 1 && <OneStar />}
-                  {trueRating === 2 && <TwoStar />}
-                  {trueRating === 3 && <ThreeStar />}
-                  {trueRating === 4 && <FourStar />}
-                  {trueRating === 5 && <FiveStar />}
+        {isLoading ?
+            <View style={styles.containerLoading}>
+              <Text style={styles.loadingText}>
+                Veuillez patienter...
+              </Text>
+              <ActivityIndicator color="red" />
+            </View> :
+            <ScrollView>
+              <Modal transparent={true} visible={modalVisible}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>
+                      Etes-vous sur de vouloir supprimer votre offre ?
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.mettreEnVentePopup}
+                        onPress={async () => {
+                          setModalVisible(false);
+                          console.log('clicked')
+                          await deleteAnnonce(product.id, product.categorie);
+                          props.navigation.navigate("DeleteAnnonceValidationScreen");
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>
+                        Supprimer mon offre
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.reset}
+                        onPress={() => {
+                          setModalVisible(false);
+                        }}
+                    >
+                      <Text style={styles.resetText}>Annuler</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              ) : (
-                <Text>Aucun commentaire disponible</Text>
-              )}
-            </View>
-
-            {commentaires?.length ? (
-              <TouchableOpacity
-                onPress={() =>
-                  props.navigation.navigate("AvisScreen", {
-                    product: product,
-                  })
-                }
-              >
-                <Text>Voir les avis</Text>
-              </TouchableOpacity>
-            ) : (
-              <Text />
-            )}
-          </View>
-
-          {product.idVendeur === firebase.auth().currentUser.uid ? (
-            <View>
-              <TouchableOpacity
-                style={styles.reset}
-                onPress={() => {
-                  props.navigation.navigate("Profil", {
-                    screen: "ModifierAnnonceScreen",
-                    params: { ...product, modify: true },
-                  });
-                }}
-              >
-                <Text style={styles.resetText}>Modifier mon offre</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.mettreEnVente}
-                onPress={() => {
-                  setModalVisible(true);
-                }}
-              >
-                <Text style={styles.mettreEnVenteText}>
-                  Supprimer mon offre
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View>
-              <TouchableOpacity
-                style={styles.envoyerMessageContainer}
-                onPress={() =>
-                  props.loggedInAsVisit
-                    ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
-                    : onMessagePressed()
-                }
-              >
-                <Text style={styles.envoyerMessageText}>
-                  Envoyer un message
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.mettreEnVente}
-                onPress={() => {
-                  if (cartItems.length !== 0) {
-                    for (const key in cartItems) {
-                      if (product.id == cartItems[key].productId) {
-                        setErrorAdded(
-                          "Ce produit est déjà présent dans votre panier"
-                        );
-                      } else {
-                        dispatch(cartActions.addToCart(product));
-                      }
+              </Modal>
+              <View style={styles.imgContainer}>
+                <Carousel
+                    keyExtractor={(item) => item?.id}
+                    style={[styles.carousel]}
+                    ref={carouselRef}
+                    data={testData}
+                    renderItem={({ item, index }) =>
+                        renderItem({ item, index, navigation: props.navigation })
                     }
-                  } else {
-                    dispatch(cartActions.addToCart(product));
-                  }
-                }}
-              >
-                <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          {errorAdded ? (
-            <Text
-              style={{
-                marginBottom: 12,
-                textAlign: "center",
-                color: "#D51317",
-              }}
-            >
-              {errorAdded}
-            </Text>
-          ) : (
-            <Text />
-          )}
-        </ScrollView>
+                    itemWidth={ITEM_WIDTH}
+                    separatorWidth={SEPARATOR_WIDTH}
+                    inActiveScale={1}
+                    inActiveOpacity={1}
+                    containerWidth={windowWidth}
+                />
+              </View>
+              <View style={styles.titleAndPrixContainer}>
+                <Text style={styles.title}>{product.title}</Text>
+                <Text style={styles.prix}>{product.prix} €</Text>
+                <Text style={styles.shipping_price}>
+                  (+ {get_mondial_relay_price(product.poids)} € livraison Mondial
+                  Relay)
+                </Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.description}>{product.description}</Text>
+              </View>
+              <View style={styles.itemForm3}>
+                <Text>Etat</Text>
+                <Text>{product.etat}</Text>
+              </View>
+              <View style={styles.itemForm3}>
+                <Text>Catégorie</Text>
+                <Text>{product.categorie}</Text>
+              </View>
+              {product.marques && (
+                  <View style={styles.itemForm3}>
+                    <Text>Marque</Text>
+                    <Text>{product.marques}</Text>
+                  </View>
+              )}
+              <View style={styles.itemForm3}>
+                <Text>Poids</Text>
+                <Text>{product.poids} kgs</Text>
+              </View>
+              <View style={styles.vendeurContainer}>
+                {product.imageURL ? (
+                    <Image source={require("../../assets/photoProfile.png")} />
+                ) : (
+                    <UserAvatar size={50} name={initial} />
+                )}
+
+                <View>
+                  <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
+                  {commentaires?.length ? (
+                      <View>
+                        {trueRating === 1 && <OneStar />}
+                        {trueRating === 2 && <TwoStar />}
+                        {trueRating === 3 && <ThreeStar />}
+                        {trueRating === 4 && <FourStar />}
+                        {trueRating === 5 && <FiveStar />}
+                      </View>
+                  ) : (
+                      <Text>Aucun commentaire disponible</Text>
+                  )}
+                </View>
+
+                {commentaires?.length ? (
+                    <TouchableOpacity
+                        onPress={() =>
+                            props.navigation.navigate("AvisScreen", {
+                              product: product,
+                            })
+                        }
+                    >
+                      <Text>Voir les avis</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text />
+                )}
+              </View>
+
+              {product.idVendeur === firebase.auth().currentUser.uid ? (
+                  <View>
+                    <TouchableOpacity
+                        style={styles.reset}
+                        onPress={() => {
+                          props.navigation.navigate("Profil", {
+                            screen: "ModifierAnnonceScreen",
+                            params: { ...product, modify: true },
+                          });
+                        }}
+                    >
+                      <Text style={styles.resetText}>Modifier mon offre</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.mettreEnVente}
+                        onPress={() => {
+                          setModalVisible(true);
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>
+                        Supprimer mon offre
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+              ) : (
+                  <View>
+                    <TouchableOpacity
+                        style={styles.envoyerMessageContainer}
+                        onPress={() =>
+                            props.loggedInAsVisit
+                                ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                                : onMessagePressed()
+                        }
+                    >
+                      <Text style={styles.envoyerMessageText}>
+                        Envoyer un message
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.mettreEnVente}
+                        onPress={() => {
+                          if (cartItems.length !== 0) {
+                            for (const key in cartItems) {
+                              if (product.id == cartItems[key].productId) {
+                                setErrorAdded(
+                                    "Ce produit est déjà présent dans votre panier"
+                                );
+                              } else {
+                                dispatch(cartActions.addToCart(product));
+                              }
+                            }
+                          } else {
+                            dispatch(cartActions.addToCart(product));
+                          }
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
+                    </TouchableOpacity>
+                  </View>
+              )}
+              {errorAdded ? (
+                  <Text
+                      style={{
+                        marginBottom: 12,
+                        textAlign: "center",
+                        color: "#D51317",
+                      }}
+                  >
+                    {errorAdded}
+                  </Text>
+              ) : (
+                  <Text />
+              )}
+            </ScrollView>
+        }
+
       </View>
     </View>
   );
@@ -716,6 +727,17 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: "center",
+    maxWidth: "90%",
+    marginBottom: 20,
+  },
+  containerLoading: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "20%",
   },
 });
 
