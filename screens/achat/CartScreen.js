@@ -15,7 +15,6 @@ import * as productActions from "../../store/actions/products";
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
 import firebase from "firebase";
 import * as userActions from "../../store/actions/users";
 import RecapCommandeItem from "../../components/RecapCommandeItem";
@@ -77,7 +76,7 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
-  console.log('cart', )
+
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -351,7 +350,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${cartItem.adresse}</p>
+            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : </p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.Adresse1}</p>
+            <p style="margin: 0">Ville: ${cartItem.adresse.Ville}</p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.CP}</p>
+            <p style="margin: 0">Nom du point relay: ${cartItem.adresse.Nom}</p>
             <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé par CB</p>
         </div>
     </div>
@@ -388,9 +391,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-        <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${
-          cartItem.adresse
-        }</p>
+          <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : </p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.Adresse1}</p>
+            <p style="margin: 0">Ville: ${cartItem.adresse.Ville}</p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.CP}</p>
+            <p style="margin: 0">Nom du point relay: ${cartItem.adresse.Nom}</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
         <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
@@ -506,6 +511,8 @@ ${
     IBAN = userData.IBAN;
   }
 
+
+  console.log('cartItem', cartItems);
 
   const ViewPortefeuille = () => {
       const initialValues = {
@@ -738,7 +745,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <p style="margin: 0">Prix de l'article: ${cartItem.productPrice} €</p>
             <p style="margin: 0">Protection acheteur : ${totalProtectionAcheteur} €</p>
             <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-            <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${cartItem.adresse}</p>
+                  <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : </p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.Adresse1}</p>
+            <p style="margin: 0">Ville: ${cartItem.adresse.Ville}</p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.CP}</p>
+            <p style="margin: 0">Nom du point relay: ${cartItem.adresse.Nom}</p>
             <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € payé avec le portefeuille</p>
         </div>
     </div>
@@ -775,9 +786,11 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         <p style="margin: 0">Description : ${cartItem.description}</p>
         <p style="margin: 0">Prix net vendeur: ${cartItem.productPrice} €</p>
         <p style="margin: 0">Poids: ${cartItem.poids} kgs</p>
-        <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : ${
-                      cartItem.adresse
-                  }</p>
+         <p style="margin: 0">Livraison: Mondial Relay à l'adresse suivante : </p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.Adresse1}</p>
+            <p style="margin: 0">Ville: ${cartItem.adresse.Ville}</p>
+            <p style="margin: 0">Code Postal: ${cartItem.adresse.CP}</p>
+            <p style="margin: 0">Nom du point relay: ${cartItem.adresse.Nom}</p>
         <p style="margin: 0">Prix de la livraison: attente de Mondial Relay</p>
         <p style="font-weight: bold; margin: 0">Total: ${sousTotal} € dont ${netVendeur} € net vendeur crédité dans votre portefeuille dès l'instant où l'acheteur validera la réception du colis si celui-ci est conforme à sa description.</p>
     </div>
