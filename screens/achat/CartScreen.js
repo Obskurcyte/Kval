@@ -1697,7 +1697,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#D51317",
     flex: 1,
     alignItems: "center",
-    paddingTop: windowHeight / 4,
+    paddingTop: windowHeight / 6,
   },
   image: {
     height: 200,
@@ -1716,7 +1716,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: "3%",
     color: "white",
-    width: windowWidth / 2,
+    width: windowWidth / 1.5,
   },
   retourContainer: {
     borderWidth: 5,
