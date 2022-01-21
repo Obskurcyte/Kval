@@ -1355,7 +1355,7 @@ ${
                         <View style={styles.container2}>
                             <AntDesign name="checkcircleo" size={200} color="white"/>
                             <Text style={styles.text3}>
-                                Vous avez bien acheté l'article !
+                                Vous avez bien acheté {cartItems.length > 1 ? "les articles !" : "l'article !"}
                             </Text>
                             <TouchableOpacity
                                 style={styles.retourContainer}
