@@ -43,6 +43,7 @@ const CartScreen = (props) => {
     }
   }
 
+
     const [auth, setAuth] = useState(false);
     const [confirmAuth, setConfirmAuth] = useState(false);
     const [err, setErr] = useState(null);
@@ -103,7 +104,7 @@ const CartScreen = (props) => {
 
 
   console.log('cartItems', cartItems);
-
+    console.log('length', cartItems.length)
   const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -361,8 +362,10 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
-    <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
+  
+        <p>Le vendeur a 5 jours pour expédier votre article et <span style="font-weight: bold">vous avez 2 jours dès réception de l’article</span> en conformité avec sa description, pour le signaler reçu et conforme <span style="font-weight: bold">via l’application</span> (Profile, Mes commandes)</p>
+   
+        <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
@@ -445,7 +448,8 @@ ${
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
+           <p>Le vendeur a 5 jours pour expédier votre article et <span style="font-weight: bold">vous avez 2 jours dès réception de l’article</span> en conformité avec sa description, pour le signaler reçu et conforme <span style="font-weight: bold">via l’application</span> (Profile, Mes commandes)</p>
+   
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -756,7 +760,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
+         <p>Le vendeur a 5 jours pour expédier votre article et <span style="font-weight: bold">vous avez 2 jours dès réception de l’article</span> en conformité avec sa description, pour le signaler reçu et conforme <span style="font-weight: bold">via l’application</span> (Profile, Mes commandes)</p>
+
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -840,7 +845,8 @@ ${
     
     <hr>
     
-    <p>Le vendeur a 5 jours pour expédier votre article et <p style="font-weight: bold">vous avez 2 jours dès réception de l’article</p> en conformité avec sa description, pour le signaler reçu et conforme <p style="font-weight: bold">via l’application</p>(Profile, Mes commandes)</p>
+            <p>Le vendeur a 5 jours pour expédier votre article et <span style="font-weight: bold">vous avez 2 jours dès réception de l’article</span> en conformité avec sa description, pour le signaler reçu et conforme <span style="font-weight: bold">via l’application</span> (Profile, Mes commandes)</p>
+
     <p>Ce signalement donnera immédiatement lieu au paiement du vendeur.</p>
     <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté au crédit du vendeur et une enquête sera effectuée par nos soins.</p>
     <br>
@@ -884,7 +890,9 @@ ${
               });
           }
       }
-      props.navigation.navigate("PortefeuilleThankYouScreen");
+      props.navigation.navigate("PortefeuilleThankYouScreen", {
+          length: cartItems.length
+      });
     };
     return (
       <View>

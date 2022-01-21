@@ -6,10 +6,12 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const PortefeuilleThankYouScreen = (props) => {
+    const length = props.route.params.length;
+
     return (
         <View style={styles.container2}>
             <AntDesign name="checkcircleo" size={200} color="white" />
-            <Text style={styles.text2}>Votre article a été acheté avec l'argent de votre portefeuille !</Text>
+            <Text style={styles.text2}>{length > 1 ? "Vos articles ont été achetés avec l'argent de votre portefeuille !" : "Votre article a été acheté avec l'argent de votre portefeuille !"}</Text>
             <TouchableOpacity style={styles.retourContainer} onPress={() => {
                 props.navigation.navigate('AccueilScreen')
             }}>
