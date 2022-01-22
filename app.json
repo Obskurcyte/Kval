@@ -31,7 +31,7 @@
         "backgroundColor": "#D51317"
       },
       "package": "com.kval.app",
-      "versionCode": 0
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
