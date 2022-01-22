@@ -5,7 +5,10 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "build-android": "eas build -p android",
+    "build-ios": "eas build -p ios",
+    "eas-login": "eas login"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",
