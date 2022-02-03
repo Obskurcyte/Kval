@@ -180,6 +180,7 @@ import CategoriesChoiceProfileScreen from "../screens/profile/CategoriesChoiceSc
 import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
 import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
 import ProductDetailProfileScreen from "../screens/profile/ProductDetailProfileScreen";
+import AllSetScreen from "../screens/inscription/AllSetScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -247,6 +248,13 @@ export const AuthNavigator = (props) => {
         )}
         options={classes.header}
       />
+        <AuthStackNavigator.Screen
+            name="AllSetScreen"
+            children={(props) => (
+                <AllSetScreen {...props} setIsLoggedIn={setIsLoggedIn} />
+            )}
+            options={classes.header}
+        />
       <AuthStackNavigator.Screen
         name="ForgotPasswordScreen"
         component={ForgotPasswordScreen}

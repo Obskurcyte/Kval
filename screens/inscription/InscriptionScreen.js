@@ -28,7 +28,7 @@ const InscriptionScreen = (props) => {
     console.log(params);
 
     const [err, setErr] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(false);
     console.log("err", err);
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -37,6 +37,7 @@ const InscriptionScreen = (props) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
+                        setIsLoading(true)
                         console.log(values);
                         let pushToken;
                         let statusObj = await Notifications.getPermissionsAsync();
@@ -48,44 +49,26 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
+                        console.log("0")
+
+                        try {
                             await firebase
                                 .auth()
                                 .createUserWithEmailAndPassword(values.email, values.password)
-                                .catch(err => {
-                                    console.log(err)
-                                    setErr(true)
-                                }).then(async (result) => {
-                                    await firebase
-                                        .firestore()
-                                        .collection("users")
-                                        .doc(firebase.auth().currentUser.uid)
-                                        .collection("unreadMessage")
-                                        .doc("firstKey")
-                                        .set({
-                                            count: 1,
-                                        });
-                                });
+                        } catch (err) {
+                            console.log(err)
+                            setErr(true)
+                        }
 
-                                await firebase
-                                    .firestore()
-                                    .collection("users")
-                                    .doc(firebase.auth().currentUser.uid)
-                                    .set({
-                                        pseudo: values.pseudo,
-                                        email: values.email,
-                                        nom: params.nom,
-                                        phone: params.phone,
-                                        id: firebase.auth().currentUser.uid,
-                                        prenom: params.prenom,
-                                        pushToken: pushToken.data,
-                                        portefeuille: 0,
-                                    });
+                        console.log("1.1")
+                        console.log('auth', firebase.auth().currentUser.uid)
 
-                                await axios
-                                    .post("https://kval-backend.herokuapp.com/send", {
-                                        mail: values.email,
-                                        subject: "Confirmation de création de compte",
-                                        html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
+                        try {
+                            await axios
+                                .post("https://kval-backend.herokuapp.com/send", {
+                                    mail: values.email,
+                                    subject: "Confirmation de création de compte",
+                                    html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
 <p>Votre compte vient d'être créé.</p><br>
 <p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
 <p style="margin: 0">Votre adresse mail : ${values.email}</p>
@@ -95,13 +78,23 @@ const InscriptionScreen = (props) => {
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                                    })
-                                    .then(() => props.setIsLoggedIn(true))
-                                    .catch((err) => {
-                                        console.log(err);
-                                        setErr(true)
-                                        props.setIsLoggedIn(true);
-                                    });
+                                })
+                        } catch (err) {
+                            setErr(true)
+                            props.setIsLoggedIn(false);
+                        }
+                        console.log("2")
+                        setIsLoading(false)
+                        props.navigation.navigate("AllSetScreen", {
+                            pseudo: values.pseudo,
+                            email: values.email,
+                            nom: params.nom,
+                            phone: params.phone,
+                            id: firebase.auth().currentUser.uid,
+                            prenom: params.prenom,
+                            pushToken: pushToken.data,
+                            portefeuille: 0,
+                        })
                             }}
 
                 >
@@ -144,12 +137,13 @@ const InscriptionScreen = (props) => {
                             ) : (
                                 <Text />
                             )}
-                            <TouchableOpacity
+                            {isLoading ? <ActivityIndicator color="black" size={30}/> :   <TouchableOpacity
                                 style={styles.buttonContainer}
                                 onPress={props.handleSubmit}
                             >
                                 <Text style={styles.createCompte}>Valider</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
+
                         </View>
                     )}
                 </Formik>
