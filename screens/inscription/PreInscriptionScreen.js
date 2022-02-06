@@ -49,7 +49,7 @@ const PreInscriptionScreen = (props) => {
                 >
                     {props => (
 
-                        <ScrollView style={styles.formContainer}>
+                        <View style={styles.formContainer}>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.text}>Nom</Text>
                                 <TextInput
@@ -76,6 +76,9 @@ const PreInscriptionScreen = (props) => {
                                 />
                             </View>
 
+                            {props.errors.prenom && props.touched.prenom ? (
+                                <Text style={styles.errors}>{props.errors.prenom}</Text>
+                            ) : <Text />}
 
                             <View style={styles.inputContainer}>
                                 <Text style={styles.text}>Téléphone</Text>
@@ -96,7 +99,7 @@ const PreInscriptionScreen = (props) => {
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
                                 <Text style={styles.createCompte}>Suivant</Text>
                             </TouchableOpacity>
-                        </ScrollView>
+                        </View>
                     )}
                 </Formik>
             </KeyboardAvoidingView>
