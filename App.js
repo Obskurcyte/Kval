@@ -37,6 +37,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
+
 const rootReducer = combineReducers({
   products: productReducer,
   cart: cartReducer,
