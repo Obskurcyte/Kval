@@ -26,7 +26,6 @@ import * as Yup from "yup";
 import PhotoArticleScreen from "./PhotoArticleScreen";
 import axios from "axios";
 import * as messageAction from "../../store/actions/messages";
-import { set } from "react-native-reanimated";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 
 const windowWidth = Dimensions.get("window").width;

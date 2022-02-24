@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import firebase from "firebase";
-import { set } from "react-native-reanimated";
+
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 

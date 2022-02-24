@@ -6,7 +6,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.14",
+    "version": "1.0.17",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -36,7 +36,7 @@
         "backgroundColor": "#D51317"
       },
       "package": "com.kval.app",
-      "versionCode": 5
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/favicon.png"
