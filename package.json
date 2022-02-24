@@ -42,7 +42,6 @@
     "react-native-image-crop-picker": "^0.36.2",
     "react-native-paper": "^4.9.1",
     "react-native-ratings": "^8.1.0",
-    "react-native-reanimated": "~2.1.0",
     "react-native-rounded-checkbox": "^0.1.4",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
