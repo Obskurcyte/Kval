@@ -2,7 +2,10 @@
   "expo": {
     "name": "KvalOccaz",
     "slug": "kvaloccaz",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +17,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.kvaloccaz.app",
@@ -35,6 +40,19 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "bugsnag": {
+        "apiKey": "2ae11353fc60edabeb9a3319b17e5875"
+      }
+    },
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "@bugsnag/expo/hooks/post-publish.js",
+          "config": {}
+        }
+      ]
     }
   }
 }

@@ -11,6 +11,7 @@
     "eas-login": "eas login"
   },
   "dependencies": {
+    "@bugsnag/expo": "^7.11.0",
     "@expo/vector-icons": "^12.0.5",
     "@freakycoder/react-native-bounceable": "^0.2.5",
     "@react-native-async-storage/async-storage": "^1.15.9",
