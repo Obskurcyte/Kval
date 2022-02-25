@@ -30,6 +30,7 @@ const AllSetScreen = (props) => {
     const [err, setErr] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     console.log("err", err);
+
     const handleSubmit =  async () => {
         try {
              await firebase

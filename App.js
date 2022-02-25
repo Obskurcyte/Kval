@@ -1,6 +1,3 @@
-import Bugsnag from '@bugsnag/expo';
-Bugsnag.start();
-
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
