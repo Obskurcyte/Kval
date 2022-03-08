@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
     Keyboard,
+    Alert,
     ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";
@@ -66,6 +67,7 @@ const InscriptionScreen = (props) => {
                                         });
                                 });
 
+                        Alert.alert("Post Database")
                                 await firebase
                                     .firestore()
                                     .collection("users")
@@ -81,6 +83,7 @@ const InscriptionScreen = (props) => {
                                         portefeuille: 0,
                                     });
 
+                        Alert.alert("send mail")
                                 await axios
                                     .post("https://kval-backend.herokuapp.com/send", {
                                         mail: values.email,
