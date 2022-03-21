@@ -38,6 +38,7 @@ const InscriptionScreen = (props) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
+                        Alert.alert("Entering the form")
                         console.log(values);
                         let pushToken;
                         let statusObj = await Notifications.getPermissionsAsync();
@@ -49,14 +50,17 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
-                            await firebase
+                        Alert.alert("Token obtained")
+
+                        await firebase
                                 .auth()
                                 .createUserWithEmailAndPassword(values.email, values.password)
                                 .catch(err => {
                                     console.log(err)
                                     setErr(true)
                                 }).then(async (result) => {
-                                    await firebase
+                                Alert.alert("Entering callback of auth")
+                                await firebase
                                         .firestore()
                                         .collection("users")
                                         .doc(firebase.auth().currentUser.uid)
