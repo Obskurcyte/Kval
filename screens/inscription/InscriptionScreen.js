@@ -38,7 +38,6 @@ const InscriptionScreen = (props) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
-                        Alert.alert("Entering the form")
                         console.log(values);
                         let pushToken;
                         let statusObj = await Notifications.getPermissionsAsync();
@@ -50,7 +49,6 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
-                        Alert.alert("Token obtained")
 
                         await firebase
                                 .auth()
@@ -58,9 +56,8 @@ const InscriptionScreen = (props) => {
                                 .catch(err => {
                                     console.log(err)
                                     setErr(true)
-                                }).then(async (result) => {
-                                Alert.alert("Entering callback of auth")
-                                await firebase
+                                }).then(() => {
+                                firebase
                                         .firestore()
                                         .collection("users")
                                         .doc(firebase.auth().currentUser.uid)
@@ -69,10 +66,9 @@ const InscriptionScreen = (props) => {
                                         .set({
                                             count: 1,
                                         });
-                                });
-
-                        Alert.alert("Post Database")
-                                await firebase
+                                Alert.alert("Okay")
+                                }).then(() => {
+                                firebase
                                     .firestore()
                                     .collection("users")
                                     .doc(firebase.auth().currentUser.uid)
@@ -86,9 +82,8 @@ const InscriptionScreen = (props) => {
                                         pushToken: pushToken.data,
                                         portefeuille: 0,
                                     });
-
-                        Alert.alert("send mail")
-                                await axios
+                            }).then(() => {
+                                axios
                                     .post("https://kval-backend.herokuapp.com/send", {
                                         mail: values.email,
                                         subject: "Confirmation de création de compte",
@@ -109,8 +104,8 @@ const InscriptionScreen = (props) => {
                                         setErr(true)
                                         props.setIsLoggedIn(true);
                                     });
+                            });
                             }}
-
                 >
                     {(props) => (
                         <View style={styles.formContainer}>
