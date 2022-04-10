@@ -17,6 +17,7 @@ import articleCommandeReducer from "./store/reducers/articlesCommandes";
 import messageReducer from "./store/reducers/messages";
 LogBox.ignoreLogs(["Setting a timer"]);
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkee21-SCCNxfS6co9SjW-PNfLTFTkdec",
@@ -72,6 +73,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <StripeProvider publishableKey="pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25">
       <NavigationContainer>
         {loggedIn ? (
           <TabNavigator
@@ -88,6 +90,7 @@ export default function App() {
           />
         )}
       </NavigationContainer>
+      </StripeProvider>
     </Provider>
   );
 }
