@@ -34,7 +34,6 @@ const ModifierOffrePaiementScreen = (props) => {
     }
     const currentUser = useSelector((state) => state.user.userData);
 
-    console.log('product', product)
     const cartInfo = {
         id: '5eruyt35eggr76476236523t3',
         description: 'T Shirt - With react Native Logo',

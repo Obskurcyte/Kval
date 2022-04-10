@@ -50,7 +50,6 @@ const ModifierAnnonceScreen = (props) => {
 
   const product_id = props.route.params._id;
 
-  console.log('id', product_id);
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -64,7 +63,7 @@ const ModifierAnnonceScreen = (props) => {
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
-  console.log('titre', titre);
+
   useEffect(() => {
     dispatch(usersActions.getUser());
   }, []);
@@ -163,7 +162,7 @@ const ModifierAnnonceScreen = (props) => {
 
   const [error, setError] = useState("");
 
-  console.log("go", goMessagePayment);
+
   const date = new Date();
 
   const onCheckStatus = async (paymentResponse) => {

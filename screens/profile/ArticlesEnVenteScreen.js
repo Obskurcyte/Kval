@@ -41,7 +41,6 @@ const ArticlesEnVenteScreen = (props) => {
     return unsubscribe
   }, [props.navigation, dispatch]);
 
-  console.log(articles);
   return (
     <View style={styles.container}>
       {articles.length !== 0 ? (
@@ -72,7 +71,6 @@ const ArticlesEnVenteScreen = (props) => {
             numColumns={2}
             keyExtractor={(item) => item.title}
             renderItem={(itemData) => {
-              console.log(itemData);
               return (
                 <CardVente
                   title={itemData.item.title}

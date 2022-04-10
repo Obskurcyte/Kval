@@ -12,6 +12,10 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import firebase from "firebase";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
 
 const ConnectionScreen = (props) => {
   const initialValues = {
@@ -30,12 +34,16 @@ const ConnectionScreen = (props) => {
           onSubmit={async (values) => {
             console.log(values);
             try {
-              await firebase
-                .auth()
-                .signInWithEmailAndPassword(values.email, values.password)
-                .then((result) => {
-                  props.setIsLoggedIn(true);
-                });
+                const response = await axios.post(`${BASE_URL}/api/users/login`, {
+                  email: values.email,
+                  password: values.password,
+                })
+
+                const token = response.data.token;
+                await AsyncStorage.setItem("jwt", token)
+                const decoded = jwt_decode(token)
+                await AsyncStorage.setItem("userId", decoded.id)
+                await AsyncStorage.setItem("userType", 'particulier')
             } catch (err) {
               console.log(err);
               setErr(err);

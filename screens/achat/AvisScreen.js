@@ -17,7 +17,7 @@ const AvisScreen = ({navigation, route}) => {
     }, [dispatch]);
 
     let commentaires = useSelector(state => state.commandes.commentaires);
-    console.log('wola', commentaires)
+
 
     return (
            <FlatList

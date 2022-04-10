@@ -27,12 +27,11 @@ const InscriptionScreen = (props) => {
     };
 
     const params = props.route.params;
-    console.log(params);
 
     const [err, setErr] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false)
-    console.log("err", err);
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">

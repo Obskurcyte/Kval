@@ -22,6 +22,7 @@ import * as Notifications from "expo-notifications";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import {BASE_URL} from "../../constants/baseURL";
 import {useConfirmPayment, CardField} from "@stripe/stripe-react-native";
+import * as cartActions from "../../store/actions/cart";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -38,6 +39,7 @@ const BoosteVentePaiementScreen = (props) => {
 
   const [goPaiement, setGoPaiement] = useState(false);
 
+  console.log('articles', articles)
   const cartInfo = {
     id: "5eruyt35eggr76476236523t3",
     description: "T Shirt - With react Native Logo",
@@ -82,10 +84,11 @@ const BoosteVentePaiementScreen = (props) => {
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
-          for (let data in articles) {
+          for (let i = 0; i < articles.length; i++) {
             console.log('1')
+            console.log('data', articles[i])
             await axios.put(`${BASE_URL}/api/products`, {
-              id: data._id,
+              id: articles[i]._id,
               boosted: true
             })
             console.log('2')
@@ -99,14 +102,14 @@ const BoosteVentePaiementScreen = (props) => {
 
 <div style="display: flex">
     <div style="margin-right: 30px">
-        <img src="${articles[data].images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        <img src="${articles[i].images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
 
     <div style="margin-top: 20px">
-        <p style="margin: 0">Titre : ${articles[data].title}</p>
-        <p style="margin: 0">Description : ${articles[data].description}</p>
-        <p style="margin: 0">Catégorie : ${articles[data].categorie}</p>
-        <p style="margin: 0">Prix net vendeur: ${articles[data].prix} €</p>
+        <p style="margin: 0">Titre : ${articles[i].title}</p>
+        <p style="margin: 0">Description : ${articles[i].description}</p>
+        <p style="margin: 0">Catégorie : ${articles[i].categorie}</p>
+        <p style="margin: 0">Prix net vendeur: ${articles[i].prix} €</p>
     </div>
 </div>
 
@@ -137,127 +140,8 @@ const BoosteVentePaiementScreen = (props) => {
     }
   };
 
-
-  const StripeApp = props => {
-    const [cardDetails, setCardDetails] = useState();
-    const { confirmPayment, loading } = useConfirmPayment();
-
-    const fetchPaymentIntentClientSecret = async () => {
-      setPaymentStatus('Votre paiement est en cours de traitement')
-      const response = await axios.post(
-          "https://kval-backend.herokuapp.com/paymentonetime",
-          {
-            email: "hadrien.jaubert99@gmail.com",
-            product: cartInfo,
-            amount: (price * 100).toFixed(0),
-          }
-      );
-      const { clientSecret, error } = await response.json();
-      return { clientSecret, error };
-    };
-
-    const handlePayPress = async () => {
-      console.log('inside')
-      //1.Gather the customer's billing information (e.g., email)
-      if (!cardDetails?.complete) {
-        Alert.alert("Please enter Complete card details and Email");
-        return;
-      }
-      //2.Fetch the intent client secret from the backend
-      try {
-        const { clientSecret, error } = await fetchPaymentIntentClientSecret();
-        //2. confirm the payment
-        if (error) {
-          console.log("Unable to process payment");
-        } else {
-          const { paymentIntent, error } = await confirmPayment(clientSecret, {
-            type: "Card",
-          });
-          if (error) {
-            alert(`Payment Confirmation Error ${error.message}`);
-          } else if (paymentIntent) {
-            alert("Payment Successful");
-            console.log("Payment successful ", paymentIntent);
-            setPaymentStatus('Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro')
-          }
-        }
-      } catch (e) {
-        console.log(e);
-      }
-      //3.Confirm the payment with the card details
-    };
-
-    return (
-        <View>
-          <CardField
-              postalCodeEnabled={false}
-              placeholder={{
-                number: "4242 4242 4242 4242",
-              }}
-              cardStyle={styles.card}
-              style={styles.cardContainerStripe}
-              onCardChange={cardDetails => {
-                setCardDetails(cardDetails);
-              }}
-              onFocus={(focusedField) => {
-                console.log('focusField', focusedField);
-              }}
-          />
-          <Button onPress={handlePayPress} title="Pay" disabled={loading} />
-        </View>
-    );
-  };
-
   const paymentUI = (props) => {
-    if (paymentStatus === 'Votre paiement est en cours de traitement') {
-      return (
-          <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1,
-              }}
-          >
-            <View>
-              <Text>{paymentStatus}</Text>
-              <ActivityIndicator />
-            </View>
-          </View>
-      )
-    }
-
-    if (paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro') {
-      return (
-          <View
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                flex: 1,
-              }}
-          >
-            <View style={styles.container2}>
-              <AntDesign name="checkcircleo" size={200} color="white" />
-              <Text style={styles.text2}>Boost validé !</Text>
-              <TouchableOpacity
-                  style={styles.retourContainer}
-                  onPress={() => {
-                    props.navigation.navigate("ProfileScreen")
-                    props.navigation.navigate("Accueil", {
-                      screen: 'AcceuilScreen'
-                    })
-                  }}
-              >
-                <Text style={styles.text2}>Retour au menu principal</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-      )
-    }
-    else {
+    if (!makePayment) {
       return (
           <ScrollView>
             <View style={styles.flatlistContainer}>
@@ -343,13 +227,71 @@ const BoosteVentePaiementScreen = (props) => {
                     >
                       <Text style={styles.mettreEnVenteText}>Payer</Text>
                     </TouchableOpacity>
-                    {makePayment && <StripeApp/>}
                   </>
               )}
             </View>
           </ScrollView>
-      );
+      )
+    } else {
+      if (paymentStatus === 'Votre paiement est en cours de traitement') {
+        return (
+            <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                }}
+            >
+              <View>
+                <Text>{paymentStatus}</Text>
+                <ActivityIndicator />
+              </View>
+            </View>
+        )
+      }
+
+      if (paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro') {
+        return (
+            <View
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flex: 1,
+                }}
+            >
+              <View style={styles.container2}>
+                <AntDesign name="checkcircleo" size={200} color="white" />
+                <Text style={styles.text2}>Boost validé !</Text>
+                <TouchableOpacity
+                    style={styles.retourContainer}
+                    onPress={() => {
+                      props.navigation.navigate("ProfileScreen")
+                      props.navigation.navigate("Accueil", {
+                        screen: 'AcceuilScreen'
+                      })
+                    }}
+                >
+                  <Text style={styles.text2}>Retour au menu principal</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+        )
+      }
+      else {
+        return (
+          <PaymentView
+              onCheckStatus={onCheckStatus}
+              product={"Paiement unique"}
+              amount={1}
+          />
+        );
+      }
     }
+
 
   };
 

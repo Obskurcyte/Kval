@@ -52,7 +52,6 @@ const ProductDetailScreen = (props) => {
   //-------------CAROUSEL----------------//
 
   let testData = [];
-  console.log(product);
   for (let i = 0; i < product.images.length; i++) {
     testData.push({
       id: i,
@@ -263,7 +262,6 @@ const ProductDetailScreen = (props) => {
                         style={styles.mettreEnVentePopup}
                         onPress={async () => {
                           setModalVisible(false);
-                          console.log('clicked')
                           await deleteAnnonce(product.id, product.categorie);
                           props.navigation.navigate("DeleteAnnonceValidationScreen");
                         }}

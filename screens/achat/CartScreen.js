@@ -94,8 +94,6 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
-
-  console.log('cart', cartItems)
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -139,7 +137,7 @@ const CartScreen = (props) => {
 
     try {
       const stripeResponse = await axios.post(
-        "http://localhost:8000/paymentonetime",
+          `${BASE_URL}/paymentonetime`,
         {
           email: `${userData.email}`,
           product: cartInfo,

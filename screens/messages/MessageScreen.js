@@ -29,8 +29,7 @@ const MessageScreen = (props) => {
   const [loading, setLoading] = useState(false);
 
 
-    console.log('loading', loading)
-    console.log("notifs", notifsList);
+
 
   /* useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -118,7 +117,6 @@ const MessageScreen = (props) => {
      */
   }, [props.navigation, update]);
 
-  console.log('threds', threads);
 
   return (
       <View style={styles.container}>
@@ -149,7 +147,6 @@ const MessageScreen = (props) => {
                       style={styles.flatList}
                       keyExtractor={(item) => item?._id}
                       renderItem={(itemData) => {
-                          console.log(itemData.item)
                         return (
                             <CardMessage
                                 pseudoVendeur={itemData.item?.pseudoReceiver}
@@ -176,7 +173,6 @@ const MessageScreen = (props) => {
                       style={styles.flatList}
                       keyExtractor={() => (Math.random() * 100000).toString()}
                       renderItem={(itemData) => {
-                        console.log('item', itemData.item)
                         return (
                             <CardNotif
                                 title={itemData.item.notificationsTitle}

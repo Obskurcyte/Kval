@@ -34,9 +34,7 @@ const ViewProductsScreen = (props) => {
   const [focus, setFocus] = useState(false)
 
   const isFocused = useIsFocused();
-  console.log("focused", isFocused);
 
-  console.log("wola");
   const categorie = props.route.params ? props.route.params.categorie : "";
   const query = props.route.params ? props.route.params.query : "";
 

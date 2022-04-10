@@ -8,13 +8,8 @@ const LivraisonChoiceScreen = (props) => {
 
   const cartItems = props.route.params.cartItems;
   const index = props.route.params.index;
-  console.log("props", props.route.params);
-  console.log("cart", cartItems);
-  console.log("index", index);
   const [livraison, setLivraison] = useState("");
-  console.log("product", product);
 
-  console.log(product.poids.replace('/', '.') < 30)
   const handleMondialRelay = (data) => {
     props.navigation.navigate("CartScreen", {
       livraison: "MondialRelay",

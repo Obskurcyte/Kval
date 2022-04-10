@@ -78,7 +78,6 @@ const AccueilScreen = (props) => {
       setFocus(false)
       dispatch(messageAction.fetchUnreadMessage())
       const { data } = await axios.get(`${BASE_URL}/api/products`);
-      console.log('data', data)
       setProductsUne(data);
       setProductsFiltered(data);
       const response = await axios.get(`${BASE_URL}/api/products/boosted`);
@@ -102,8 +101,8 @@ const AccueilScreen = (props) => {
     setFocus(false)
   }
 
-  console.log('filtered', productsFiltered);
 
+  console.log(productsBoosted)
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <>
@@ -201,7 +200,6 @@ const AccueilScreen = (props) => {
                   horizontal={true}
                   style={styles.flatList}
                   renderItem={itemData => {
-                    console.log('data', itemData.item)
                     return (
                         <BoostedProductCard
                             title={itemData.item.title}
