@@ -13,6 +13,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import CardVente from "../../components/CardVente";
 import * as messageAction from "../../store/actions/messages";
+import {BASE_URL} from "../../constants/baseURL";
+import axios from 'axios';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -20,11 +22,17 @@ const windowHeight = Dimensions.get("window").height;
 const ArticlesEnVenteScreen = (props) => {
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(articlesActions.getArticles());
-  }, [dispatch]);
+  const [articles, setArticles] = useState([]);
 
-  const articles = useSelector((state) => state.articles.mesVentes);
+  const userData = props.route.params.user;
+
+  useEffect(() => {
+    const getArticles = async () => {
+      const { data } = await axios.get(`${BASE_URL}/api/products/vendeur/${userData._id}`);
+      setArticles(data)
+    }
+    getArticles()
+  }, []);
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
@@ -40,7 +48,9 @@ const ArticlesEnVenteScreen = (props) => {
         <View>
           <TouchableOpacity
             style={styles.avantArticlesContainer}
-            onPress={() => props.navigation.navigate("BoosteVenteScreen")}
+            onPress={() => props.navigation.navigate("BoosteVenteScreen", {
+              user: userData
+            })}
           >
             <MaterialCommunityIcons name="fire" size={34} color="#D51317"/>
             <View style={{display: 'flex', flexDirection: 'column'}}>
@@ -67,7 +77,7 @@ const ArticlesEnVenteScreen = (props) => {
                 <CardVente
                   title={itemData.item.title}
                   price={itemData.item.prix}
-                  imageURI={itemData.item.downloadURL}
+                  imageURI={itemData.item.images[0]}
                   onPress={() =>
                     props.navigation.navigate("Acheter", {
                       screen: "ProductDetailScreen",

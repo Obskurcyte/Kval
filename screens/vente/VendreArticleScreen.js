@@ -26,8 +26,9 @@ import * as Yup from "yup";
 import PhotoArticleScreen from "./PhotoArticleScreen";
 import axios from "axios";
 import * as messageAction from "../../store/actions/messages";
-import { set } from "react-native-reanimated";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -72,12 +73,22 @@ const VendreArticleScreen = (props) => {
   const [categorie, setCategorie] = useState(null);
   const [marques, setMarques] = useState(null);
 
+  const [userData, setUserData] = useState(null)
+
   useEffect(() => {
-    dispatch(usersActions.getUser());
-  }, []);
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getUser()
+    });
+    return unsubscribe
+  }, [props.navigation]);
 
-  const currentUser = useSelector((state) => state.user.userData);
 
+  console.log('data', userData)
   useEffect(() => {
     if (props.route.params) {
       setEtat(props.route.params.etat);
@@ -168,10 +179,6 @@ const VendreArticleScreen = (props) => {
     props.navigation.navigate("MarquesChoiceScreen");
   };
 
-  const navigateVendre = () => {
-    props.navigation.navigate("VendreArticleScreen", { modify: false });
-  };
-
   const navigatePhotoScreen = (image) => {
     props.navigation.navigate("PhotoArticleScreen", { image });
   };
@@ -182,8 +189,9 @@ const VendreArticleScreen = (props) => {
 
   const [error, setError] = useState("");
   const [errors, setErrors] = useState(false);
-  const date = new Date();
   const [imageEmail, setImageMail] = useState("");
+
+  console.log('cat', categorie);
 
   return (
     <View style={{ flex: 1 }}>
@@ -211,7 +219,7 @@ const VendreArticleScreen = (props) => {
                   }
 
                   if (!errors) {
-                    let pushToken;
+                   /* let pushToken;
                     let statusObj = await Notifications.getPermissionsAsync();
                     if (statusObj.status !== "granted") {
                       statusObj = await Notifications.requestPermissionsAsync({
@@ -229,6 +237,8 @@ const VendreArticleScreen = (props) => {
                       pushToken = await Notifications.getExpoPushTokenAsync();
                     }
 
+                    */
+
                     const id = Math.random() * 300000000;
 
                     if (imagesTableau.length === 0) {
@@ -236,70 +246,18 @@ const VendreArticleScreen = (props) => {
                     } else {
                       try {
                         setIsLoading(true);
-                        console.log("1");
-                        await firebase
-                          .firestore()
-                          .collection("products")
-                          .doc(`${id}`)
-                          .set({
-                            categorie,
-                            etat,
-                            id,
-                            marques,
-                            date: date,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price.replace(',', '.'),
-                            poids: values.poids.replace(',', '.'),
-                            pushToken,
-                            idVendeur: currentUser.id,
-                            emailVendeur: currentUser.email,
-                            livraison: "Choisir",
-                            pseudoVendeur: currentUser.pseudo,
-                          });
-                        console.log("2");
-                        await firebase
-                          .firestore()
-                          .collection("posts")
-                          .doc(currentUser.id)
-                          .collection("userPosts")
-                          .doc(`${id}`)
-                          .set({
-                            pseudoVendeur: currentUser.pseudo,
-                            categorie,
-                            marques,
-                            etat,
-                            date: date,
-                            idVendeur: currentUser.id,
-                            emailVendeur: currentUser.email,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price.replace(',', '.'),
-                            pushToken,
-                            livraison: "Choisir",
-                            poids: values.poids.replace(',', '.'),
-                          });
-
-                        console.log("3");
-                        await firebase
-                          .firestore()
-                          .collection("allProducts")
-                          .doc(`${id}`)
-                          .set({
-                            pseudoVendeur: currentUser.pseudo,
-                            categorie,
-                            marques,
-                            etat,
-                            pushToken,
-                            date: date,
-                            idVendeur: currentUser.id,
-                            emailVendeur: currentUser.email,
-                            title: values.title,
-                            description: values.description,
-                            prix: values.price.replace(',', '.'),
-                            livraison: "Choisir",
-                            poids: values.poids.replace(',', '.'),
-                          });
+                        const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                          title: values.title,
+                          description: values.description,
+                          category: categorie,
+                          prix: values.price.replace(',', '.'),
+                          poids: values.poids.replace(',', '.'),
+                          status: etat,
+                          idVendeur: userData._id,
+                          pseudoVendeur: userData.pseudo,
+                          emailVendeur: userData.email,
+                          brand: marques,
+                        })
 
                         const uploadImage = async (index) => {
                           return new Promise(async (resolve) => {
@@ -324,8 +282,12 @@ const VendreArticleScreen = (props) => {
                             const taskCompleted = (snapshot) => {
                               task.snapshot.ref
                                 .getDownloadURL()
-                                .then((snapshot) => {
-                                  saveImageData(snapshot, index);
+                                .then(async (snapshot) => {
+                                  setImageMail(snapshot)
+                                  const response = await axios.put(`${BASE_URL}/api/products`, {
+                                    id: data.product._id,
+                                    image: snapshot
+                                  })
                                   resolve();
                                 });
                             };
@@ -343,35 +305,8 @@ const VendreArticleScreen = (props) => {
                           });
                         };
 
-                        const saveImageData = (downloadURL, index) => {
-                          const property_name =
-                            index === 0 ? "downloadURL" : `downloadURL${index}`;
-                          data[property_name] = downloadURL;
-                          setImageMail(data.downloadURL);
-                          console.log('imageEmail', imageEmail);
-                          console.log('data', data);
-                          firebase
-                            .firestore()
-                            .collection("products")
-                            .doc(`${id}`)
-                            .update(data);
-                          firebase
-                            .firestore()
-                            .collection("posts")
-                            .doc(currentUser.id)
-                            .collection("userPosts")
-                            .doc(`${id}`)
-                            .update(data);
-                          firebase
-                            .firestore()
-                            .collection("allProducts")
-                            .doc(`${id}`)
-                            .update(data);
-                        };
-
                         await Promise.all(
                           imagesTableau.map(async (image, index) => {
-                            console.log("test");
                             await uploadImage(index);
                           })
                         );
@@ -379,7 +314,7 @@ const VendreArticleScreen = (props) => {
                         console.log(err);
                       }
 
-                      setIsLoading(false);
+
                       setImagesTableau([]);
                       setImage(null);
                       setCategorie(null);
@@ -388,15 +323,15 @@ const VendreArticleScreen = (props) => {
                       await axios.post(
                         "https://kval-backend.herokuapp.com/send",
                         {
-                          mail: currentUser.email,
+                          mail: userData.email,
                           subject: "Confirmation de mise en vente",
-                          html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
+                          html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
 <p>Votre article vient d'être mis en vente.</p>
 <p>Résumé de votre article : </p>
 <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">
-            <img src="${data.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+            <img src="${imageEmail}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
         </div>
                 
         <div style="margin-top: 20px">
@@ -408,9 +343,9 @@ const VendreArticleScreen = (props) => {
         </div>
     </div>
 <hr>
-<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique «Mes articles en vente»</p>
 <p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
+<p style="margin: 0">«Annonces en avant première» du menu d’accueil de l’application.
 </p>
 <br>
     <p style="margin: 0">L'équipe KVal Occaz</p>
@@ -418,6 +353,7 @@ const VendreArticleScreen = (props) => {
 </div>`,
                         }
                       );
+                      setIsLoading(false);
                       props.navigation.navigate("ValidationScreen", {
                         props: props,
                         modify: false,

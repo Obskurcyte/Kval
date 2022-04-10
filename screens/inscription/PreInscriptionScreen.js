@@ -94,7 +94,7 @@ const PreInscriptionScreen = (props) => {
                             ) : <Text />}
 
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
-                                <Text style={styles.createCompte}>Suivant !!!</Text>
+                                <Text style={styles.createCompte}>Suivant</Text>
                             </TouchableOpacity>
                         </ScrollView>
                     )}

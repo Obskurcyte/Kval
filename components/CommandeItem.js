@@ -3,6 +3,7 @@ import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 
 const CommandeItem = ({item, onPress, backgroundColor}) => {
 
+    console.log('item', item)
     return (
 
         <TouchableOpacity style={styles.cardContainer} onPress={onPress}>
@@ -11,7 +12,7 @@ const CommandeItem = ({item, onPress, backgroundColor}) => {
 
             <View style={styles.imgcontainer}>
                 <Image
-                    source={{uri: item.image}}
+                    source={{uri: item.image || item.images[0]}}
                     style={styles.image}
                 />
             </View>

@@ -4,6 +4,8 @@ import {useDispatch, useSelector} from "react-redux";
 import * as articlesActions from "../../store/actions/articlesEnVente";
 import CardVente from "../../components/CardVente";
 import BoosteVenteItem from "../../components/BoosteVenteItem";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -13,34 +15,36 @@ const windowHeight = Dimensions.get('window').height;
 
 const BoosteVenteScreen = (props) => {
 
-  const dispatch = useDispatch();
+  const [articles, setArticles] = useState([]);
+
+  const userData = props.route.params.user;
 
   useEffect(() => {
-    dispatch(articlesActions.getArticles())
-  }, [dispatch]);
+    const getArticles = async () => {
+      const { data } = await axios.get(`${BASE_URL}/api/products/vendeur/${userData._id}`);
+      setArticles(data)
+    }
+    getArticles()
+  }, []);
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedArticles, setSelectedArticles] = useState([]);
 
   const renderItem = ({item}) => {
-   const backgroundColor = item.id === selectedId ? '#D6F5DB' : "white";
+   const backgroundColor = item._id === selectedId ? '#D6F5DB' : "white";
 
+   console.log('item', item)
     return (
       <BoosteVenteItem
         item={item}
         onPress={() => {
-          setSelectedId(item.id)
+          setSelectedId(item._id)
           setSelectedArticles((selectedArticles) => [...selectedArticles, item])
         }}
         backgroundColor={{ backgroundColor }}
       />
     );
   }
-
-
-  let articles = useSelector(state => state.articles.mesVentes);
-
-
 
 
   console.log('selected', selectedArticles)
@@ -61,7 +65,8 @@ const BoosteVenteScreen = (props) => {
 
 
       <TouchableOpacity style={styles.mettreEnVente} onPress={() => props.navigation.navigate('BoosteVentePaiementScreen', {
-        articles: selectedArticles
+        articles: selectedArticles,
+        user: userData
       })}>
         <Text style={styles.mettreEnVenteText}>Terminer</Text>
       </TouchableOpacity>

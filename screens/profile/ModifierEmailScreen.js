@@ -4,6 +4,8 @@ import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -17,25 +19,18 @@ const ModifierEmailScreen = (props) => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(userActions.getUser())
-        firebase.firestore()
-            .collection('allProducts')
-            .where("emailVendeur", "==", userData.email)
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    setProductByEmail(oldState => [...oldState, {id : doc.id, data: doc.data()}])
-                });
-            })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
-    }, [dispatch]);
-
-    const userData = useSelector(state => state.user.userData);
+    const userData = props.route.params.user
 
     const [productByEmail, setProductByEmail] = useState([]);
+
+    useEffect(() => {
+        const getProductsByEmail = async () => {
+            const { data } = await axios.get(`${BASE_URL}/api/products/email/${userData._id}`)
+            setProductByEmail(data)
+        }
+        getProductsByEmail()
+    }, [dispatch]);
+
 
   return (
    <View style={styles.container}>
@@ -47,29 +42,18 @@ const ModifierEmailScreen = (props) => {
         onSubmit={async (values) => {
             console.log(values)
 
-
             for (let product of productByEmail) {
                 console.log(product)
-                await firebase.firestore()
-                    .collection('allProducts')
-                    .doc(product.id)
-                    .update({
-                        emailVendeur: values.initial
-                    })
-                await firebase.firestore()
-                    .collection(`${product.data.categorie}`)
-                    .doc(product.id)
-                    .update({
-                        emailVendeur: values.initial
-                    })
+                await axios.put(`${BASE_URL}/api/products`, {
+                    id: userData._id,
+                    emailVendeur: values.initial
+                })
             }
 
-            await firebase.firestore().collection('users')
-                .doc(firebase.auth().currentUser.uid)
-                .update({
-                        email: values.initial
-                })
-            await firebase.auth().currentUser.updateEmail(values.initial).then(() => props.navigation.navigate('ModifierEmailConfirmationScreen'))
+            await axios.put(`${BASE_URL}/api/users`, {
+                id: userData._id,
+                email: values.initial
+            }).then(() => props.navigation.navigate('ModifierEmailConfirmationScreen'))
         }}
        >
            {props => (

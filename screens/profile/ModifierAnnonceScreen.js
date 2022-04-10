@@ -22,6 +22,8 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -42,10 +44,13 @@ const ModifierAnnonceScreen = (props) => {
     poids: props.route.params.poids,
   };
 
+
   let price = props.route.params.prix;
   const old_categorie = props.route.params.categorie;
 
-  const product_id = props.route.params.id;
+  const product_id = props.route.params._id;
+
+  console.log('id', product_id);
 
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null);
@@ -59,30 +64,32 @@ const ModifierAnnonceScreen = (props) => {
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
-  console.log(titre);
+  console.log('titre', titre);
   useEffect(() => {
     dispatch(usersActions.getUser());
   }, []);
 
-  const currentUser = useSelector((state) => state.user.userData);
+
+  const [userData, setUserData] = useState(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getUser()
+    });
+    return unsubscribe
+  }, [props.navigation]);
 
   useEffect(() => {
     if (props.route.params) {
       setEtat(props.route.params.etat);
       setCategorie(props.route.params.categorie);
       setMarques(props.route.params.marques);
-      const images = [];
-      props.route.params.downloadURL &&
-        images.push(props.route.params.downloadURL);
-      props.route.params.downloadURL1 &&
-        images.push(props.route.params.downloadURL1);
-      props.route.params.downloadURL2 &&
-        images.push(props.route.params.downloadURL2);
-      props.route.params.downloadURL3 &&
-        images.push(props.route.params.downloadURL3);
-      props.route.params.downloadURL4 &&
-        images.push(props.route.params.downloadURL4);
-      setImagesTableau(images);
+      setImagesTableau(props.route.params.images);
     }
   }, [props.route.params]);
 
@@ -191,231 +198,76 @@ const ModifierAnnonceScreen = (props) => {
 
           const old_id = product_id;
           const id = Math.random() * 300000000;
-
           if (imagesTableau.length === 0) {
             setError("Veuillez uploader des photos");
           } else {
             console.log("1");
             try {
-              await firebase
-                .firestore()
-                .collection("products")
-                .doc(`${old_id}`)
-                .delete();
-
-              await firebase
-                .firestore()
-                .collection("posts")
-                .doc(firebase.auth().currentUser.uid)
-                .collection("userPosts")
-                .doc(`${old_id}`)
-                .delete();
-
-              await firebase
-                .firestore()
-                .collection("allProducts")
-                .doc(`${old_id}`)
-                .delete();
-            } catch (err) {
-              console.log(err);
-            }
-
-            console.log("2");
-            try {
-              await firebase
-                .firestore()
-                .collection("products")
-                .doc(`${id}`)
-                .set({
-                  categorie,
-                  etat,
-                  id,
-                  marques,
-                  date: date,
-                  title: titre,
-                  description: description,
-                  prix: price,
-                  poids: poids,
-                  pushToken,
-                  emailVendeur: currentUser.email,
-                  idVendeur: firebase.auth().currentUser.uid,
-                  pseudoVendeur: currentUser.pseudo,
-                });
-            } catch (err) {
-              console.log(err);
-            }
-
-            console.log("3");
-            await firebase
-              .firestore()
-              .collection("posts")
-              .doc(firebase.auth().currentUser.uid)
-              .collection("userPosts")
-              .doc(`${id}`)
-              .set({
-                pseudoVendeur: currentUser.pseudo,
-                categorie,
-                marques,
-                etat,
-                date: date,
+              await axios.delete(`${BASE_URL}/api/products/${old_id}`)
+              const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                category: categorie,
+                status: etat,
+                brand: marques,
                 title: titre,
-                idVendeur: firebase.auth().currentUser.uid,
                 description: description,
-                prix: prix,
+                prix: price,
                 poids: poids,
                 pushToken,
-                emailVendeur: currentUser.email
-              });
-
-            console.log("4");
-            await firebase
-              .firestore()
-              .collection("allProducts")
-              .doc(`${id}`)
-              .set({
-                pseudoVendeur: currentUser.pseudo,
-                categorie,
-                marques,
-                etat,
-                date: date,
-                title: titre,
-                idVendeur: firebase.auth().currentUser.uid,
-                description: description,
-                prix: prix,
-                poids: poids,
-                pushToken,
-                emailVendeur: currentUser.email
-              });
-
-            await firebase.firestore()
-                .collection("BoostedVentes")
-                .doc(`${old_id}`)
-                .get()
-                .then((doc) => {
-                  if (doc.exists) {
-                    firebase
-                        .firestore()
-                        .collection("BoostedVentes")
-                        .doc(`${old_id}`)
-                        .delete();
-                    firebase
-                        .firestore()
-                        .collection("BoostedVentes")
-                        .doc(`${id}`)
-                        .set({
-                          pseudoVendeur: currentUser.pseudo,
-                          categorie,
-                          marques,
-                          etat,
-                          date: date,
-                          title: titre,
-                          idVendeur: firebase.auth().currentUser.uid,
-                          description: description,
-                          prix: prix,
-                          poids: poids,
-                          pushToken,
-                          emailVendeur: currentUser.email
-                        }).then((docRef) => {
-                      console.log("Document written with ID: ");
-                    })
-                        .catch((error) => {
-                          console.error("Error adding document: ", error);
-                        });
-                  } else {
-                    // doc.data() will be undefined in this case
-                    console.log("No such document!");
-                  }
-                });
-              console.log("5");
-            const uploadImage = async (index) => {
-              return new Promise(async (resolve) => {
-                const uri = imagesTableau[index];
-                const response = await fetch(uri);
-                const blob = await response.blob();
-
-                const task = firebase
-                  .storage()
-                  .ref()
-                  .child(`${categorie}/${Math.random().toString(36)}`)
-                  .put(blob);
-
-                const taskProgress = (snapshot) => {
-                  console.log(`transferred: ${snapshot.bytesTransferred}`);
-                };
-
-                const taskCompleted = (snapshot) => {
-                  task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                    saveImageData(snapshot, index);
-                    console.log("snapshot", snapshot);
-                    resolve();
-                  });
-                };
-
-                const taskError = (snapshot) => {
-                  console.log(snapshot);
-                };
-
-                task.on(
-                  "state_changed",
-                  taskProgress,
-                  taskError,
-                  taskCompleted
-                );
-              });
-            };
-
-            console.log("6");
-            const saveImageData = (downloadURL, index) => {
-              const property_name =
-                index === 0 ? "downloadURL" : `downloadURL${index}`;
-              const data = {};
-              data[property_name] = downloadURL;
-              setImageEmail(downloadURL);
-              firebase
-                .firestore()
-                .collection("products")
-                .doc(`${id}`)
-                .update(data);
-              firebase
-                .firestore()
-                .collection("posts")
-                .doc(firebase.auth().currentUser.uid)
-                .collection("userPosts")
-                .doc(`${id}`)
-                .update(data);
-              firebase
-                .firestore()
-                .collection("allProducts")
-                .doc(`${id}`)
-                .update(data);
-              firebase.firestore()
-                  .collection("BoostedVentes")
-                  .doc(`${id}`)
-                  .get()
-                  .then((doc) => {
-                    if (doc.exists) {
-                      firebase
-                          .firestore()
-                          .collection("BoostedVentes")
-                          .doc(`${id}`)
-                          .update(data)
-                          .then(() => {
-                            console.log("Document successfully updated!");
-                          })
-                          .catch((error) => {
-                            // The document probably doesn't exist.
-                            console.error("Error updating document: ", error);
-                          });
-                    }
-                  })
-            };
-
-            await Promise.all(
-              imagesTableau.map(async (image, index) => {
-                console.log("test");
-                await uploadImage(index);
+                emailVendeur: userData.email,
+                idVendeur: userData._id,
+                pseudoVendeur: userData.pseudo,
               })
-            );
+              const uploadImage = async (index) => {
+                return new Promise(async (resolve) => {
+                  const uri = imagesTableau[index];
+                  const response = await fetch(uri);
+                  const blob = await response.blob();
+
+                  const task = firebase
+                      .storage()
+                      .ref()
+                      .child(`${categorie}/${Math.random().toString(36)}`)
+                      .put(blob);
+
+                  const taskProgress = (snapshot) => {
+                    console.log(`transferred: ${snapshot.bytesTransferred}`);
+                  };
+
+                  const taskCompleted = (snapshot) => {
+                    task.snapshot.ref.getDownloadURL().then(async(snapshot) => {
+                      const response = await axios.put(`${BASE_URL}/api/products`, {
+                        id: data.product._id,
+                        image: snapshot
+                      })
+                      resolve();
+                    });
+                  };
+
+                  const taskError = (snapshot) => {
+                    console.log(snapshot);
+                  };
+
+                  task.on(
+                      "state_changed",
+                      taskProgress,
+                      taskError,
+                      taskCompleted
+                  );
+                });
+              };
+
+              console.log("6");
+              await Promise.all(
+                  imagesTableau.map(async (image, index) => {
+                    console.log("test");
+                    await uploadImage(index);
+                  })
+              );
+            } catch (err) {
+              console.log(err);
+            }
+
+
             setPaymentStatus(
               "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
             );
@@ -466,7 +318,7 @@ const ModifierAnnonceScreen = (props) => {
                       } else {
                         setIsLoading(true);
 
-                        let pushToken;
+                       /* let pushToken;
                         let statusObj =
                           await Notifications.getPermissionsAsync();
                         if (statusObj.status !== "granted") {
@@ -481,6 +333,8 @@ const ModifierAnnonceScreen = (props) => {
                           ).data;
                         }
 
+                        */
+
                         const old_id = product_id;
                         const id = Math.random() * 300000000;
 
@@ -489,136 +343,24 @@ const ModifierAnnonceScreen = (props) => {
                         } else {
                           console.log("1");
                           try {
-                            await firebase
-                              .firestore()
-                              .collection(`${old_categorie}`)
-                              .doc(`${old_id}`)
-                              .delete();
-
-                            await firebase
-                              .firestore()
-                              .collection("posts")
-                              .doc(firebase.auth().currentUser.uid)
-                              .collection("userPosts")
-                              .doc(`${old_id}`)
-                              .delete();
-
-                            await firebase
-                              .firestore()
-                              .collection("allProducts")
-                              .doc(`${old_id}`)
-                              .delete();
+                            await axios.delete(`${BASE_URL}/api/products/${old_id}`)
                           } catch (err) {
                             console.log(err);
                           }
 
                           console.log("2");
-                          try {
-                            await firebase
-                              .firestore()
-                              .collection("products")
-                              .doc(`${id}`)
-                              .set({
-                                categorie,
-                                etat,
-                                id,
-                                marques,
-                                date: date,
-                                title: values.title,
-                                description: values.description,
-                                prix: values.price,
-                                poids: values.poids,
-                                pushToken,
-                                idVendeur: currentUser.id,
-                                pseudoVendeur: currentUser.pseudo,
-                                emailVendeur: currentUser.email
-                              });
-                          } catch (err) {
-                            console.log(err);
-                          }
-
-                          console.log("3");
-                          await firebase
-                            .firestore()
-                            .collection("posts")
-                            .doc(firebase.auth().currentUser.uid)
-                            .collection("userPosts")
-                            .doc(`${id}`)
-                            .set({
-                              pseudoVendeur: currentUser.pseudo,
-                              categorie,
-                              marques,
-                              etat,
-                              date: date,
+                          const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                              category: categorie,
+                              status: etat,
+                              brand: marques,
                               title: values.title,
-                              idVendeur: currentUser.id,
                               description: values.description,
                               prix: values.price,
                               poids: values.poids,
-                              pushToken,
-                              emailVendeur: currentUser.email
-                            });
-
-                          console.log("4");
-                          await firebase
-                            .firestore()
-                            .collection("allProducts")
-                            .doc(`${id}`)
-                            .set({
-                              pseudoVendeur: currentUser.pseudo,
-                              categorie,
-                              marques,
-                              etat,
-                              date: date,
-                              title: values.title,
-                              description: values.description,
-                              idVendeur: currentUser.id,
-                              prix: values.price,
-                              poids: values.poids,
-                              pushToken,
-                              emailVendeur: currentUser.email
-                            });
-
-                          await firebase.firestore()
-                              .collection("BoostedVentes")
-                              .doc(`${old_id}`)
-                              .get()
-                              .then((doc) => {
-                                if (doc.exists) {
-                                  firebase
-                                      .firestore()
-                                      .collection("BoostedVentes")
-                                      .doc(`${old_id}`)
-                                      .delete();
-                                  firebase
-                                      .firestore()
-                                      .collection("BoostedVentes")
-                                      .doc(`${id}`)
-                                      .set({
-                                        pseudoVendeur: currentUser.pseudo,
-                                        categorie,
-                                        marques,
-                                        etat,
-                                        date: date,
-                                        title: values.title,
-                                        description: values.description,
-                                        idVendeur: currentUser.id,
-                                        prix: values.price,
-                                        poids: values.poids,
-                                        pushToken,
-                                        emailVendeur: currentUser.email
-                                      }).then((docRef) => {
-                                        console.log("Document written with ID: ");
-                                      })
-                                      .catch((error) => {
-                                        console.error("Error adding document: ", error);
-                                      });
-                                } else {
-                                  // doc.data() will be undefined in this case
-                                  console.log("No such document!");
-                                }
-                              })
-
+                              emailVendeur: userData.email,
+                              idVendeur: userData._id,
+                              pseudoVendeur: userData.pseudo
+                          });
 
                           console.log("5");
                           const uploadImage = async (index) => {
@@ -644,9 +386,11 @@ const ModifierAnnonceScreen = (props) => {
                               const taskCompleted = (snapshot) => {
                                 task.snapshot.ref
                                   .getDownloadURL()
-                                  .then((snapshot) => {
-                                    saveImageData(snapshot, index);
-                                    console.log("snapshot", snapshot);
+                                  .then(async (snapshot) => {
+                                    const response = await axios.put(`${BASE_URL}/api/products`, {
+                                      id: data.product._id,
+                                      image: snapshot
+                                    })
                                     resolve();
                                   });
                               };
@@ -665,50 +409,6 @@ const ModifierAnnonceScreen = (props) => {
                           };
 
                           console.log("6");
-                          const saveImageData = (downloadURL, index) => {
-                            const property_name =
-                              index === 0
-                                ? "downloadURL"
-                                : `downloadURL${index}`;
-                            data[property_name] = downloadURL;
-                            firebase
-                              .firestore()
-                              .collection("products")
-                              .doc(`${id}`)
-                              .update(data);
-                            firebase
-                              .firestore()
-                              .collection("posts")
-                              .doc(firebase.auth().currentUser.uid)
-                              .collection("userPosts")
-                              .doc(`${id}`)
-                              .update(data);
-                            firebase
-                              .firestore()
-                              .collection("allProducts")
-                              .doc(`${id}`)
-                              .update(data);
-                            firebase.firestore()
-                                .collection("BoostedVentes")
-                                .doc(`${id}`)
-                                .get()
-                                .then((doc) => {
-                                  if (doc.exists) {
-                                    firebase
-                                        .firestore()
-                                        .collection("BoostedVentes")
-                                        .doc(`${id}`)
-                                        .update(data)
-                                        .then(() => {
-                                          console.log("Document successfully updated!");
-                                        })
-                                        .catch((error) => {
-                                          // The document probably doesn't exist.
-                                          console.error("Error updating document: ", error);
-                                        });
-                                  }
-                                })
-                          };
 
                           await Promise.all(
                             imagesTableau.map(async (image, index) => {
@@ -723,9 +423,9 @@ const ModifierAnnonceScreen = (props) => {
                           await axios.post(
                             "https://kval-backend.herokuapp.com/send",
                             {
-                              mail: currentUser.email,
+                              mail: userData.email,
                               subject: "Confirmation de modification ",
-                              html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
+                              html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
 <p>Nous vous confirmons la modification de votre article comme suit :</p>
 <hr>
     <div style="display: flex">

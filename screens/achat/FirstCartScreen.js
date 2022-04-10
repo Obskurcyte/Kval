@@ -13,6 +13,7 @@ const FirstCartScreen = (props) => {
 
     let cartItems = useSelector((state) => {
         const transformedCartItems = [];
+        console.log('state', state.cart.items)
         for (const key in state.cart.items) {
             transformedCartItems.push({
                 productId: key,
@@ -51,6 +52,8 @@ const FirstCartScreen = (props) => {
             parseFloat(cartItems[data].quantity) *
             parseFloat(cartItems[data].productPrice);
     }
+
+    console.log('itemes', cartItems);
 
     return (
         <ScrollView style={styles.container}>

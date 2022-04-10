@@ -10,6 +10,8 @@ import {
 } from "react-native";
 import {Formik} from "formik";
 import firebase from "firebase";
+import {BASE_URL} from "../../constants/baseURL";
+import axios from 'axios';
 
 const PreAuthScreen = (props) => {
     const initialValues = {
@@ -17,7 +19,7 @@ const PreAuthScreen = (props) => {
         password: "",
     };
 
-
+    const userData = props.route.params.user
     const [err, setErr] = useState(null);
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -28,11 +30,13 @@ const PreAuthScreen = (props) => {
                     onSubmit={async (values) => {
                         console.log(values);
                         try {
-                            await firebase
-                                .auth()
-                                .signInWithEmailAndPassword(values.email, values.password);
-
-                            props.navigation.navigate('ModifierEmailScreen')
+                            await axios.post(`${BASE_URL}/api/users/login`, {
+                                email: values.email,
+                                password: values.password
+                            })
+                            props.navigation.navigate('ModifierEmailScreen', {
+                                user: userData
+                            })
                         } catch (err) {
                             console.log(err);
                             setErr(err);

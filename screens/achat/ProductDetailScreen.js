@@ -20,6 +20,8 @@ import Carousel from "react-native-anchor-carousel";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import axios from "axios";
 import * as userActions from "../../store/actions/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BASE_URL} from "../../constants/baseURL";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -32,30 +34,30 @@ const ProductDetailScreen = (props) => {
   const dispatch = useDispatch();
 
 
+  const [userData, setUserData] = useState(null)
+
   useEffect(() => {
-    dispatch(userActions.getUser());
-  }, [dispatch]);
-  const userData = useSelector((state) => state.user.userData);
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getUser()
+    });
+    return unsubscribe
+  }, [props.navigation]);
+
 
   //-------------CAROUSEL----------------//
 
   let testData = [];
-  testData.push({ id: "item1", image: product.downloadURL });
-
-  if (product.downloadURL1) {
-    testData.push({ id: "item2", image: product.downloadURL1 });
-  }
-
-  if (product.downloadURL2) {
-    testData.push({ id: "item3", image: product.downloadURL2 });
-  }
-
-  if (product.downloadURL3) {
-    testData.push({ id: "item4", image: product.downloadURL3 });
-  }
-
-  if (product.downloadURL4) {
-    testData.push({ id: "item5", image: product.downloadURL4 });
+  console.log(product);
+  for (let i = 0; i < product.images.length; i++) {
+    testData.push({
+      id: i,
+      image: product.images[i]
+    })
   }
 
   const carouselRef = React.useRef(null);
@@ -89,7 +91,7 @@ const ProductDetailScreen = (props) => {
     <hr>
     <div style="display: flex">
         <div style="margin-right: 30px">
-            <img src="${product.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+            <img src="${product.images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
         </div>
                 
         <div style="margin-top: 20px">
@@ -108,57 +110,32 @@ const ProductDetailScreen = (props) => {
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
     });
-    firebase
-      .firestore()
-      .collection("allProducts")
-      .doc(`${id}`)
-      .delete()
-      .then(() => console.log("productDeleted"));
-    firebase
-      .firestore()
-      .collection("products")
-      .doc(`${id}`)
-      .delete()
-      .then(() => console.log("productDeleted"));
-    firebase
-      .firestore()
-      .collection("posts")
-      .doc(firebase.auth().currentUser.uid)
-      .collection("userPosts")
-      .doc(`${id}`)
-      .delete()
-      .then(() => console.log("productDeleted"));
-    firebase
-      .firestore()
-      .collection("BoostedVentes")
-      .doc(`${id}`)
-      .delete()
-      .then(() => console.log("productDeleted"));
+    await axios.delete(`${BASE_URL}/api/products/${id}`)
   };
 
   //-----------------COMMENTAIRES-----------------//
 
-  useEffect(() => {
-    dispatch(articlesActions.getAvis(product.idVendeur));
-  }, [dispatch]);
-
-  let commentaires = useSelector((state) => state.commandes.commentaires);
 
 
-  let ratings = [];
-  for (let data in commentaires) {
-    ratings.push(commentaires[data].rating);
-  }
+    let commentaires = userData?.avis
 
-  let overallRating = 0;
-  for (let data in ratings) {
-    overallRating += parseInt(ratings[data]);
-  }
 
-  let trueRating;
-  if (commentaires) {
-    trueRating = Math.ceil(overallRating / commentaires?.length);
-  }
+    let ratings = [];
+    for (let data in commentaires) {
+      ratings.push(commentaires[data].rating);
+    }
+
+    let overallRating = 0;
+    for (let data in ratings) {
+      overallRating += parseInt(ratings[data]);
+    }
+
+    let trueRating;
+    if (commentaires) {
+      trueRating = Math.ceil(overallRating / commentaires?.length);
+    }
+
+
 
   const [search, setSearch] = useState("");
   const [errorAdded, setErrorAdded] = useState("");
@@ -239,52 +216,34 @@ const ProductDetailScreen = (props) => {
   };
 
   //-----------------------------------MESSAGES---------------------//
-  const idAcheteur = !props.loggedInAsVisit && firebase.auth().currentUser.uid;
-  const currentUser = useSelector((state) => state.user.userData);
 
-  const onMessagePressed = () => {
-    firebase
-      .firestore()
-      .collection("MESSAGE_THREADS")
-      .doc(`${product.idVendeur}` + `${idAcheteur}`)
-      .collection("MESSAGES")
-      .add({
-        text: `Commencer à chatter`,
-        createdAt: new Date().getTime(),
-        system: true,
+
+  console.log(product)
+  const onMessagePressed = async () => {
+    try {
+      await axios.post(`${BASE_URL}/api/messages`, {
+        sender: userData._id,
+        receiver: product.idVendeur,
+        pseudoSender: userData.pseudo,
+        pseudoReceiver: product.pseudoVendeur,
+        latestMessage: 'Commencez a chatter...'
       })
-      .then(() => {
-        firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
-          .set({
-            latestMessage: { text: "Commencez à chatter..." },
-            pseudoVendeur: product.pseudoVendeur,
-            idVendeur: product.idVendeur,
-            idAcheteur: firebase.auth().currentUser.uid,
-            emailAcheteur: userData.email,
-            emailVendeur: product.emailVendeur,
-            pseudoAcheteur: userData.pseudo,
-            id: `${product.idVendeur}` + `${firebase.auth().currentUser.uid}`,
-            reverse_id:
-              `${firebase.auth().currentUser.uid}` + `${product.idVendeur}`,
-          })
-          .then(() => {
-            props.navigation.navigate("Message", {
-              screen: "MessageScreen",
-            });
-          });
+      props.navigation.navigate("Message", {
+        screen: "MessageScreen",
       });
+    } catch (err) {
+      console.log(err)
+    }
   };
 
-  const initial = product.pseudoVendeur.charAt(0);
+  //const initial = product.pseudoVendeur.charAt(0);
 
   // ----------------- MODAL ---------------- //
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View>
+      {userData &&
       <View style={styles.container}>
         {isLoading ?
             <View style={styles.containerLoading}>
@@ -353,16 +312,16 @@ const ProductDetailScreen = (props) => {
               </View>
               <View style={styles.itemForm3}>
                 <Text>Etat</Text>
-                <Text>{product.etat}</Text>
+                <Text>{product.status}</Text>
               </View>
               <View style={styles.itemForm3}>
                 <Text>Catégorie</Text>
-                <Text>{product.categorie}</Text>
+                <Text>{product.category}</Text>
               </View>
               {product.marques && (
                   <View style={styles.itemForm3}>
                     <Text>Marque</Text>
-                    <Text>{product.marques}</Text>
+                    <Text>{product.brand}</Text>
                   </View>
               )}
               <View style={styles.itemForm3}>
@@ -373,7 +332,7 @@ const ProductDetailScreen = (props) => {
                 {product.imageURL ? (
                     <Image source={require("../../assets/photoProfile.png")} />
                 ) : (
-                    <UserAvatar size={50} name={initial} />
+                    <UserAvatar size={50} name={'djd'} />
                 )}
 
                 <View>
@@ -406,7 +365,7 @@ const ProductDetailScreen = (props) => {
                 )}
               </View>
 
-              {product.idVendeur === firebase.auth().currentUser.uid ? (
+              {product.idVendeur === userData._id ? (
                   <View>
                     <TouchableOpacity
                         style={styles.reset}
@@ -482,8 +441,8 @@ const ProductDetailScreen = (props) => {
               )}
             </ScrollView>
         }
-
       </View>
+      }
     </View>
   );
 };

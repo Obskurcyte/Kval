@@ -20,6 +20,8 @@ import * as userActions from "../../store/actions/users";
 import RecapCommandeItem from "../../components/RecapCommandeItem";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import {Formik} from "formik";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -28,7 +30,22 @@ const CartScreen = (props) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] =
     useState(false);
-  const userData = useSelector((state) => state.user.userData);
+
+    const [userData, setUserData] = useState(null)
+
+    useEffect(() => {
+        const getUser = async () => {
+            const userId = await AsyncStorage.getItem("userId");
+            const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+            setUserData(data)
+        }
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getUser()
+        });
+        return unsubscribe
+    }, [props.navigation]);
+
+    console.log('data', userData);
 
   let livraison;
   let cartItems2;
@@ -78,10 +95,10 @@ const CartScreen = (props) => {
   let total = 0;
 
 
+  console.log('cart', cartItems)
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
-      dispatch(userActions.getUser());
       cartItems.map((item, index) => {
         dispatch(productActions.fetchProducts(item.categorie));
       });
@@ -103,8 +120,6 @@ const CartScreen = (props) => {
   };
 
 
-  console.log('cartItems', cartItems);
-    console.log('length', cartItems.length)
   const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -114,7 +129,7 @@ const CartScreen = (props) => {
   let netVendeur = Number(total).toFixed(2);
 
   let deductionPortefeuille = Number(userData?.portefeuille)
-  console.log('soustotal', sousTotal);
+
     let etiquette_url = "";
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
@@ -124,7 +139,7 @@ const CartScreen = (props) => {
 
     try {
       const stripeResponse = await axios.post(
-        "https://kval-backend.herokuapp.com/paymentonetime",
+        "http://localhost:8000/paymentonetime",
         {
           email: `${userData.email}`,
           product: cartInfo,
@@ -137,72 +152,39 @@ const CartScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (const cartItem of cartItems) {
-              console.log('cartItem', cartItem)
-            await firebase
-              .firestore()
-              .collection("commandes")
-              .doc(firebase.auth().currentUser.uid)
-              .collection("userCommandes")
-              .doc(`${cartItem.productId}`)
-              .set({
-                title: cartItem.productTitle,
-                prix: cartItem.productPrice,
-                image: cartItem.image,
-                vendeur: cartItem.idVendeur,
-                pseudoVendeur: cartItem.pseudoVendeur,
-                emailVendeur: cartItem.emailVendeur,
-                categorie: cartItem.categorie,
-                livraison: cartItem.livraison,
-                poids: cartItem.poids,
+              await axios.post(`${BASE_URL}/api/commandes`, {
+                  title: cartItem.productTitle,
+                  prix: cartItem.productPrice,
+                  image: cartItem.image,
+                  vendeur: cartItem.idVendeur,
+                  pseudoVendeur: cartItem.pseudoVendeur,
+                  emailVendeur: cartItem.emailVendeur,
+                  categorie: cartItem.categorie,
+                  livraison: cartItem.livraison,
+                  poids: cartItem.poids,
                   description: cartItem.description,
-                prixProtectionAcheteur: totalProtectionAcheteur,
-                productTitle: cartItem.productTitle,
-                total: sousTotal,
-                moyenPaiement: "CB",
+                  prixProtectionAcheteur: totalProtectionAcheteur,
+                  productTitle: cartItem.productTitle,
+                  total: sousTotal,
+                  acheteur: userData._id,
+                  moyenPaiement: "CB",
+              })
+
+              await axios.put(`${BASE_URL}/api/users`, {
+                  id: cartItem.idVendeur,
+                  unreadMessages: 1,
+                  notificationsTitle: "Un article a été vendu !",
+                  notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
+                  notificationsImage: cartItem.image,
               });
-            await firebase
-              .firestore()
-              .collection("notifications")
-              .doc(cartItem.idVendeur)
-              .collection("listeNotifs")
-              .add({
-                notificationsTitle: "Un article a été vendu !",
-                notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
-                image: cartItem.image,
+
+              await axios.put(`${BASE_URL}/api/users`, {
+                  id: userData._id,
+                  minusPortefeuille: Number(sousTotal)
               });
-            await firebase
-              .firestore()
-              .collection("notifications")
-              .doc(cartItem.idVendeur)
-              .set({
-                test: "test",
-              });
-            await firebase
-              .firestore()
-              .collection("users")
-              .doc(cartItem.idVendeur)
-              .collection("unreadMessage")
-              .doc(cartItem.idVendeur)
-                .get().then(async (doc) => {
-                    if (doc.exists) {
-                        console.log('yeah')
-                    } else {
-                        await firebase.firestore()
-                            .collection('users')
-                            .doc(cartItem.idVendeur)
-                            .collection('unreadMessage')
-                            .doc(cartItem.idVendeur)
-                            .set({
-                                count: 1
-                            })
-                        console.log("New doc created !");
-                    }
-                })
-              .catch((error) => {
-                console.log("Error getting document:", error);
-              });
+
             dispatch(cartActions.deleteCart());
-            const pushToken = cartItem.pushToken;
+           /* const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
               method: "POST",
               headers: {
@@ -219,15 +201,14 @@ const CartScreen = (props) => {
               }),
             });
 
+            */
+
             if (toggleCheckBoxPortefeuille) {
                 try {
-                    await firebase
-                        .firestore()
-                        .collection("users")
-                        .doc(firebase.auth().currentUser.uid)
-                        .update({
-                            portefeuille : 0
-                        });
+                    await axios.put(`${BASE_URL}/api/users`, {
+                        id: userData._id,
+                        portefeuille: 0
+                    });
                 } catch (err) {
                     console.log(err);
                 }
@@ -516,8 +497,6 @@ ${
   }
 
 
-  console.log('cartItem', cartItems);
-
   const ViewPortefeuille = () => {
       const initialValues = {
           email: "",
@@ -528,13 +507,7 @@ ${
 
     const PaymentPortefeuille = async () => {
       for (const cartItem of cartItems) {
-        await firebase
-          .firestore()
-          .collection("commandes")
-          .doc(firebase.auth().currentUser.uid)
-          .collection("userCommandes")
-          .doc(`${cartItem.productId}`)
-          .set({
+          await axios.post(`${BASE_URL}/api/commandes`, {
               title: cartItem.productTitle,
               prix: cartItem.productPrice,
               image: cartItem.image,
@@ -548,50 +521,23 @@ ${
               prixProtectionAcheteur: totalProtectionAcheteur,
               productTitle: cartItem.productTitle,
               total: sousTotal,
+              acheteur: userData._id,
               moyenPaiement: "portefeuille",
+          })
+
+          await axios.put(`${BASE_URL}/api/users`, {
+              id: cartItem.idVendeur,
+              unreadMessages: 1,
+              notificationsTitle: "Un article a été vendu !",
+              notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
+              notificationsImage: cartItem.image,
           });
 
-        await firebase
-          .firestore()
-          .collection("notifications")
-          .doc(cartItem.idVendeur)
-          .collection("listeNotifs")
-          .add({
-            notificationsTitle: "Un article a été vendu !",
-            notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
-            image: cartItem.image,
+          await axios.put(`${BASE_URL}/api/users`, {
+              id: userData._id,
+              minusPortefeuille: Number(sousTotal)
           });
-        await firebase
-          .firestore()
-          .collection("notifications")
-          .doc(cartItem.idVendeur)
-          .set({
-            test: "test",
-          });
-          await firebase
-              .firestore()
-              .collection("users")
-              .doc(cartItem.idVendeur)
-              .collection("unreadMessage")
-              .doc(cartItem.idVendeur)
-              .get().then(async (doc) => {
-                  if (doc.exists) {
-                      console.log('yeah')
-                  } else {
-                      await firebase.firestore()
-                          .collection('users')
-                          .doc(cartItem.idVendeur)
-                          .collection('unreadMessage')
-                          .doc(cartItem.idVendeur)
-                          .set({
-                              count: 1
-                          })
-                      console.log("New doc created !");
-                  }
-              })
-              .catch((error) => {
-                  console.log("Error getting document:", error);
-              });
+
         dispatch(cartActions.deleteCart());
         const pushToken = cartItem.pushToken;
         await fetch("https://exp.host/--/api/v2/push/send", {
@@ -608,30 +554,7 @@ ${
             body: `L'article ${cartItem.productTitle} a été acheté !`,
           }),
         });
-        try {
-          await firebase
-            .firestore()
-            .collection("users")
-            .doc(firebase.auth().currentUser.uid)
-            .get()
-            .then((doc) => {
-              portefeuilleAcheteur = doc.data().portefeuille;
-            })
-            .then(() => {
-              if (portefeuilleAcheteur > 0) {
-                firebase
-                  .firestore()
-                  .collection("users")
-                  .doc(firebase.auth().currentUser.uid)
-                  .update({
-                    portefeuille:
-                      portefeuilleAcheteur - Number(sousTotal),
-                  });
-              }
-            });
-        } catch (err) {
-          console.log(err);
-        }
+
           if ((livraison == "MondialRelay")) {
               const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -1038,7 +961,6 @@ ${
         return (
           <ScrollView>
             {cartItems.map((item, index) => {
-                console.log('item', item)
               const protectionAcheteur = parseFloat(item.productPrice * 0.05);
               const price = parseFloat(item.productPrice);
               const sousTotal = (
@@ -1048,7 +970,6 @@ ${
                   Number(get_mondial_relay_price(item.poids)))
               ).toFixed(2);
 
-              console.log('sous', sousTotal)
               return (
                 <View style={{ marginBottom: 50 }}>
                   {cartItems.length > 1 ? (

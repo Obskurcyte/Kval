@@ -11,12 +11,11 @@ const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
-      console.log('added', addedProduct)
       const categorie = addedProduct.categorie;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
       const pushToken = addedProduct.pushToken;
-      const prodImage = addedProduct.downloadURL;
+      const prodImage = addedProduct.images[0];
       const idVendeur = addedProduct.idVendeur;
       const pseudoVendeur = addedProduct.pseudoVendeur;
       const emailVendeur = addedProduct.emailVendeur;
@@ -24,6 +23,7 @@ const cartReducer = (state = initialState, action) => {
       const livraison = addedProduct.livraison;
       const description = addedProduct.description;
 
+      console.log('image', prodImage)
       let updatedOrNewCartItem;
 
       if (state.items[addedProduct.id]) {

@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, FlatList, Dimensions, Text} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
-import * as articlesActions from "../../store/actions/articlesCommandes";
 import CommandeItem from "../../components/CommandeItem";
-
+import {BASE_URL} from "../../constants/baseURL";
+import axios from "axios";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -11,11 +11,20 @@ const MesCommandesScreen = (props) => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(articlesActions.getCommandes())
-    }, [dispatch]);
-    let articles = useSelector(state => state.commandes.mesCommandes);
+    const userData = props.route.params.user;
+    const acheteur = userData._id;
 
+    const [articles, setArticles] = useState([]);
+
+    useEffect(() => {
+        const getCommandes = async () => {
+            const { data } = await axios.get(`${BASE_URL}/api/commandes/${acheteur}`)
+            setArticles(data)
+        }
+        getCommandes()
+    }, []);
+
+    console.log('articles', articles)
     console.log(articles)
 
     const renderItem = ({item}) => {
@@ -24,7 +33,8 @@ const MesCommandesScreen = (props) => {
                 item={item}
                 onPress={() => {
                     props.navigation.navigate('CommandeDetailScreen', {
-                        product: item
+                        product: item,
+                        user: userData
                     })
                 }}
             />

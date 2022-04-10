@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { WebView } from "react-native-webview";
 
 const STRIPE_PK =
-  "pk_live_51K9SbZDfHBxLnJ9gxVxnfUlnGfagKPFLdFLmClUCQDd8TaOv4upR6sXXqvc9b0EZ482qkFtW7Idax4O6wHoPkzwt007qGvq7Wg";
+  "pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25";
 
 const PaymentView = (props) => {
   const { amount, product } = props;

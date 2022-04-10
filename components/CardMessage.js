@@ -1,44 +1,32 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import {View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator} from "react-native";
 import UserAvatar from "react-native-user-avatar";
 import firebase from "firebase";
+import axios from "axios";
+import {BASE_URL} from "../constants/baseURL";
+import {useNavigation} from "@react-navigation/core";
 
 const CardMessage = ({
   pseudoVendeur,
   latestMessage,
   onPress,
+    id,
+    setUpdate,
   idAcheteur,
   idVendeur,
 }) => {
 
+  console.log(latestMessage)
   let trimedMessage = latestMessage.substring(0, 25);
   const [visible, setVisible] = useState(true);
+  const [isLoading, setIsLoading] = useState(false)
 
-  const [update, setUpdate] = useState(0)
-  useEffect(() => {
-    console.log('wesssssh')
-  }, [update]);
+  const navigation = useNavigation();
 
-  const deleteMessage = () => {
-    firebase.firestore()
-        .collection('users')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('unreadMessage')
-        .doc(firebase.auth().currentUser.uid)
-        .delete()
-        .catch((error) => {
-          console.log("Error getting document:", error);
-        });
-    firebase
-        .firestore()
-        .collection("MESSAGE_THREADS")
-        .doc(`${idVendeur}` + `${idAcheteur}`)
-      .delete()
-      .then(() => {
-        console.log("deleted");
-        setVisible(false);
-      });
-      setUpdate(update + 1)
+  const deleteMessage = async () => {
+    await axios.delete(`${BASE_URL}/api/messages/${id}`).then(() => {
+      navigation.navigate('SupressionMessageValidationScreen')
+    });
   };
 
   const createTwoButtonAlert = () =>
@@ -57,33 +45,41 @@ const CardMessage = ({
 
   return (
     <View>
-      {visible ? (
-        <View style={styles.messageHyperContainer}>
-          <TouchableOpacity
-            style={styles.messageSuperContainer}
-            onPress={onPress}
-          >
-            <View style={styles.messageContainer}>
-              <UserAvatar size={50} name={pseudoVendeur?.charAt(0)} />
-              <View style={styles.nameContainer}>
-                <Text style={styles.pseudoText}>{pseudoVendeur}</Text>
-              </View>
-            </View>
-            <View style={styles.previewMessageContainer}>
-              <View style={styles.previewMessage}>
-                <Text style={styles.timeText}>{trimedMessage}...</Text>
-              </View>
-              <View>
-                <TouchableOpacity onPress={createTwoButtonAlert}>
-                  <Text style={styles.suppr}>Supprimer</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <></>
-      )}
+        {isLoading ? <ActivityIndicator/> :
+
+            <>
+              {visible ? (
+                  <View style={styles.messageHyperContainer}>
+                    {pseudoVendeur && (
+                        <TouchableOpacity
+                            style={styles.messageSuperContainer}
+                            onPress={onPress}
+                        >
+                          <View style={styles.messageContainer}>
+                            <UserAvatar size={50} name={pseudoVendeur.charAt(0)} />
+                            <View style={styles.nameContainer}>
+                              <Text style={styles.pseudoText}>{pseudoVendeur}</Text>
+                            </View>
+                          </View>
+                          <View style={styles.previewMessageContainer}>
+                            <View style={styles.previewMessage}>
+                              <Text style={styles.timeText}>{trimedMessage}...</Text>
+                            </View>
+                            <View>
+                              <TouchableOpacity onPress={createTwoButtonAlert}>
+                                <Text style={styles.suppr}>Supprimer</Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                    )}
+                  </View>
+              ) : (
+                  <></>
+              )}
+            </>
+        }
+
     </View>
   );
 };

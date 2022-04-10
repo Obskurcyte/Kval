@@ -4,20 +4,17 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
-  ScrollView,
   Dimensions,
   FlatList,
 } from "react-native";
 import firebase from "firebase";
-import * as notifsActions from "../../store/actions/notifications";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
 import { ActivityIndicator } from "react-native-paper";
-import * as messageAction from "../../store/actions/messages";
-import {GET_NOTIFICATIONS} from "../../store/actions/notifications";
-
+import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BASE_URL} from "../../constants/baseURL";
 
 
 const windowWidth = Dimensions.get("window").width;
@@ -27,26 +24,39 @@ const MessageScreen = (props) => {
 
   const [messageActive, setMessageActive] = useState(true);
   const [action, setAction] = useState(false);
-  const dispatch = useDispatch();
   const [notifsList, setNotifsList] = useState([])
   const [threads, setThreads] = useState([]);
-  const [threads2, setThreads2] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  let finalThreads = [];
 
- console.log('loading', loading)
-  console.log("notifs", notifsList);
-  useEffect(() => {
+    console.log('loading', loading)
+    console.log("notifs", notifsList);
+
+  /* useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
       dispatch(messageAction.fetchUnreadMessage())
     });
     return unsubscribe
   }, [props.navigation, dispatch])
 
+   */
 
+    const [user, setUser] = useState(null);
+    const [update, setUpdate] = useState(0)
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", () => {
+      const getMessages = async () => {
+          const userId = await AsyncStorage.getItem("userId");
+          const { data } = await axios.get(`${BASE_URL}/api/messages/${userId}`);
+          const response = await axios.get(`${BASE_URL}/api/users/${userId}`)
+          setThreads(data)
+          setUser(response.data)
+      }
+      const unsubscribe = props.navigation.addListener('focus', () => {
+      getMessages()
+      });
+    return unsubscribe
+
+    /*const unsubscribe = props.navigation.addListener("focus", () => {
       firebase
           .firestore()
           .collection("MESSAGE_THREADS")
@@ -104,38 +114,12 @@ const MessageScreen = (props) => {
           });
     });
     return unsubscribe;
-  }, [props.navigation, action]);
 
-  useEffect(() => {
+     */
+  }, [props.navigation, update]);
 
-    console.log("current", firebase.auth().currentUser.uid);
-    const threads = [];
-    const unsubscribe = props.navigation.addListener("focus", () => {
-      firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .where("idAcheteur", "==", firebase.auth().currentUser.uid)
-          .get()
-          .then((querySnapshot) => {
-            const threads = [];
-            querySnapshot.docs.map((documentSnapshot) => {
-              threads.push({
-                ...documentSnapshot.data(),
-                _id: documentSnapshot.id,
-                pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-              });
-            });
-            if (loading) {
-              setLoading(false);
-            }
-            setThreads2(threads);
-          });
-    });
-    return unsubscribe;
-  }, [props.navigation, action, finalThreads]);
+  console.log('threds', threads);
 
-  finalThreads = [...threads, ...threads2];
-    console.log('final', finalThreads)
   return (
       <View style={styles.container}>
         <View style={styles.messagesContainer}>
@@ -161,21 +145,25 @@ const MessageScreen = (props) => {
             <>
               {messageActive ?
                   <FlatList
-                      data={finalThreads}
+                      data={threads}
                       style={styles.flatList}
                       keyExtractor={(item) => item?._id}
                       renderItem={(itemData) => {
+                          console.log(itemData.item)
                         return (
                             <CardMessage
-                                pseudoVendeur={itemData.item?.pseudoVendeur}
+                                pseudoVendeur={itemData.item?.pseudoReceiver}
                                 setAction={setAction}
                                 action={action}
-                                idVendeur={itemData.item?.idVendeur}
+                                setUpdate={setUpdate}
+                                id={itemData.item?._id}
+                                idVendeur={itemData.item?.sender}
                                 idAcheteur={itemData.item?.idAcheteur}
-                                latestMessage={itemData.item?.latestMessage.text}
+                                latestMessage={itemData.item?.latestMessage}
                                 onPress={() => {
                                   props.navigation.navigate("ChatScreen", {
                                     thread: itemData.item,
+                                      user
                                   })
                                 }
                                 }
@@ -212,9 +200,7 @@ const MessageScreen = (props) => {
                       }}
                   />
               }
-
             </>
-
         ) : (
             <View>
                 <Text style={styles.noMessage}>

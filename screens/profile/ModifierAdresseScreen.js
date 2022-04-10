@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -13,6 +13,9 @@ import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -26,14 +29,19 @@ const ModifierAdresseScreen = (props) => {
         pays: ''
     }
 
-    const dispatch = useDispatch();
+    const [userData, setUserData] = useState(null)
 
     useEffect(() => {
-        dispatch(userActions.getUser())
-    }, [dispatch]);
-
-    const userData = useSelector(state => state.user.userData);
-    console.log(userData)
+        const getUser = async () => {
+            const userId = await AsyncStorage.getItem("userId");
+            const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+            setUserData(data)
+        }
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getUser()
+        });
+        return unsubscribe
+    }, [props.navigation]);
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -45,14 +53,17 @@ const ModifierAdresseScreen = (props) => {
                 initialValues={initialValues}
                 onSubmit={async (values) => {
                     console.log(values)
-                    await firebase.firestore().collection('users')
-                        .doc(firebase.auth().currentUser.uid)
-                        .update({
-                            adresse: values.adresse,
+                    try {
+                        await axios.put(`${BASE_URL}/api/users`, {
+                            id: userData._id,
+                            address: values.adresse,
                             postalCode: values.postalCode,
                             ville: values.ville,
                             pays: values.pays
                         }).then(() => props.navigation.navigate('InformationsScreen'))
+                    } catch (err) {
+                        console.log(err)
+                    }
                 }}
             >
                 {props => (

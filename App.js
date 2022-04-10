@@ -16,6 +16,7 @@ import notifReducer from "./store/reducers/notifications";
 import articleCommandeReducer from "./store/reducers/articlesCommandes";
 import messageReducer from "./store/reducers/messages";
 LogBox.ignoreLogs(["Setting a timer"]);
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkee21-SCCNxfS6co9SjW-PNfLTFTkdec",
@@ -50,22 +51,29 @@ const rootReducer = combineReducers({
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default function App() {
+
   const [loggedIn, setIsLoggedIn] = useState(false);
   const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
   const [firstLaunch, setFirstLaunch] = useState(true);
 
+  let userId;
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        setIsLoggedIn(false);
+    const getUser = async () => {
+      userId = await AsyncStorage.getItem("userId");
+      console.log('userID', userId)
+      if (!userId) {
+        setIsLoggedIn(false)
+      } else {
+        setIsLoggedIn(true)
       }
-    });
-  });
+    }
+    getUser()
+  }, [userId, loggedIn]);
 
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {loggedInAsVisit || loggedIn ? (
+        {loggedIn ? (
           <TabNavigator
             loggedInAsVisit={loggedInAsVisit}
             setLoggedInAsVisit={setLoggedInAsVisit}

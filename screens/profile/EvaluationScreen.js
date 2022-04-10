@@ -17,6 +17,7 @@ import EvalueItem from "../../components/EvalueItem";
 import firebase from "firebase";
 import axios from "axios";
 import {useSelector} from "react-redux";
+import {BASE_URL} from "../../constants/baseURL";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -28,12 +29,11 @@ const EvaluationScreen = (props) => {
         setRating(rating)
     }
 
-    const currentUser = useSelector((state) => state.user.userData);
+    const currentUser = props.route.params.user
 
     console.log('user', currentUser)
     const product = props.route.params.product;
     console.log('product', product);
-    let portefeuilleVendeur = 0;
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
@@ -60,47 +60,17 @@ const EvaluationScreen = (props) => {
                             commentaire: ''
                             }}
                             onSubmit={async values => {
-                                await firebase.firestore()
-                                    .collection('commentaires')
-                                    .doc(`${product.vendeur}`)
-                                    .collection("userCommentaires")
-                                    .add({
-                                        commentaire: values.commentaire,
-                                        rating,
-                                        rateur: currentUser.pseudo
-                                    });
-                                await firebase.firestore()
-                                    .collection('commentaires')
-                                    .doc(`${product.vendeur}`)
-                                    .set({
-                                        rating: rating
-                                    });
-                                await firebase
-                                    .firestore()
-                                    .collection("commandes")
-                                    .doc(firebase.auth().currentUser.uid)
-                                    .collection("userCommandes")
-                                    .doc(`${product.id}`)
-                                    .delete()
-                                await firebase
-                                    .firestore()
-                                    .collection("users")
-                                    .doc(product.vendeur)
-                                    .get()
-                                    .then((doc) => {
-                                        portefeuilleVendeur = doc.data().portefeuille;
-                                    })
-                                    .then(() => {
-                                        if (portefeuilleVendeur >= 0) {
-                                            firebase
-                                                .firestore()
-                                                .collection("users")
-                                                .doc(product.vendeur)
-                                                .update({
-                                                    portefeuille: portefeuilleVendeur + Number(product.prix),
-                                                });
-                                        }
-                                    });
+                                await axios.put(`${BASE_URL}/api/users`, {
+                                    id: currentUser._id,
+                                    commentaire: values.commentaire,
+                                    rating,
+                                    rateur: currentUser.pseudo
+                                })
+                                await axios.delete(`${BASE_URL}/api/commandes/${product._id}`);
+                                await axios.put(`${BASE_URL}/api/users`, {
+                                    id: product.vendeur,
+                                    addPortefeuille: Number(product.prix)
+                                })
                                 await axios.post("https://kval-backend.herokuapp.com/send", {
                                     mail: product.emailVendeur,
                                     subject: "Confirmation de réception",

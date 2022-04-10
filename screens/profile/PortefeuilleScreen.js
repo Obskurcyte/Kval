@@ -8,15 +8,9 @@ const windowWidth = Dimensions.get('window').width;
 
 const PortefeuilleScreen = (props) => {
 
-    const dispatch = useDispatch();
+    const userData = props.route.params.user
+    console.log(userData);
 
-    const userData = useSelector(state => state.user.userData);
-
-    useEffect(() => {
-        dispatch(userActions.getUser())
-    }, [dispatch]);
-
-    console.log(userData)
     const logout = () => {
         firebase.auth().signOut();
     };

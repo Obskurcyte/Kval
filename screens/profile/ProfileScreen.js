@@ -13,8 +13,10 @@ import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
-import * as userActions from "../../store/actions/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as messageAction from "../../store/actions/messages";
+import {BASE_URL} from "../../constants/baseURL";
+import axios from 'axios';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -23,14 +25,20 @@ const ProfileScreen = (props) => {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  const [userData, setUserData] = useState(null);
+
   useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      console.log('userId', userId);
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
     const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(userActions.getUser());
+        getUser()
     });
     return unsubscribe
-  }, [dispatch, props.navigation]);
-
-  const userData = useSelector((state) => state.user.userData);
+  }, [props.navigation]);
 
 
   useEffect(() => {
@@ -40,16 +48,14 @@ const ProfileScreen = (props) => {
     return unsubscribe
   }, [props.navigation, dispatch])
 
-
-
-  const logout = () => {
-    firebase.auth().signOut();
+  const logout = async () => {
+    await AsyncStorage.removeItem("userId")
+    console.log('done')
   };
 
   let data = {};
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState("");
-  const [imageEmail, setImageMail] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -135,11 +141,15 @@ const ProfileScreen = (props) => {
       const taskCompleted = (snapshot) => {
         task.snapshot.ref
             .getDownloadURL()
-            .then((snapshot) => {
-              saveImageData(snapshot, index);
-              resolve();
-            });
-      };
+            .then(async (snapshot) => {
+                await axios.put(`${BASE_URL}/api/users`, {
+                  id: userData._id,
+                  image: snapshot
+                })
+                console.log('done')
+                resolve();
+              });
+      }
 
       const taskError = (snapshot) => {
         console.log(snapshot);
@@ -153,22 +163,10 @@ const ProfileScreen = (props) => {
       );
     });
   };
-
-  const saveImageData = async (downloadURL, index) => {
-    const property_name =
-        index === 0 ? "downloadURL" : `downloadURL${index}`;
-    data[property_name] = downloadURL;
-    setImageMail(data.downloadURL);
-    console.log('imageEmail', imageEmail);
-    console.log('data', data);
-    await firebase
-        .firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .update(data);
-  };
   // ----------------- MODAL ---------------- //
   const [modalVisible, setModalVisible] = useState(false);
+
+  console.log('data', userData);
 
   if (isLoading) {
     return (
@@ -237,7 +235,7 @@ const ProfileScreen = (props) => {
             </View>
             <View>
               <Text style={styles.nomText}>
-                {userData?.prenom} {userData?.nom}
+                {userData?.firstName} {userData?.lastName}
               </Text>
             </View>
           </View>
@@ -245,25 +243,33 @@ const ProfileScreen = (props) => {
           <View>
             <TouchableOpacity
               style={styles.boutonList}
-              onPress={() => props.navigation.navigate("MesCommandesScreen")}
+              onPress={() => props.navigation.navigate("MesCommandesScreen", {
+                user: userData
+              })}
             >
               <Text style={styles.text}>Mes commandes</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.boutonList}
-              onPress={() => props.navigation.navigate("ArticlesEnVenteScreen")}
+              onPress={() => props.navigation.navigate("ArticlesEnVenteScreen", {
+                user: userData
+              })}
             >
               <Text style={styles.text}>Mes articles en vente</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.boutonList}
-              onPress={() => props.navigation.navigate("InformationsScreen")}
+              onPress={() => props.navigation.navigate("InformationsScreen", {
+                user: userData
+              })}
             >
               <Text style={styles.text}>Mes informations</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.boutonList}
-              onPress={() => props.navigation.navigate("PortefeuilleScreen")}
+              onPress={() => props.navigation.navigate("PortefeuilleScreen", {
+                user: userData
+              })}
             >
               <Text style={styles.text}>Mon portefeuille</Text>
             </TouchableOpacity>

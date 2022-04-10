@@ -13,10 +13,11 @@ import {
     ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";
-import firebase from "firebase";
-import { set } from "react-native-reanimated";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const InscriptionScreen = (props) => {
     const initialValues = {
@@ -30,6 +31,7 @@ const InscriptionScreen = (props) => {
 
     const [err, setErr] = useState(null);
 
+    const [isLoading, setIsLoading] = useState(false)
     console.log("err", err);
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -38,8 +40,9 @@ const InscriptionScreen = (props) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
+                        setIsLoading(true)
                         console.log(values);
-                        let pushToken;
+                       /* let pushToken;
                         let statusObj = await Notifications.getPermissionsAsync();
                         if (statusObj.status !== "granted") {
                             statusObj = await Notifications.requestPermissionsAsync();
@@ -49,45 +52,28 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
+                        */
 
-                        await firebase
-                                .auth()
-                                .createUserWithEmailAndPassword(values.email, values.password)
-                                .catch(err => {
-                                    console.log(err)
-                                    setErr(true)
-                                }).then(() => {
-                                firebase
-                                        .firestore()
-                                        .collection("users")
-                                        .doc(firebase.auth().currentUser.uid)
-                                        .collection("unreadMessage")
-                                        .doc("firstKey")
-                                        .set({
-                                            count: 1,
-                                        });
-                                Alert.alert("Okay")
-                                }).then(() => {
-                                firebase
-                                    .firestore()
-                                    .collection("users")
-                                    .doc(firebase.auth().currentUser.uid)
-                                    .set({
-                                        pseudo: values.pseudo,
-                                        email: values.email,
-                                        nom: params.nom,
-                                        phone: params.phone,
-                                        id: firebase.auth().currentUser.uid,
-                                        prenom: params.prenom,
-                                        pushToken: pushToken.data,
-                                        portefeuille: 0,
-                                    });
-                            }).then(() => {
-                                axios
-                                    .post("https://kval-backend.herokuapp.com/send", {
-                                        mail: values.email,
-                                        subject: "Confirmation de création de compte",
-                                        html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
+                        try {
+                            const response = await axios.post(`${BASE_URL}/api/users/register`, {
+                                email: values.email,
+                                password: values.password,
+                                pseudo: values.pseudo,
+                                phone: params.phone,
+                                firstName: params.prenom,
+                                lastName: params.nom
+                            })
+
+                            const token = response.data.token;
+                            await AsyncStorage.setItem("jwt", token)
+                            const decoded = jwt_decode(token)
+                            await AsyncStorage.setItem("userId", decoded.id)
+                            await AsyncStorage.setItem("userType", 'particulier')
+
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: values.email,
+                                subject: "Confirmation de création de compte",
+                                html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
 <p>Votre compte vient d'être créé.</p><br>
 <p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
 <p style="margin: 0">Votre adresse mail : ${values.email}</p>
@@ -97,15 +83,17 @@ const InscriptionScreen = (props) => {
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                                    })
-                                    .then(() => props.setIsLoggedIn(true))
-                                    .catch((err) => {
-                                        console.log(err);
-                                        setErr(true)
-                                        props.setIsLoggedIn(true);
-                                    });
-                            });
-                            }}
+                            }).then(() => {
+                                setIsLoading(false)
+                                props.setIsLoggedIn(true)
+                            })
+                        } catch (err){
+                            setIsLoading(false)
+                            console.log(err);
+                            setErr(true)
+                            props.setIsLoggedIn(false);
+                        }
+                    }}
                 >
                     {(props) => (
                         <View style={styles.formContainer}>
@@ -146,12 +134,13 @@ const InscriptionScreen = (props) => {
                             ) : (
                                 <Text />
                             )}
-                            <TouchableOpacity
+                            {isLoading ? <ActivityIndicator/> : <TouchableOpacity
                                 style={styles.buttonContainer}
                                 onPress={props.handleSubmit}
                             >
                                 <Text style={styles.createCompte}>Valider</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
+
                         </View>
                     )}
                 </Formik>

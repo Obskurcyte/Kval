@@ -134,7 +134,6 @@ import DeleteAnnonceValidationScreen from "../screens/achat/DeleteAnnonceValidat
 import ForgotPasswordScreen from "../screens/inscription/ForgotPasswordScreen";
 import TapisAccueilScreen from "../screens/achat/sousCategoriesChevalEtTextile/TapisAccueilScreen";
 import TapisScreen from "../screens/vente/sousCategoriesChevalEtTextile/TapisScreen";
-import firebase from "firebase";
 import * as messageAction from "../store/actions/messages";
 import CommentCaMarcheScreen from "../screens/profile/CommentCaMarcheScreen";
 import FirstCartScreen from "../screens/achat/FirstCartScreen";
@@ -180,6 +179,7 @@ import CategoriesChoiceProfileScreen from "../screens/profile/CategoriesChoiceSc
 import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
 import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
 import ProductDetailProfileScreen from "../screens/profile/ProductDetailProfileScreen";
+import SupressionMessageValidationScreen from "../screens/messages/SupressionMessageValidationScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1740,45 +1740,7 @@ export const AchatNavigator = (props) => {
       <AchatStackNavigator.Screen
         name="ViewProductsScreen"
         component={ViewProductsScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerRight: () => (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#D51317",
-                  borderRadius: 30,
-                  alignItems: "center",
-                  position: "absolute",
-                  width: 20,
-                  bottom: "65%",
-                  right: "55%",
-                }}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {totalQuantity}
-                </Text>
-              </View>
-              <Fontisto
-                name="shopping-basket"
-                size={24}
-                color="#D51317"
-                onPress={() => props.navigation.navigate("FirstCartScreen")}
-              />
-            </View>
-          ),
-          headerTitle: () => (
-            <View style={{ width: 180, marginLeft: 40 }}>
-              <CustomHeader {...props} />
-            </View>
-          ),
-        }}
+        options={{headerShown: false}}
       />
       <AchatStackNavigator.Screen
         name="PhotoArticleScreen"
@@ -1953,6 +1915,11 @@ export const MessageNavigator = (props) => {
           headerTitleAlign: "center",
         }}
       />
+        <MessageStackNavigator.Screen
+            name="SupressionMessageValidationScreen"
+            component={SupressionMessageValidationScreen}
+            options={{headerShown: false}}
+        />
 
       <MessageStackNavigator.Screen
         name="ArticlesEnVenteScreen"
@@ -3059,47 +3026,7 @@ export const AccueilNavigator = (props) => {
       <AccueilStackNavigator.Screen
         name="AccueilScreen"
         component={AccueilScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitleStyle: {
-            marginBottom: 20,
-          },
-          headerRight: () => (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#D51317",
-                  borderRadius: 30,
-                  alignItems: "center",
-                  position: "absolute",
-                  width: 20,
-                  bottom: "65%",
-                  right: "55%",
-                }}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {totalQuantity}
-                </Text>
-              </View>
-              <Fontisto
-                name="shopping-basket"
-                size={24}
-                color="#D51317"
-                onPress={() =>
-                  props.navigation.navigate("Acheter", {
-                    screen: "FirstCartScreen",
-                  })
-                }
-              />
-            </View>
-          ),
-          headerTitle: () => <CustomHeader {...props} />,
-        }}
+        options={{headerShown: false}}
       />
       <AccueilStackNavigator.Screen
         name="ProductDetailScreen"

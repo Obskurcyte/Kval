@@ -17,6 +17,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
 import * as Notifications from "expo-notifications";
+import {BASE_URL} from "../../constants/baseURL";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -26,8 +27,7 @@ const BoosteVentePaiementScreen = (props) => {
   if (props.route.params && props.route.params.articles) {
     articles = props.route.params.articles;
   }
-  console.log('articles', articles);
-  const currentUser = useSelector((state) => state.user.userData);
+  const currentUser = props.route.params.user
 
   const [checked1, setChecked1] = useState(false);
   const [checked2, setChecked2] = useState(false);
@@ -55,7 +55,7 @@ const BoosteVentePaiementScreen = (props) => {
   let mm = someDate.getMonth() + 1;
   let y = someDate.getFullYear();
   let someFormattedDate = dd + "/" + mm + "/" + y;
-  console.log("duree", dureeBoost);
+
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -63,6 +63,7 @@ const BoosteVentePaiementScreen = (props) => {
     let jsonResponse = JSON.parse(paymentResponse);
     // perform operation to check payment status
 
+    console.log('0')
     try {
       const stripeResponse = await axios.post(
         "https://kval-backend.herokuapp.com/paymentonetime",
@@ -78,34 +79,12 @@ const BoosteVentePaiementScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (let data in articles) {
-            let pushToken;
-            let statusObj = await Notifications.getPermissionsAsync();
-            if (statusObj.status !== "granted") {
-              statusObj = await Notifications.requestPermissionsAsync();
-            }
-            if (statusObj.status !== "granted") {
-              pushToken = null;
-            } else {
-              pushToken = await Notifications.getExpoPushTokenAsync();
-            }
-            firebase
-              .firestore()
-              .collection("BoostedVentes")
-              .doc(articles[data].id)
-              .set({
-                description: articles[data].description,
-                etat: articles[data].etat,
-                prix: articles[data].prix,
-                title: articles[data].title,
-                poids: articles[data].poids,
-                downloadURL: articles[data].downloadURL,
-                categorie: articles[data].categorie,
-                pseudoVendeur: articles[data].pseudoVendeur,
-                pushToken,
-                idVendeur: firebase.auth().currentUser.uid,
-                emailVendeur: currentUser.email,
-                time: new Date(),
-              });
+            console.log('1')
+            await axios.put(`${BASE_URL}/api/products`, {
+              id: data._id,
+              boosted: true
+            })
+            console.log('2')
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
@@ -116,7 +95,7 @@ const BoosteVentePaiementScreen = (props) => {
 
 <div style="display: flex">
     <div style="margin-right: 30px">
-        <img src="${articles[data].downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        <img src="${articles[data].images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
 
     <div style="margin-top: 20px">
@@ -154,10 +133,8 @@ const BoosteVentePaiementScreen = (props) => {
     }
   };
 
-  const cartTotalAmount = useSelector((state) => state.cart.items);
 
   const paymentUI = (props) => {
-    console.log(makePayment);
     if (!makePayment) {
       return (
         <ScrollView>
@@ -166,7 +143,7 @@ const BoosteVentePaiementScreen = (props) => {
               horizontal={true}
               style={styles.list}
               data={articles}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => item._id}
               renderItem={(itemData) => {
                 return (
                   <View style={styles.cardContainer}>
@@ -179,7 +156,7 @@ const BoosteVentePaiementScreen = (props) => {
                     />
                     <View style={styles.imgContainer}>
                       <Image
-                        source={{ uri: itemData.item.downloadURL }}
+                        source={{ uri: itemData.item.images[0] }}
                         style={styles.image}
                       />
                     </View>
@@ -295,7 +272,7 @@ const BoosteVentePaiementScreen = (props) => {
           <PaymentView
             onCheckStatus={onCheckStatus}
             product={"Paiement unique"}
-            amount={2}
+            amount={price * 100}
           />
         );
       }
