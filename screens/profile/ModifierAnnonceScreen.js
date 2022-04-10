@@ -317,7 +317,7 @@ const ModifierAnnonceScreen = (props) => {
                       } else {
                         setIsLoading(true);
 
-                       /* let pushToken;
+                       let pushToken;
                         let statusObj =
                           await Notifications.getPermissionsAsync();
                         if (statusObj.status !== "granted") {
@@ -332,7 +332,6 @@ const ModifierAnnonceScreen = (props) => {
                           ).data;
                         }
 
-                        */
 
                         const old_id = product_id;
                         const id = Math.random() * 300000000;

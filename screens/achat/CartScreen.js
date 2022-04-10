@@ -182,7 +182,7 @@ const CartScreen = (props) => {
               });
 
             dispatch(cartActions.deleteCart());
-           /* const pushToken = cartItem.pushToken;
+           const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
               method: "POST",
               headers: {
@@ -199,7 +199,6 @@ const CartScreen = (props) => {
               }),
             });
 
-            */
 
             if (toggleCheckBoxPortefeuille) {
                 try {

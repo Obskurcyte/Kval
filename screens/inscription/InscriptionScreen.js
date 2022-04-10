@@ -41,7 +41,7 @@ const InscriptionScreen = (props) => {
                     onSubmit={async (values) => {
                         setIsLoading(true)
                         console.log(values);
-                       /* let pushToken;
+                       let pushToken;
                         let statusObj = await Notifications.getPermissionsAsync();
                         if (statusObj.status !== "granted") {
                             statusObj = await Notifications.requestPermissionsAsync();
@@ -51,7 +51,7 @@ const InscriptionScreen = (props) => {
                         } else {
                             pushToken = await Notifications.getExpoPushTokenAsync();
                         }
-                        */
+
 
                         try {
                             const response = await axios.post(`${BASE_URL}/api/users/register`, {

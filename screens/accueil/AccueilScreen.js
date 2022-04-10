@@ -54,8 +54,6 @@ const AccueilScreen = (props) => {
     totalQuantity += parseFloat(cartItems[data].quantity);
   }
 
-  const message = useSelector(state => state.messages.unreadMessages)
-
   const [search, setSearch] = useState('');
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -80,8 +78,7 @@ const AccueilScreen = (props) => {
       const { data } = await axios.get(`${BASE_URL}/api/products`);
       setProductsUne(data);
       setProductsFiltered(data);
-      const response = await axios.get(`${BASE_URL}/api/products/boosted`);
-      setProductsBoosted(response.data)
+      setProductsBoosted(data.filter(product => product.boosted === true))
       await Notifications.setBadgeCountAsync(0)
     });
     return unsubscribe

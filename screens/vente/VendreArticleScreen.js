@@ -219,7 +219,7 @@ const VendreArticleScreen = (props) => {
                   }
 
                   if (!errors) {
-                   /* let pushToken;
+                   let pushToken;
                     let statusObj = await Notifications.getPermissionsAsync();
                     if (statusObj.status !== "granted") {
                       statusObj = await Notifications.requestPermissionsAsync({
@@ -237,7 +237,7 @@ const VendreArticleScreen = (props) => {
                       pushToken = await Notifications.getExpoPushTokenAsync();
                     }
 
-                    */
+
 
                     const id = Math.random() * 300000000;
 
@@ -257,6 +257,7 @@ const VendreArticleScreen = (props) => {
                           pseudoVendeur: userData.pseudo,
                           emailVendeur: userData.email,
                           brand: marques,
+                          pushToken
                         })
 
                         const uploadImage = async (index) => {
