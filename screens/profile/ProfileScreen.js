@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as messageAction from "../../store/actions/messages";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
+import authContext from "../../context/authContext";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -26,6 +27,8 @@ const ProfileScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [userData, setUserData] = useState(null);
+
+  const { setSignedIn } = useContext(authContext);
 
   useEffect(() => {
     const getUser = async () => {
@@ -49,7 +52,8 @@ const ProfileScreen = (props) => {
   }, [props.navigation, dispatch])
 
   const logout = async () => {
-    await AsyncStorage.removeItem("userId")
+    await AsyncStorage.removeItem("userId");
+    setSignedIn(false)
     console.log('done')
   };
 

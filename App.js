@@ -18,6 +18,7 @@ import messageReducer from "./store/reducers/messages";
 LogBox.ignoreLogs(["Setting a timer"]);
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StripeProvider } from "@stripe/stripe-react-native";
+import AuthContext from "./context/authContext";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkee21-SCCNxfS6co9SjW-PNfLTFTkdec",
@@ -56,6 +57,7 @@ export default function App() {
   const [loggedIn, setIsLoggedIn] = useState(false);
   const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
   const [firstLaunch, setFirstLaunch] = useState(true);
+  const [signedIn, setSignedIn] = useState(false);
 
   let userId;
   useEffect(() => {
@@ -64,34 +66,41 @@ export default function App() {
       console.log('userID', userId)
       if (!userId) {
         setIsLoggedIn(false)
+        setSignedIn(false)
       } else {
         setIsLoggedIn(true)
+        setSignedIn(true)
       }
     }
     getUser()
-  }, [userId, loggedIn]);
+  }, [userId, loggedIn, signedIn]);
 
   return (
-    <Provider store={store}>
-      <StripeProvider publishableKey="pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25">
-      <NavigationContainer>
-        {loggedIn ? (
-          <TabNavigator
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        ) : (
-          <AuthNavigator
-            firstLaunch={firstLaunch}
-            setFirstLaunch={setFirstLaunch}
-            loggedInAsVisit={loggedInAsVisit}
-            setIsLoggedIn={setIsLoggedIn}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        )}
-      </NavigationContainer>
-      </StripeProvider>
-    </Provider>
+      <AuthContext.Provider value={{
+        signedIn: signedIn,
+        setSignedIn: setSignedIn
+      }}>
+        <Provider store={store}>
+          <StripeProvider publishableKey="pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25">
+          <NavigationContainer>
+            {loggedIn && signedIn ? (
+              <TabNavigator
+                loggedInAsVisit={loggedInAsVisit}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            ) : (
+              <AuthNavigator
+                firstLaunch={firstLaunch}
+                setFirstLaunch={setFirstLaunch}
+                loggedInAsVisit={loggedInAsVisit}
+                setIsLoggedIn={setIsLoggedIn}
+                setLoggedInAsVisit={setLoggedInAsVisit}
+              />
+            )}
+          </NavigationContainer>
+          </StripeProvider>
+        </Provider>
+      </AuthContext.Provider>
   );
 }
 
