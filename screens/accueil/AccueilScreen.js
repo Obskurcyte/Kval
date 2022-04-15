@@ -74,7 +74,6 @@ const AccueilScreen = (props) => {
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', async () => {
       setFocus(false)
-      dispatch(messageAction.fetchUnreadMessage())
       const { data } = await axios.get(`${BASE_URL}/api/products`);
       setProductsUne(data);
       setProductsFiltered(data);
@@ -99,7 +98,6 @@ const AccueilScreen = (props) => {
   }
 
 
-  console.log(productsBoosted)
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <>

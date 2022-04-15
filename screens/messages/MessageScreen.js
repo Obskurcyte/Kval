@@ -30,93 +30,34 @@ const MessageScreen = (props) => {
 
 
 
+  const [user, setUser] = useState(null);
+  const [update, setUpdate] = useState(0);
+  const [receiverId, setReceiverId] = useState("");
+  const [receiverPseudo, setReceiverPseudo] = useState("");
+  const [receiver, setReceiver] = useState(null);
 
-  /* useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(messageAction.fetchUnreadMessage())
-    });
-    return unsubscribe
-  }, [props.navigation, dispatch])
+  let ids = [];
+  let pseudos = [];
 
-   */
-
-    const [user, setUser] = useState(null);
-    const [update, setUpdate] = useState(0)
   useEffect(() => {
-      const getMessages = async () => {
-          const userId = await AsyncStorage.getItem("userId");
-          const { data } = await axios.get(`${BASE_URL}/api/messages/${userId}`);
-          const response = await axios.get(`${BASE_URL}/api/users/${userId}`)
-          setThreads(data)
-          setUser(response.data)
-      }
-      const unsubscribe = props.navigation.addListener('focus', () => {
+    const getMessages = async () => {
+      setLoading(true)
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/messages/${userId}`);
+      const response = await axios.get(`${BASE_URL}/api/users/${userId}`)
+      setThreads(data)
+      setUser(response.data)
+      setLoading(false)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
       getMessages()
-      });
-    return unsubscribe
-
-    /*const unsubscribe = props.navigation.addListener("focus", () => {
-      firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .where("idVendeur", "==", firebase.auth().currentUser.uid)
-          .get()
-          .then((querySnapshot) => {
-            const threads = [];
-            querySnapshot.docs.map((documentSnapshot) => {
-              firebase
-                  .firestore()
-                  .collection("users")
-                  .where("id", "==", documentSnapshot.data().idAcheteur)
-                  .get()
-                  .then((userSnapshot) => {
-                    const newPseudoVendeur = userSnapshot.docs.map(
-                        (doc) => doc.data().pseudo
-                    )[0];
-                    threads.push({
-                      ...documentSnapshot.data(),
-                      _id: documentSnapshot.id,
-                      pseudoVendeur: newPseudoVendeur,
-                    });
-                      console.log('wessh')
-                    if (loading) {
-
-                      setLoading(false);
-                    }
-                    setThreads(threads);
-                  });
-            });
-          });
-      firebase.firestore()
-          .collection('notifications')
-          .doc(firebase.auth().currentUser.uid)
-          .collection('listeNotifs')
-          .get()
-          .then((querySnapshot) => {
-            const threads = [];
-            querySnapshot.forEach((doc) => {
-              threads.push({
-                id: doc.id,
-                image: doc.data().image,
-                notificationsBody: doc.data().notificationsBody,
-                notificationsTitle: doc.data().notificationsTitle
-              })
-
-            });
-            if (loading) {
-              setLoading(false);
-            }
-            setNotifsList(threads)
-          })
-          .catch((error) => {
-            console.log("Error getting documents: ", error);
-          });
     });
-    return unsubscribe;
+    return unsubscribe
+  }, [props.navigation]);
 
-     */
-  }, [props.navigation, update]);
 
+  console.log('user', user);
+  console.log('threads', threads);
 
   return (
       <View style={styles.container}>
@@ -141,18 +82,30 @@ const MessageScreen = (props) => {
 
         {!loading ? (
             <>
-              {messageActive ?
+              {messageActive && user ?
                   <FlatList
                       data={threads}
                       style={styles.flatList}
                       keyExtractor={(item) => item?._id}
                       renderItem={(itemData) => {
+                        let psuedoReceiver;
+                        let receiverId;
+                        let receiver;
+                        if (itemData.item.receiver === user._id) {
+                          psuedoReceiver = itemData.item.pseudoSender
+                          receiverId = itemData.item.sender
+                        } else {
+                          psuedoReceiver = itemData.item.pseudoReceiver
+                          receiverId = itemData.item.receiver
+                        }
+                        axios.get(`${BASE_URL}/api/users/${receiverId}`).then((res) => {
+                          receiver = res.data
+                        })
                         return (
                             <CardMessage
-                                pseudoVendeur={itemData.item?.pseudoReceiver}
+                                pseudoVendeur={psuedoReceiver}
                                 setAction={setAction}
                                 action={action}
-                                setUpdate={setUpdate}
                                 id={itemData.item?._id}
                                 idVendeur={itemData.item?.sender}
                                 idAcheteur={itemData.item?.idAcheteur}
@@ -160,7 +113,8 @@ const MessageScreen = (props) => {
                                 onPress={() => {
                                   props.navigation.navigate("ChatScreen", {
                                     thread: itemData.item,
-                                      user
+                                    user,
+                                    receiver
                                   })
                                 }
                                 }
@@ -199,14 +153,14 @@ const MessageScreen = (props) => {
             </>
         ) : (
             <View>
-                <Text style={styles.noMessage}>
-                    Il n'y a aucun message à afficher
-                </Text>
-                <ActivityIndicator
-                    color="#D51317"
-                    size={40}
-                    style={{ marginTop: 40 }}
-                />
+              <Text style={styles.noMessage}>
+                Il n'y a aucun message à afficher
+              </Text>
+              <ActivityIndicator
+                  color="#D51317"
+                  size={40}
+                  style={{ marginTop: 40 }}
+              />
             </View>
         )}
       </View>

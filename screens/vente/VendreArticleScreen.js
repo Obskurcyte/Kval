@@ -289,6 +289,39 @@ const VendreArticleScreen = (props) => {
                                     id: data.product._id,
                                     image: snapshot
                                   })
+                                  await axios.post(
+                                      "https://kval-backend.herokuapp.com/send",
+                                      {
+                                        mail: userData.email,
+                                        subject: "Confirmation de mise en vente",
+                                        html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
+<p>Votre article vient d'être mis en vente.</p>
+<p>Résumé de votre article : </p>
+<hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${snapshot}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">Titre : ${values.title}</p>
+            <p style="margin: 0">Description : ${values.description}</p>
+            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
+            <p style="margin: 0">Poids : ${values.poids} kgs</p>
+            <p style="margin: 0">Catégorie: ${categorie}</p>
+        </div>
+    </div>
+<hr>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique «Mes articles en vente»</p>
+<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
+<p style="margin: 0">«Annonces en avant première» du menu d’accueil de l’application.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                                      }
+                                  );
                                   resolve();
                                 });
                             };
@@ -315,45 +348,11 @@ const VendreArticleScreen = (props) => {
                         console.log(err);
                       }
 
-
                       setImagesTableau([]);
                       setImage(null);
                       setCategorie(null);
                       setMarques(null);
                       setEtat(null);
-                      await axios.post(
-                        "https://kval-backend.herokuapp.com/send",
-                        {
-                          mail: userData.email,
-                          subject: "Confirmation de mise en vente",
-                          html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
-<p>Votre article vient d'être mis en vente.</p>
-<p>Résumé de votre article : </p>
-<hr>
-    <div style="display: flex">
-        <div style="margin-right: 30px">
-            <img src="${imageEmail}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
-        </div>
-                
-        <div style="margin-top: 20px">
-            <p style="margin: 0">Titre : ${values.title}</p>
-            <p style="margin: 0">Description : ${values.description}</p>
-            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
-            <p style="margin: 0">Poids : ${values.poids} kgs</p>
-            <p style="margin: 0">Catégorie: ${categorie}</p>
-        </div>
-    </div>
-<hr>
-<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique «Mes articles en vente»</p>
-<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">«Annonces en avant première» du menu d’accueil de l’application.
-</p>
-<br>
-    <p style="margin: 0">L'équipe KVal Occaz</p>
-    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`,
-                        }
-                      );
                       setIsLoading(false);
                       props.navigation.navigate("ValidationScreen", {
                         props: props,

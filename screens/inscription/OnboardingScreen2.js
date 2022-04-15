@@ -1,5 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const OnboardingScreen2 = (props) => {
   return (
@@ -31,20 +34,20 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   image: {
-    marginTop: '20%'
+    marginTop: windowHeight/10
   },
   parti: {
     marginTop: '10%'
   },
   title: {
-    fontSize: 27,
-    marginTop: '25%',
+    fontSize: 25,
+    marginTop:  windowHeight/11,
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center'
   },
   title2: {
-    fontSize: 27,
+    fontSize: 25,
     marginTop: '10%',
     fontWeight: 'bold',
     color: 'white',

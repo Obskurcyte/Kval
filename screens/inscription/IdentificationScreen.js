@@ -25,13 +25,6 @@ const IdentificationScreen = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View>
-        <TouchableOpacity
-          onPress={() => props.setLoggedInAsVisit(!props.loggedInAsVisit)}
-        >
-          <Text style={styles.text}>Continuer en tant que visiteur</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

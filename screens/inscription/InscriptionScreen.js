@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -9,7 +9,7 @@ import {
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
     Keyboard,
-    Alert,
+    SafeAreaView,
     ActivityIndicator,
 } from "react-native";
 import { Formik } from "formik";
@@ -18,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const InscriptionScreen = (props) => {
     const initialValues = {
@@ -31,34 +32,43 @@ const InscriptionScreen = (props) => {
     const [err, setErr] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false)
+    const [pushToken, setPushToken] = useState(null);
+    useEffect(() => {
+        const getToken = async () => {
+            let statusObj = await Notifications.getPermissionsAsync();
+            if (statusObj.status !== "granted") {
+                statusObj = await Notifications.requestPermissionsAsync();
+            }
+            if (statusObj.status !== "granted") {
+                setPushToken(null);
+            } else {
+                setPushToken(await Notifications.getExpoPushTokenAsync());
+            }
+        }
+        getToken();
+    }, []);
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <SafeAreaView style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.container}
+            >
                 <Text style={styles.title}>Inscription</Text>
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
                         setIsLoading(true)
                         console.log(values);
-                       let pushToken;
-                        let statusObj = await Notifications.getPermissionsAsync();
-                        if (statusObj.status !== "granted") {
-                            statusObj = await Notifications.requestPermissionsAsync();
-                        }
-                        if (statusObj.status !== "granted") {
-                            pushToken = null;
-                        } else {
-                            pushToken = await Notifications.getExpoPushTokenAsync();
-                        }
-
-
+                        console.log('token', pushToken)
                         try {
+                            console.log('token', pushToken)
                             const response = await axios.post(`${BASE_URL}/api/users/register`, {
                                 email: values.email,
                                 password: values.password,
                                 pseudo: values.pseudo,
                                 phone: params.phone,
+                                pushToken: pushToken.data,
                                 firstName: params.prenom,
                                 lastName: params.nom
                             })
@@ -156,8 +166,9 @@ const InscriptionScreen = (props) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
         </TouchableWithoutFeedback>
+        </SafeAreaView>
     );
 };
 
@@ -165,7 +176,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#D51317",
-        alignItems: "center",
     },
     err: {
         color: "black",
@@ -225,6 +235,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         width: "70%",
+        alignSelf: 'center'
     },
 });
 

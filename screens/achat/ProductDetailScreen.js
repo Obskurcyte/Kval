@@ -188,6 +188,7 @@ const ProductDetailScreen = (props) => {
   };
 
   //------------------------CART--------------//
+  console.log('product', product);
 
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -217,7 +218,7 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
 
 
-  console.log(product)
+  console.log(product);
   const onMessagePressed = async () => {
     try {
       await axios.post(`${BASE_URL}/api/messages`, {
@@ -229,6 +230,7 @@ const ProductDetailScreen = (props) => {
       })
       props.navigation.navigate("Message", {
         screen: "MessageScreen",
+        params: {idReceiver: product.idVendeur}
       });
     } catch (err) {
       console.log(err)
