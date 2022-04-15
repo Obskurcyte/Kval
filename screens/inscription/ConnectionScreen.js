@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
+import authContext from "../../context/authContext";
 
 const ConnectionScreen = (props) => {
   const initialValues = {
@@ -24,6 +25,7 @@ const ConnectionScreen = (props) => {
   };
 
   const [err, setErr] = useState(null);
+  const { setSignedIn } = useContext(authContext);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -40,10 +42,12 @@ const ConnectionScreen = (props) => {
                 })
 
                 const token = response.data.token;
+                console.log('token', token);
                 await AsyncStorage.setItem("jwt", token)
                 const decoded = jwt_decode(token)
-                await AsyncStorage.setItem("userId", decoded.id)
-                await AsyncStorage.setItem("userType", 'particulier')
+                console.log('decoded', decoded);
+                await AsyncStorage.setItem("userId", decoded.userId);
+                setSignedIn(true);
             } catch (err) {
               console.log(err);
               setErr(err);
