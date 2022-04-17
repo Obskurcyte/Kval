@@ -19,9 +19,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import firebase from "firebase";
 import * as Notifications from "expo-notifications";
-import { StripeProvider } from "@stripe/stripe-react-native";
 import {BASE_URL} from "../../constants/baseURL";
-import {useConfirmPayment, CardField} from "@stripe/stripe-react-native";
 import * as cartActions from "../../store/actions/cart";
 
 const windowWidth = Dimensions.get("window").width;
