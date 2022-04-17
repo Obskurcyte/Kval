@@ -1,37 +1,40 @@
 import React, {useState} from 'react';
 import {Image, ScrollView, Text, TouchableOpacity, View, StyleSheet, Alert} from "react-native";
 import firebase from "firebase";
+import axios from "axios";
+import {BASE_URL} from "../constants/baseURL";
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const CardNotif = (props) => {
 
   console.log(props.image)
   console.log(props.title)
+  console.log('delete', props.handleDelete());
 
+  const notifsList = props.notifsList
   const [visible, setVisible] = useState(true);
 
-  const deleteNotifs = () => {
-    firebase
-        .firestore()
-        .collection("notifications")
-        .doc(firebase.auth().currentUser.uid)
-        .collection("listeNotifs")
-        .doc(props.id)
-        .delete()
-        .then(() => {
-          setVisible(false);
-          console.log("deleted");
-        });
-    firebase.firestore()
-        .collection('users')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('unreadMessage')
-        .doc(firebase.auth().currentUser.uid)
-        .delete()
-        .catch((error) => {
-          console.log("Error getting document:", error);
-        });
-  }
+  const deletedNotif = props.handleDelete();
+
+  const user = props.user;
+
+  const goodNotifsList = notifsList.filter(function( obj ) {
+    return obj._id !== deletedNotif._id;
+  });
+
+  const navigation = useNavigation()
+  const deleteNotifs = async () => {
+    const userId = await AsyncStorage.getItem("userId");
+    await axios.put(`${BASE_URL}/api/users/unreadmessages`, {
+      id: userId,
+    });
+    await axios.put(`${BASE_URL}/api/users`, {
+      id: user._id,
+      notifications: goodNotifsList,
+    }).then(() => props.handleNavigationAfterDelete());
+  };
 
   const createTwoButtonAlert = () =>
       Alert.alert(

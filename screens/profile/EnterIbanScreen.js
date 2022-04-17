@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -13,19 +13,30 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import * as userActions from "../../store/actions/users";
 import * as Yup from "yup";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+import authContext from "../../context/authContext";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const EnterIbanScreen = (props) => {
   const dispatch = useDispatch();
 
+  const { signedIn, setSignedIn } = useContext(authContext);
+
+  const [userData, setUserData] = useState(null);
+
   let bigProps = props
   useEffect(() => {
-    dispatch(userActions.getUser());
-  }, [dispatch]);
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    getUser()
+  }, []);
 
-  const userData = useSelector((state) => state.user.userData);
-  console.log('user', userData);
 
   const IBANSchema = Yup.object().shape({
     IBAN: Yup.string().required("Veuillez rentrer un IBAN"),
@@ -83,14 +94,10 @@ const EnterIbanScreen = (props) => {
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
     });
-    await firebase
-        .firestore()
-        .collection("users")
-        .doc(firebase.auth().currentUser.uid)
-        .update({
-          IBAN: IBAN,
-          portefeuille: 0
-        })
+    await axios.put(`${BASE_URL}/api/users/portefeuille`, {
+      id: userData._id,
+      portefeuille: 0
+    });
   }
 
   return (
@@ -184,9 +191,18 @@ const EnterIbanScreen = (props) => {
                 onSubmit={async (values) => {
                   console.log(values);
                   try {
-                    await firebase
-                        .auth()
-                        .signInWithEmailAndPassword(values.email, values.password);
+                    const response = await axios.post(`${BASE_URL}/api/users/login`, {
+                      email: values.email,
+                      password: values.password,
+                    })
+
+                    const token = response.data.token;
+                    console.log('token', token);
+                    await AsyncStorage.setItem("jwt", token)
+                    const decoded = jwt_decode(token)
+                    console.log('decoded', decoded);
+                    await AsyncStorage.setItem("userId", decoded.userId);
+                    setSignedIn(true);
                     setAuth(true);
                   } catch (err) {
                     console.log(err);

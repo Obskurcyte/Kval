@@ -9,7 +9,6 @@ import CardVente from "../../components/CardVente";
 const AvisScreen = ({navigation, route}) => {
 
     const product = route.params.product
-    console.log(product)
     const dispatch = useDispatch();
 
     useEffect(() => {

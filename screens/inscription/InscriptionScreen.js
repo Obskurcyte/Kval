@@ -68,6 +68,8 @@ const InscriptionScreen = (props) => {
                                 password: values.password,
                                 pseudo: values.pseudo,
                                 phone: params.phone,
+                                unreadMessages: 0,
+                                portefeuille: 0,
                                 pushToken: pushToken.data,
                                 firstName: params.prenom,
                                 lastName: params.nom

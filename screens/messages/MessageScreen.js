@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import { ActivityIndicator } from "react-native-paper";
 import axios from 'axios';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BASE_URL} from "../../constants/baseURL";
+import authContext from "../../context/authContext";
 
 
 const windowWidth = Dimensions.get("window").width;
@@ -39,6 +40,17 @@ const MessageScreen = (props) => {
   let ids = [];
   let pseudos = [];
 
+  const { messageLength, setMessageLength } = useContext(authContext);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setMessageLength(data.unreadMessages)
+    }
+    getUser()
+  }, [messageLength]);
+
   useEffect(() => {
     const getMessages = async () => {
       setLoading(true)
@@ -49,15 +61,18 @@ const MessageScreen = (props) => {
       setUser(response.data)
       setLoading(false)
     }
+    const getNotifs = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setNotifsList(data.notifications)
+    }
     const unsubscribe = props.navigation.addListener('focus', () => {
       getMessages()
+      getNotifs()
     });
     return unsubscribe
   }, [props.navigation]);
 
-
-  console.log('user', user);
-  console.log('threads', threads);
 
   return (
       <View style={styles.container}>
@@ -131,20 +146,25 @@ const MessageScreen = (props) => {
                             <CardNotif
                                 title={itemData.item.notificationsTitle}
                                 body={itemData.item.notificationsBody}
-                                image={itemData.item.image}
+                                image={itemData.item.notificationsImage}
                                 id={itemData.item.id}
                                 handleNavigation={async () => {
-                                  await firebase.firestore()
-                                      .collection('users')
-                                      .doc(firebase.auth().currentUser.uid)
-                                      .collection('unreadMessage')
-                                      .doc(firebase.auth().currentUser.uid)
-                                      .delete()
-                                      .catch((error) => {
-                                        console.log("Error getting document:", error);
-                                      });
-                                  props.navigation.navigate('ArticlesEnVenteScreen')
+                                  const userId = await AsyncStorage.getItem("userId");
+                                  await axios.put(`${BASE_URL}/api/users/unreadmessages`, {
+                                    id: userId,
+                                  });
+                                  props.navigation.navigate('ArticlesEnVenteScreen', {
+                                    user: user,
+                                  })
                                 }}
+                                handleDelete={() => {
+                                  return notifsList[itemData.index]
+                                }}
+                                handleNavigationAfterDelete={() => {
+                                  props.navigation.navigate('SupressionNotifValidationScreen')
+                                }}
+                                user={user}
+                                notifsList={notifsList}
                             />
                         );
                       }}

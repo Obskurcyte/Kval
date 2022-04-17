@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import CardVente from "../../components/CardVente";
 import * as messageAction from "../../store/actions/messages";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
+import authContext from "../../context/authContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -26,6 +28,21 @@ const ArticlesEnVenteScreen = (props) => {
 
   const userData = props.route.params.user;
 
+
+  const { messageLength, setMessageLength } = useContext(authContext);
+
+  const ctx = useContext(authContext);
+  console.log('ctx', ctx);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setMessageLength(data.unreadMessages)
+    }
+    getUser()
+  }, [messageLength]);
+
   useEffect(() => {
     const getArticles = async () => {
       const { data } = await axios.get(`${BASE_URL}/api/products/vendeur/${userData._id}`);
@@ -34,12 +51,6 @@ const ArticlesEnVenteScreen = (props) => {
     getArticles()
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(messageAction.fetchUnreadMessage())
-    });
-    return unsubscribe
-  }, [props.navigation, dispatch]);
 
   return (
     <View style={styles.container}>

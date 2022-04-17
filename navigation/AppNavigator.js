@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -180,6 +180,11 @@ import EtatChoiceProfileScreen from "../screens/profile/EtatChoiceScreen";
 import MarquesChoiceProfileScreen from "../screens/profile/MarquesChoiceScreen";
 import ProductDetailProfileScreen from "../screens/profile/ProductDetailProfileScreen";
 import SupressionMessageValidationScreen from "../screens/messages/SupressionMessageValidationScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import {BASE_URL} from "../constants/baseURL";
+import authContext from "../context/authContext";
+import SupressionNotifValidationScreen from "../screens/messages/SupressionNotifValidationScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1920,6 +1925,11 @@ export const MessageNavigator = (props) => {
             component={SupressionMessageValidationScreen}
             options={{headerShown: false}}
         />
+        <MessageStackNavigator.Screen
+            name="SupressionNotifValidationScreen"
+            component={SupressionNotifValidationScreen}
+            options={{headerShown: false}}
+        />
 
       <MessageStackNavigator.Screen
         name="ArticlesEnVenteScreen"
@@ -3099,18 +3109,11 @@ const resetStackOnTabPress = ({ navigation, route }) => ({
 export const TabNavigator = (props) => {
   const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
-  const dispatch = useDispatch();
   //console.log("auth", firebase.auth().currentUser.uid);
   const [count, setCount] = useState(0);
+  const { messageLength }  = useContext(authContext)
 
-  useEffect(() => {
-    dispatch(messageAction.fetchUnreadMessage());
-  }, [dispatch]);
-
-  const message = useSelector((state) => state.messages.unreadMessages);
-  console.log("message", message);
-  const messageLength = message.length;
-
+    console.log(messageLength);
   return (
     <>
       {props.loggedInAsVisit ? (
@@ -3270,7 +3273,7 @@ export const TabNavigator = (props) => {
             options={{
               tabBarIcon: ({ color, size }) => (
                 <View>
-                  {messageLength > 1 ? (
+                  {messageLength === 1 ? (
                     <View
                       style={{
                         backgroundColor: "#D51317",
@@ -3283,7 +3286,7 @@ export const TabNavigator = (props) => {
                       }}
                     >
                       <Text style={{ color: "white", fontWeight: "bold" }}>
-                        {messageLength - 1}
+                        1
                       </Text>
                     </View>
                   ) : (

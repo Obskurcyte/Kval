@@ -51,8 +51,6 @@ const ViewProductsScreen = (props) => {
     setIsLoading(false);
   }, [isFocused]);
 
-  console.log("categorie", categorie);
-  console.log(productArray);
 
   let totalQuantity = 0;
   const cartItems = useSelector((state) => {

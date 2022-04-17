@@ -14,7 +14,7 @@ const cartReducer = (state = initialState, action) => {
       const categorie = addedProduct.categorie;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
-      const pushToken = addedProduct.pushToken;
+      const pushToken = addedProduct.token;
       const prodImage = addedProduct.images[0];
       const idVendeur = addedProduct.idVendeur;
       const pseudoVendeur = addedProduct.pseudoVendeur;
@@ -23,8 +23,10 @@ const cartReducer = (state = initialState, action) => {
       const livraison = addedProduct.livraison;
       const description = addedProduct.description;
 
-      console.log('image', prodImage)
+      console.log('addedProduct', addedProduct);
       let updatedOrNewCartItem;
+
+      console.log("PUSHTOKEN", pushToken);
 
       if (state.items[addedProduct.id]) {
         // already have item in cart

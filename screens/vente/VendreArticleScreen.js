@@ -88,7 +88,6 @@ const VendreArticleScreen = (props) => {
   }, [props.navigation]);
 
 
-  console.log('data', userData)
   useEffect(() => {
     if (props.route.params) {
       setEtat(props.route.params.etat);
@@ -191,8 +190,23 @@ const VendreArticleScreen = (props) => {
   const [errors, setErrors] = useState(false);
   const [imageEmail, setImageMail] = useState("");
 
-  console.log('cat', categorie);
+  const [pushToken, setPushToken] = useState(null);
+  useEffect(() => {
+    const getToken = async () => {
+      let statusObj = await Notifications.getPermissionsAsync();
+      if (statusObj.status !== "granted") {
+        statusObj = await Notifications.requestPermissionsAsync();
+      }
+      if (statusObj.status !== "granted") {
+        setPushToken(null);
+      } else {
+        setPushToken(await Notifications.getExpoPushTokenAsync());
+      }
+    }
+    getToken();
+  }, []);
 
+  console.log('pushtoken', pushToken)
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1 }}>
@@ -219,25 +233,6 @@ const VendreArticleScreen = (props) => {
                   }
 
                   if (!errors) {
-                   let pushToken;
-                    let statusObj = await Notifications.getPermissionsAsync();
-                    if (statusObj.status !== "granted") {
-                      statusObj = await Notifications.requestPermissionsAsync({
-                        ios: {
-                          allowAlert: true,
-                          allowBadge: true,
-                          allowSound: true,
-                          allowAnnouncements: true,
-                        },
-                      });
-                    }
-                    if (statusObj.status !== "granted") {
-                      pushToken = null;
-                    } else {
-                      pushToken = await Notifications.getExpoPushTokenAsync();
-                    }
-
-
 
                     const id = Math.random() * 300000000;
 
@@ -257,7 +252,7 @@ const VendreArticleScreen = (props) => {
                           pseudoVendeur: userData.pseudo,
                           emailVendeur: userData.email,
                           brand: marques,
-                          pushToken
+                          token: pushToken.data
                         })
 
                         const uploadImage = async (index) => {

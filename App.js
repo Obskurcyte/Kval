@@ -19,6 +19,8 @@ LogBox.ignoreLogs(["Setting a timer"]);
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StripeProvider } from "@stripe/stripe-react-native";
 import AuthContext from "./context/authContext";
+import axios from "axios";
+import {BASE_URL} from "./constants/baseURL";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCkee21-SCCNxfS6co9SjW-PNfLTFTkdec",
@@ -58,6 +60,7 @@ export default function App() {
   const [loggedInAsVisit, setLoggedInAsVisit] = useState(false);
   const [firstLaunch, setFirstLaunch] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
+  const [messageLength, setMessageLength] = useState(0);
 
   let userId;
   useEffect(() => {
@@ -75,9 +78,23 @@ export default function App() {
     getUser()
   }, [userId, loggedIn, signedIn]);
 
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      console.log('userId', userId);
+      setTimeout(async () => {
+        const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+        setMessageLength(data.unreadMessages)
+      }, 1000)
+    }
+    getUser()
+  }, [messageLength]);
+
   return (
       <AuthContext.Provider value={{
         signedIn: signedIn,
+        messageLength: messageLength,
+        setMessageLength: setMessageLength,
         setSignedIn: setSignedIn
       }}>
         <Provider store={store}>

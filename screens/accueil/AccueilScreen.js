@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -25,6 +25,8 @@ import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
 import CardVente from "../../components/CardVente";
 import {Searchbar} from "react-native-paper";
+import authContext from "../../context/authContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const wait = (timeout) => {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -32,6 +34,21 @@ const wait = (timeout) => {
 
 
 const AccueilScreen = (props) => {
+
+
+  const { messageLength, setMessageLength } = useContext(authContext);
+
+  const ctx = useContext(authContext);
+  console.log('ctx', ctx);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setMessageLength(data.unreadMessages)
+    }
+    getUser()
+  }, [messageLength]);
 
   const dispatch = useDispatch();
 

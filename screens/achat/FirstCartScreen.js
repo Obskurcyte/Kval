@@ -34,6 +34,7 @@ const FirstCartScreen = (props) => {
         return transformedCartItems;
     });
 
+    console.log('cartItemsFirst', cartItems)
     useEffect(() => {
         const unsubscribe = props.navigation.addListener("focus", () => {
             // The screen is focused

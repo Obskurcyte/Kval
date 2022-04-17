@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -22,16 +22,19 @@ import { get_mondial_relay_price } from "../../components/MondialRelayShippingPr
 import {Formik} from "formik";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+import authContext from "../../context/authContext";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const CartScreen = (props) => {
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] =
-    useState(false);
+  const [toggleCheckBoxPortefeuille, setToggleCheckBoxPortefeuille] = useState(false);
 
-    const [userData, setUserData] = useState(null)
+  const [userData, setUserData] = useState(null)
+
+    const { setSignedIn } = useContext(authContext);
 
     useEffect(() => {
         const getUser = async () => {
@@ -94,6 +97,7 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
+  console.log('cart', cartItems)
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -191,7 +195,7 @@ const CartScreen = (props) => {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                to: pushToken.data,
+                to: pushToken,
                   sound: 'default',
                   badge: 1,
                 title: "Un de vos articles a été acheté !",
@@ -545,7 +549,7 @@ ${
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            to: pushToken.data,
+            to: pushToken,
               sound: "default",
             title: "Un de vos articles a été acheté !",
             body: `L'article ${cartItem.productTitle} a été acheté !`,
@@ -859,11 +863,19 @@ ${
                                   <Formik
                                       initialValues={initialValues}
                                       onSubmit={async (values) => {
-
                                           try {
-                                              await firebase
-                                                  .auth()
-                                                  .signInWithEmailAndPassword(values.email, values.password);
+                                              const response = await axios.post(`${BASE_URL}/api/users/login`, {
+                                                  email: values.email,
+                                                  password: values.password,
+                                              })
+
+                                              const token = response.data.token;
+                                              console.log('token', token);
+                                              await AsyncStorage.setItem("jwt", token)
+                                              const decoded = jwt_decode(token)
+                                              console.log('decoded', decoded);
+                                              await AsyncStorage.setItem("userId", decoded.userId);
+                                              setSignedIn(true);
                                               setAuth(true);
                                           } catch (err) {
                                               console.log(err);

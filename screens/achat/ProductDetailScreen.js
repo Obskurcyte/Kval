@@ -218,7 +218,6 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
 
 
-  console.log(product);
   const onMessagePressed = async () => {
     try {
       await axios.post(`${BASE_URL}/api/messages`, {
@@ -264,7 +263,7 @@ const ProductDetailScreen = (props) => {
                         style={styles.mettreEnVentePopup}
                         onPress={async () => {
                           setModalVisible(false);
-                          await deleteAnnonce(product.id, product.categorie);
+                          await deleteAnnonce(product._id, product.categorie);
                           props.navigation.navigate("DeleteAnnonceValidationScreen");
                         }}
                     >

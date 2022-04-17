@@ -30,6 +30,21 @@ const ProfileScreen = (props) => {
 
   const { setSignedIn } = useContext(authContext);
 
+
+  const { messageLength, setMessageLength } = useContext(authContext);
+
+  const ctx = useContext(authContext);
+  console.log('ctx', ctx);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setMessageLength(data.unreadMessages)
+    }
+    getUser()
+  }, [messageLength]);
+
   useEffect(() => {
     const getUser = async () => {
       const userId = await AsyncStorage.getItem("userId");

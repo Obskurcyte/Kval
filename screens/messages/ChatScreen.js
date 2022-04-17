@@ -1,13 +1,15 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {View, StyleSheet} from "react-native";
 import { IconButton } from 'react-native-paper';
 import  { GiftedChat, Send } from 'react-native-gifted-chat';
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
+import authContext from "../../context/authContext";
 
 const ChatScreen = (props) => {
 
   const { thread, user, receiver } = props.route.params;
+  const { messageLength, setMessageLength } = useContext(authContext);
 
   const [messages, setMessages] = useState([]);
   useEffect(() => {
@@ -59,10 +61,14 @@ const ChatScreen = (props) => {
         }),
       });
 
-      await axios.put(`${BASE_URL}/api/users/thread`, {
+      await axios.put(`${BASE_URL}/api/users`, {
+        id: receiver._id,
+        unreadMessages: 1,
         notificationsTitle: "Vous avez un nouveau message !",
-        notificationsBody: "Revenez vite ! Un utilisateur vous a envoyé un message !"
-      })
+        notificationsBody: "Revenez vite ! Un utilisateur vous a envoyé un message !",
+        notificationsImage: "https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Ficon.png?alt=media&token=a37ed2e9-7e64-4ae8-a7f8-c19a9ac2fcac"
+      }, config);
+
       await axios.post("https://kval-backend.herokuapp.com/send", {
         mail: receiver.email,
         subject: "Nouveau message KvalOccaz",
