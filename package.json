@@ -10,7 +10,8 @@
     "expo-login": "expo login",
     "eas-login": "eas login",
     "eas-android": "eas build -p android",
-    "eas-ios": "eas build -p ios"
+    "eas-ios": "eas build -p ios",
+    "eas-configure": "eas build:configure"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",
