@@ -16,11 +16,8 @@ import RoundedCheckbox from "react-native-rounded-checkbox";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import firebase from "firebase";
-import * as Notifications from "expo-notifications";
 import {BASE_URL} from "../../constants/baseURL";
-import * as cartActions from "../../store/actions/cart";
+
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
