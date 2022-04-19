@@ -77,17 +77,6 @@ export default function App() {
     getUser()
   }, [userId, loggedIn, signedIn]);
 
-  useEffect(() => {
-    const getUser = async () => {
-      const userId = await AsyncStorage.getItem("userId");
-      console.log('userId', userId);
-      setTimeout(async () => {
-        const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
-        setMessageLength(data.unreadMessages)
-      }, 1000)
-    }
-    getUser()
-  }, [messageLength]);
 
   return (
       <AuthContext.Provider value={{

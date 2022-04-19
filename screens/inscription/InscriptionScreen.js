@@ -101,7 +101,7 @@ const InscriptionScreen = (props) => {
                         } catch (err){
                             setIsLoading(false)
                             console.log(err);
-                            setErr(true)
+                            setErr(err);
                             props.setIsLoggedIn(false);
                         }
                     }}
