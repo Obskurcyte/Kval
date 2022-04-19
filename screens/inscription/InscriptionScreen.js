@@ -29,10 +29,15 @@ const InscriptionScreen = (props) => {
 
     const params = props.route.params;
 
-    const [err, setErr] = useState(null);
+    const [err, setErr] = useState("");
 
     const [isLoading, setIsLoading] = useState(false)
     const [pushToken, setPushToken] = useState(null);
+
+    const [pseudo, setPseudo] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     useEffect(() => {
         const getToken = async () => {
             let statusObj = await Notifications.getPermissionsAsync();
@@ -48,6 +53,52 @@ const InscriptionScreen = (props) => {
         getToken();
     }, []);
 
+    const handleSubmit = async () => {
+        setIsLoading(true)
+        try {
+            const response = await axios.post(`${BASE_URL}/api/users/register`, {
+                email,
+                password,
+                pseudo,
+                phone: params.phone,
+                unreadMessages: 0,
+                portefeuille: 0,
+                pushToken: pushToken.data,
+                firstName: params.prenom,
+                lastName: params.nom
+            })
+
+            const token = response.data.token;
+            await AsyncStorage.setItem("jwt", token)
+            const decoded = jwt_decode(token)
+            await AsyncStorage.setItem("userId", decoded.id)
+            await AsyncStorage.setItem("userType", 'particulier')
+
+            await axios.post("https://kval-backend.herokuapp.com/send", {
+                mail: email,
+                subject: "Confirmation de création de compte",
+                html_output: `<div><p>Félicitations ${pseudo}, <br></p> 
+<p>Votre compte vient d'être créé.</p><br>
+<p style="margin: 0">Votre pseudo : ${pseudo}</p>
+<p style="margin: 0">Votre adresse mail : ${email}</p>
+<p style="margin: 0">Votre mot de passe : ${password}</p>
+<br>
+<p>Il ne vous reste plus qu'à utiliser l'application... bon shopping</p>
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
+</div>`,
+            }).then(() => {
+                setIsLoading(false)
+                props.setIsLoggedIn(true)
+            })
+        } catch (err){
+            setIsLoading(false)
+            console.log(err);
+            setErr(String(err));
+            props.setIsLoggedIn(false);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
@@ -55,67 +106,15 @@ const InscriptionScreen = (props) => {
                 contentContainerStyle={styles.container}
             >
                 <Text style={styles.title}>Inscription</Text>
-                <Formik
-                    initialValues={initialValues}
-                    onSubmit={async (values) => {
-                        setIsLoading(true)
-                        console.log(values);
-                        console.log('token', pushToken)
-                        try {
-                            console.log('token', pushToken)
-                            const response = await axios.post(`${BASE_URL}/api/users/register`, {
-                                email: values.email,
-                                password: values.password,
-                                pseudo: values.pseudo,
-                                phone: params.phone,
-                                unreadMessages: 0,
-                                portefeuille: 0,
-                                pushToken: pushToken.data,
-                                firstName: params.prenom,
-                                lastName: params.nom
-                            })
-
-                            const token = response.data.token;
-                            await AsyncStorage.setItem("jwt", token)
-                            const decoded = jwt_decode(token)
-                            await AsyncStorage.setItem("userId", decoded.id)
-                            await AsyncStorage.setItem("userType", 'particulier')
-
-                            await axios.post("https://kval-backend.herokuapp.com/send", {
-                                mail: values.email,
-                                subject: "Confirmation de création de compte",
-                                html_output: `<div><p>Félicitations ${values.pseudo}, <br></p> 
-<p>Votre compte vient d'être créé.</p><br>
-<p style="margin: 0">Votre pseudo : ${values.pseudo}</p>
-<p style="margin: 0">Votre adresse mail : ${values.email}</p>
-<p style="margin: 0">Votre mot de passe : ${values.password}</p>
-<br>
-<p>Il ne vous reste plus qu'à utiliser l'application... bon shopping</p>
-<p style="margin: 0">L'équipe KVal Occaz</p>
-<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
-</div>`,
-                            }).then(() => {
-                                setIsLoading(false)
-                                props.setIsLoggedIn(true)
-                            })
-                        } catch (err){
-                            setIsLoading(false)
-                            console.log(err);
-                            setErr(err);
-                            props.setIsLoggedIn(false);
-                        }
-                    }}
-                >
-                    {(props) => (
                         <View style={styles.formContainer}>
                             <View>
                                 <Text style={styles.text}>Pseudo</Text>
                                 <TextInput
                                     placeholder="Pseudo"
                                     placeholderTextColor="white"
-                                    value={props.values.pseudo}
+                                    value={pseudo}
                                     style={styles.textInput}
-                                    onChangeText={props.handleChange("pseudo")}
+                                    onChangeText={(e) => setPseudo(e)}
                                 />
                             </View>
                             <View>
@@ -123,9 +122,9 @@ const InscriptionScreen = (props) => {
                                 <TextInput
                                     placeholder="Email"
                                     placeholderTextColor="white"
-                                    value={props.values.email}
+                                    value={email}
                                     style={styles.textInput}
-                                    onChangeText={props.handleChange("email")}
+                                    onChangeText={(e) => setEmail(e)}
                                 />
                             </View>
 
@@ -134,27 +133,25 @@ const InscriptionScreen = (props) => {
                                 <TextInput
                                     placeholder="Mot de passe"
                                     placeholderTextColor="white"
-                                    value={props.values.password}
+                                    value={password}
                                     style={styles.textInput}
                                     secureTextEntry={true}
-                                    onChangeText={props.handleChange("password")}
+                                    onChangeText={(e) => setPassword(e)}
                                 />
                             </View>
                             {err ? (
-                                <Text style={styles.err}>Cet utilisateur existe déjà</Text>
+                                <Text style={styles.err}>{err}</Text>
                             ) : (
                                 <Text />
                             )}
                             {isLoading ? <ActivityIndicator/> : <TouchableOpacity
                                 style={styles.buttonContainer}
-                                onPress={props.handleSubmit}
+                                onPress={handleSubmit}
                             >
                                 <Text style={styles.createCompte}>Valider</Text>
                             </TouchableOpacity>}
 
                         </View>
-                    )}
-                </Formik>
 
                 <View style={styles.connecteContainer}>
                     <View>

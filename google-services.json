@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "40095874290",
+    "project_id": "kval-occaz",
+    "storage_bucket": "kval-occaz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40095874290:android:1d037f50c8af78e6ec646b",
+        "android_client_info": {
+          "package_name": "com.kval.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40095874290-52ue7h33frim16djmod5gnqpchpp8d5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhjd8JyzPMf8mwxp_m-1cA7kHYmnZ_ktU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40095874290-52ue7h33frim16djmod5gnqpchpp8d5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

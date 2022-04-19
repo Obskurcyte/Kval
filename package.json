@@ -11,7 +11,8 @@
     "eas-login": "eas login",
     "eas-android": "eas build -p android",
     "eas-ios": "eas build -p ios",
-    "eas-configure": "eas build:configure"
+    "eas-configure": "eas build:configure",
+    "key": "expo push:android:upload --api-key AAAACVXmfPI:APA91bFJ4vNnkiBbA5vRYVHnq3aEp9Pw0pWXR8E3PJOx5ZAyX9obz_s5tiSNNrEbXCIS_-_lGaeETQJd-Z7X1hAJvBjvbT_Ocs3JH_mwVeou-ojYHJYdlq_C8h-CeqNEIXuGTpO8HCPa"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",

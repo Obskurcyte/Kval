@@ -9,11 +9,12 @@ import {
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
     Keyboard,
-    ScrollView
+    ScrollView, SafeAreaView
 } from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
 import * as Yup from 'yup';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 
 const PreInscriptionScreen = (props) => {
 
@@ -30,11 +31,11 @@ const PreInscriptionScreen = (props) => {
     });
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <KeyboardAvoidingView
-                style={styles.container}
-                behavior="padding"
-            >
+        <SafeAreaView style={styles.container}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+                <KeyboardAwareScrollView
+                    contentContainerStyle={styles.container}
+                >
                 <Text style={styles.title}>Vos informations</Text>
                 <Formik
                     initialValues={initialValues}
@@ -48,8 +49,7 @@ const PreInscriptionScreen = (props) => {
                     }}
                 >
                     {props => (
-
-                        <ScrollView style={styles.formContainer}>
+                        <View style={styles.formContainer}>
                             <View style={styles.inputContainer}>
                                 <Text style={styles.text}>Nom</Text>
                                 <TextInput
@@ -96,11 +96,12 @@ const PreInscriptionScreen = (props) => {
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
                                 <Text style={styles.createCompte}>Suivant</Text>
                             </TouchableOpacity>
-                        </ScrollView>
+                        </View>
                     )}
                 </Formik>
-            </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>
+                </KeyboardAwareScrollView>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     );
 };
 
@@ -164,10 +165,10 @@ const styles = StyleSheet.create({
         marginTop: '10%'
     },
     formContainer: {
-        width: '90%'
+        width: '100%'
     },
     inputContainer: {
-        paddingHorizontal: '7%'
+        paddingHorizontal: '0%'
     },
     errors: {
         color: 'black',
