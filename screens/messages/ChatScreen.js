@@ -23,8 +23,6 @@ const ChatScreen = (props) => {
     return unsubscribe
   }, [messages])
 
-
-  console.log('receiver', receiver)
   const config = {
     headers: {
       'Content-Type': 'application/json',
