@@ -1,73 +1,68 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
-import {AntDesign} from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import firebase from "firebase";
 
 const MarquesChoiceScreen = (props) => {
+  const [marque, setMarque] = useState("");
+  const [marques, setMarques] = useState([]);
+  const modify = props.route.params && props.route.params.modify;
 
-  const [marques, setMarques] = useState('');
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("Marques")
+      .orderBy("name")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.docs.map((doc) => {
+          console.log(doc.id, doc.data().name)
+          marques.push(doc.data());
+        });
+        setMarques([{ name: "Autres marques" }, ...marques]);
+      });
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.itemForm3} onPress={() => {
-        setEtat('Neuf avec étiquette')
-        props.navigation.navigate('VendreArticleScreen', {
-          etat: 'Neuf avec étiquette'
-        })
-      }}>
-        <Text style={styles.text}>Neuf avec étiquette</Text>
-      </TouchableOpacity>
+    <ScrollView style={styles.container}>
+      {marques &&
+        marques.map((marques_obj, index) => (
+          <TouchableOpacity
+              key={index}
+            style={styles.itemForm3}
+            onPress={() => {
+              setMarque(marques_obj.name);
 
-      <TouchableOpacity style={styles.itemForm3} onPress={() => {
-        setEtat('Neuf sans étiquette')
-        props.navigation.navigate('VendreArticleScreen', {
-          etat: 'Neuf sans étiquette'
-        })
-      }}>
-        <Text style={styles.text}>Neuf sans étiquette</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.itemForm3} onPress={() => {
-        setEtat('Très bon état')
-        props.navigation.navigate('VendreArticleScreen', {
-          etat: 'Très bon état'
-        })
-      }}>
-        <Text style={styles.text}>Très bon état</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.itemForm3} onPress={() => {
-        setEtat('Bon état')
-        props.navigation.navigate('VendreArticleScreen', {
-          etat: 'Bon état'
-        })
-      }}>
-        <Text style={styles.text}>Bon état</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.itemForm3} onPress={() => {
-        setEtat('Satisfaisant')
-        props.navigation.navigate('VendreArticleScreen', {
-          etat: 'Satisfaisant'
-        })
-      }}>
-        <Text style={styles.text}>Satisfaisant</Text>
-      </TouchableOpacity>
-    </View>
+              props.navigation.navigate("Vendre", {
+                screen: "VendreArticleScreen",
+                params: { marque: marques_obj.name },
+              });
+            }}
+          >
+            <Text style={styles.text}>{marques_obj.name}</Text>
+          </TouchableOpacity>
+        ))}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  itemForm3 : {
+  itemForm3: {
     borderBottomWidth: 1,
-    borderBottomColor: 'lightgrey',
-    paddingVertical: "6%"
+    borderBottomColor: "lightgrey",
+    paddingVertical: "6%",
   },
   container: {
-    paddingHorizontal: '5%'
+    paddingHorizontal: "5%",
   },
   text: {
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });
 
 export default MarquesChoiceScreen;

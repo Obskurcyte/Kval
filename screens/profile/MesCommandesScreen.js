@@ -1,8 +1,9 @@
-import React, {useEffect} from 'react';
-import {View, StyleSheet, FlatList, Dimensions} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet, FlatList, Dimensions, Text} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
-import * as articlesActions from "../../store/actions/articlesCommandes";
 import CommandeItem from "../../components/CommandeItem";
+import {BASE_URL} from "../../constants/baseURL";
+import axios from "axios";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -10,11 +11,20 @@ const MesCommandesScreen = (props) => {
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(articlesActions.getCommandes())
-    }, [dispatch]);
-    let articles = useSelector(state => state.commandes.mesCommandes);
+    const userData = props.route.params.user;
+    const acheteur = userData._id;
 
+    const [articles, setArticles] = useState([]);
+
+    useEffect(() => {
+        const getCommandes = async () => {
+            const { data } = await axios.get(`${BASE_URL}/api/commandes/${acheteur}`)
+            setArticles(data)
+        }
+        getCommandes()
+    }, []);
+
+    console.log('articles', articles)
     console.log(articles)
 
     const renderItem = ({item}) => {
@@ -23,7 +33,8 @@ const MesCommandesScreen = (props) => {
                 item={item}
                 onPress={() => {
                     props.navigation.navigate('CommandeDetailScreen', {
-                        product: item
+                        product: item,
+                        user: userData
                     })
                 }}
             />
@@ -34,7 +45,7 @@ const MesCommandesScreen = (props) => {
     return (
         <View style={styles.container}>
 
-            <View style={styles.flatListContainer}>
+            {articles?.length !== 0 ? <View style={styles.flatListContainer}>
                 <FlatList
                     data={articles}
                     numColumns={2}
@@ -42,7 +53,8 @@ const MesCommandesScreen = (props) => {
                     renderItem={renderItem}
                     extraData={articles}
                 />
-            </View>
+            </View> : <Text style={styles.noCommandeText}>Vous n'avez passé aucune commande</Text>}
+
         </View>
     );
 };
@@ -70,6 +82,11 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    noCommandeText: {
+      fontSize: 20,
+        textAlign: 'center',
+        marginTop: windowHeight/2.5
     },
     vendeurContainer: {
         backgroundColor: '#F9F9FA',

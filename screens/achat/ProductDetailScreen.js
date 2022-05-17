@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
+  Modal, ActivityIndicator,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +17,11 @@ import firebase from "firebase";
 import UserAvatar from "react-native-user-avatar";
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
+import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
+import axios from "axios";
+import * as userActions from "../../store/actions/users";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BASE_URL} from "../../constants/baseURL";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -27,80 +33,108 @@ const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
   const dispatch = useDispatch();
 
+
+  const [userData, setUserData] = useState(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getUser()
+    });
+    return unsubscribe
+  }, [props.navigation]);
+
+
   //-------------CAROUSEL----------------//
 
   let testData = [];
-  testData.push({ id: "item1", image: product.downloadURL });
-
-  if (product.downloadURL1) {
-    testData.push({ id: "item2", image: product.downloadURL1 });
+  for (let i = 0; i < product.images.length; i++) {
+    testData.push({
+      id: i,
+      image: product.images[i]
+    })
   }
-
-  if (product.downloadURL2) {
-    testData.push({ id: "item3", image: product.downloadURL2 });
-  }
-
-  console.log("test", testData);
 
   const carouselRef = React.useRef(null);
 
-  function renderItem({ item, index }) {
+  function renderItem({ item, index, navigation }) {
     const { image, title, url } = item;
     return (
-      <Pressable
-        activeOpacity={1}
-        style={styles.item}
-        onPress={() => {
-          carouselRef.current.scrollToIndex(index);
-        }}
-      >
-        <Image source={{ uri: image }} style={styles.image} />
-        <View style={styles.lowerContainer}>
-          <View style={styles.lowerLeft}>
-            <Text style={styles.titleText} numberOfLines={2}>
-              {title}
-            </Text>
-            <Text style={styles.descriptionText} numberOfLines={1}>
-              reactNativeAnchorCarousel
-            </Text>
-          </View>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Install Now</Text>
-          </TouchableOpacity>
-        </View>
+      <Pressable activeOpacity={1} style={styles.item}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PhotoArticleScreen", { image })}
+        >
+          <Image source={{ uri: image }} style={styles.image} />
+        </TouchableOpacity>
       </Pressable>
     );
   }
 
+  //-----------------DELETE ANNONCE---------------//
+  const [isLoading, setIsLoading] = useState(false);
+
+  const deleteAnnonce = async (id, categorie) => {
+    setIsLoading(true)
+    await axios.post("https://kval-backend.herokuapp.com/send", {
+      mail: product.emailVendeur,
+      subject: "Confirmation de suppression",
+      html_output: `
+<div>
+    <p>${userData.pseudo}, <br></p> 
+    <p>Votre article vient d'être supprimé.</p>
+    <p>Résumé de votre article : </p>
+    <hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${product.images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${product.title}</p>
+            <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
+            <p style="margin: 0">Poids: ${product.poids} kgs</p>
+            <p style="margin: 0">Catégrorie: ${product.categorie}</p>
+        </div>
+    </div>
+    
+    <hr>
+    
+    <p>Nous vous remercions pour votre confiance et espérons vous revoir bientôt.</p>
+    <br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+    });
+    await axios.delete(`${BASE_URL}/api/products/${id}`)
+  };
+
   //-----------------COMMENTAIRES-----------------//
 
-  useEffect(() => {
-    dispatch(articlesActions.getAvis(product.idVendeur));
-  }, [dispatch]);
 
-  let commentaires = useSelector((state) => state.commandes.commentaires);
-  console.log("wola", commentaires);
-  console.log(product);
 
-  let ratings = [];
-  for (let data in commentaires) {
-    ratings.push(commentaires[data].rating);
-  }
+    let commentaires = userData?.avis
 
-  console.log("ratings", ratings);
 
-  let overallRating = 0;
-  for (let data in ratings) {
-    console.log(ratings[data]);
-    overallRating += parseInt(ratings[data]);
-  }
+    let ratings = [];
+    for (let data in commentaires) {
+      ratings.push(commentaires[data].rating);
+    }
 
-  console.log("overall", overallRating);
+    let overallRating = 0;
+    for (let data in ratings) {
+      overallRating += parseInt(ratings[data]);
+    }
 
-  let trueRating;
-  if (commentaires) {
-    trueRating = Math.ceil(overallRating / commentaires.length);
-  }
+    let trueRating;
+    if (commentaires) {
+      trueRating = Math.ceil(overallRating / commentaires?.length);
+    }
+
+
 
   const [search, setSearch] = useState("");
   const [errorAdded, setErrorAdded] = useState("");
@@ -154,6 +188,7 @@ const ProductDetailScreen = (props) => {
   };
 
   //------------------------CART--------------//
+  console.log('product', product);
 
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -166,9 +201,11 @@ const ProductDetailScreen = (props) => {
         image: state.cart.items[key].image,
         idVendeur: state.cart.items[key].idVendeur,
         pseudoVendeur: state.cart.items[key].pseudoVendeur,
+        emailVendeur: state.cart.items[key].emailVendeur,
         pushToken: state.cart.items[key].pushToken,
         categorie: state.cart.items[key].categorie,
         sum: state.cart.items[key].sum,
+        description: state.cart.items[key].description
       });
     }
     return transformedCartItems;
@@ -179,162 +216,232 @@ const ProductDetailScreen = (props) => {
   };
 
   //-----------------------------------MESSAGES---------------------//
-  const idAcheteur = firebase.auth().currentUser.uid;
-  console.log("authid", firebase.auth().currentUser.uid);
-  const onMessagePressed = () => {
-    console.log(product.pseudoVendeur);
-    firebase
-      .firestore()
-      .collection("MESSAGE_THREADS")
-      .doc(`${product.idVendeur}` + `${idAcheteur}`)
-      .collection("MESSAGES")
-      .add({
-        text: `Start chating`,
-        createdAt: new Date().getTime(),
-        system: true,
-      })
-      .then(() => {
-        firebase
-          .firestore()
-          .collection("MESSAGE_THREADS")
-          .doc(`${product.idVendeur}` + `${firebase.auth().currentUser.uid}`)
-          .set({
-            latestMessage: { text: "Commencez à chatter..." },
-            pseudoVendeur: product.pseudoVendeur,
-            id: `${product.idVendeur}` + `${firebase.auth().currentUser.uid}`,
-            reverse_id:
-              `${firebase.auth().currentUser.uid}` + `${product.idVendeur}`,
-          });
-      });
 
-    props.navigation.navigate("Message", {
-      screen: "MessageScreen",
-    });
+
+  const onMessagePressed = async () => {
+    try {
+      await axios.post(`${BASE_URL}/api/messages`, {
+        sender: userData._id,
+        receiver: product.idVendeur,
+        pseudoSender: userData.pseudo,
+        pseudoReceiver: product.pseudoVendeur,
+        latestMessage: 'Commencez a chatter...'
+      })
+      props.navigation.navigate("Message", {
+        screen: "MessageScreen",
+        params: {idReceiver: product.idVendeur}
+      });
+    } catch (err) {
+      console.log(err)
+    }
   };
 
-  const initial = product.pseudoVendeur.charAt(0);
+  //const initial = product.pseudoVendeur.charAt(0);
+
+  // ----------------- MODAL ---------------- //
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View>
+      {userData &&
       <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.imgContainer}>
-            <Carousel
-              keyExtractor={(item) => item?.id}
-              style={[styles.carousel]}
-              ref={carouselRef}
-              data={testData}
-              renderItem={renderItem}
-              itemWidth={ITEM_WIDTH}
-              separatorWidth={SEPARATOR_WIDTH}
-              inActiveScale={1}
-              inActiveOpacity={1}
-              containerWidth={windowWidth}
-            />
-          </View>
-
-          <View style={styles.titleAndPrixContainer}>
-            <Text style={styles.title}>{product.title}</Text>
-            <Text style={styles.prix}>{product.prix} €</Text>
-          </View>
-
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{product.description}</Text>
-          </View>
-
-          <View style={styles.itemForm3}>
-            <Text>Etat</Text>
-            <Text>{product.etat}</Text>
-          </View>
-
-          <View style={styles.itemForm3}>
-            <Text>Catégorie</Text>
-            <Text>{product.categorie}</Text>
-          </View>
-
-          <View style={styles.vendeurContainer}>
-            {product.imageURL ? (
-              <Image source={require("../../assets/photoProfile.png")} />
-            ) : (
-              <UserAvatar size={50} name={initial} />
-            )}
-
-            <View>
-              <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-              {commentaires.length ? (
-                <View>
-                  {trueRating === 1 && <OneStar />}
-                  {trueRating === 2 && <TwoStar />}
-                  {trueRating === 3 && <ThreeStar />}
-                  {trueRating === 4 && <FourStar />}
-                  {trueRating === 5 && <FiveStar />}
+        {isLoading ?
+            <View style={styles.containerLoading}>
+              <Text style={styles.loadingText}>
+                Veuillez patienter...
+              </Text>
+              <ActivityIndicator color="red" />
+            </View> :
+            <ScrollView>
+              <Modal transparent={true} visible={modalVisible}>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>
+                      Etes-vous sur de vouloir supprimer votre offre ?
+                    </Text>
+                    <TouchableOpacity
+                        style={styles.mettreEnVentePopup}
+                        onPress={async () => {
+                          setModalVisible(false);
+                          await deleteAnnonce(product._id, product.categorie);
+                          props.navigation.navigate("DeleteAnnonceValidationScreen");
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>
+                        Supprimer mon offre
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.reset}
+                        onPress={() => {
+                          setModalVisible(false);
+                        }}
+                    >
+                      <Text style={styles.resetText}>Annuler</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              ) : (
-                <Text>Aucun commentaire disponible</Text>
+              </Modal>
+              <View style={styles.imgContainer}>
+                <Carousel
+                    keyExtractor={(item) => item?.id}
+                    style={[styles.carousel]}
+                    ref={carouselRef}
+                    data={testData}
+                    renderItem={({ item, index }) =>
+                        renderItem({ item, index, navigation: props.navigation })
+                    }
+                    itemWidth={ITEM_WIDTH}
+                    separatorWidth={SEPARATOR_WIDTH}
+                    inActiveScale={1}
+                    inActiveOpacity={1}
+                    containerWidth={windowWidth}
+                />
+              </View>
+              <View style={styles.titleAndPrixContainer}>
+                <Text style={styles.title}>{product.title}</Text>
+                <Text style={styles.prix}>{product.prix} €</Text>
+                <Text style={styles.shipping_price}>
+                  (+ {get_mondial_relay_price(product.poids)} € livraison Mondial
+                  Relay)
+                </Text>
+              </View>
+              <View style={styles.descriptionContainer}>
+                <Text style={styles.description}>{product.description}</Text>
+              </View>
+              <View style={styles.itemForm3}>
+                <Text>Etat</Text>
+                <Text>{product.status}</Text>
+              </View>
+              <View style={styles.itemForm3}>
+                <Text>Catégorie</Text>
+                <Text>{product.category}</Text>
+              </View>
+              {product.marques && (
+                  <View style={styles.itemForm3}>
+                    <Text>Marque</Text>
+                    <Text>{product.brand}</Text>
+                  </View>
               )}
-            </View>
+              <View style={styles.itemForm3}>
+                <Text>Poids</Text>
+                <Text>{product.poids} kgs</Text>
+              </View>
+              <View style={styles.vendeurContainer}>
+                {product.imageURL ? (
+                    <Image source={require("../../assets/photoProfile.png")} />
+                ) : (
+                    <UserAvatar size={50} name={'djd'} />
+                )}
 
-            {commentaires.length ? (
-              <TouchableOpacity
-                onPress={() =>
-                  props.navigation.navigate("AvisScreen", {
-                    product: product,
-                  })
-                }
-              >
-                <Text>Voir les avis</Text>
-              </TouchableOpacity>
-            ) : (
-              <Text />
-            )}
-          </View>
+                <View>
+                  <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
+                  {commentaires?.length ? (
+                      <View>
+                        {trueRating === 1 && <OneStar />}
+                        {trueRating === 2 && <TwoStar />}
+                        {trueRating === 3 && <ThreeStar />}
+                        {trueRating === 4 && <FourStar />}
+                        {trueRating === 5 && <FiveStar />}
+                      </View>
+                  ) : (
+                      <Text>Aucun commentaire disponible</Text>
+                  )}
+                </View>
 
-          <TouchableOpacity
-            style={styles.envoyerMessageContainer}
-            onPress={() => onMessagePressed()}
-          >
-            <Text style={styles.envoyerMessageText}>Envoyer un message</Text>
-          </TouchableOpacity>
+                {commentaires?.length ? (
+                    <TouchableOpacity
+                        onPress={() =>
+                            props.navigation.navigate("AvisScreen", {
+                              product: product,
+                            })
+                        }
+                    >
+                      <Text>Voir les avis</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <Text />
+                )}
+              </View>
 
-          <TouchableOpacity
-            style={styles.mettreEnVente}
-            onPress={() => {
-              if (cartItems.length !== 0) {
-                for (const key in cartItems) {
-                  console.log("wola");
-                  console.log("id1", product.id);
-                  console.log("id2", cartItems[key].productId);
-                  if (product.id == cartItems[key].productId) {
-                    setErrorAdded(
-                      "Ce produit est déjà présent dans votre panier"
-                    );
-                  } else {
-                    dispatch(cartActions.addToCart(product));
-                  }
-                }
-              } else {
-                dispatch(cartActions.addToCart(product));
-              }
-            }}
-          >
-            <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
-          </TouchableOpacity>
+              {product.idVendeur === userData._id ? (
+                  <View>
+                    <TouchableOpacity
+                        style={styles.reset}
+                        onPress={() => {
+                          props.navigation.navigate("Profil", {
+                            screen: "ModifierAnnonceScreen",
+                            params: { ...product, modify: true },
+                          });
+                        }}
+                    >
+                      <Text style={styles.resetText}>Modifier mon offre</Text>
+                    </TouchableOpacity>
 
-          {errorAdded ? (
-            <Text
-              style={{
-                marginBottom: 12,
-                textAlign: "center",
-                color: "#D51317",
-              }}
-            >
-              {errorAdded}
-            </Text>
-          ) : (
-            <Text />
-          )}
-        </ScrollView>
+                    <TouchableOpacity
+                        style={styles.mettreEnVente}
+                        onPress={() => {
+                          setModalVisible(true);
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>
+                        Supprimer mon offre
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+              ) : (
+                  <View>
+                    <TouchableOpacity
+                        style={styles.envoyerMessageContainer}
+                        onPress={() =>
+                            props.loggedInAsVisit
+                                ? props.setLoggedInAsVisit(!props.loggedInAsVisit)
+                                : onMessagePressed()
+                        }
+                    >
+                      <Text style={styles.envoyerMessageText}>
+                        Envoyer un message
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.mettreEnVente}
+                        onPress={() => {
+                          if (cartItems.length !== 0) {
+                            for (const key in cartItems) {
+                              if (product.id == cartItems[key].productId) {
+                                setErrorAdded(
+                                    "Ce produit est déjà présent dans votre panier"
+                                );
+                              } else {
+                                dispatch(cartActions.addToCart(product));
+                              }
+                            }
+                          } else {
+                            dispatch(cartActions.addToCart(product));
+                          }
+                        }}
+                    >
+                      <Text style={styles.mettreEnVenteText}>Ajouter au panier</Text>
+                    </TouchableOpacity>
+                  </View>
+              )}
+              {errorAdded ? (
+                  <Text
+                      style={{
+                        marginBottom: 12,
+                        textAlign: "center",
+                        color: "#D51317",
+                      }}
+                  >
+                    {errorAdded}
+                  </Text>
+              ) : (
+                  <Text />
+              )}
+            </ScrollView>
+        }
       </View>
+      }
     </View>
   );
 };
@@ -342,6 +449,20 @@ const ProductDetailScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: "5%",
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.1,
+    borderColor: "#D51317",
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
   searchBarContainer: {
     display: "flex",
@@ -380,6 +501,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 17,
   },
+  shipping_price: {
+    color: "#737379",
+    fontSize: 14,
+  },
   titleAndPrixContainer: {
     marginLeft: "5%",
   },
@@ -408,6 +533,13 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     marginLeft: "5%",
     width: windowWidth / 1.1,
+    paddingVertical: "5%",
+  },
+  mettreEnVentePopup: {
+    backgroundColor: "#D51317",
+    marginTop: "5%",
+    marginLeft: "5%",
+    width: windowWidth / 1.5,
     paddingVertical: "5%",
   },
   mettreEnVenteText: {
@@ -480,17 +612,6 @@ const styles = StyleSheet.create({
 
     color: "#A0A0A0",
   },
-  button: {
-    width: "40%",
-    marginLeft: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 4,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    borderColor: "#585B60",
-  },
   buttonText: {
     fontWeight: "bold",
     fontSize: 16,
@@ -523,6 +644,58 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     color: "#1C2127",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: "center",
+    maxWidth: "90%",
+    marginBottom: 20,
+  },
+  containerLoading: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "20%",
   },
 });
 

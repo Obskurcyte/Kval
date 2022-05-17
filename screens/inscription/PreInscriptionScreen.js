@@ -20,21 +20,13 @@ const PreInscriptionScreen = (props) => {
     const initialValues = {
         nom: '',
         prenom: "",
-        IBAN: "",
-        adresse: '',
-        postalCode: '',
-        ville: '',
-        pays: ''
+        phone: ""
     }
 
     const InfoSchema = Yup.object().shape({
         nom: Yup.string().required('Ce champ est requis'),
         prenom: Yup.string().required('Ce champ est requis'),
-        IBAN: Yup.string().required('Ce champ est requis'),
-        adresse: Yup.string().required('Ce champ est requis'),
-        postalCode: Yup.string().required('Ce champ est requis'),
-        ville: Yup.string().required('Ce champ est requis'),
-        pays: Yup.string().required('Ce champ est requis'),
+        phone: Yup.string().required('Ce champ est requis'),
     });
 
     return (
@@ -51,11 +43,7 @@ const PreInscriptionScreen = (props) => {
                         props.navigation.navigate('InscriptionScreen', {
                             nom: values.nom,
                             prenom: values.prenom,
-                            IBAN: values.IBAN,
-                            adresse: values.adresse,
-                            postalCode: values.postalCode,
-                            ville: values.ville,
-                            pays: values.pays
+                            phone: values.phone
                         })
                     }}
                 >
@@ -88,83 +76,21 @@ const PreInscriptionScreen = (props) => {
                                 />
                             </View>
 
-                            {props.errors.prenom && props.touched.prenom ? (
-                                <Text style={styles.errors}>{props.errors.prenom}</Text>
-                            ) : <Text />}
 
                             <View style={styles.inputContainer}>
-                                <Text style={styles.text}>IBAN</Text>
+                                <Text style={styles.text}>Téléphone</Text>
                                 <TextInput
-                                    placeholder="IBAN"
+                                    placeholder="Téléphone"
                                     placeholderTextColor='white'
-                                    value={props.values.IBAN}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('IBAN')}
-                                />
-                            </View>
-
-                            {props.errors.IBAN && props.touched.IBAN ? (
-                                <Text style={styles.errors}>{props.errors.IBAN}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Adresse</Text>
-                                <TextInput
-                                    placeholder="Adresse"
-                                    placeholderTextColor='white'
-                                    value={props.values.adresse}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('adresse')}
-                                />
-                            </View>
-
-                            {props.errors.adresse && props.touched.adresse ? (
-                                <Text style={styles.errors}>{props.errors.adresse}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Code Postal</Text>
-                                <TextInput
-                                    placeholder="Code Postal"
-                                    placeholderTextColor='white'
-                                    value={props.values.postalCode}
                                     keyboardType="numeric"
+                                    value={props.values.phone}
                                     style={styles.textInput}
-                                    onChangeText={props.handleChange('postalCode')}
+                                    onChangeText={props.handleChange('phone')}
                                 />
                             </View>
 
-                            {props.errors.postalCode && props.touched.postalCode ? (
-                                <Text style={styles.errors}>{props.errors.postalCode}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Ville</Text>
-                                <TextInput
-                                    placeholder="Ville"
-                                    placeholderTextColor='white'
-                                    value={props.values.ville}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('ville')}
-                                />
-                            </View>
-
-                            {props.errors.ville && props.touched.ville ? (
-                                <Text style={styles.errors}>{props.errors.ville}</Text>
-                            ) : <Text />}
-
-                            <View style={styles.inputContainer}>
-                                <Text style={styles.text}>Pays</Text>
-                                <TextInput
-                                    placeholder="Pays"
-                                    placeholderTextColor='white'
-                                    value={props.values.pays}
-                                    style={styles.textInput}
-                                    onChangeText={props.handleChange('pays')}
-                                />
-                            </View>
-                            {props.errors.pays && props.touched.pays ? (
-                                <Text style={styles.errors}>{props.errors.pays}</Text>
+                            {props.errors.phone && props.touched.phone ? (
+                                <Text style={styles.errors}>{props.errors.phone}</Text>
                             ) : <Text />}
 
                             <TouchableOpacity style={styles.buttonContainer} onPress={props.handleSubmit}>
@@ -187,9 +113,9 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 27,
-        marginTop: '15%',
         fontWeight: 'bold',
         color: 'white',
+        marginTop: '20%',
         textAlign: 'center'
     },
     textInput: {

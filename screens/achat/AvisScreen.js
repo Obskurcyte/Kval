@@ -9,7 +9,6 @@ import CardVente from "../../components/CardVente";
 const AvisScreen = ({navigation, route}) => {
 
     const product = route.params.product
-    console.log(product)
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -17,7 +16,7 @@ const AvisScreen = ({navigation, route}) => {
     }, [dispatch]);
 
     let commentaires = useSelector(state => state.commandes.commentaires);
-    console.log('wola', commentaires)
+
 
     return (
            <FlatList

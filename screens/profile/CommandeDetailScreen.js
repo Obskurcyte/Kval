@@ -10,6 +10,7 @@ const windowHeight = Dimensions.get('window').height;
 const CommandeDetailScreen = (props) => {
 
     const product = props.route.params.product;
+    const userData = props.route.params.user;
 
     console.log(product)
 
@@ -59,7 +60,8 @@ const CommandeDetailScreen = (props) => {
                     </View>
 
                     <TouchableOpacity style={styles.mettreEnVente} onPress={() => props.navigation.navigate('EvaluationScreen', {
-                        product: product
+                        product: product,
+                        user: userData
                     })}>
                         <Text style={styles.mettreEnVenteText}>L'article a été reçu !</Text>
                     </TouchableOpacity>

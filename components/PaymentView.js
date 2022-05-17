@@ -1,17 +1,16 @@
-import React, { useState, useEffect} from 'react'
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
-import { WebView } from 'react-native-webview';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { WebView } from "react-native-webview";
 
-const STRIPE_PK = 'pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25'
+const STRIPE_PK =
+  "pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25";
 
 const PaymentView = (props) => {
-
-  const { amount, product } = props
-
+  const { amount, product } = props;
 
   const onCheckStatus = (response) => {
-    props.onCheckStatus(response)
-  }
+    props.onCheckStatus(response);
+  };
 
   const htmlContent = `
 
@@ -109,8 +108,7 @@ const PaymentView = (props) => {
                         align-items: center;
                         background-color: #D51317;
                         color: white;
-                        margin-top: 50%
-                    }
+                        margin-top: 50px                    }
 
                     .payer {
                   color: white;
@@ -188,6 +186,9 @@ const PaymentView = (props) => {
                                     </div>
                                 </div>
 
+                                <div>
+                                    <p style="text-align:center">Aucune données concernant votre moyen de paiement ne seront conservées</p>
+                                </div>
 
 
                                 <div class="pay-btn">
@@ -297,25 +298,23 @@ const PaymentView = (props) => {
         };
     })()`;
 
-
   const onMessage = (event) => {
-    const { data } =  event.nativeEvent;
-    console.log(data)
-    onCheckStatus(data)
-  }
+    console.log('jdfjldsfl')
+    const { data } = event.nativeEvent;
+    console.log(data);
+    onCheckStatus(data);
+  };
 
+  return (
+    <WebView
+      javaScriptEnabled={true}
+      style={{ flex: 1, backgroundColor: "black" }}
+      originWhitelist={["*"]}
+      source={{ html: htmlContent}}
+      injectedJavaScript={injectedJavaScript}
+      onMessage={onMessage}
+    />
+  );
+};
 
-
-  return <WebView
-    javaScriptEnabled={true}
-    style={{ flex: 1, backgroundColor: 'black'}}
-    originWhitelist={['*']}
-    source={{ html: htmlContent}}
-    injectedJavaScript={injectedJavaScript}
-    onMessage={onMessage}
-  />
-
-}
-
-
-export { PaymentView }
+export { PaymentView };

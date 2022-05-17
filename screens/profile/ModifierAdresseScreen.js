@@ -1,9 +1,21 @@
-import React, {useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    Dimensions,
+    TouchableWithoutFeedback,
+    Keyboard, KeyboardAvoidingView
+} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -17,37 +29,45 @@ const ModifierAdresseScreen = (props) => {
         pays: ''
     }
 
-    const dispatch = useDispatch();
+    const [userData, setUserData] = useState(null)
 
     useEffect(() => {
-        dispatch(userActions.getUser())
-    }, [dispatch]);
-
-    const userData = useSelector(state => state.user.userData);
-    console.log(userData)
+        const getUser = async () => {
+            const userId = await AsyncStorage.getItem("userId");
+            const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+            setUserData(data)
+        }
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getUser()
+        });
+        return unsubscribe
+    }, [props.navigation]);
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.container}>
-            <Text style={styles.title}>Adresse</Text>
-            <Text style={{fontSize: 18, marginBottom: '10%'}}>Adresse actuelle : <Text style={{color: '#D51317', fontSize: 16}}>{userData?.adresse}</Text></Text>
+            <Text style={styles.title}>Nouvelle adresse</Text>
 
             <Formik
                 initialValues={initialValues}
                 onSubmit={async (values) => {
                     console.log(values)
-                    await firebase.firestore().collection('users')
-                        .doc(firebase.auth().currentUser.uid)
-                        .update({
-                            adresse: values.adresse,
+                    try {
+                        await axios.put(`${BASE_URL}/api/users`, {
+                            id: userData._id,
+                            address: values.adresse,
                             postalCode: values.postalCode,
                             ville: values.ville,
                             pays: values.pays
                         }).then(() => props.navigation.navigate('InformationsScreen'))
+                    } catch (err) {
+                        console.log(err)
+                    }
                 }}
             >
                 {props => (
                     <View>
-                        <Text>Nouvelle adresse</Text>
                         <TextInput
                             placeholder="Adresse"
                             style={styles.input}
@@ -85,6 +105,8 @@ const ModifierAdresseScreen = (props) => {
             </Formik>
 
         </View>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -110,7 +132,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         textAlign: 'justify',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        marginBottom: '5%'
     },
     input: {
         borderWidth: 1,

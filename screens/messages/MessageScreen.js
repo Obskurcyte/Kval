@@ -1,130 +1,195 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
-  ScrollView,
   Dimensions,
   FlatList,
 } from "react-native";
 import firebase from "firebase";
-import * as notifsActions from "../../store/actions/notifications";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import CardNotif from "../../components/CardNotif";
 import CardMessage from "../../components/CardMessage";
+import { ActivityIndicator } from "react-native-paper";
+import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {BASE_URL} from "../../constants/baseURL";
+import authContext from "../../context/authContext";
+
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const MessageScreen = (props) => {
+
   const [messageActive, setMessageActive] = useState(true);
-  const [notifActive, setNotifActive] = useState(false);
-
-  const dispatch = useDispatch();
-  const [notificationsTitle, setNotificationsTitle] = useState([]);
-  useEffect(() => {
-    dispatch(notifsActions.fetchNotifs());
-  }, []);
-
-  const notifsList = useSelector((state) => state.notifs.notifs);
-
+  const [action, setAction] = useState(false);
+  const [notifsList, setNotifsList] = useState([])
   const [threads, setThreads] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+
+
+  const [user, setUser] = useState(null);
+  const [update, setUpdate] = useState(0);
+  const [receiverId, setReceiverId] = useState("");
+  const [receiverPseudo, setReceiverPseudo] = useState("");
+  const [receiver, setReceiver] = useState(null);
+
+  let ids = [];
+  let pseudos = [];
+
+  const { messageLength, setMessageLength } = useContext(authContext);
 
   useEffect(() => {
-    console.log("woskdls");
-    const threads = [];
-    const unsubscribe = firebase
-      .firestore()
-      .collection("MESSAGE_THREADS")
-      .where("reverse_id", ">=", firebase.auth().currentUser.uid)
-      .where("reverse_id", "<=", firebase.auth().currentUser.uid + "\uf8ff")
-      .onSnapshot((querySnapshot) => {
-        const threads = [];
-        querySnapshot.docs.map((documentSnapshot) => {
-          threads.push({
-            _id: documentSnapshot.id,
-            pseudoVendeur: documentSnapshot.data().pseudoVendeur,
-            latestMessage: { text: "" },
-            ...documentSnapshot.data(),
-          });
-        });
-        if (loading) {
-          setLoading(false);
-        }
-        setThreads(threads);
-      });
-  }, []);
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setMessageLength(data.unreadMessages)
+    }
+    getUser()
+  }, [messageLength]);
 
-  console.log(threads);
+  useEffect(() => {
+    const getMessages = async () => {
+      setLoading(true)
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/messages/${userId}`);
+      const response = await axios.get(`${BASE_URL}/api/users/${userId}`)
+      setThreads(data)
+      setUser(response.data)
+      setLoading(false)
+    }
+    const getNotifs = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setNotifsList(data.notifications)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getMessages()
+      getNotifs()
+    });
+    return unsubscribe
+  }, [props.navigation]);
 
-  console.log("authid", firebase.auth().currentUser.uid);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.messagesContainer}>
-        <TouchableOpacity
-          style={messageActive ? styles.messageBorder : styles.message}
-          onPress={() => {
-            setMessageActive(true);
-            setNotifActive(false);
-          }}
-        >
-          <Text style={styles.messageText}>Messagerie</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={notifActive ? styles.messageBorder : styles.message}
-          onPress={() => {
-            setMessageActive(false);
-            setNotifActive(true);
-          }}
-        >
-          <Text style={styles.messageText}>Notifications</Text>
-        </TouchableOpacity>
+      <View style={styles.container}>
+        <View style={styles.messagesContainer}>
+          <TouchableOpacity
+              style={messageActive ? styles.messageBorder : styles.message}
+              onPress={() => {
+                setMessageActive(true);
+              }}
+          >
+            <Text style={styles.messageText}>Messagerie</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+              style={!messageActive ? styles.messageBorder : styles.message}
+              onPress={() => {
+                setMessageActive(false);
+              }}
+          >
+            <Text style={styles.messageText}>Notifications</Text>
+          </TouchableOpacity>
+        </View>
+
+        {!loading ? (
+            <>
+              {messageActive && user ?
+                  <FlatList
+                      data={threads}
+                      style={styles.flatList}
+                      keyExtractor={(item) => item?._id}
+                      renderItem={(itemData) => {
+                        let psuedoReceiver;
+                        let receiverId;
+                        let receiver;
+                        if (itemData.item.receiver === user._id) {
+                          psuedoReceiver = itemData.item.pseudoSender
+                          receiverId = itemData.item.sender
+                        } else {
+                          psuedoReceiver = itemData.item.pseudoReceiver
+                          receiverId = itemData.item.receiver
+                        }
+                        axios.get(`${BASE_URL}/api/users/${receiverId}`).then((res) => {
+                          receiver = res.data
+                        })
+                        return (
+                            <CardMessage
+                                pseudoVendeur={psuedoReceiver}
+                                setAction={setAction}
+                                action={action}
+                                id={itemData.item?._id}
+                                idVendeur={itemData.item?.sender}
+                                idAcheteur={itemData.item?.idAcheteur}
+                                latestMessage={itemData.item?.latestMessage}
+                                onPress={() => {
+                                  props.navigation.navigate("ChatScreen", {
+                                    thread: itemData.item,
+                                    user,
+                                    receiver
+                                  })
+                                }
+                                }
+                            />
+                        );
+                      }}
+                  /> :
+                  <FlatList
+                      data={notifsList}
+                      style={styles.flatList}
+                      keyExtractor={() => (Math.random() * 100000).toString()}
+                      renderItem={(itemData) => {
+                        return (
+                            <CardNotif
+                                title={itemData.item.notificationsTitle}
+                                body={itemData.item.notificationsBody}
+                                image={itemData.item.notificationsImage}
+                                id={itemData.item.id}
+                                handleNavigation={async () => {
+                                  const userId = await AsyncStorage.getItem("userId");
+                                  await axios.put(`${BASE_URL}/api/users/unreadmessages`, {
+                                    id: userId,
+                                  });
+                                  props.navigation.navigate('ArticlesEnVenteScreen', {
+                                    user: user,
+                                  })
+                                }}
+                                handleDelete={() => {
+                                  return notifsList[itemData.index]
+                                }}
+                                handleNavigationAfterDelete={() => {
+                                  props.navigation.navigate('SupressionNotifValidationScreen')
+                                }}
+                                user={user}
+                                notifsList={notifsList}
+                            />
+                        );
+                      }}
+                  />
+              }
+            </>
+        ) : (
+            <View>
+              <Text style={styles.noMessage}>
+                Il n'y a aucun message à afficher
+              </Text>
+              <ActivityIndicator
+                  color="#D51317"
+                  size={40}
+                  style={{ marginTop: 40 }}
+              />
+            </View>
+        )}
       </View>
-
-      {messageActive && (
-        <FlatList
-          data={threads}
-          style={styles.flatList}
-          keyExtractor={(item) => item?._id}
-          renderItem={(itemData) => {
-            return (
-              <CardMessage
-                pseudoVendeur={itemData.item?.pseudoVendeur}
-                latestMessage={itemData.item?.latestMessage.text}
-                onPress={() =>
-                  props.navigation.navigate("ChatScreen", {
-                    thread: itemData.item,
-                  })
-                }
-              />
-            );
-          }}
-        />
-      )}
-
-      {notifActive && (
-        <FlatList
-          data={notifsList}
-          keyExtractor={() => (Math.random() * 100000).toString()}
-          renderItem={(itemData) => {
-            console.log(itemData);
-            return (
-              <CardNotif
-                title={itemData.item.notificationsTitle}
-                body={itemData.item.notificationsBody}
-                image={itemData.item.image}
-              />
-            );
-          }}
-        />
-      )}
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: "rgba(231, 233, 236, 0.26)",
   },
   messagesContainer: {
     display: "flex",
@@ -141,6 +206,11 @@ const styles = StyleSheet.create({
     padding: "5%",
     width: "50%",
     alignItems: "center",
+  },
+  notifsList: {
+    flex: 1,
+    height: 500,
+    backgroundColor: "red",
   },
   messageBorder: {
     borderBottomWidth: 3,
@@ -172,6 +242,10 @@ const styles = StyleSheet.create({
   },
   flatList: {
     height: "100%",
+  },
+  noMessage: {
+    fontSize: 20,
+    textAlign: "center",
   },
 });
 export default MessageScreen;

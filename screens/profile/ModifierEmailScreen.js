@@ -1,9 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -17,12 +19,18 @@ const ModifierEmailScreen = (props) => {
 
     const dispatch = useDispatch();
 
+    const userData = props.route.params.user
+
+    const [productByEmail, setProductByEmail] = useState([]);
+
     useEffect(() => {
-        dispatch(userActions.getUser())
+        const getProductsByEmail = async () => {
+            const { data } = await axios.get(`${BASE_URL}/api/products/email/${userData._id}`)
+            setProductByEmail(data)
+        }
+        getProductsByEmail()
     }, [dispatch]);
 
-    const userData = useSelector(state => state.user.userData);
-    console.log(userData)
 
   return (
    <View style={styles.container}>
@@ -33,11 +41,19 @@ const ModifierEmailScreen = (props) => {
         initialValues={initialValues}
         onSubmit={async (values) => {
             console.log(values)
-            await firebase.firestore().collection('users')
-                .doc(firebase.auth().currentUser.uid)
-                .update({
-                        email: values.initial
-                }).then(() => props.navigation.navigate('InformationsScreen'))
+
+            for (let product of productByEmail) {
+                console.log(product)
+                await axios.put(`${BASE_URL}/api/products`, {
+                    id: userData._id,
+                    emailVendeur: values.initial
+                })
+            }
+
+            await axios.put(`${BASE_URL}/api/users`, {
+                id: userData._id,
+                email: values.initial
+            }).then(() => props.navigation.navigate('ModifierEmailConfirmationScreen'))
         }}
        >
            {props => (

@@ -12,7 +12,7 @@ const BoosteVenteItem = ({item, onPress, backgroundColor}) => {
 
       <View style={styles.imgcontainer}>
         <Image
-          source={{uri: item.downloadURL}}
+          source={{uri: item.images[0]}}
           style={styles.image}
         />
       </View>

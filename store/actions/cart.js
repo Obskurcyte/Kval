@@ -3,7 +3,7 @@ export const  REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const DELETE_CART = 'DELETE_CART';
 
 export const addToCart = product => {
-  console.log('product', product);
+  console.log('productAction', product);
   return {type: ADD_TO_CART, product: product}
 };
 

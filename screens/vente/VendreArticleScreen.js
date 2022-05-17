@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,698 +6,814 @@ import {
   TextInput,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
+  Pressable,
   Keyboard,
   ScrollView,
   Image,
   ActivityIndicator,
-  TouchableOpacity, Dimensions
-} from 'react-native';
-import {Formik} from 'formik';
-import { AntDesign } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+  TouchableOpacity,
+  Dimensions,
+  Modal,
+} from "react-native";
+import { Formik, setIn } from "formik";
+import { AntDesign } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
-import * as Notifications from 'expo-notifications';
-import * as usersActions from '../../store/actions/users';
-import {useDispatch, useSelector} from "react-redux";
-import * as Yup from 'yup';
+import * as Notifications from "expo-notifications";
+import * as usersActions from "../../store/actions/users";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
+import PhotoArticleScreen from "./PhotoArticleScreen";
+import axios from "axios";
+import * as messageAction from "../../store/actions/messages";
+import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
+import {BASE_URL} from "../../constants/baseURL";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const uploadSchema = Yup.object().shape({
-  title: Yup.string()
-      .required('Veuillez rentrer un titre'),
-  description: Yup.string()
-      .required('Veuillez rentrer une description'),
-  price: Yup.string().required('Veuillez rentrer un prix'),
+  title: Yup.string().required("Veuillez rentrer un titre"),
+  description: Yup.string().required("Veuillez rentrer une description"),
+  price: Yup.string().required("Veuillez rentrer un prix"),
 });
 
 const VendreArticleScreen = (props) => {
-
   const dispatch = useDispatch();
+  const [modify, setModify] = useState(
+    props.route.params ? props.route.params.modify : null
+  );
+  const [modalVisible, setModalVisible] = useState(false);
+  const [shippinPrice, setShippingPrice] = useState("");
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", () => {
+      dispatch(messageAction.fetchUnreadMessage());
+    });
+    return unsubscribe;
+  }, [props.navigation, dispatch]);
 
-  const initialValues = {
+  let initialValues = {
     title: "",
     description: "",
     price: "",
-    poids: ""
-  }
+    shipping_price: "",
+    poids: "",
+  };
 
-  let etat;
-  let categorie;
-  let marques = 'test';
+  let nonValues = {
+    title: "",
+    description: "",
+    price: "",
+    shipping_price: "",
+    poids: "",
+  };
+
+  const [etat, setEtat] = useState(null);
+  const [categorie, setCategorie] = useState(null);
+  const [marques, setMarques] = useState(null);
+
+  const [userData, setUserData] = useState(null)
+
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+      setUserData(data)
+    }
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      getUser()
+    });
+    return unsubscribe
+  }, [props.navigation]);
 
 
   useEffect(() => {
-    dispatch(usersActions.getUser())
-  }, [])
-
-  const currentUser = useSelector(state => state.user.userData)
-
-  if (props.route.params) {
-    etat = props.route.params.etat
-    categorie = props.route.params.categorie
-    marques = props.route.params.marque
-  }
+    if (props.route.params) {
+      setEtat(props.route.params.etat);
+      setCategorie(props.route.params.categorie);
+      setMarques(props.route.params.marque);
+      setModify(props.route.params && props.route.params.modify);
+      const images = [];
+      props.route.params.downloadURL &&
+        images.push(props.route.params.downloadURL);
+      props.route.params.downloadURL1 &&
+        images.push(props.route.params.downloadURL1);
+      props.route.params.downloadURL2 &&
+        images.push(props.route.params.downloadURL2);
+      props.route.params.downloadURL3 &&
+        images.push(props.route.params.downloadURL3);
+      props.route.params.downloadURL4 &&
+        images.push(props.route.params.downloadURL4);
+      setImagesTableau(images);
+    }
+  }, [props.route.params]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState([]);
 
+  const resetForm = () => {
+    setEtat(null);
+    setCategorie(null);
+    setMarques(null);
+    setImage(null);
+    setImagesTableau([]);
+    setModify(false);
+    props.route.params.etat = null;
+    props.route.params.categorie = null;
+    props.route.params.marque = null;
+  };
+
+  const removePicture = (index) => {
+    imagesTableau.splice(index, 1);
+    setImagesTableau([...imagesTableau]);
+  };
+
   useEffect(() => {
     (async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-          alert('Sorry, we need camera roll permissions to make this work!');
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status_camera } =
+          await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
     })();
   }, []);
 
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      allowsEditing: false,
       aspect: [4, 3],
-      quality: 1,
+      quality: 0.2,
     });
-    setImagesTableau(oldImage => [...oldImage, result.uri])
+    setImagesTableau((oldImage) => [...oldImage, result.uri]);
     if (!result.cancelled) {
       setImage(result.uri);
     }
   };
 
-
+  const takePicture = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false,
+      aspect: [4, 3],
+      quality: 0.2,
+    });
+    setImagesTableau((oldImage) => [...oldImage, result.uri]);
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
   const navigateCategories = () => {
-    props.navigation.navigate('CategoriesChoiceScreen')
-  }
+    props.navigation.navigate("CategoriesChoiceScreen");
+  };
 
   const navigateMarques = () => {
-    props.navigation.navigate('MarquesChoiceScreen')
-  }
+    props.navigation.navigate("MarquesChoiceScreen");
+  };
+
+  const navigatePhotoScreen = (image) => {
+    props.navigation.navigate("PhotoArticleScreen", { image });
+  };
 
   const navigateEtat = () => {
-    props.navigation.navigate('EtatChoiceScreen')
-  }
+    props.navigation.navigate("EtatChoiceScreen");
+  };
 
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+  const [errors, setErrors] = useState(false);
+  const [imageEmail, setImageMail] = useState("");
 
+  const [pushToken, setPushToken] = useState(null);
+  useEffect(() => {
+    const getToken = async () => {
+      let statusObj = await Notifications.getPermissionsAsync();
+      if (statusObj.status !== "granted") {
+        statusObj = await Notifications.requestPermissionsAsync();
+      }
+      if (statusObj.status !== "granted") {
+        setPushToken(null);
+      } else {
+        setPushToken(await Notifications.getExpoPushTokenAsync());
+      }
+    }
+    getToken();
+  }, []);
+
+  console.log('pushtoken', pushToken)
   return (
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior="height"
-        >
-          <ScrollView>
-            {isLoading ? (
-                <View>
-                  <Text>Votre produit est en train d'être mis en vente, veuillez patientez !</Text>
-                  <ActivityIndicator />
-                </View>
-            ) : (
-                <View>
-                  <Formik
-                      initialValues={initialValues}
-                      validationSchema={uploadSchema}
-                      onSubmit={async (values) => {
-                        let pushToken;
-                        let statusObj = await Notifications.getPermissionsAsync();
-                        if (statusObj.status !== 'granted') {
-                          statusObj = await Notifications.requestPermissionsAsync()
-                        }
-                        if (statusObj.status !== 'granted') {
-                          pushToken = null;
-                        } else {
-                          pushToken = (await Notifications.getExpoPushTokenAsync()).data
-                        }
-                        const id = Math.random() * 300000000
-                        console.log(values)
+    <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          {isLoading ? (
+            <View style={styles.containerLoading}>
+              <Text style={styles.loadingText}>
+                Cette opération peut prendre plusieurs minutes en fonction de la
+                taille de vos photos, merci de ne pas interrompre la mise en
+                vente…
+              </Text>
+              <ActivityIndicator color="red" />
+            </View>
+          ) : (
+            <View>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={uploadSchema}
+                onSubmit={async (values) => {
+                  let data = {};
+                  setErrors(false);
+                  if (!etat || !categorie || !marques) {
+                    setErrors(true);
+                  }
 
-                        if (imagesTableau.length === 0) {
-                          setError('Veuillez uploader des photos')
-                        } else {
-                          await firebase.firestore()
-                              .collection(`${categorie}`)
-                              .doc(`${id}`)
-                              .set({
-                                categorie,
-                                etat,
-                                id,
-                                title: values.title,
-                                description: values.description,
-                                prix: values.price,
-                                poids: values.poids,
-                                pushToken,
-                                idVendeur: firebase.auth().currentUser.uid,
-                                pseudoVendeur: currentUser.pseudo
-                              })
-                          await firebase.firestore()
-                              .collection('posts')
-                              .doc(firebase.auth().currentUser.uid)
-                              .collection("userPosts")
-                              .doc(`${id}`)
-                              .set({
-                                pseudoVendeur: currentUser.pseudo,
-                                categorie,
-                                etat,
-                                title: values.title,
-                                description: values.description,
-                                prix: values.price,
-                                poids: values.poids
-                              })
+                  if (!errors) {
 
-                          const uploadImage = async () => {
-                            setIsLoading(true)
-                            const uri = imagesTableau[0];
+                    const id = Math.random() * 300000000;
+
+                    if (imagesTableau.length === 0) {
+                      setError("Veuillez uploader des photos");
+                    } else {
+                      try {
+                        setIsLoading(true);
+                        const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                          title: values.title,
+                          description: values.description,
+                          category: categorie,
+                          prix: values.price.replace(',', '.'),
+                          poids: values.poids.replace(',', '.'),
+                          status: etat,
+                          idVendeur: userData._id,
+                          pseudoVendeur: userData.pseudo,
+                          emailVendeur: userData.email,
+                          brand: marques,
+                          token: pushToken.data
+                        })
+
+                        const uploadImage = async (index) => {
+                          return new Promise(async (resolve) => {
+                            const uri = imagesTableau[index];
                             const response = await fetch(uri);
                             const blob = await response.blob();
 
                             const task = firebase
-                                .storage()
-                                .ref()
-                                .child(`${categorie}/${Math.random().toString(36)}`)
-                                .put(blob);
+                              .storage()
+                              .ref()
+                              .child(
+                                `${categorie}/${Math.random().toString(36)}`
+                              )
+                              .put(blob);
 
-                            const taskProgress = snapshot => {
-                              console.log(`transferred: ${snapshot.bytesTransferred}`)
-                            }
+                            const taskProgress = (snapshot) => {
+                              console.log(
+                                `transferred: ${snapshot.bytesTransferred}`
+                              );
+                            };
 
-                            const taskCompleted = snapshot => {
-                              if (imagesTableau && imagesTableau.length === 1) {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData(snapshot)
-                                  console.log('snapshot', snapshot)
-                                }).then(() => setIsLoading(false)).then(() => {
-                                  etat = '';
-                                  categorie = '';
-                                  setImagesTableau([])
-                                  setImage(null)
-                                }).then(() => props.navigation.navigate('ValidationScreen'))
-                              } else {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData(snapshot)
-                                  console.log('snapshot', snapshot)
-                                })}
-                            }
-
-                            const taskError = snapshot => {
-                              console.log(snapshot)
-                            }
-
-                            task.on("state_changed", taskProgress, taskError, taskCompleted)
-                          }
-
-                          const uploadImage1 = async () => {
-                            const uri = imagesTableau[1];
-                            const response = await fetch(uri);
-                            const blob = await response.blob();
-
-                            const task = firebase
-                                .storage()
-                                .ref()
-                                .child(`${categorie}/${Math.random().toString(36)}`)
-                                .put(blob);
-
-                            const taskProgress = snapshot => {
-                              console.log(`transferred: ${snapshot.bytesTransferred}`)
-                            }
-
-                            const taskCompleted = snapshot => {
-                              if (imagesTableau && imagesTableau.length === 2) {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData1(snapshot)
-                                  console.log('snapshot', snapshot)
-                                }).then(() => setIsLoading(false)).then(() => {
-                                  etat = '';
-                                  categorie = '';
-                                  setImagesTableau([])
-                                  setImage(null)
-                                }).then(() => props.navigation.navigate('ValidationScreen'))
-                              } else {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData1(snapshot)
-                                  console.log('snapshot', snapshot)
-                                })}
-                            }
-
-                            const taskError = snapshot => {
-                              console.log(snapshot)
-                            }
-
-                            task.on("state_changed", taskProgress, taskError, taskCompleted)
-                          }
-
-                          const uploadImage2 = async () => {
-                            const uri = imagesTableau[2];
-                            const response = await fetch(uri);
-                            const blob = await response.blob();
-
-                            const task = firebase
-                                .storage()
-                                .ref()
-                                .child(`${categorie}/${Math.random().toString(36)}`)
-                                .put(blob);
-
-                            const taskProgress = snapshot => {
-                              console.log(`transferred: ${snapshot.bytesTransferred}`)
-                            }
-
-                            const taskCompleted = snapshot => {
-                              if (imagesTableau && imagesTableau.length === 3) {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData2(snapshot)
-                                  console.log('snapshot', snapshot)
-                                }).then(() => setIsLoading(false)).then(() => {
-                                  etat = '';
-                                  categorie = '';
-                                  setImagesTableau([])
-                                  setImage(null)
-                                }).then(() => props.navigation.navigate('ValidationScreen'))
-                              } else {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData2(snapshot)
-                                  console.log('snapshot', snapshot)
-                                })}
-                            }
-
-                            const taskError = snapshot => {
-                              console.log(snapshot)
-                            }
-
-                            task.on("state_changed", taskProgress, taskError, taskCompleted)
-                          }
-
-                          const uploadImage3 = async () => {
-                            const uri = imagesTableau[3];
-                            const response = await fetch(uri);
-                            const blob = await response.blob();
-
-                            const task = firebase
-                                .storage()
-                                .ref()
-                                .child(`${categorie}/${Math.random().toString(36)}`)
-                                .put(blob);
-
-                            const taskProgress = snapshot => {
-                              console.log(`transferred: ${snapshot.bytesTransferred}`)
-                            }
-
-                            const taskCompleted = snapshot => {
-                              if (imagesTableau && imagesTableau.length === 4) {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData3(snapshot)
-                                  console.log('snapshot', snapshot)
-                                }).then(() => setIsLoading(false)).then(() => {
-                                  etat = '';
-                                  categorie = '';
-                                  setImagesTableau([])
-                                  setImage(null)
-                                }).then(() => props.navigation.navigate('ValidationScreen'))
-                              } else {
-                                task.snapshot.ref.getDownloadURL().then((snapshot) => {
-                                  saveImageData3(snapshot)
-                                  console.log('snapshot', snapshot)
-                                })}
-                            }
-
-                            const taskError = snapshot => {
-                              console.log(snapshot)
-                            }
-
-                            task.on("state_changed", taskProgress, taskError, taskCompleted)
-                          }
-
-                          const saveImageData = (downloadURL) => {
-                            firebase.firestore()
-                                .collection(`${categorie}`)
-                                .doc(`${id}`)
-                                .update({
-                                  downloadURL,
-                                })
-                            firebase.firestore()
-                                .collection('posts')
-                                .doc(firebase.auth().currentUser.uid)
-                                .collection("userPosts")
-                                .doc(`${id}`)
-                                .update({
-                                  downloadURL
-                                })
-
-                          }
-                          const saveImageData1 = (downloadURL1) => {
-                            try {
-                              firebase.firestore()
-                                  .collection(`${categorie}`)
-                                  .doc(`${id}`)
-                                  .update({
-                                    downloadURL1,
+                            const taskCompleted = (snapshot) => {
+                              task.snapshot.ref
+                                .getDownloadURL()
+                                .then(async (snapshot) => {
+                                  setImageMail(snapshot)
+                                  const response = await axios.put(`${BASE_URL}/api/products`, {
+                                    id: data.product._id,
+                                    image: snapshot
                                   })
-                              firebase.firestore()
-                                  .collection('posts')
-                                  .doc(firebase.auth().currentUser.uid)
-                                  .collection("userPosts")
-                                  .add({
-                                    downloadURL1
-                                  })
-                            } catch (err) {
-                              console.log(err)
-                            }
+                                  await axios.post(
+                                      "https://kval-backend.herokuapp.com/send",
+                                      {
+                                        mail: userData.email,
+                                        subject: "Confirmation de mise en vente",
+                                        html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
+<p>Votre article vient d'être mis en vente.</p>
+<p>Résumé de votre article : </p>
+<hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${snapshot}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">Titre : ${values.title}</p>
+            <p style="margin: 0">Description : ${values.description}</p>
+            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
+            <p style="margin: 0">Poids : ${values.poids} kgs</p>
+            <p style="margin: 0">Catégorie: ${categorie}</p>
+        </div>
+    </div>
+<hr>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique «Mes articles en vente»</p>
+<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
+<p style="margin: 0">«Annonces en avant première» du menu d’accueil de l’application.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                                      }
+                                  );
+                                  resolve();
+                                });
+                            };
 
-                          }
+                            const taskError = (snapshot) => {
+                              console.log(snapshot);
+                            };
 
-                          const saveImageData2 = (downloadURL2) => {
-                            try {
-                              firebase.firestore()
-                                  .collection(`${categorie}`)
-                                  .doc(`${id}`)
-                                  .update({
-                                    downloadURL2,
-                                  })
-                              firebase.firestore()
-                                  .collection('posts')
-                                  .doc(firebase.auth().currentUser.uid)
-                                  .collection("userPosts")
-                                  .add({
-                                    downloadURL2
-                                  })
-                            } catch (err) {
-                              console.log(err)
-                            }
+                            task.on(
+                              "state_changed",
+                              taskProgress,
+                              taskError,
+                              taskCompleted
+                            );
+                          });
+                        };
 
-                          }
-
-                          const saveImageData3 = (downloadURL3) => {
-                            firebase.firestore()
-                                .collection(`${categorie}`)
-                                .doc(`${id}`)
-                                .update({
-                                  downloadURL3,
-                                })
-                            firebase.firestore()
-                                .collection('posts')
-                                .doc(firebase.auth().currentUser.uid)
-                                .collection("userPosts")
-                                .add({
-                                  downloadURL3
-                                })
-                          }
-
-                          if (imagesTableau && imagesTableau.length === 1) {
-                            await uploadImage()
-                          }
-                          if (imagesTableau && imagesTableau.length === 2) {
-                            await uploadImage()
-                            await uploadImage1()
-                          }
-                          if (imagesTableau && imagesTableau.length === 3) {
-                            await uploadImage()
-                            await uploadImage1()
-                            await uploadImage2()
-                          }
-                          if (imagesTableau && imagesTableau.length === 4) {
-                            console.log('kdfjdkjfkdf')
-                            await uploadImage()
-                            await uploadImage1()
-                            await uploadImage2()
-                            await uploadImage3()
-                          }
-                        }}
+                        await Promise.all(
+                          imagesTableau.map(async (image, index) => {
+                            await uploadImage(index);
+                          })
+                        );
+                      } catch (err) {
+                        console.log(err);
                       }
 
+                      setImagesTableau([]);
+                      setImage(null);
+                      setCategorie(null);
+                      setMarques(null);
+                      setEtat(null);
+                      setIsLoading(false);
+                      props.navigation.navigate("ValidationScreen", {
+                        props: props,
+                        modify: false,
+                      });
+                    }
+                  }
+                }}
+              >
+                {(props) => (
+                  <View style={styles.formContainer}>
+                    <View style={styles.itemForm}>
+                      <Text style={styles.text}>Titre</Text>
+                      <TextInput
+                        value={props.values.title}
+                        style={styles.input}
+                        placeholder="Ex: Selle Randol's"
+                        onChangeText={props.handleChange("title")}
+                      />
+                    </View>
+                    {props.errors.title && props.touched.title ? (
+                      <Text style={{ color: "#D51317" }}>
+                        {props.errors.title}
+                      </Text>
+                    ) : null}
 
-                  >
-                    {props => (
-                        <View style={styles.formContainer}>
-                          <View style={styles.itemForm}>
-                            <Text style={styles.text}>Titre</Text>
-                            <TextInput
-                                value={props.values.title}
-                                style={styles.input}
-                                placeholder="Ex: Selle Randol's"
-                                onChangeText={props.handleChange('title')}
+                    <TouchableOpacity
+                      style={styles.itemForm3}
+                      onPress={() => navigateCategories()}
+                    >
+                      <Text style={categorie ? styles.noErrors : styles.errors}>
+                        Catégorie
+                      </Text>
+                      {categorie ? (
+                        <Text style={{ color: "black" }}>{categorie}</Text>
+                      ) : (
+                        <Text />
+                      )}
+                      <AntDesign name="right" size={24} color="grey" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.itemForm3}
+                      onPress={() => navigateMarques()}
+                    >
+                      <Text style={marques ? styles.noErrors : styles.errors}>
+                        Marques
+                      </Text>
+                      {marques ? (
+                        <Text style={{ color: "black" }}>{marques}</Text>
+                      ) : (
+                        <Text />
+                      )}
+                      <AntDesign name="right" size={24} color="grey" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={styles.itemForm3}
+                      onPress={() => {
+                        navigateEtat();
+                      }}
+                    >
+                      <Text style={etat ? styles.noErrors : styles.errors}>
+                        Etat
+                      </Text>
+                      {etat ? (
+                        <Text style={{ color: "black" }}>{etat}</Text>
+                      ) : (
+                        <Text />
+                      )}
+                      <AntDesign name="right" size={24} color="grey" />
+                    </TouchableOpacity>
+                    <View style={styles.itemForm2}>
+                      <Text>Description</Text>
+                      <TextInput
+                        style={styles.input2}
+                        multiline
+                        placeholder="Ex : Neuf, jamais utilisé"
+                        value={props.values.description}
+                        onChangeText={props.handleChange("description")}
+                      />
+                    </View>
+                    {props.errors.description && props.touched.description ? (
+                      <Text style={{ color: "#D51317" }}>
+                        {props.errors.description}
+                      </Text>
+                    ) : null}
+                    <View style={styles.itemForm3}>
+                      <Text>Prix €</Text>
+                      <TextInput
+                        keyboardType="numeric"
+                        placeholder="Ex: 150,00"
+                        inlineImageLeft="euro_icon"
+                        style={styles.input}
+                        value={props.values.price}
+                        onChangeText={props.handleChange("price")}
+                      />
+                    </View>
+                    {props.errors.price && props.touched.price ? (
+                      <Text style={{ color: "#D51317" }}>
+                        {props.errors.price}
+                      </Text>
+                    ) : null}
+                    <View style={styles.itemForm3}>
+                      <Text>Poids kg</Text>
+                      <TextInput
+                        keyboardType="numeric"
+                        placeholder="Ex: 30kg"
+                        style={styles.input}
+                        value={props.values.poids}
+                        onChangeText={(value) => {
+                          props.handleChange("poids")(value);
+                          setShippingPrice(get_mondial_relay_price(value));
+                        }}
+                      />
+                    </View>
+                    <View style={styles.itemForm3}>
+                      <Text>Frais d'envoi Mondial Relay €</Text>
+                      <Text style={styles.input}>{shippinPrice}</Text>
+                    </View>
+                    <View style={{ flex: 1, margin: 5 }}>
+                      <Text>
+                        Si l'acheteur choisit l'option de livraison MONDIAL
+                        RELAY, il devra également payer les frais d'envoi
+                        calculés à partir du poids du colis. Ce montant sera
+                        retenu par Kval pour payer les frais d'éxpéditions.
+                      </Text>
+                      <Text>
+                        Lorsque vous vous rendrez en point relais pour expédier
+                        votre colis, rien ne vous sera jamais demandé.
+                        Cependant, si vous indiquez un mauvais poids pour votre
+                        colis nous nous octroyons le droit de retenir ce qui
+                        nous aura été facturé en plus.
+                      </Text>
+                      <Text>
+                        SOYEZ VIGILEANT EN INDIQUANT LE POIDS DE VOTRE COLIS
+                      </Text>
+                      <Pressable
+                        style={[styles.button, styles.buttonOpen]}
+                        onPress={() => setModalVisible(!modalVisible)}
+                      >
+                        <Text style={styles.textStyle}>
+                          Grille des frais MONDIAL RELAY{" "}
+                        </Text>
+                      </Pressable>
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={() => {
+                          setModalVisible(!modalVisible);
+                        }}
+                      >
+                        <View style={styles.centeredView}>
+                          <View style={styles.modalView}>
+                            <Image
+                              style={{
+                                width: "90%",
+                                height: "90%",
+                                resizeMode: "contain",
+                              }}
+                              source={{
+                                uri: "https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2Fmondial_relay_prices.png?alt=media&token=ba29b550-b8c6-4cd6-ac54-360c45d2c3c4",
+                              }}
                             />
-                          </View>
-                          {props.errors.title && props.touched.title ? (
-                              <Text style={{color: '#D51317'}}>{props.errors.title}</Text>
-                          ) : null}
-
-                          <TouchableOpacity style={styles.itemForm3} onPress={() => navigateCategories()}>
-                            <Text style={styles.text}>Catégorie</Text>
-                            {categorie ? <Text style={{color: 'black'}}>{categorie}</Text> : <Text/>}
-                            <AntDesign name="right" size={24} color="grey" />
-                          </TouchableOpacity>
-
-                          <TouchableOpacity style={styles.itemForm3} onPress={() => navigateCategories()}>
-                            <Text style={styles.text}>Marques</Text>
-                            {categorie ? <Text style={{color: 'black'}}>{marques}</Text> : <Text/>}
-                            <AntDesign name="right" size={24} color="grey" />
-                          </TouchableOpacity>
-
-                          <TouchableOpacity style={styles.itemForm3} onPress={() => {
-                            navigateEtat()
-                          }}>
-                            <Text>Etat</Text>
-                            {etat ? <Text style={{color: 'black'}}>{etat}</Text> : <Text/>}
-                            <AntDesign name="right" size={24} color="grey" />
-                          </TouchableOpacity>
-                          <View style={styles.itemForm2}>
-                            <Text>Description</Text>
-                            <TextInput
-                                style={styles.input2}
-                                multiline
-                                placeholder="Ex : Neuf, jamais utilisé"
-                                value={props.values.description}
-                                onChangeText={props.handleChange('description')}
-                            />
-
-                          </View>
-                          {props.errors.description && props.touched.description ? (
-                              <Text style={{color: '#D51317'}}>{props.errors.description}</Text>
-                          ) : null}
-                          <View style={styles.itemForm3}>
-                            <Text>Prix</Text>
-                            <TextInput
-                                keyboardType="numeric"
-                                placeholder="Ex: 150,00"
-                                style={styles.input}
-                                value={props.values.price}
-                                onChangeText={props.handleChange('price')}
-                            />
-                          </View>
-                          {props.errors.price && props.touched.price ? (
-                              <Text style={{color: '#D51317'}}>{props.errors.price}</Text>
-                          ) : null}
-                          <View style={styles.itemForm3}>
-                            <Text>Poids</Text>
-                            <TextInput
-                                keyboardType="numeric"
-                                placeholder="Ex: 30kg"
-                                style={styles.input}
-                                value={props.values.poids}
-                                onChangeText={props.handleChange('poids')}
-                            />
-                          </View>
-                          {(imagesTableau && imagesTableau.length === 1) ? (
-                              <View style={styles.imageList}>
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[0]}}
-                                />
-                              </View>
-                          ): <Text />}
-                          {(imagesTableau && imagesTableau.length === 2) ? (
-                              <View style={styles.imageList}>
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[0]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[1]}}
-                                />
-                              </View>
-                          ): <Text />}
-                          {(imagesTableau && imagesTableau.length === 3) ? (
-                              <View style={styles.imageList}>
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[0]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[1]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[2]}}
-                                />
-                              </View>
-                          ): <Text />}
-                          {(imagesTableau && imagesTableau.length === 4) ? (
-                              <View style={styles.imageList}>
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[0]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[1]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[2]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[3]}}
-                                />
-                              </View>
-                          ): <Text />}
-                          {(imagesTableau && imagesTableau.length === 5) ? (
-                              <View style={styles.imageList}>
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[0]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[1]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[2]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[3]}}
-                                />
-                                <Image
-                                    style={styles.image}
-                                    source={{uri: imagesTableau[4]}}
-                                />
-                              </View>
-                          ): <Text />}
-                          {(imagesTableau && imagesTableau.length < 5) ? (
-                              <TouchableOpacity style={styles.photoContainer} onPress={pickImage}>
-                                <Text style={styles.addPhotoText}>Ajouter des photos</Text>
-                                <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
-                                <AntDesign name="pluscircleo" size={24} color="#DADADA" />
-                              </TouchableOpacity>
-                          ): <Text/>}
-
-                          <Text style={{color: '#D51317'}}>{error}</Text>
-                          <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
-                            <Text style={styles.mettreEnVenteText}>Mettre en vente !</Text>
-                          </TouchableOpacity>
-
-                          <View style={{height: 150}}>
-
+                            <Pressable
+                              style={[styles.button, styles.buttonClose]}
+                              onPress={() => setModalVisible(!modalVisible)}
+                            >
+                              <Text style={styles.textStyle}>Fermer</Text>
+                            </Pressable>
                           </View>
                         </View>
+                      </Modal>
+                    </View>
+                    <ScrollView
+                      horizontal={true}
+                      style={styles.horizontalScrollList}
+                    >
+                      <View style={styles.photoBigContainer}>
+                        {imagesTableau &&
+                          imagesTableau.length <= 5 &&
+                          imagesTableau.map((image, index) => (
+                            <View style={styles.imageList}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  navigatePhotoScreen(imagesTableau[index])
+                                }
+                              >
+                                <Image
+                                  style={styles.image}
+                                  source={{ uri: imagesTableau[index] }}
+                                />
+                              </TouchableOpacity>
+
+                              <TouchableOpacity
+                                onPress={() => removePicture(index)}
+                              >
+                                <AntDesign
+                                  name="close"
+                                  size={24}
+                                  color="#DADADA"
+                                  style={styles.closeIcon}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          ))}
+                      </View>
+                    </ScrollView>
+                    {imagesTableau && imagesTableau.length < 5 ? (
+                      <View>
+                        <TouchableOpacity
+                          style={styles.photoContainer}
+                          onPress={pickImage}
+                        >
+                          <Text style={styles.addPhotoText}>
+                            Ajouter des photos depuis la librairie
+                          </Text>
+                          <Text style={styles.addPhotoText}>(jusqu'à 5)</Text>
+                          <AntDesign name="picture" size={24} color="#DADADA" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={styles.photoContainer}
+                          onPress={takePicture}
+                        >
+                          <Text style={styles.addPhotoText}>
+                            Prendre une photo
+                          </Text>
+                          <AntDesign name="camera" size={24} color="#DADADA" />
+                        </TouchableOpacity>
+                      </View>
+                    ) : (
+                      <Text />
                     )}
-                  </Formik>
-                </View>
-            )}
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+
+                    <Text style={{ color: "#D51317" }}>{error}</Text>
+                    <TouchableOpacity
+                      style={styles.mettreEnVente}
+                      onPress={props.handleSubmit}
+                    >
+                      <Text style={styles.mettreEnVenteText}>
+                        Mettre en vente !
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.reset}
+                      onPress={() => {
+                        props.resetForm({
+                          values: nonValues,
+                        });
+                        resetForm();
+                        //  props.handleReset();
+                        //navigateVendre();
+                      }}
+                    >
+                      <Text style={styles.resetText}>
+                        Réinitialiser le formulaire
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </Formik>
+            </View>
+          )}
+        </TouchableWithoutFeedback>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F8F7F8',
-    flex: 1,
+    backgroundColor: "#F8F7F8",
+  },
+  closeIcon: {
+    position: "relative",
+    marginLeft: -10,
+    padding: 0,
+    color: "#D51317",
+  },
+  horizontalScrollList: {
+    paddingBottom: 10,
   },
   formContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   text: {
-    textAlign: 'center'
+    textAlign: "center",
+  },
+  noErrors: {
+    color: "black",
+  },
+  errors: {
+    color: "red",
+  },
+  photoBigContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  imagesListFirstContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+  imagesListSecondContainer: {
+    display: "flex",
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  imageListBig: {
+    display: "flex",
+    marginTop: 25,
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
   },
   photoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 20,
-    borderColor: '#DADADA',
+    borderColor: "#DADADA",
     borderWidth: 1,
-    paddingTop: '10%',
-    marginTop: '4%',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
+    paddingTop: "10%",
+    marginTop: "4%",
+    shadowColor: "rgba(0, 0, 0, 0.1)",
     shadowOpacity: 0.6,
     elevation: 6,
     shadowRadius: 5,
-    backgroundColor: 'white',
-    height: windowHeight/6,
-    width: windowWidth/1.1,
-    shadowOffset : { width: 1, height: 13},
+    backgroundColor: "white",
+    height: windowHeight / 6,
+    width: windowWidth / 1.1,
+    shadowOffset: { width: 1, height: 13 },
   },
   itemForm: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    height: windowHeight/11,
-    alignItems: 'center',
-    borderBottomColor: 'lightgrey',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    height: windowHeight / 11,
+    alignItems: "center",
+    borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
   },
   itemForm2: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '90%',
-    borderBottomColor: 'lightgrey',
+    display: "flex",
+    flexDirection: "column",
+    width: "90%",
+    borderBottomColor: "lightgrey",
     borderBottomWidth: 1,
-    paddingTop: '1%',
-    height: windowHeight/8,
+    paddingTop: "1%",
+    height: windowHeight / 8,
   },
   itemForm3: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '90%',
-    height: windowHeight/14,
-    alignItems: 'center',
-    borderBottomColor: 'lightgrey',
-    borderBottomWidth: 1
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    height: windowHeight / 14,
+    alignItems: "center",
+    borderBottomColor: "lightgrey",
+    borderBottomWidth: 1,
   },
   input2: {
-    height: '80%',
-    width: '90%',
+    height: "80%",
+    width: "90%",
   },
   input: {
-    width: '80%'
+    width: "80%",
   },
   addPhotoText: {
-    color: '#DADADA'
+    color: "black",
   },
   mettreEnVente: {
     backgroundColor: "#D51317",
-    marginTop: '5%',
-    width: windowWidth/1.1,
-    paddingVertical: '5%'
+    marginTop: "5%",
+    width: windowWidth / 1.2,
+    paddingVertical: "5%",
+    marginBottom: 15,
+  },
+  resetText: {
+    color: "#D51317",
+    textAlign: "center",
+    fontSize: 18,
+  },
+  loadingText: {
+    fontSize: 20,
+    textAlign: "center",
+    maxWidth: "90%",
+    marginBottom: 20,
+  },
+  containerLoading: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "20%",
+  },
+  reset: {
+    backgroundColor: "#fff",
+    marginTop: "5%",
+    borderColor: "#D51317",
+    width: windowWidth / 1.2,
+    paddingVertical: "5%",
+    marginBottom: 15,
   },
   mettreEnVenteText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 18
+    color: "white",
+    textAlign: "center",
+    fontSize: 18,
   },
-  image : {
-    height: windowHeight/8,
-    width: windowWidth/4,
-    marginRight: "3%",
+  image: {
+    height: 120,
+    width: 120,
+    resizeMode: "contain",
+    margin: 5,
   },
   imageList: {
-    marginTop: '3%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-around'
-  }
+    marginTop: "3%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    flex: 1,
+    width: "90%",
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#D51317",
+  },
+  buttonClose: {
+    backgroundColor: "#D51317",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
 });
 
 export default VendreArticleScreen;

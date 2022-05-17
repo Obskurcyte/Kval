@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import * as userActions from "../../store/actions/users";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
+import axios from 'axios';
+import {BASE_URL} from "../../constants/baseURL";
 
 const ModifierPseudoScreen = (props) => {
 
@@ -14,13 +16,7 @@ const ModifierPseudoScreen = (props) => {
         confirmed: ''
     }
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(userActions.getUser())
-    }, [dispatch]);
-
-    const userData = useSelector(state => state.user.userData);
+    const userData = props.route.params.user
 
 
     return (
@@ -32,11 +28,10 @@ const ModifierPseudoScreen = (props) => {
                 initialValues={initialValues}
                 onSubmit={async (values) => {
                     console.log(values)
-                    await firebase.firestore().collection('users')
-                        .doc(firebase.auth().currentUser.uid)
-                        .update({
-                            pseudo: values.initial
-                        }).then(() => props.navigation.navigate('InformationsScreen'))
+                    await axios.put(`${BASE_URL}/api/users`, {
+                        id: userData._id,
+                        pseudo: values.initial
+                    }).then(() => props.navigation.navigate('InformationsScreen'))
                 }}
             >
                 {props => (

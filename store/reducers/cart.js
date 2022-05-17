@@ -1,5 +1,6 @@
 import {ADD_TO_CART, DELETE_CART, REMOVE_FROM_CART} from "../actions/cart";
 import CartItem from "../../models/cart-item";
+import {add} from "react-native-reanimated";
 
 const initialState = {
   items: {},
@@ -13,12 +14,19 @@ const cartReducer = (state = initialState, action) => {
       const categorie = addedProduct.categorie;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
-      const pushToken = addedProduct.pushToken;
-      const prodImage = addedProduct.downloadURL;
+      const pushToken = addedProduct.token;
+      const prodImage = addedProduct.images[0];
       const idVendeur = addedProduct.idVendeur;
       const pseudoVendeur = addedProduct.pseudoVendeur;
+      const emailVendeur = addedProduct.emailVendeur;
+      const poids = addedProduct.poids;
+      const livraison = addedProduct.livraison;
+      const description = addedProduct.description;
 
+      console.log('addedProduct', addedProduct);
       let updatedOrNewCartItem;
+
+      console.log("PUSHTOKEN", pushToken);
 
       if (state.items[addedProduct.id]) {
         // already have item in cart
@@ -30,8 +38,12 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
           idVendeur,
           pseudoVendeur,
+          emailVendeur,
           categorie,
-          state.items[addedProduct.id].quantity * prodPrice
+          poids,
+          livraison,
+          state.items[addedProduct.id].quantity * prodPrice,
+            description,
         );
       } else {
         updatedOrNewCartItem = new CartItem(
@@ -42,8 +54,12 @@ const cartReducer = (state = initialState, action) => {
           pushToken,
             idVendeur,
             pseudoVendeur,
+          emailVendeur,
           categorie,
+          poids,
+          livraison,
           prodPrice,
+            description,
         )
       }
       return {

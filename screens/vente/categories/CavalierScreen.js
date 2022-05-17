@@ -28,6 +28,10 @@ const CavalierScreen = (props) => {
           <Text style={styles.text}>Gilet de protection</Text>
         </TouchableOpacity>
 
+        <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('BottesScreen')}>
+          <Text style={styles.text}>Bottes, boots et mini-chaps</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.itemContainer} onPress={() => props.navigation.navigate('AccessoiresScreen')}>
           <Text style={styles.text}>Accessoires</Text>
         </TouchableOpacity>
@@ -45,21 +49,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   itemContainer: {
-    width: windowWidth/1.1,
-    marginBottom: '3%',
-    height: windowHeight/10,
-    borderRadius: 20,
-    paddingTop: '8%',
-    paddingBottom: 5,
-    paddingLeft: 50,
-    paddingRight: 50,
-    backgroundColor: '#FFFFFF',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOpacity: 0.6,
-    elevation: 6,
-    shadowRadius: 5,
-    shadowOffset : { width: 1, height: 13},
-    alignItems: 'center'
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingVertical: "3%",
+    marginTop: "4%",
+    width: windowWidth/1.1
   },
   text: {
     textAlign: 'center',
