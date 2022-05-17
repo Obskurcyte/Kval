@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Button } from "react-native";
 import firebase from "firebase";
-import PdfReader from "rn-pdf-reader-js";
 import { HeaderBackButton } from "@react-navigation/stack";
 
 import ProfileScreen from "./ProfileScreen";
@@ -63,13 +62,7 @@ const CGUScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      {url && (
-        <PdfReader
-          source={{
-            uri: url,
-          }}
-        />
-      )}
+
     </View>
   );
 };

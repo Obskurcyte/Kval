@@ -1,12 +1,4 @@
 import firebase from "firebase";
-import algoliasearch from "algoliasearch";
-
-const search_client = algoliasearch(
-  "HIEE2VVF0O",
-  "1af2b0e8c5a3abf13b530ed8c5b5e098"
-);
-const search_index = search_client.initIndex("products");
-
 export const GET_PRODUCTS = "GET_PRODUCTS";
 export const GET_PRODUCTS_BY_CAT = "GET_PRODUCTS_BY_CAT";
 export const GET_PRODUCT_DETAIL = "GET_PRODUCT_DETAIL";
@@ -53,10 +45,6 @@ export const fetchProductsByName = (query) => {
         console.log("Error getting documents: ", error);
         dispatch({ type: GET_PRODUCTS, products: [] });
       });*/
-    search_index.search(query).then(({ hits }) => {
-      console.log(hits);
-      dispatch({ type: GET_PRODUCTS, products: hits });
-    });
   };
 };
 

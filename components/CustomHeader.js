@@ -4,7 +4,6 @@ import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { Searchbar } from "react-native-paper";
 import * as productsActions from "../store/actions/products";
 import { useDispatch, useSelector } from "react-redux";
-import { set } from "react-native-reanimated";
 
 const CustomHeader = (props) => {
   const [searchQuery, setSearchQuery] = React.useState("");

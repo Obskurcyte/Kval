@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import firebase from "firebase";
-import PdfReader from "rn-pdf-reader-js";
+
 
 const ViePriveeScreen = (props) => {
   const [url, setUrl] = useState(null);
@@ -27,13 +27,7 @@ const ViePriveeScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      {url && (
-        <PdfReader
-          source={{
-            uri: url,
-          }}
-        />
-      )}
+
     </View>
   );
 };
