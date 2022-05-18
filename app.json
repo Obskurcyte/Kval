@@ -3,7 +3,7 @@
     "name": "KvalOccaz",
     "slug": "kvaloccaz",
     "platforms": ["ios", "android"],
-    "version": "1.0.19",
+    "version": "1.0.20",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -31,7 +31,7 @@
         "backgroundColor": "#D51317"
       },
       "package": "com.kval.app",
-      "versionCode": 19
+      "versionCode": 20
     },
     "web": {
       "favicon": "./assets/favicon.png"
