@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'r
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 const windowWidth = Dimensions.get('window').width;

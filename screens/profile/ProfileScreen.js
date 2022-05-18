@@ -23,7 +23,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const ProfileScreen = (props) => {
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const [userData, setUserData] = useState(null);
@@ -58,13 +57,6 @@ const ProfileScreen = (props) => {
     return unsubscribe
   }, [props.navigation]);
 
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(messageAction.fetchUnreadMessage())
-    });
-    return unsubscribe
-  }, [props.navigation, dispatch])
 
   const logout = async () => {
     await AsyncStorage.removeItem("userId");

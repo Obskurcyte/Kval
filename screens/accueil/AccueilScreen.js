@@ -19,7 +19,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
 import {useDispatch, useSelector} from "react-redux";
-import * as messageAction from "../../store/actions/messages";
 import * as Notifications from "expo-notifications";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
@@ -39,7 +38,7 @@ const AccueilScreen = (props) => {
   const { messageLength, setMessageLength } = useContext(authContext);
 
   const ctx = useContext(authContext);
-  console.log('ctx', ctx);
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -93,8 +92,12 @@ const AccueilScreen = (props) => {
       setFocus(false)
       const { data } = await axios.get(`${BASE_URL}/api/products`);
       setProductsUne(data);
-      setProductsFiltered(data);
-      setProductsBoosted(data.filter(product => product.boosted === true))
+      setProductsFiltered(data.sort(function(a,b){
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }));
+      setProductsBoosted(data.filter(product => product.boosted === true).sort(function(a,b){
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }));
       await Notifications.setBadgeCountAsync(0)
     });
     return unsubscribe
@@ -113,6 +116,7 @@ const AccueilScreen = (props) => {
   const onBlur = () => {
     setFocus(false)
   }
+
 
 
   return (
@@ -243,7 +247,8 @@ const AccueilScreen = (props) => {
                             image={itemData.item.images[0]}
                             pseudo={itemData.item.pseudoVendeur}
                             onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
-                                productId: itemData.item.id,
+                                productId: itemData.item._id,
+                                brand: itemData.item.brand,
                                 product: productsUne[itemData.index]
                               }
                             })

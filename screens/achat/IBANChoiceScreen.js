@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'r
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -12,12 +11,6 @@ const IbanChoiceScreen = (props) => {
     const initialValues = {
         IBAN: '',
     }
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(userActions.getUser())
-    }, [dispatch]);
 
     const userData = useSelector(state => state.user.userData);
     console.log(userData)

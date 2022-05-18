@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,7 @@ import {Formik} from 'formik';
 import * as cartActions from "../../store/actions/cart";
 import * as Yup from "yup";
 import axios from "axios";
-import * as usersActions from "../../store/actions/users";
-import {useDispatch, useSelector} from "react-redux";
+import authContext from "../../context/authContext";
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -35,13 +34,10 @@ const SignalerUnLitigeScreen = (props) => {
     probleme: Yup.string().required("Veuillez expliquer le problème")
   });
 
-  const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(usersActions.getUser());
-  }, []);
+  const ctx = useContext(authContext);
 
-  const currentUser = useSelector((state) => state.user.userData);
+  const user = ctx.user;
 
   return (
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -56,8 +52,8 @@ const SignalerUnLitigeScreen = (props) => {
             html_output: `<div><p>Bonjour, <br></p> 
 <p>Un nouveau litige a été signalé : </p>
 <p>Utilisateur : ${values.utilisateur}</p>
-<p>Mail : ${currentUser.email}</p>
-<p>Téléphone : ${currentUser.phone}</p>
+<p>Mail : ${user.email}</p>
+<p>Téléphone : ${user.phone}</p>
 <p>Article : ${values.article}</p>
 <br>
 
@@ -70,9 +66,9 @@ const SignalerUnLitigeScreen = (props) => {
 </div>`
           });
           await axios.post("https://kval-backend.herokuapp.com/send", {
-            mail: currentUser.email,
+            mail: user.email,
             subject: "Signalisation de litige",
-            html_output: `<div><p>Bonjour ${currentUser.pseudo}, <br></p> 
+            html_output: `<div><p>Bonjour ${user.pseudo}, <br></p> 
 <p>Vous avez fait une demande d’ouverture de litige par l’interface de litige, votre message est le suivant :
 <br>
 ${values.probleme}

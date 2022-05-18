@@ -11,7 +11,6 @@ import ReduxThunk from "redux-thunk";
 import productReducer from "./store/reducers/products";
 import cartReducer from "./store/reducers/cart";
 import articleReducer from "./store/reducers/articlesEnVente";
-import userReducer from "./store/reducers/users";
 import * as Notifications from "expo-notifications";
 import notifReducer from "./store/reducers/notifications";
 import articleCommandeReducer from "./store/reducers/articlesCommandes";
@@ -32,7 +31,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -47,7 +48,6 @@ const rootReducer = combineReducers({
   products: productReducer,
   cart: cartReducer,
   articles: articleReducer,
-  user: userReducer,
   notifs: notifReducer,
   commandes: articleCommandeReducer,
   messages: messageReducer,
@@ -62,6 +62,7 @@ export default function App() {
   const [firstLaunch, setFirstLaunch] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
   const [messageLength, setMessageLength] = useState(0);
+  const [user, setUser] = useState(null);
 
   let userId;
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function App() {
       setTimeout(async () => {
         const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
         setMessageLength(data.unreadMessages)
+        setUser(data)
       }, 1000)
     }
     getUser()
@@ -96,7 +98,8 @@ export default function App() {
         signedIn: signedIn,
         messageLength: messageLength,
         setMessageLength: setMessageLength,
-        setSignedIn: setSignedIn
+        setSignedIn: setSignedIn,
+        user: user
       }}>
         <Provider store={store}>
           <NavigationContainer>

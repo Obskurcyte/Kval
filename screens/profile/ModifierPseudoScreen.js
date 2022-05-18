@@ -1,9 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'react-native';
 import {Formik} from "formik";
-import firebase from "firebase";
-import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import axios from 'axios';

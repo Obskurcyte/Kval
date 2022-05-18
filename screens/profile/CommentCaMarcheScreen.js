@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text} from "react-native";
 import firebase from "firebase";
+import {WebView} from "react-native-webview";
 
 
 const CommentCaMarcheScreen = () => {
@@ -27,7 +28,9 @@ const CommentCaMarcheScreen = () => {
 
     return (
         <View style={styles.container}>
-
+            <WebView
+                bounces={false}
+                source={{ uri: url }} />
         </View>
     );
 };

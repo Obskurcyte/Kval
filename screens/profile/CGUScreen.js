@@ -4,6 +4,7 @@ import firebase from "firebase";
 import { HeaderBackButton } from "@react-navigation/stack";
 
 import ProfileScreen from "./ProfileScreen";
+import {WebView} from "react-native-webview";
 
 const CGUScreen = (props) => {
   const [url, setUrl] = useState(null);
@@ -62,7 +63,9 @@ const CGUScreen = (props) => {
 
   return (
     <View style={styles.container}>
-
+        <WebView
+            bounces={false}
+            source={{ uri: url }} />
     </View>
   );
 };

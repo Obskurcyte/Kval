@@ -1,8 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
-import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
-import firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import authContext from "../../context/authContext";
 

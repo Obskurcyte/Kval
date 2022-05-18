@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
-import * as userActions from "../../store/actions/users";
 import {useDispatch, useSelector} from "react-redux";
 import firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,7 +10,6 @@ const windowWidth = Dimensions.get('window').width;
 
 const InformationsScreen = (props) => {
 
-  const dispatch = useDispatch();
 
   const [userData, setUserData] = useState(null)
 

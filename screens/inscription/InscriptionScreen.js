@@ -29,10 +29,12 @@ const InscriptionScreen = (props) => {
 
     const params = props.route.params;
 
+    console.log("params", params)
     const [err, setErr] = useState(null);
 
     const [isLoading, setIsLoading] = useState(false)
     const [pushToken, setPushToken] = useState(null);
+
     useEffect(() => {
         const getToken = async () => {
             let statusObj = await Notifications.getPermissionsAsync();
@@ -59,8 +61,6 @@ const InscriptionScreen = (props) => {
                     initialValues={initialValues}
                     onSubmit={async (values) => {
                         setIsLoading(true)
-                        console.log(values);
-                        console.log('token', pushToken)
                         try {
                             console.log('token', pushToken)
                             const response = await axios.post(`${BASE_URL}/api/users/register`, {

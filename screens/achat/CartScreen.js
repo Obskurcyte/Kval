@@ -16,7 +16,6 @@ import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
 import firebase from "firebase";
-import * as userActions from "../../store/actions/users";
 import RecapCommandeItem from "../../components/RecapCommandeItem";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import {Formik} from "formik";
@@ -97,7 +96,6 @@ const CartScreen = (props) => {
   }
   let total = 0;
 
-  console.log('cart', cartItems)
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", () => {
       // The screen is focused
@@ -980,7 +978,7 @@ ${
               ).toFixed(2);
 
               return (
-                <View style={{ marginBottom: 50 }}>
+                <View style={{ marginBottom: 50 }} key={index}>
                   {cartItems.length > 1 ? (
                     <Text style={styles.articleTitle}>Article {index + 1}</Text>
                   ) : (

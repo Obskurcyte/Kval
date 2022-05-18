@@ -19,7 +19,6 @@ import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import axios from "axios";
-import * as userActions from "../../store/actions/users";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BASE_URL} from "../../constants/baseURL";
 
@@ -31,7 +30,7 @@ const SEPARATOR_WIDTH = 10;
 
 const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
-  const dispatch = useDispatch();
+
 
 
   const [userData, setUserData] = useState(null)
@@ -188,7 +187,6 @@ const ProductDetailScreen = (props) => {
   };
 
   //------------------------CART--------------//
-  console.log('product', product);
 
   const cartItems = useSelector((state) => {
     const transformedCartItems = [];
@@ -371,7 +369,7 @@ const ProductDetailScreen = (props) => {
                         onPress={() => {
                           props.navigation.navigate("Profil", {
                             screen: "ModifierAnnonceScreen",
-                            params: { ...product, modify: true },
+                            params: { product },
                           });
                         }}
                     >
@@ -407,8 +405,10 @@ const ProductDetailScreen = (props) => {
                         style={styles.mettreEnVente}
                         onPress={() => {
                           if (cartItems.length !== 0) {
+                            console.log('ITEMS', cartItems)
                             for (const key in cartItems) {
-                              if (product.id == cartItems[key].productId) {
+                              console.log('product', product)
+                              if (product._id == cartItems[key].productId) {
                                 setErrorAdded(
                                     "Ce produit est déjà présent dans votre panier"
                                 );
@@ -563,8 +563,8 @@ const styles = StyleSheet.create({
   envoyerMessageContainer: {
     borderWidth: 1,
     borderColor: "#D9353A",
-    width: "50%",
-    marginLeft: "25%",
+    width: windowWidth/1.5,
+    marginLeft: "15%",
     marginTop: "5%",
     alignItems: "center",
     borderRadius: 4,

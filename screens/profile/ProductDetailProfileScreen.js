@@ -19,7 +19,6 @@ import * as articlesActions from "../../store/actions/articlesCommandes";
 import Carousel from "react-native-anchor-carousel";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import axios from "axios";
-import * as userActions from "../../store/actions/users";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -29,12 +28,7 @@ const SEPARATOR_WIDTH = 10;
 
 const ProductDetailProfileScreen = (props) => {
   const product = props.route.params.product;
-  const dispatch = useDispatch();
 
-
-  useEffect(() => {
-    dispatch(userActions.getUser());
-  }, [dispatch]);
   const userData = useSelector((state) => state.user.userData);
 
   //-------------CAROUSEL----------------//

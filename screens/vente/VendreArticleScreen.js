@@ -20,7 +20,6 @@ import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
 import * as Notifications from "expo-notifications";
-import * as usersActions from "../../store/actions/users";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import PhotoArticleScreen from "./PhotoArticleScreen";
@@ -531,7 +530,7 @@ const VendreArticleScreen = (props) => {
                         {imagesTableau &&
                           imagesTableau.length <= 5 &&
                           imagesTableau.map((image, index) => (
-                            <View style={styles.imageList}>
+                            <View style={styles.imageList} key={index}>
                               <TouchableOpacity
                                 onPress={() =>
                                   navigatePhotoScreen(imagesTableau[index])

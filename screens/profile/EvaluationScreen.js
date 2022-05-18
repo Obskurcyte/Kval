@@ -40,7 +40,7 @@ const EvaluationScreen = (props) => {
                 behavior="position"
                 style={styles.container}
             >
-               <View>
+                <ScrollView>
                    <Text style={styles.evaluationText}>Evalue {product.pseudoVendeur} !</Text>
                    <Text style={styles.achatText}>Tu as acheté...</Text>
                    <EvalueItem
@@ -85,7 +85,7 @@ const EvaluationScreen = (props) => {
         <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">Titre : ${product.productTitle}</p>
+        <p style="margin: 0">Titre : ${product.title}</p>
         <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
         <p style="margin: 0">Poids: ${product.poids} kgs</p>
@@ -138,7 +138,7 @@ const EvaluationScreen = (props) => {
                             }}
                         >
                             {props => (
-                                <ScrollView>
+                              <>
                                     <View style={styles.commentairesContainer}>
                                         <Text style={styles.commentaireText}>Commentaire</Text>
                                         <TextInput
@@ -151,10 +151,10 @@ const EvaluationScreen = (props) => {
                                     <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
                                         <Text style={styles.mettreEnVenteText}>Evaluer</Text>
                                     </TouchableOpacity>
-                                </ScrollView>
+                              </>
                             )}
                         </Formik>
-               </View>
+                </ScrollView>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

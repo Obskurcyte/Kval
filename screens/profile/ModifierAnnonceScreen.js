@@ -17,7 +17,6 @@ import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
 import * as Notifications from "expo-notifications";
-import * as usersActions from "../../store/actions/users";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { PaymentView } from "../../components/PaymentView";
@@ -38,35 +37,38 @@ const ModifierAnnonceScreen = (props) => {
   const dispatch = useDispatch();
 
   let initialValues = {
-    title: props.route.params.title,
-    description: props.route.params.description,
-    price: props.route.params.prix,
-    poids: props.route.params.poids,
+    title: props.route.params.product.title,
+    description: props.route.params.product.description,
+    price: props.route.params.product.prix,
+    poids: props.route.params.product.poids,
   };
 
 
+  let propsProduct = props.route.params.product;
   let price = props.route.params.prix;
-  const old_categorie = props.route.params.categorie;
 
-  const product_id = props.route.params._id;
+  const product_id = props.route.params.product._id;
 
+  console.log('initial',initialValues)
+
+  console.log('props', propsProduct)
 
   const [etat, setEtat] = useState(null);
-  const [categorie, setCategorie] = useState(null);
-  const [marques, setMarques] = useState(null);
-  const [titre, setTitre] = useState("");
+  const [categorie, setCategorie] = useState(props.route.params.product.category)
+  const [marques, setMarques] = useState(props.route.params.product.brand);
+  const [titre, setTitre] = useState(props.route.params.product.title);
   const [description, setDescription] = useState("");
-  const [prix, setPrix] = useState("");
+  const [prix, setPrix] = useState(props.route.params.product.prix);
   const [poids, setPoids] = useState("");
   const [makePayment, setMakePayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
-
   useEffect(() => {
-    dispatch(usersActions.getUser());
-  }, []);
+    setCategorie(props.route.params.product.category)
+  }, [categorie]);
+
 
 
   const [userData, setUserData] = useState(null)
@@ -85,10 +87,10 @@ const ModifierAnnonceScreen = (props) => {
 
   useEffect(() => {
     if (props.route.params) {
-      setEtat(props.route.params.etat);
-      setCategorie(props.route.params.categorie);
-      setMarques(props.route.params.marques);
-      setImagesTableau(props.route.params.images);
+      setEtat(props.route.params.product.status);
+      setCategorie(props.route.params.product.category);
+      setMarques(props.route.params.product.brand);
+      setImagesTableau(props.route.params.product.images);
     }
   }, [props.route.params]);
 
@@ -101,7 +103,6 @@ const ModifierAnnonceScreen = (props) => {
     setImagesTableau([...imagesTableau]);
   };
 
-  const [imageEmail, setImageEmail] = useState(imagesTableau[0]);
 
   useEffect(() => {
     (async () => {
@@ -307,8 +308,28 @@ const ModifierAnnonceScreen = (props) => {
                     initialValues={initialValues}
                     validationSchema={uploadSchema}
                     onSubmit={async (values) => {
+                      console.log('price', values.price)
+                      console.log("price", prix)
                       let data = {};
-                      if (price !== values.price) {
+                      if (imagesTableau.length === 0) {
+                        setError("Veuillez uploader des photos");
+                      }
+                      if (categorie !== propsProduct.category) {
+                        setCategorie(categorie)
+                      } else {
+                        setCategorie(propsProduct.category)
+                      }
+                      if (etat !== propsProduct.status) {
+                        setEtat(etat)
+                      } else {
+                        setEtat(propsProduct.status)
+                      }
+                      if (marques !== propsProduct.brand) {
+                        setMarques(marques)
+                      } else {
+                        setMarques(propsProduct.brand)
+                      }
+                      if (prix !== values.price) {
                         setGoMessagePayment(true);
                         setTitre(values.title);
                         setDescription(values.description);
@@ -333,20 +354,21 @@ const ModifierAnnonceScreen = (props) => {
                         }
 
 
+                        console.log(marques, categorie, etat)
                         const old_id = product_id;
-                        const id = Math.random() * 300000000;
 
-                        if (imagesTableau.length === 0) {
-                          setError("Veuillez uploader des photos");
-                        } else {
-                          console.log("1");
+                        console.log('1')
+                        console.log(old_id)
+
                           try {
+                            console.log('1;1')
                             await axios.delete(`${BASE_URL}/api/products/${old_id}`)
                           } catch (err) {
                             console.log(err);
                           }
 
-                          console.log("2");
+                          console.log('2')
+
                           const { data } = await axios.post(`${BASE_URL}/api/products`, {
                               category: categorie,
                               status: etat,
@@ -360,7 +382,6 @@ const ModifierAnnonceScreen = (props) => {
                               pseudoVendeur: userData.pseudo
                           });
 
-                          console.log("5");
                           const uploadImage = async (index) => {
                             return new Promise(async (resolve) => {
                               const uri = imagesTableau[index];
@@ -389,6 +410,38 @@ const ModifierAnnonceScreen = (props) => {
                                       id: data.product._id,
                                       image: snapshot
                                     })
+                                    await axios.post(
+                                        "https://kval-backend.herokuapp.com/send",
+                                        {
+                                          mail: userData.email,
+                                          subject: "Confirmation de modification ",
+                                          html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons la modification de votre article comme suit :</p>
+<hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${snapshot}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${values.title}</p>
+            <p style="margin: 0">${values.description}</p>
+            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
+            <p style="margin: 0">Poids : ${values.poids} kgs</p>
+            <p style="margin: 0">Catégorie: ${categorie}</p>
+        </div>
+    </div>
+<hr>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
+<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
+<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+                                        }
+                                    );
                                     resolve();
                                   });
                               };
@@ -418,42 +471,10 @@ const ModifierAnnonceScreen = (props) => {
                           setImagesTableau([]);
                           setImage(null);
 
-                          await axios.post(
-                            "https://kval-backend.herokuapp.com/send",
-                            {
-                              mail: userData.email,
-                              subject: "Confirmation de modification ",
-                              html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons la modification de votre article comme suit :</p>
-<hr>
-    <div style="display: flex">
-        <div style="margin-right: 30px">
-            <img src="${data.downloadURL}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
-        </div>
-                
-        <div style="margin-top: 20px">
-            <p style="margin: 0">${values.title}</p>
-            <p style="margin: 0">${values.description}</p>
-            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
-            <p style="margin: 0">Poids : ${values.poids} kgs</p>
-            <p style="margin: 0">Catégorie: ${categorie}</p>
-        </div>
-    </div>
-<hr>
-<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
-<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
-</p>
-<br>
-    <p style="margin: 0">L'équipe KVal Occaz</p>
-    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`,
-                            }
-                          );
+
                           props.navigation.navigate(
                             "ValidationAnnonceModifieeScreen"
                           );
-                        }
                       }
                     }}
                   >
@@ -482,7 +503,7 @@ const ModifierAnnonceScreen = (props) => {
                           {categorie ? (
                             <Text style={{ color: "black" }}>{categorie}</Text>
                           ) : (
-                            <Text />
+                              <Text style={{ color: "black" }}>{propsProduct.category}</Text>
                           )}
                           <AntDesign name="right" size={24} color="grey" />
                         </TouchableOpacity>
@@ -495,7 +516,7 @@ const ModifierAnnonceScreen = (props) => {
                           {marques ? (
                             <Text style={{ color: "black" }}>{marques}</Text>
                           ) : (
-                            <Text />
+                              <Text style={{ color: "black" }}>{propsProduct.brand}</Text>
                           )}
                           <AntDesign name="right" size={24} color="grey" />
                         </TouchableOpacity>
@@ -510,7 +531,7 @@ const ModifierAnnonceScreen = (props) => {
                           {etat ? (
                             <Text style={{ color: "black" }}>{etat}</Text>
                           ) : (
-                            <Text />
+                              <Text style={{ color: "black" }}>{propsProduct.status}</Text>
                           )}
                           <AntDesign name="right" size={24} color="grey" />
                         </TouchableOpacity>

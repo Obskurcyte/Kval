@@ -10,9 +10,6 @@ import {
     Keyboard, KeyboardAvoidingView
 } from 'react-native';
 import {Formik} from "formik";
-import firebase from "firebase";
-import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";

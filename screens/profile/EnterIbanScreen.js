@@ -11,7 +11,6 @@ import { Formik } from "formik";
 import firebase from "firebase";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import * as userActions from "../../store/actions/users";
 import * as Yup from "yup";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +20,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const EnterIbanScreen = (props) => {
-  const dispatch = useDispatch();
+
 
   const { signedIn, setSignedIn } = useContext(authContext);
 
