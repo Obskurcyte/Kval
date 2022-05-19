@@ -19,6 +19,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.kvaloccaz.app",
       "buildNumber": "1.0.0",
+      "requireFullScreen": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Enabling Camera usage to upload images when you sell items",
         "NSPhotoLibraryUsageDescription": "Enabling Photo Library usage to upload images when you sell items"
