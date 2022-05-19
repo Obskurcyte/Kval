@@ -58,7 +58,8 @@
     "redux-thunk": "^2.3.0",
     "yup": "^0.32.9",
     "expo-font": "~10.0.4",
-    "expo-file-system": "~13.1.4"
+    "expo-file-system": "~13.1.4",
+    "expo-media-library": "~14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
