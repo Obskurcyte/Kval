@@ -7,7 +7,7 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider, useSelector } from "react-redux";
 import { LogBox } from "react-native";
 import ReduxThunk from "redux-thunk";
-
+import { StripeProvider } from "@stripe/stripe-react-native"
 import productReducer from "./store/reducers/products";
 import cartReducer from "./store/reducers/cart";
 import articleReducer from "./store/reducers/articlesEnVente";
@@ -101,6 +101,7 @@ export default function App() {
         setSignedIn: setSignedIn,
         user: user
       }}>
+      <StripeProvider publishableKey="pk_test_51IzdhtInmXQPTRFWN4LviIiI076QyI4DoMdE81jVRjoSvWqm014VuVToGJnBQqZqOPdrDFHY2ab4HdbdGQtedvQb00h4AMmu25">
         <Provider store={store}>
           <NavigationContainer>
             {loggedIn && signedIn ? (
@@ -119,6 +120,7 @@ export default function App() {
             )}
           </NavigationContainer>
         </Provider>
+      </StripeProvider>
       </AuthContext.Provider>
   );
 }

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ScrollView,
     Dimensions,
+    Platform,
     ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput,
 } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
@@ -23,6 +24,7 @@ import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import authContext from "../../context/authContext";
+import AndroidPaymentView from "../../components/AndroidPaymentView";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -47,7 +49,7 @@ const CartScreen = (props) => {
         return unsubscribe
     }, [props.navigation]);
 
-    console.log('data', userData);
+    console.log('platform', Platform.OS);
 
   let livraison;
   let cartItems2;
@@ -131,6 +133,7 @@ const CartScreen = (props) => {
   let deductionPortefeuille = Number(userData?.portefeuille)
 
     let etiquette_url = "";
+
   const onCheckStatus = async (paymentResponse) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
@@ -486,7 +489,8 @@ ${
     }
   };
 
-  const cartTotalAmount = useSelector((state) => state.cart.items);
+
+    const cartTotalAmount = useSelector((state) => state.cart.items);
 
   const [errors, setErrors] = useState(false);
   let enteredAdresse = false;
@@ -1392,62 +1396,93 @@ ${
                             </TouchableWithoutFeedback>}
 
                         </View> :     <>
-                            <Text style={{textAlign: "center", fontSize: 18}}>
-                                Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
-                            </Text>
-                            <PaymentView
-                                onCheckStatus={onCheckStatus}
-                                product={"Paiement unique"}
+                            {Platform.OS === 'ios' ?
+                                <>
+                                    <Text style={{textAlign: "center", fontSize: 18}}>
+                                        Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
+                                    </Text>
+                                    <PaymentView
+                                        onCheckStatus={onCheckStatus}
+                                        product={"Paiement unique"}
+                                        amount={sousTotal}
+                                    />
+                                    <Text style={{textAlign: "center", fontSize: 18}}>
+                                        Payment Powered by Stripe
+                                    </Text>
+                                    <TouchableOpacity
+                                        style={styles.mettreEnVenteOptional}
+                                        onPress={() => {
+                                            adresse = null;
+                                            enteredAdresse = null;
+                                            setToggleCheckBox(false);
+                                            setMakePayment(!makePayment);
+                                        }}
+                                    >
+                                        <Text style={styles.mettreEnVenteTextOptional}>
+                                            Annuler Paiement
+                                        </Text>
+                                    </TouchableOpacity>
+                                </>
+                           : <AndroidPaymentView
                                 amount={sousTotal}
-                            />
-                            <Text style={{textAlign: "center", fontSize: 18}}>
-                                Payment Powered by Stripe
-                            </Text>
-                            <TouchableOpacity
-                                style={styles.mettreEnVenteOptional}
-                                onPress={() => {
-                                    adresse = null;
-                                    enteredAdresse = null;
-                                    setToggleCheckBox(false);
-                                    setMakePayment(!makePayment);
-                                }}
-                            >
-                                <Text style={styles.mettreEnVenteTextOptional}>
-                                    Annuler Paiement
-                                </Text>
-                            </TouchableOpacity>
+                                cartItems={cartItems}
+                                userData={userData}
+                                newTotal={newTotal}
+                                toggleCheckBoxPortefeuille={toggleCheckBoxPortefeuille}
+                                livraison={livraison}
+                                netVendeur={netVendeur}
+                                etiquette_url={etiquette_url}
+                                totalProtectionAcheteur={totalProtectionAcheteur}
+                                sousTotal={sousTotal}
+                            />}
+
                         </>}
 
                     </View>
                 )
             } else {
                 return (
-                    <View style={{flex: 1, padding: 10}}>
-                        <Text style={{textAlign: "center", fontSize: 18}}>
-                            Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
-                        </Text>
-                        <PaymentView
-                            onCheckStatus={onCheckStatus}
-                            product={"Paiement unique"}
-                            amount={sousTotal}
-                        />
-                        <Text style={{textAlign: "center", fontSize: 18}}>
-                            Payment Powered by Stripe
-                        </Text>
-                        <TouchableOpacity
-                            style={styles.mettreEnVenteOptional}
-                            onPress={() => {
-                                adresse = null;
-                                enteredAdresse = null;
-                                setToggleCheckBox(false);
-                                setMakePayment(!makePayment);
-                            }}
-                        >
-                            <Text style={styles.mettreEnVenteTextOptional}>
-                                Annuler Paiement
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                    <>
+                        {Platform.OS === 'ios' ?
+                            <View style={{flex: 1, padding: 10}}>
+                                <Text style={{textAlign: "center", fontSize: 18}}>
+                                    Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
+                                </Text>
+                                 <PaymentView
+                                    onCheckStatus={onCheckStatus}
+                                    product={"Paiement unique"}
+                                    amount={sousTotal}
+                                />
+                                <Text style={{textAlign: "center", fontSize: 18}}>
+                                    Payment Powered by Stripe
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.mettreEnVenteOptional}
+                                    onPress={() => {
+                                        adresse = null;
+                                        enteredAdresse = null;
+                                        setToggleCheckBox(false);
+                                        setMakePayment(!makePayment);
+                                    }}
+                                >
+                                    <Text style={styles.mettreEnVenteTextOptional}>
+                                        Annuler Paiement
+                                    </Text>
+                                </TouchableOpacity>
+                            </View> : <AndroidPaymentView
+                                amount={sousTotal}
+                                cartItems={cartItems}
+                                userData={userData}
+                                newTotal={newTotal}
+                                toggleCheckBoxPortefeuille={toggleCheckBoxPortefeuille}
+                                livraison={livraison}
+                                netVendeur={netVendeur}
+                                etiquette_url={etiquette_url}
+                                totalProtectionAcheteur={totalProtectionAcheteur}
+                                sousTotal={sousTotal}
+                            />}
+                    </>
+
                 );
             }
         }

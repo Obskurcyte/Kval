@@ -185,6 +185,7 @@ import axios from "axios";
 import {BASE_URL} from "../constants/baseURL";
 import authContext from "../context/authContext";
 import SupressionNotifValidationScreen from "../screens/messages/SupressionNotifValidationScreen";
+import ValidationPaymentScreen from "../screens/achat/ValidationPaymentScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -1080,6 +1081,13 @@ export const AchatNavigator = (props) => {
           headerShown: false,
         }}
       />
+        <AchatStackNavigator.Screen
+            name="ValidationPaymentScreen"
+            component={ValidationPaymentScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
       <AchatStackNavigator.Screen
         name="AdresseChoiceScreen"
         component={AdresseChoiceScreen}

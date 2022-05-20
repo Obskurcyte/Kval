@@ -32,7 +32,7 @@ const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
 
 
-
+  const dispatch = useDispatch()
   const [userData, setUserData] = useState(null)
 
   useEffect(() => {
