@@ -116,8 +116,7 @@ const AccueilScreen = (props) => {
   const onBlur = () => {
     setFocus(false)
   }
-
-
+  
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

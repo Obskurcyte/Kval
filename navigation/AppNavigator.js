@@ -190,14 +190,6 @@ import ValidationPaymentScreen from "../screens/achat/ValidationPaymentScreen";
 const AppTabNavigator = createBottomTabNavigator();
 
 export const AuthNavigator = (props) => {
-  const {
-    loggedInAsVisit,
-    setLoggedInAsVisit,
-    firstLaunch,
-    setFirstLaunch,
-    setIsLoggedIn,
-  } = props;
-  setFirstLaunch(false);
   const classes = {
     header: {
       headerStyle: {
@@ -216,7 +208,7 @@ export const AuthNavigator = (props) => {
   };
   return (
     <AuthStackNavigator.Navigator
-      initialRouteName={firstLaunch ? "OnboardingScreen1" : "ConnectionScreen"}
+
     >
       <AuthStackNavigator.Screen
         name="OnboardingScreen1"
@@ -235,8 +227,6 @@ export const AuthNavigator = (props) => {
         children={(props) => (
           <IdentificationScreen
             {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
           />
         )}
         options={{ headerShown: false }}
@@ -249,7 +239,7 @@ export const AuthNavigator = (props) => {
       <AuthStackNavigator.Screen
         name="InscriptionScreen"
         children={(props) => (
-          <InscriptionScreen {...props} setIsLoggedIn={setIsLoggedIn} />
+          <InscriptionScreen {...props} />
         )}
         options={classes.header}
       />
@@ -263,9 +253,6 @@ export const AuthNavigator = (props) => {
         children={(props) => (
           <ConnectionScreen
             {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-            setIsLoggedIn={setIsLoggedIn}
           />
         )}
         options={classes.header}
