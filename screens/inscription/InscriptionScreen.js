@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -19,6 +19,7 @@ import * as Notifications from "expo-notifications";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import authContext from "../../context/authContext";
 
 const InscriptionScreen = (props) => {
     const initialValues = {
@@ -29,6 +30,7 @@ const InscriptionScreen = (props) => {
 
     const params = props.route.params;
 
+    const { setSignedIn, setIsLoggedIn } = useContext(authContext);
     console.log("params", params)
     const [err, setErr] = useState(null);
 
@@ -96,13 +98,13 @@ const InscriptionScreen = (props) => {
 </div>`,
                                 }).then(() => {
                                     setIsLoading(false)
-                                    props.setIsLoggedIn(true)
+                                    setSignedIn(true)
+                                    setIsLoggedIn(true)
                                 })
                             } catch (err){
                                 setIsLoading(false)
                                 console.log(err);
                                 setErr(true)
-                                props.setIsLoggedIn(false);
                             }
                         }}
                     >

@@ -83,7 +83,9 @@ export default function App() {
         signedIn: signedIn,
         messageLength: messageLength,
         setMessageLength: setMessageLength,
-        setSignedIn: setSignedIn
+        setSignedIn: setSignedIn,
+        setIsLoggedIn: setIsLoggedIn,
+        loggedIn: loggedIn
       }}>
         <Provider store={store}>
           <NavigationContainer>
