@@ -17,6 +17,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
+      "requireFullScreen": true,
       "bundleIdentifier": "com.kvaloccaz.app",
       "buildNumber": "1.0.0",
       "infoPlist": {
