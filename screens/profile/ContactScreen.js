@@ -6,9 +6,9 @@ import {
     TextInput,
     TouchableOpacity,
     Dimensions,
-    ScrollView,
     TouchableWithoutFeedback,
-    Keyboard, KeyboardAvoidingView
+    Keyboard,
+    KeyboardAvoidingView
 } from 'react-native';
 import {Formik} from "formik";
 const windowWidth = Dimensions.get('window').width;
@@ -32,6 +32,7 @@ const ContactScreen = (props) => {
 
     const user = ctx.user;
 
+    console.log('user', user)
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -41,6 +42,7 @@ const ContactScreen = (props) => {
                     <Formik
                         initialValues={initialValues}
                         onSubmit={async (values) => {
+                            console.log('1')
                             await axios.post("https://kval-backend.herokuapp.com/send", {
                                 mail: user.email,
                                 subject: "Prise de contact",
@@ -58,6 +60,8 @@ celui-ci prendra contact avec vous sous 24h.
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
                             });
+                            console.log('2')
+
                             await axios.post("https://kval-backend.herokuapp.com/send", {
                                 mail: 'contact@kvaloccaz.com',
                                 subject: "Prise de contact",
@@ -69,6 +73,8 @@ celui-ci prendra contact avec vous sous 24h.
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`
                             });
+                            console.log('3')
+
                             props.navigation.navigate('ValidationContactScreen')
                         }}
                     >

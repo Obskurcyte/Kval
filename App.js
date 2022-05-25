@@ -60,6 +60,7 @@ export default function App() {
   const [firstLaunch, setFirstLaunch] = useState(true);
   const [signedIn, setSignedIn] = useState(false);
   const [messageLength, setMessageLength] = useState(0);
+  const [user, setUser] = useState(null);
 
   let userId;
   useEffect(() => {
@@ -77,6 +78,19 @@ export default function App() {
     getUser()
   }, [userId, loggedIn, signedIn]);
 
+  useEffect(() => {
+    const getUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      console.log('userId', userId);
+      setTimeout(async () => {
+        const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+        setMessageLength(data.unreadMessages)
+        setUser(data)
+      }, 1000)
+    }
+    getUser()
+  }, [messageLength]);
+
 
   return (
       <AuthContext.Provider value={{
@@ -85,7 +99,8 @@ export default function App() {
         setMessageLength: setMessageLength,
         setSignedIn: setSignedIn,
         setIsLoggedIn: setIsLoggedIn,
-        loggedIn: loggedIn
+        loggedIn: loggedIn,
+        user: user
       }}>
         <Provider store={store}>
           <NavigationContainer>

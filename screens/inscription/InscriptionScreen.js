@@ -147,7 +147,7 @@ const InscriptionScreen = (props) => {
                                 ) : (
                                     <Text />
                                 )}
-                                {isLoading ? <ActivityIndicator/> : <TouchableOpacity
+                                {isLoading ? <ActivityIndicator color="black" size="large"/> : <TouchableOpacity
                                     style={styles.buttonContainer}
                                     onPress={props.handleSubmit}
                                 >

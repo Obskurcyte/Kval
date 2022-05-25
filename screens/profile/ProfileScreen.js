@@ -109,10 +109,7 @@ const ProfileScreen = (props) => {
       aspect: [4, 3],
       quality: 0.2,
     });
-    console.log("result", result.uri);
-    console.log("yesss");
     imageProfil = result.uri;
-    console.log("image", imageProfil);
     setImagesTableau(result.uri);
     if (!result.cancelled) {
       setImage(result.uri);
@@ -153,9 +150,9 @@ const ProfileScreen = (props) => {
         task.snapshot.ref
             .getDownloadURL()
             .then(async (snapshot) => {
-              await axios.put(`${BASE_URL}/api/users`, {
+              await axios.put(`${BASE_URL}/api/users/photo`, {
                 id: userData._id,
-                image: snapshot
+                photo: snapshot
               })
               console.log('done')
               resolve();
@@ -222,11 +219,11 @@ const ProfileScreen = (props) => {
             </Modal>
             <View style={styles.profileHeader}>
               <View style={styles.imgContainer}>
-                {userData && userData.downloadURL ? (
+                {userData && userData.photo ? (
                     <View>
                       <Image
                           style={styles.image}
-                          source={{ uri: userData.downloadURL }}
+                          source={{ uri: userData.photo }}
                       />
                     </View>
                 ) : (

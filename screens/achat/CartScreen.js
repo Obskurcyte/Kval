@@ -1102,7 +1102,8 @@ ${
                             style={styles.mettreEnVente}
                             onPress={async () => {
                                 for (let item of cartItems) {
-                                    if (item.livraison === "Choisir") {
+                                    console.log('item', item)
+                                    if (item.livraison === "Choisir" || item.livraison === undefined) {
                                         setErrors(true);
                                     } else {
                                         setGoConfirmation(true);
@@ -1321,9 +1322,10 @@ ${
                                             onSubmit={async (values) => {
 
                                                 try {
-                                                    await firebase
-                                                        .auth()
-                                                        .signInWithEmailAndPassword(values.email, values.password);
+                                                    await axios.post(`${BASE_URL}/api/users/login`, {
+                                                        email: values.email,
+                                                        password: values.password,
+                                                    })
                                                     setAuth(true);
                                                 } catch (err) {
                                                     console.log(err);
