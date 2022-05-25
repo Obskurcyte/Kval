@@ -19,7 +19,6 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import { FontAwesome5 } from '@expo/vector-icons';
 import {useDispatch, useSelector} from "react-redux";
-import * as messageAction from "../../store/actions/messages";
 import * as Notifications from "expo-notifications";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
@@ -39,7 +38,7 @@ const AccueilScreen = (props) => {
   const { messageLength, setMessageLength } = useContext(authContext);
 
   const ctx = useContext(authContext);
-  console.log('ctx', ctx);
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -93,8 +92,12 @@ const AccueilScreen = (props) => {
       setFocus(false)
       const { data } = await axios.get(`${BASE_URL}/api/products`);
       setProductsUne(data);
-      setProductsFiltered(data);
-      setProductsBoosted(data.filter(product => product.boosted === true))
+      setProductsFiltered(data.sort(function(a,b){
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }));
+      setProductsBoosted(data.filter(product => product.boosted === true).sort(function(a,b){
+        return new Date(b.updatedAt) - new Date(a.updatedAt);
+      }));
       await Notifications.setBadgeCountAsync(0)
     });
     return unsubscribe
@@ -116,207 +119,208 @@ const AccueilScreen = (props) => {
 
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <>
 
-      <View style={styles.searchBarContainer}>
-        <TouchableOpacity onPress={() => props.onPress} style={styles.searchBar}>
-          <Searchbar
-              placeholder="Rechercher"
-              onFocus={openList}
-              onBlur={onBlur}
-              onChangeText={(text) => searchProduct(text)}
-              style={styles.grey}
-          />
-        </TouchableOpacity>
-        <View>
-          <View
-              style={{
-                backgroundColor: "#D51317",
-                borderRadius: 30,
-                alignItems: "center",
-                position: "absolute",
-                width: 20,
-                bottom: "65%",
-                right: "55%",
-              }}
-          >
-            <Text style={{ color: "white", fontWeight: "bold" }}>
-              {totalQuantity}
-            </Text>
+          <View style={styles.searchBarContainer}>
+            <TouchableOpacity onPress={() => props.onPress} style={styles.searchBar}>
+              <Searchbar
+                  placeholder="Rechercher"
+                  onFocus={openList}
+                  onBlur={onBlur}
+                  onChangeText={(text) => searchProduct(text)}
+                  style={styles.grey}
+              />
+            </TouchableOpacity>
+            <View>
+              <View
+                  style={{
+                    backgroundColor: "#D51317",
+                    borderRadius: 30,
+                    alignItems: "center",
+                    position: "absolute",
+                    width: 20,
+                    bottom: "65%",
+                    right: "55%",
+                  }}
+              >
+                <Text style={{ color: "white", fontWeight: "bold" }}>
+                  {totalQuantity}
+                </Text>
+              </View>
+              <Fontisto
+                  name="shopping-basket"
+                  size={24}
+                  color="#D51317"
+                  onPress={() =>
+                      props.navigation.navigate("Acheter", {
+                        screen: "FirstCartScreen",
+                      })
+                  }
+              />
+            </View>
           </View>
-          <Fontisto
-              name="shopping-basket"
-              size={24}
-              color="#D51317"
-              onPress={() =>
-                  props.navigation.navigate("Acheter", {
-                    screen: "FirstCartScreen",
-                  })
-              }
-          />
-        </View>
-      </View>
 
-      {focus === true ? <>
-            {productsFiltered.length > 0 ?
-                <>
-                  <TouchableOpacity
-                      style={styles.mettreEnVente}
-                      onPress={() => setFocus(false)}
-                  >
-                    <Text style={styles.mettreEnVenteText}>
-                      Annuler la recherche
-                    </Text>
-                  </TouchableOpacity>
+          {focus === true ? <>
+                {productsFiltered.length > 0 ?
+                    <>
+                      <TouchableOpacity
+                          style={styles.mettreEnVente}
+                          onPress={() => setFocus(false)}
+                      >
+                        <Text style={styles.mettreEnVenteText}>
+                          Annuler la recherche
+                        </Text>
+                      </TouchableOpacity>
+                      <FlatList
+                          data={productsFiltered}
+                          style={styles.searchFlatList}
+                          keyExtractor={(item) => item.title}
+                          renderItem={(itemData) => {
+                            return (
+                                <CardVente
+                                    pseudo={itemData.item.pseudoVendeur}
+                                    title={itemData.item.title}
+                                    price={itemData.item.prix}
+                                    imageURI={itemData.item.images[0]}
+                                    onPress={() => {
+                                      props.navigation.navigate("ProductDetailScreen", {
+                                        productId: itemData.item.id,
+                                        product: productsFiltered[itemData.index],
+                                      });
+                                    }}
+                                />
+                            );
+                          }}
+                      />
+                    </>
+                    : <Text>Aucun produit ne correspond a votre recherche</Text>}
+              </> :
+
+              <ScrollView
+
+                  refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                  }
+              >
+
+                <View style={styles.container}>
+                  <Text style={styles.attendent}>Annonces en avant première</Text>
+
                   <FlatList
-                      data={productsFiltered}
-                      style={styles.searchFlatList}
-                      keyExtractor={(item) => item.title}
-                      renderItem={(itemData) => {
+                      data={productsBoosted}
+                      horizontal={true}
+                      style={styles.flatList}
+                      renderItem={itemData => {
                         return (
-                            <CardVente
-                                pseudo={itemData.item.pseudoVendeur}
+                            <BoostedProductCard
                                 title={itemData.item.title}
-                                price={itemData.item.prix}
-                                imageURI={itemData.item.images[0]}
-                                onPress={() => {
-                                  props.navigation.navigate("ProductDetailScreen", {
+                                prix={itemData.item.prix}
+                                image={itemData.item.images[0]}
+                                pseudo={itemData.item.pseudoVendeur}
+                                onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
                                     productId: itemData.item.id,
-                                    product: productsFiltered[itemData.index],
-                                  });
-                                }}
+                                    product: productsBoosted[itemData.index]
+                                  }
+                                })
+                                }
                             />
-                        );
+                        )
+                      }}
+
+                  />
+
+                  <Text style={styles.attendent}>Annonces récentes</Text>
+
+                  <FlatList
+                      data={productsUne}
+                      horizontal={true}
+                      renderItem={itemData => {
+                        return (
+                            <BoostedProductCard
+                                title={itemData.item.title}
+                                prix={itemData.item.prix}
+                                image={itemData.item.images[0]}
+                                pseudo={itemData.item.pseudoVendeur}
+                                onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
+                                    productId: itemData.item._id,
+                                    brand: itemData.item.brand,
+                                    product: productsUne[itemData.index]
+                                  }
+                                })
+                                }
+                            />
+                        )
                       }}
                   />
-                </>
-             : <Text>Aucun produit ne correspond a votre recherche</Text>}
-          </> :
 
-            <ScrollView
+                  <Text style={styles.attendent}>Rechercher dans les catégories</Text>
+                  <View style={styles.categoriesSuperContainer}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={true}
+                        style={styles.scrollView}
+                    >
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Acheter', {screen: 'AchatScreen'})}>
+                          <Feather name="list" size={34} color="white" />
+                        </TouchableOpacity>
+                        <Text>Toutes les catégories</Text>
+                      </View>
 
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-        />
-        }
-        >
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtCuirAccueilScreen'})}>
+                          <Image source={require('../../assets/cat1.png')}/>
+                        </TouchableOpacity>
+                        <Text>Cheval & Cuir</Text>
+                      </View>
 
-        <View style={styles.container}>
-          <Text style={styles.attendent}>Annonces en avant première</Text>
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtTextileAccueilScreen'})}>
+                          <Image source={require('../../assets/textile.png')}/>
+                        </TouchableOpacity>
+                        <Text>Cheval & Textile</Text>
+                      </View>
 
-              <FlatList
-                  data={productsBoosted}
-                  horizontal={true}
-                  style={styles.flatList}
-                  renderItem={itemData => {
-                    return (
-                        <BoostedProductCard
-                            title={itemData.item.title}
-                            prix={itemData.item.prix}
-                            image={itemData.item.images[0]}
-                            pseudo={itemData.item.pseudoVendeur}
-                            onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
-                                productId: itemData.item.id,
-                                product: productsBoosted[itemData.index]
-                              }
-                            })
-                            }
-                        />
-                    )
-                  }}
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'CavalierAccueilScreen'})}>
+                          <Image source={require('../../assets/cavalier.png')}/>
+                        </TouchableOpacity>
+                        <Text>Cavalier</Text>
+                      </View>
 
-              />
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'SoinsEtEcuriesAccueilScreen'})}>
+                          <FontAwesome5 name="briefcase-medical" size={34} color="white" />
+                        </TouchableOpacity>
+                        <Text>Soins et écuries</Text>
+                      </View>
 
-              <Text style={styles.attendent}>Annonces récentes</Text>
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChienAccueilScreen'})}>
+                          <MaterialCommunityIcons name="dog" size={34} color="white" />
+                        </TouchableOpacity>
+                        <Text>Chiens/Animaux</Text>
+                      </View>
 
-              <FlatList
-                  data={productsUne}
-                  horizontal={true}
-                  renderItem={itemData => {
-                    return (
-                        <BoostedProductCard
-                            title={itemData.item.title}
-                            prix={itemData.item.prix}
-                            image={itemData.item.images[0]}
-                            pseudo={itemData.item.pseudoVendeur}
-                            onPress={() => props.navigation.navigate('Acheter', {screen: 'ProductDetailScreen', params: {
-                                productId: itemData.item.id,
-                                product: productsUne[itemData.index]
-                              }
-                            })
-                            }
-                        />
-                    )
-                  }}
-              />
+                      <View style={styles.categoriesInnerContainer}>
+                        <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'TransportAccueilScreen'})}>
+                          <FontAwesome5 name="shuttle-van" size={34} color="white" />
+                        </TouchableOpacity>
+                        <Text>Transport</Text>
+                      </View>
 
-              <Text style={styles.attendent}>Rechercher dans les catégories</Text>
-              <View style={styles.categoriesSuperContainer}>
-                <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={true}
-                    style={styles.scrollView}
-                >
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer2} onPress={() => props.navigation.navigate('Acheter', {screen: 'AchatScreen'})}>
-                      <Feather name="list" size={34} color="white" />
-                    </TouchableOpacity>
-                    <Text>Toutes les catégories</Text>
+                    </ScrollView>
                   </View>
 
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtCuirAccueilScreen'})}>
-                      <Image source={require('../../assets/cat1.png')}/>
-                    </TouchableOpacity>
-                    <Text>Cheval & Cuir</Text>
-                  </View>
+                </View>
+              </ScrollView>}
 
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChevalEtTextileAccueilScreen'})}>
-                      <Image source={require('../../assets/textile.png')}/>
-                    </TouchableOpacity>
-                    <Text>Cheval & Textile</Text>
-                  </View>
-
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'CavalierAccueilScreen'})}>
-                      <Image source={require('../../assets/cavalier.png')}/>
-                    </TouchableOpacity>
-                    <Text>Cavalier</Text>
-                  </View>
-
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'SoinsEtEcuriesAccueilScreen'})}>
-                      <FontAwesome5 name="briefcase-medical" size={34} color="white" />
-                    </TouchableOpacity>
-                    <Text>Soins et écuries</Text>
-                  </View>
-
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'ChienAccueilScreen'})}>
-                      <MaterialCommunityIcons name="dog" size={34} color="white" />
-                    </TouchableOpacity>
-                    <Text>Chiens/Animaux</Text>
-                  </View>
-
-                  <View style={styles.categoriesInnerContainer}>
-                    <TouchableOpacity style={styles.categoriesContainer} onPress={() => props.navigation.navigate('Acheter', {screen: 'TransportAccueilScreen'})}>
-                      <FontAwesome5 name="shuttle-van" size={34} color="white" />
-                    </TouchableOpacity>
-                    <Text>Transport</Text>
-                  </View>
-
-                </ScrollView>
-              </View>
-
-        </View>
-      </ScrollView>}
-
-      </>
-    </TouchableWithoutFeedback>
+        </>
+      </TouchableWithoutFeedback>
   );
 };
 

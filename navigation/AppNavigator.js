@@ -185,3132 +185,3127 @@ import axios from "axios";
 import {BASE_URL} from "../constants/baseURL";
 import authContext from "../context/authContext";
 import SupressionNotifValidationScreen from "../screens/messages/SupressionNotifValidationScreen";
+import ValidationPaymentScreen from "../screens/achat/ValidationPaymentScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
 export const AuthNavigator = (props) => {
-  const {
-    loggedInAsVisit,
-    setLoggedInAsVisit,
-    firstLaunch,
-    setFirstLaunch,
-    setIsLoggedIn,
-  } = props;
-  setFirstLaunch(false);
-  const classes = {
-    header: {
-      headerStyle: {
-        backgroundColor: "#D51317",
-        elevation: 0, // remove shadow on Android
-        shadowOpacity: 0,
-      },
-      headerTitleStyle: {
-        color: "black",
-      }, // remove shadow on iOS
-      title: "",
-      headerTitleAlign: "center",
-      headerTintColor: "#fff",
-      headerBackTitle: "Retour",
-    },
-  };
-  return (
-    <AuthStackNavigator.Navigator
-      initialRouteName={firstLaunch ? "OnboardingScreen1" : "ConnectionScreen"}
-    >
-      <AuthStackNavigator.Screen
-        name="OnboardingScreen1"
-        component={OnboardingScreen1}
-        options={{ headerShown: false }}
-      />
+    const classes = {
+        header: {
+            headerStyle: {
+                backgroundColor: "#D51317",
+                elevation: 0, // remove shadow on Android
+                shadowOpacity: 0,
+            },
+            headerTitleStyle: {
+                color: "black",
+            }, // remove shadow on iOS
+            title: "",
+            headerTitleAlign: "center",
+            headerTintColor: "#fff",
+            headerBackTitle: "Retour",
+        },
+    };
+    return (
+        <AuthStackNavigator.Navigator
 
-      <AuthStackNavigator.Screen
-        name="OnboardingScreen2"
-        component={OnboardingScreen2}
-        options={{ headerShown: false }}
-      />
+        >
+            <AuthStackNavigator.Screen
+                name="OnboardingScreen1"
+                component={OnboardingScreen1}
+                options={{ headerShown: false }}
+            />
 
-      <AuthStackNavigator.Screen
-        name="IdentificationScreen"
-        children={(props) => (
-          <IdentificationScreen
-            {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        )}
-        options={{ headerShown: false }}
-      />
-      <AuthStackNavigator.Screen
-        name="PreInscriptionScreen"
-        component={PreInscriptionScreen}
-        options={{ headerShown: false }}
-      />
-      <AuthStackNavigator.Screen
-        name="InscriptionScreen"
-        children={(props) => (
-          <InscriptionScreen {...props} setIsLoggedIn={setIsLoggedIn} />
-        )}
-        options={classes.header}
-      />
-      <AuthStackNavigator.Screen
-        name="ForgotPasswordScreen"
-        component={ForgotPasswordScreen}
-        options={classes.header}
-      />
-      <AuthStackNavigator.Screen
-        name="ConnectionScreen"
-        children={(props) => (
-          <ConnectionScreen
-            {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-            setIsLoggedIn={setIsLoggedIn}
-          />
-        )}
-        options={classes.header}
-      />
-    </AuthStackNavigator.Navigator>
-  );
+            <AuthStackNavigator.Screen
+                name="OnboardingScreen2"
+                component={OnboardingScreen2}
+                options={{ headerShown: false }}
+            />
+
+            <AuthStackNavigator.Screen
+                name="IdentificationScreen"
+                children={(props) => (
+                    <IdentificationScreen
+                        {...props}
+                    />
+                )}
+                options={{ headerShown: false }}
+            />
+            <AuthStackNavigator.Screen
+                name="PreInscriptionScreen"
+                component={PreInscriptionScreen}
+                options={{ headerShown: false }}
+            />
+            <AuthStackNavigator.Screen
+                name="InscriptionScreen"
+                children={(props) => (
+                    <InscriptionScreen {...props} />
+                )}
+                options={classes.header}
+            />
+            <AuthStackNavigator.Screen
+                name="ForgotPasswordScreen"
+                component={ForgotPasswordScreen}
+                options={classes.header}
+            />
+            <AuthStackNavigator.Screen
+                name="ConnectionScreen"
+                children={(props) => (
+                    <ConnectionScreen
+                        {...props}
+                    />
+                )}
+                options={classes.header}
+            />
+        </AuthStackNavigator.Navigator>
+    );
 };
 
 export const SellNavigator = () => {
-  return (
-    <SellStackNavigator.Navigator>
-      <SellStackNavigator.Screen
-        name="VendreArticleScreen"
-        component={VendreArticleScreen}
-        options={(props) => ({
-          title: props.route.params
-            ? props.route.params.modify
-              ? "Modification article"
-              : "Vendre un article"
-            : "Vendre un article",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        })}
-      />
-      <SellStackNavigator.Screen
-        name="PhotoArticleScreen"
-        component={PhotoArticleScreen}
-        options={{
-          title: "Photo",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="MarquesChoiceScreen"
-        component={MarquesChoiceScreen}
-        options={{
-          title: "Marques",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="CategoriesChoiceScreen"
-        component={CategoriesChoiceScreen}
-        options={{
-          title: "Catégories",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="EtatChoiceScreen"
-        component={EtatChoiceScreen}
-        options={{
-          title: "Etat",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ChevalEtCuirScreen"
-        component={ChevalEtCuirScreen}
-        options={{
-          title: "Cheval & Cuir",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="BrideriesScreen"
-        component={BrideriesScreen}
-        options={{
-          title: "Brideries rênes et accessoires",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="MorsScreen"
-        component={MorsScreen}
-        options={{
-          title: "Mors",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="EtriersScreen"
-        component={EtriersScreen}
-        options={{
-          title: "Etriers et étrivières",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="SanglesScreen"
-        component={SanglesScreen}
-        options={{
-          title: "Sangles et bavettes",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ColiersScreen"
-        component={ColiersScreen}
-        options={{
-          title: "Colliers de chasses et enrênements",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="TravailScreen"
-        component={TravailScreen}
-        options={{
-          title: "Travail à pied",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="SelleScreen"
-        component={SelleScreen}
-        options={{
-          title: "Selles et accessoires",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ChevalEtTextileScreen"
-        component={ChevalEtTextileScreen}
-        options={{
-          title: "Cheval & Textile",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ChemisesScreen"
-        component={ChemisesScreen}
-        options={{
-          title: "Chemises et séchantes",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="CouverturesScreen"
-        component={CouverturesScreen}
-        options={{
-          title: "Couvertures et couvre-reins",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="LicolsScreen"
-        component={LicolsScreen}
-        options={{
-          title: "Licols et longes",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ProtectionsScreen"
-        component={ProtectionsScreen}
-        options={{
-          title: "Protections des membres",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="TapisScreen"
-        component={TapisScreen}
-        options={{
-          title: "Tapis, bonnets et amortisseurs",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="CavalierScreen"
-        component={CavalierScreen}
-        options={{
-          title: "Cavaliers",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="AccessoiresScreen"
-        component={AccessoiresScreen}
-        options={{
-          title: "Accessoires",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="BottesScreen"
-        component={BottesScreen}
-        options={{
-          title: "Bottes, boots et mini-chaps",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="CasquesScreen"
-        component={CasquesScreen}
-        options={{
-          title: "Casques d’équitation",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="EnfantScreen"
-        component={EnfantScreen}
-        options={{
-          title: "Prêt-à-porter enfant",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="HommeScreen"
-        component={HommeScreen}
-        options={{
-          title: "Prêt-à-porter homme",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="FemmeScreen"
-        component={FemmeScreen}
-        options={{
-          title: "Prêt-à-porter femme",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="GiletScreen"
-        component={GiletScreen}
-        options={{
-          title: "Gilets de protection",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="SoinsEtEcuriesScreen"
-        component={SoinsEtEcuriesScreen}
-        options={{
-          title: "Soins et écuries",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="AlimentsScreen"
-        component={AlimentsScreen}
-        options={{
-          title: "Aliments",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ProduitsScreen"
-        component={ProduitsScreen}
-        options={{
-          title: "Produits d'entretien",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="MaterielScreen"
-        component={MaterielScreen}
-        options={{
-          title: "Matériel de pansage",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="TenturesScreen"
-        component={TenturesScreen}
-        options={{
-          title: "Tentures, housses",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="EquipementsScreen"
-        component={EquipementsScreen}
-        options={{
-          title: "Equipements box",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ClotureScreen"
-        component={ClotureScreen}
-        options={{
-          title: "Matériels de clôture",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="MarechalerieScreen"
-        component={MarechalerieScreen}
-        options={{
-          title: "Maréchalerie",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="EntrainementScreen"
-        component={EntrainementScreen}
-        options={{
-          title: "Matériels d’entrainement",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ChienScreen"
-        component={ChienScreen}
-        options={{
-          title: "Chiens et autres animaux",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="TransportScreen"
-        component={TransportScreen}
-        options={{
-          title: "Transport",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <SellStackNavigator.Screen
-        name="ValidationScreen"
-        component={ValidationScreen}
-        options={{ headerShown: false }}
-      />
-    </SellStackNavigator.Navigator>
-  );
+    return (
+        <SellStackNavigator.Navigator>
+            <SellStackNavigator.Screen
+                name="VendreArticleScreen"
+                component={VendreArticleScreen}
+                options={(props) => ({
+                    title: props.route.params
+                        ? props.route.params.modify
+                            ? "Modification article"
+                            : "Vendre un article"
+                        : "Vendre un article",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                })}
+            />
+            <SellStackNavigator.Screen
+                name="PhotoArticleScreen"
+                component={PhotoArticleScreen}
+                options={{
+                    title: "Photo",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="MarquesChoiceScreen"
+                component={MarquesChoiceScreen}
+                options={{
+                    title: "Marques",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="CategoriesChoiceScreen"
+                component={CategoriesChoiceScreen}
+                options={{
+                    title: "Catégories",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="EtatChoiceScreen"
+                component={EtatChoiceScreen}
+                options={{
+                    title: "Etat",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ChevalEtCuirScreen"
+                component={ChevalEtCuirScreen}
+                options={{
+                    title: "Cheval & Cuir",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="BrideriesScreen"
+                component={BrideriesScreen}
+                options={{
+                    title: "Brideries rênes et accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="MorsScreen"
+                component={MorsScreen}
+                options={{
+                    title: "Mors",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="EtriersScreen"
+                component={EtriersScreen}
+                options={{
+                    title: "Etriers et étrivières",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="SanglesScreen"
+                component={SanglesScreen}
+                options={{
+                    title: "Sangles et bavettes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ColiersScreen"
+                component={ColiersScreen}
+                options={{
+                    title: "Colliers de chasses et enrênements",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="TravailScreen"
+                component={TravailScreen}
+                options={{
+                    title: "Travail à pied",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="SelleScreen"
+                component={SelleScreen}
+                options={{
+                    title: "Selles et accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ChevalEtTextileScreen"
+                component={ChevalEtTextileScreen}
+                options={{
+                    title: "Cheval & Textile",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ChemisesScreen"
+                component={ChemisesScreen}
+                options={{
+                    title: "Chemises et séchantes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="CouverturesScreen"
+                component={CouverturesScreen}
+                options={{
+                    title: "Couvertures et couvre-reins",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="LicolsScreen"
+                component={LicolsScreen}
+                options={{
+                    title: "Licols et longes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ProtectionsScreen"
+                component={ProtectionsScreen}
+                options={{
+                    title: "Protections des membres",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="TapisScreen"
+                component={TapisScreen}
+                options={{
+                    title: "Tapis, bonnets et amortisseurs",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="CavalierScreen"
+                component={CavalierScreen}
+                options={{
+                    title: "Cavaliers",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="AccessoiresScreen"
+                component={AccessoiresScreen}
+                options={{
+                    title: "Accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="BottesScreen"
+                component={BottesScreen}
+                options={{
+                    title: "Bottes, boots et mini-chaps",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="CasquesScreen"
+                component={CasquesScreen}
+                options={{
+                    title: "Casques d’équitation",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="EnfantScreen"
+                component={EnfantScreen}
+                options={{
+                    title: "Prêt-à-porter enfant",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="HommeScreen"
+                component={HommeScreen}
+                options={{
+                    title: "Prêt-à-porter homme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="FemmeScreen"
+                component={FemmeScreen}
+                options={{
+                    title: "Prêt-à-porter femme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="GiletScreen"
+                component={GiletScreen}
+                options={{
+                    title: "Gilets de protection",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="SoinsEtEcuriesScreen"
+                component={SoinsEtEcuriesScreen}
+                options={{
+                    title: "Soins et écuries",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="AlimentsScreen"
+                component={AlimentsScreen}
+                options={{
+                    title: "Aliments",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ProduitsScreen"
+                component={ProduitsScreen}
+                options={{
+                    title: "Produits d'entretien",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="MaterielScreen"
+                component={MaterielScreen}
+                options={{
+                    title: "Matériel de pansage",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="TenturesScreen"
+                component={TenturesScreen}
+                options={{
+                    title: "Tentures, housses",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="EquipementsScreen"
+                component={EquipementsScreen}
+                options={{
+                    title: "Equipements box",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ClotureScreen"
+                component={ClotureScreen}
+                options={{
+                    title: "Matériels de clôture",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="MarechalerieScreen"
+                component={MarechalerieScreen}
+                options={{
+                    title: "Maréchalerie",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="EntrainementScreen"
+                component={EntrainementScreen}
+                options={{
+                    title: "Matériels d’entrainement",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ChienScreen"
+                component={ChienScreen}
+                options={{
+                    title: "Chiens et autres animaux",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="TransportScreen"
+                component={TransportScreen}
+                options={{
+                    title: "Transport",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <SellStackNavigator.Screen
+                name="ValidationScreen"
+                component={ValidationScreen}
+                options={{ headerShown: false }}
+            />
+        </SellStackNavigator.Navigator>
+    );
 };
 
 export const AchatNavigator = (props) => {
-  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+    const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
-  let totalQuantity = 0;
-  const cartItems = useSelector((state) => {
-    const transformedCartItems = [];
-    for (const key in state.cart.items) {
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
-        quantity: state.cart.items[key].quantity,
-        sum: state.cart.items[key].sum,
-      });
+    let totalQuantity = 0;
+    const cartItems = useSelector((state) => {
+        const transformedCartItems = [];
+        for (const key in state.cart.items) {
+            transformedCartItems.push({
+                productId: key,
+                productTitle: state.cart.items[key].productTitle,
+                productPrice: state.cart.items[key].productPrice,
+                quantity: state.cart.items[key].quantity,
+                sum: state.cart.items[key].sum,
+            });
+        }
+        return transformedCartItems;
+    });
+
+    for (let data in cartItems) {
+        totalQuantity += parseFloat(cartItems[data].quantity);
     }
-    return transformedCartItems;
-  });
-
-  for (let data in cartItems) {
-    totalQuantity += parseFloat(cartItems[data].quantity);
-  }
-  console.log("totalQuantity", totalQuantity);
-  console.log("cartItems", cartItems);
-  return (
-    <AchatStackNavigator.Navigator>
-      <AchatStackNavigator.Screen
-        name="AchatScreen"
-        component={AchatScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerRight: () => (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#D51317",
-                  borderRadius: 30,
-                  alignItems: "center",
-                  position: "absolute",
-                  width: 20,
-                  bottom: "65%",
-                  right: "55%",
+    console.log("totalQuantity", totalQuantity);
+    console.log("cartItems", cartItems);
+    return (
+        <AchatStackNavigator.Navigator>
+            <AchatStackNavigator.Screen
+                name="AchatScreen"
+                component={AchatScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerRight: () => (
+                        <View>
+                            <View
+                                style={{
+                                    backgroundColor: "#D51317",
+                                    borderRadius: 30,
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    width: 20,
+                                    bottom: "65%",
+                                    right: "55%",
+                                }}
+                            >
+                                <Text style={{ color: "white", fontWeight: "bold" }}>
+                                    {totalQuantity}
+                                </Text>
+                            </View>
+                            <Fontisto
+                                name="shopping-basket"
+                                size={24}
+                                color="#D51317"
+                                onPress={() => props.navigation.navigate("FirstCartScreen")}
+                            />
+                        </View>
+                    ),
+                    headerTitle: () => <CustomHeader {...props} />,
                 }}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {totalQuantity}
-                </Text>
-              </View>
-              <Fontisto
-                name="shopping-basket"
-                size={24}
-                color="#D51317"
-                onPress={() => props.navigation.navigate("FirstCartScreen")}
-              />
-            </View>
-          ),
-          headerTitle: () => <CustomHeader {...props} />,
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="CategoriesAcceuilChoiceScreen"
-        component={CategoriesAccueilChoiceScreen}
-        options={{
-          title: "Catégories",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-        <AchatStackNavigator.Screen
-            name="ModifierOffrePaiementScreen"
-            component={ModifierOffrePaiementScreen}
-            options={{
-                title: "Paiement",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-      <AchatStackNavigator.Screen
-        name="DeleteAnnonceValidationScreen"
-        component={DeleteAnnonceValidationScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="AdresseChoiceScreen"
-        component={AdresseChoiceScreen}
-        options={{
-          title: "Adresse",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="AdresseValidationScreen"
-        component={AdresseValidationScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="IBANChoiceScreen"
-        component={IbanChoiceScreen}
-        options={{
-          title: "IBAN",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ThankYouScreen"
-        component={ThankYouScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="CavalierAccueilScreen"
-        component={CavalierAccueilScreen}
-        options={{
-          title: "Cavalier",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="TapisAccueilScreen"
-        component={TapisAccueilScreen}
-        options={{
-          title: "Tapis",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="AvisScreen"
-        component={AvisScreen}
-        options={{
-          title: "Avis",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ChevalEtCuirAccueilScreen"
-        component={ChevalEtCuirAccueilScreen}
-        options={{
-          title: "Cheval & Cuir",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ChevalEtTextileAccueilScreen"
-        component={ChevalEtTextileAccueilScreen}
-        options={{
-          title: "Cheval & Textile",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ChienAccueilScreen"
-        component={ChienAccueilScreen}
-        options={{
-          title: "Chien & Animaux",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="SoinsEtEcuriesAccueilScreen"
-        component={SoinsEtEcuriesAccueilScreen}
-        options={{
-          title: "Soins & Ecuries",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="TransportAccueilScreen"
-        component={TransportAccueilScreen}
-        options={{
-          title: "Transport",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="AccessoiresAccueilScreen"
-        component={AccessoiresAccueilScreen}
-        options={{
-          title: "Accessoires",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="BottesAccueilScreen"
-        component={BottesAccueilScreen}
-        options={{
-          title: "Bottes",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="CasquesAccueilScreen"
-        component={CasquesAccueilScreen}
-        options={{
-          title: "Casques",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="EnfantAccueilScreen"
-        component={EnfantAccueilScreen}
-        options={{
-          title: "Enfant",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="FemmeAccueilScreen"
-        component={FemmeAccueilScreen}
-        options={{
-          title: "Femme",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="GiletAccueilScreen"
-        component={GiletAccueilScreen}
-        options={{
-          title: "Gilet",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="HommeAccueilScreen"
-        component={HommeAccueilScreen}
-        options={{
-          title: "Homme",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="BrideriesAccueilScreen"
-        component={BrideriesAccueilScreen}
-        options={{
-          title: "Brideries",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ColiersAccueilScreen"
-        component={ColiersAccueilScreen}
-        options={{
-          title: "Colliers",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="EtriersAccueilScreen"
-        component={EtriersAccueilScreen}
-        options={{
-          title: "Etriers",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="MorsAccueilScreen"
-        component={MorsAccueilScreen}
-        options={{
-          title: "Mors",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="SanglesAccueilScreen"
-        component={SanglesAccueilScreen}
-        options={{
-          title: "Sangles",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="SelleAccueilScreen"
-        component={SelleAccueilScreen}
-        options={{
-          title: "Selles",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="TravailAccueilScreen"
-        component={TravailAccueilScreen}
-        options={{
-          title: "Travail à pied",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ChemisesAccueilScreen"
-        component={ChemisesAccueilScreen}
-        options={{
-          title: "Chemises & séchantes",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="CouverturesAccueilScreen"
-        component={CouverturesAccueilScreen}
-        options={{
-          title: "Couvertures",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="LicolsAccueilScreen"
-        component={LicolsAccueilScreen}
-        options={{
-          title: "Licols",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ProtectionsAccueilScreen"
-        component={ProtectionsAccueilScreen}
-        options={{
-          title: "Protections",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="AlimentsAccueilScreen"
-        component={AlimentsAccueilScreen}
-        options={{
-          title: "Aliments",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ClotureAccueilScreen"
-        component={ClotureAccueilScreen}
-        options={{
-          title: "Clôtures",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="EntrainementAccueilScreen"
-        component={EntrainementAccueilScreen}
-        options={{
-          title: "Entraînements",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="EquipementsAccueilScreen"
-        component={EquipementsAccueilScreen}
-        options={{
-          title: "Equipements",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="MarechalerieAccueilScreen"
-        component={MarechalerieAccueilScreen}
-        options={{
-          title: "Maréchalerie",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="MaterielAccueilScreen"
-        component={MaterielAccueilScreen}
-        options={{
-          title: "Matériels",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ProduitsAccueilScreen"
-        component={ProduitsAccueilScreen}
-        options={{
-          title: "Produits",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="TenturesAccueilScreen"
-        component={TenturesAccueilScreen}
-        options={{
-          title: "Tentures",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ViewProductsScreen"
-        component={ViewProductsScreen}
-        options={{headerShown: false}}
-      />
-      <AchatStackNavigator.Screen
-        name="PhotoArticleScreen"
-        component={PhotoArticleScreen}
-        options={{
-          title: "Photo",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="ProductDetailScreen"
-        component={ProductDetailScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-            headerLeft: () => (
-                <View>
-                    <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate("Accueil", {
-                        screen : "AccueilScreen"
-                    })}/>
-                </View>
-            ),
-          headerRight: () => (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#D51317",
-                  borderRadius: 30,
-                  alignItems: "center",
-                  position: "absolute",
-                  width: 20,
-                  bottom: "65%",
-                  right: "55%",
+            />
+            <AchatStackNavigator.Screen
+                name="CategoriesAcceuilChoiceScreen"
+                component={CategoriesAccueilChoiceScreen}
+                options={{
+                    title: "Catégories",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
                 }}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {totalQuantity}
-                </Text>
-              </View>
-              <Fontisto
-                name="shopping-basket"
-                size={24}
-                color="#D51317"
-                onPress={() => props.navigation.navigate("FirstCartScreen")}
-              />
-            </View>
-          ),
-          headerTitle: "Details",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="LivraisonArticleLourdScreen"
-        component={LivraisonArticleLourdScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Livraison Lourde",
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="PortefeuilleThankYouScreen"
-        component={PortefeuilleThankYouScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="CartScreen"
-        children={(props) => (
-          <CartScreen
-            {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        )}
-        options={{
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Panier",
-          headerTitleStyle: {
-            textAlign: "center",
-          },
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="FirstCartScreen"
-        children={(props) => (
-          <FirstCartScreen
-            {...props}
-            loggedInAsVisit={loggedInAsVisit}
-            setLoggedInAsVisit={setLoggedInAsVisit}
-          />
-        )}
-        options={{
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Panier",
-          headerTitleStyle: {
-            textAlign: "center",
-          },
-        }}
-      />
-      <AchatStackNavigator.Screen
-        name="LivraisonChoiceScreen"
-        component={LivraisonChoiceScreen}
-        options={{
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Livraison",
-        }}
-      />
-    </AchatStackNavigator.Navigator>
-  );
+            />
+            <AchatStackNavigator.Screen
+                name="ModifierOffrePaiementScreen"
+                component={ModifierOffrePaiementScreen}
+                options={{
+                    title: "Paiement",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="DeleteAnnonceValidationScreen"
+                component={DeleteAnnonceValidationScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ValidationPaymentScreen"
+                component={ValidationPaymentScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="AdresseChoiceScreen"
+                component={AdresseChoiceScreen}
+                options={{
+                    title: "Adresse",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="AdresseValidationScreen"
+                component={AdresseValidationScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="IBANChoiceScreen"
+                component={IbanChoiceScreen}
+                options={{
+                    title: "IBAN",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ThankYouScreen"
+                component={ThankYouScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="CavalierAccueilScreen"
+                component={CavalierAccueilScreen}
+                options={{
+                    title: "Cavalier",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="TapisAccueilScreen"
+                component={TapisAccueilScreen}
+                options={{
+                    title: "Tapis",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="AvisScreen"
+                component={AvisScreen}
+                options={{
+                    title: "Avis",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ChevalEtCuirAccueilScreen"
+                component={ChevalEtCuirAccueilScreen}
+                options={{
+                    title: "Cheval & Cuir",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ChevalEtTextileAccueilScreen"
+                component={ChevalEtTextileAccueilScreen}
+                options={{
+                    title: "Cheval & Textile",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ChienAccueilScreen"
+                component={ChienAccueilScreen}
+                options={{
+                    title: "Chien & Animaux",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="SoinsEtEcuriesAccueilScreen"
+                component={SoinsEtEcuriesAccueilScreen}
+                options={{
+                    title: "Soins & Ecuries",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="TransportAccueilScreen"
+                component={TransportAccueilScreen}
+                options={{
+                    title: "Transport",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="AccessoiresAccueilScreen"
+                component={AccessoiresAccueilScreen}
+                options={{
+                    title: "Accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="BottesAccueilScreen"
+                component={BottesAccueilScreen}
+                options={{
+                    title: "Bottes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="CasquesAccueilScreen"
+                component={CasquesAccueilScreen}
+                options={{
+                    title: "Casques",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="EnfantAccueilScreen"
+                component={EnfantAccueilScreen}
+                options={{
+                    title: "Enfant",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="FemmeAccueilScreen"
+                component={FemmeAccueilScreen}
+                options={{
+                    title: "Femme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="GiletAccueilScreen"
+                component={GiletAccueilScreen}
+                options={{
+                    title: "Gilet",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="HommeAccueilScreen"
+                component={HommeAccueilScreen}
+                options={{
+                    title: "Homme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="BrideriesAccueilScreen"
+                component={BrideriesAccueilScreen}
+                options={{
+                    title: "Brideries",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ColiersAccueilScreen"
+                component={ColiersAccueilScreen}
+                options={{
+                    title: "Colliers",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="EtriersAccueilScreen"
+                component={EtriersAccueilScreen}
+                options={{
+                    title: "Etriers",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="MorsAccueilScreen"
+                component={MorsAccueilScreen}
+                options={{
+                    title: "Mors",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="SanglesAccueilScreen"
+                component={SanglesAccueilScreen}
+                options={{
+                    title: "Sangles",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="SelleAccueilScreen"
+                component={SelleAccueilScreen}
+                options={{
+                    title: "Selles",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="TravailAccueilScreen"
+                component={TravailAccueilScreen}
+                options={{
+                    title: "Travail à pied",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ChemisesAccueilScreen"
+                component={ChemisesAccueilScreen}
+                options={{
+                    title: "Chemises & séchantes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="CouverturesAccueilScreen"
+                component={CouverturesAccueilScreen}
+                options={{
+                    title: "Couvertures",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="LicolsAccueilScreen"
+                component={LicolsAccueilScreen}
+                options={{
+                    title: "Licols",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ProtectionsAccueilScreen"
+                component={ProtectionsAccueilScreen}
+                options={{
+                    title: "Protections",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="AlimentsAccueilScreen"
+                component={AlimentsAccueilScreen}
+                options={{
+                    title: "Aliments",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ClotureAccueilScreen"
+                component={ClotureAccueilScreen}
+                options={{
+                    title: "Clôtures",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="EntrainementAccueilScreen"
+                component={EntrainementAccueilScreen}
+                options={{
+                    title: "Entraînements",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="EquipementsAccueilScreen"
+                component={EquipementsAccueilScreen}
+                options={{
+                    title: "Equipements",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="MarechalerieAccueilScreen"
+                component={MarechalerieAccueilScreen}
+                options={{
+                    title: "Maréchalerie",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="MaterielAccueilScreen"
+                component={MaterielAccueilScreen}
+                options={{
+                    title: "Matériels",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ProduitsAccueilScreen"
+                component={ProduitsAccueilScreen}
+                options={{
+                    title: "Produits",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="TenturesAccueilScreen"
+                component={TenturesAccueilScreen}
+                options={{
+                    title: "Tentures",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ViewProductsScreen"
+                component={ViewProductsScreen}
+                options={{headerShown: false}}
+            />
+            <AchatStackNavigator.Screen
+                name="PhotoArticleScreen"
+                component={PhotoArticleScreen}
+                options={{
+                    title: "Photo",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="ProductDetailScreen"
+                component={ProductDetailScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeft: () => (
+                        <View>
+                            <AntDesign name="arrowleft" size={24} color="black" onPress={() => props.navigation.navigate("Accueil", {
+                                screen : "AccueilScreen"
+                            })}/>
+                        </View>
+                    ),
+                    headerRight: () => (
+                        <View>
+                            <View
+                                style={{
+                                    backgroundColor: "#D51317",
+                                    borderRadius: 30,
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    width: 20,
+                                    bottom: "65%",
+                                    right: "55%",
+                                }}
+                            >
+                                <Text style={{ color: "white", fontWeight: "bold" }}>
+                                    {totalQuantity}
+                                </Text>
+                            </View>
+                            <Fontisto
+                                name="shopping-basket"
+                                size={24}
+                                color="#D51317"
+                                onPress={() => props.navigation.navigate("FirstCartScreen")}
+                            />
+                        </View>
+                    ),
+                    headerTitle: "Details",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="LivraisonArticleLourdScreen"
+                component={LivraisonArticleLourdScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Livraison Lourde",
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="PortefeuilleThankYouScreen"
+                component={PortefeuilleThankYouScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="CartScreen"
+                children={(props) => (
+                    <CartScreen
+                        {...props}
+                        loggedInAsVisit={loggedInAsVisit}
+                        setLoggedInAsVisit={setLoggedInAsVisit}
+                    />
+                )}
+                options={{
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Panier",
+                    headerTitleStyle: {
+                        textAlign: "center",
+                    },
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="FirstCartScreen"
+                children={(props) => (
+                    <FirstCartScreen
+                        {...props}
+                        loggedInAsVisit={loggedInAsVisit}
+                        setLoggedInAsVisit={setLoggedInAsVisit}
+                    />
+                )}
+                options={{
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Panier",
+                    headerTitleStyle: {
+                        textAlign: "center",
+                    },
+                }}
+            />
+            <AchatStackNavigator.Screen
+                name="LivraisonChoiceScreen"
+                component={LivraisonChoiceScreen}
+                options={{
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Livraison",
+                }}
+            />
+        </AchatStackNavigator.Navigator>
+    );
 };
 
 export const MessageNavigator = (props) => {
-  return (
-    <MessageStackNavigator.Navigator>
-      <MessageStackNavigator.Screen
-        name="MessageScreen"
-        component={MessageScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
+    return (
+        <MessageStackNavigator.Navigator>
+            <MessageStackNavigator.Screen
+                name="MessageScreen"
+                component={MessageScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
 
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Messages",
-          headerTitleAlign: "center",
-        }}
-      />
-      <MessageStackNavigator.Screen
-        name="ChatScreen"
-        component={ChatScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Messages",
-          headerTitleAlign: "center",
-        }}
-      />
-        <MessageStackNavigator.Screen
-            name="SupressionMessageValidationScreen"
-            component={SupressionMessageValidationScreen}
-            options={{headerShown: false}}
-        />
-        <MessageStackNavigator.Screen
-            name="SupressionNotifValidationScreen"
-            component={SupressionNotifValidationScreen}
-            options={{headerShown: false}}
-        />
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Messages",
+                    headerTitleAlign: "center",
+                }}
+            />
+            <MessageStackNavigator.Screen
+                name="ChatScreen"
+                component={ChatScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Messages",
+                    headerTitleAlign: "center",
+                }}
+            />
+            <MessageStackNavigator.Screen
+                name="SupressionMessageValidationScreen"
+                component={SupressionMessageValidationScreen}
+                options={{headerShown: false}}
+            />
+            <MessageStackNavigator.Screen
+                name="SupressionNotifValidationScreen"
+                component={SupressionNotifValidationScreen}
+                options={{headerShown: false}}
+            />
 
-      <MessageStackNavigator.Screen
-        name="ArticlesEnVenteScreen"
-        component={ArticlesEnVenteScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Articles en Vente",
-          headerTitleAlign: "center",
-        }}
-      />
-    </MessageStackNavigator.Navigator>
-  );
+            <MessageStackNavigator.Screen
+                name="ArticlesEnVenteScreen"
+                component={ArticlesEnVenteScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Articles en Vente",
+                    headerTitleAlign: "center",
+                }}
+            />
+        </MessageStackNavigator.Navigator>
+    );
 };
 
 export const ProfileNavigator = (props) => {
-  return (
-    <ProfileStackNavigator.Navigator>
-      <ProfileStackNavigator.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Profil",
-        }}
-      />
+    return (
+        <ProfileStackNavigator.Navigator>
+            <ProfileStackNavigator.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Profil",
+                }}
+            />
 
-        <ProfileStackNavigator.Screen
-            name="ChevalEtCuirProfileScreen"
-            component={ChevalEtCuirProfileScreen}
-            options={{
-                title: "Cheval & Cuir",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="BrideriesProfileScreen"
-            component={BrideriesProfileScreen}
-            options={{
-                title: "Brideries rênes et accessoires",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="MorsProfileScreen"
-            component={MorsProfileScreen}
-            options={{
-                title: "Mors",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EtriersProfileScreen"
-            component={EtriersProfileScreen}
-            options={{
-                title: "Etriers et étrivières",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="SanglesProfileScreen"
-            component={SanglesProfileScreen}
-            options={{
-                title: "Sangles et bavettes",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ColiersProfileScreen"
-            component={ColiersProfileScreen}
-            options={{
-                title: "Colliers de chasses et enrênements",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="TravailProfileScreen"
-            component={TravailProfileScreen}
-            options={{
-                title: "Travail à pied",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="SelleProfileScreen"
-            component={SelleProfileScreen}
-            options={{
-                title: "Selles et accessoires",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ChevalEtTextileProfileScreen"
-            component={ChevalEtTextileProfileScreen}
-            options={{
-                title: "Cheval & Textile",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ChemisesProfileScreen"
-            component={ChemisesProfileScreen}
-            options={{
-                title: "Chemises et séchantes",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="CouverturesProfileScreen"
-            component={CouverturesProfileScreen}
-            options={{
-                title: "Couvertures et couvre-reins",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="LicolsProfileScreen"
-            component={LicolsProfileScreen}
-            options={{
-                title: "Licols et longes",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ProtectionsProfileScreen"
-            component={ProtectionsProfileScreen}
-            options={{
-                title: "Protections des membres",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="TapisProfileScreen"
-            component={TapisProfileScreen}
-            options={{
-                title: "Tapis, bonnets et amortisseurs",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="CavalierProfileScreen"
-            component={CavalierProfileScreen}
-            options={{
-                title: "Cavaliers",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="AccessoiresProfileScreen"
-            component={AccessoiresProfileScreen}
-            options={{
-                title: "Accessoires",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="BottesProfileScreen"
-            component={BottesProfileScreen}
-            options={{
-                title: "Bottes, boots et mini-chaps",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="CasquesProfileScreen"
-            component={CasquesProfileScreen}
-            options={{
-                title: "Casques d’équitation",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EnfantProfileScreen"
-            component={EnfantProfileScreen}
-            options={{
-                title: "Prêt-à-porter enfant",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="HommeProfileScreen"
-            component={HommeProfileScreen}
-            options={{
-                title: "Prêt-à-porter homme",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="FemmeProfileScreen"
-            component={FemmeProfileScreen}
-            options={{
-                title: "Prêt-à-porter femme",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="GiletProfileScreen"
-            component={GiletProfileScreen}
-            options={{
-                title: "Gilets de protection",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="SoinsEtEcuriesProfileScreen"
-            component={SoinsEtEcuriesProfileScreen}
-            options={{
-                title: "Soins et écuries",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="AlimentsProfileScreen"
-            component={AlimentsProfileScreen}
-            options={{
-                title: "Aliments",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ProduitsProfileScreen"
-            component={ProduitsProfileScreen}
-            options={{
-                title: "Produits d'entretien",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="MaterielProfileScreen"
-            component={MaterielProfileScreen}
-            options={{
-                title: "Matériel de pansage",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="TenturesProfileScreen"
-            component={TenturesProfileScreen}
-            options={{
-                title: "Tentures, housses",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EquipementsProfileScreen"
-            component={EquipementsProfileScreen}
-            options={{
-                title: "Equipements box",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ClotureProfileScreen"
-            component={ClotureProfileScreen}
-            options={{
-                title: "Matériels de clôture",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="MarechalerieProfileScreen"
-            component={MarechalerieProfileScreen}
-            options={{
-                title: "Maréchalerie",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EntrainementProfileScreen"
-            component={EntrainementProfileScreen}
-            options={{
-                title: "Matériels d’entrainement",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ChienProfileScreen"
-            component={ChienProfileScreen}
-            options={{
-                title: "Chiens et autres animaux",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="TransportProfileScreen"
-            component={TransportProfileScreen}
-            options={{
-                title: "Transport",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-      <ProfileStackNavigator.Screen
-        name="DeleteAnnonceValidationScreen"
-        component={DeleteAnnonceValidationScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-        <ProfileStackNavigator.Screen
-            name="CategoriesChoiceProfileScreen"
-            component={CategoriesChoiceProfileScreen}
-            options={{
-                title: "Catégories",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="EtatChoiceProfileScreen"
-            component={EtatChoiceProfileScreen}
-            options={{
-                title: "Etat",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="MarquesChoiceProfileScreen"
-            component={MarquesChoiceProfileScreen}
-            options={{
-                title: "Marques",
-                headerStyle: {
-                    backgroundColor: "white",
-                },
-                headerTitleStyle: {
-                    color: "black",
-                },
-                headerBackTitle: "Retour",
-                headerBackTitleStyle: {
-                    color: "black",
-                },
-                headerTitleAlign: "center",
-            }}
-        />
-        <ProfileStackNavigator.Screen
-            name="ValidationPhotoProfileScreen"
-            component={ValidationPhotoProfileScreen}
-            options={{
-                headerShown: false,
-            }}
-        />
-      <ProfileStackNavigator.Screen
-        name="ContactScreen"
-        component={ContactScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Contactez-nous",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ModifierEmailConfirmationScreen"
-        component={ModifierEmailConfirmationScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ValidationLitigeScreen"
-        component={ValidationLitigeScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="PreAuthScreen"
-        component={PreAuthScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Identification",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="CommentCaMarcheScreen"
-        component={CommentCaMarcheScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Comment ca marche",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="PhotoModifierAnnonceScreen"
-        component={PhotoModifierAnnonceScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Photo",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="EnterIbanScreen"
-        component={EnterIbanScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Saisissez votre IBAN",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ValidationIBANScreen"
-        component={ValidationIBANScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ValidationAnnonceModifieeScreen"
-        component={ValidationAnnonceModifieeScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ModifierAnnonceScreen"
-        component={ModifierAnnonceScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Modifier votre annonce",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ValidationContactScreen"
-        component={ValidationContactScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerBackTitle: "Retour",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Contactez-nous",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ProductDetailProfileScreen"
-        children={ProductDetailProfileScreen}
-        options={{
-          title: "Details",
-          headerStyle: {
-            backgroundColor: "white",
-          },
-          headerTitleStyle: {
-            color: "black",
-          },
-          headerBackTitle: "Retour",
-          headerBackTitleStyle: {
-            color: "black",
-          },
-          headerTitleAlign: "center",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="PortefeuilleScreen"
-        component={PortefeuilleScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Mon portefeuille",
-          headerTitleStyle: {
-            marginLeft: 50,
-          },
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ArticlesEnVenteScreen"
-        component={ArticlesEnVenteScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Mes articles en vente",
-          headerTitleStyle: {
-            marginLeft: 50,
-          },
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="BoosteVenteScreen"
-        component={BoosteVenteScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Booste tes ventes !",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="MesCommandesScreen"
-        component={MesCommandesScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Mes commandes",
-          headerTitleStyle: {
-            marginLeft: 50,
-          },
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="CommandeDetailScreen"
-        component={CommandeDetailScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Détail de la commande",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="EvaluationScreen"
-        component={EvaluationScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Evaluation",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ValidationEvaluationScreen"
-        component={ValidationEvaluationScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="BoosteVentePaiementScreen"
-        component={BoosteVentePaiementScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Booste tes ventes !",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="InformationsScreen"
-        component={InformationsScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Mes informations",
-          headerTitleStyle: {
-            marginLeft: 50,
-          },
-        }}
-      />
+            <ProfileStackNavigator.Screen
+                name="ChevalEtCuirProfileScreen"
+                component={ChevalEtCuirProfileScreen}
+                options={{
+                    title: "Cheval & Cuir",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="BrideriesProfileScreen"
+                component={BrideriesProfileScreen}
+                options={{
+                    title: "Brideries rênes et accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MorsProfileScreen"
+                component={MorsProfileScreen}
+                options={{
+                    title: "Mors",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EtriersProfileScreen"
+                component={EtriersProfileScreen}
+                options={{
+                    title: "Etriers et étrivières",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="SanglesProfileScreen"
+                component={SanglesProfileScreen}
+                options={{
+                    title: "Sangles et bavettes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ColiersProfileScreen"
+                component={ColiersProfileScreen}
+                options={{
+                    title: "Colliers de chasses et enrênements",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="TravailProfileScreen"
+                component={TravailProfileScreen}
+                options={{
+                    title: "Travail à pied",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="SelleProfileScreen"
+                component={SelleProfileScreen}
+                options={{
+                    title: "Selles et accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ChevalEtTextileProfileScreen"
+                component={ChevalEtTextileProfileScreen}
+                options={{
+                    title: "Cheval & Textile",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ChemisesProfileScreen"
+                component={ChemisesProfileScreen}
+                options={{
+                    title: "Chemises et séchantes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CouverturesProfileScreen"
+                component={CouverturesProfileScreen}
+                options={{
+                    title: "Couvertures et couvre-reins",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="LicolsProfileScreen"
+                component={LicolsProfileScreen}
+                options={{
+                    title: "Licols et longes",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ProtectionsProfileScreen"
+                component={ProtectionsProfileScreen}
+                options={{
+                    title: "Protections des membres",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="TapisProfileScreen"
+                component={TapisProfileScreen}
+                options={{
+                    title: "Tapis, bonnets et amortisseurs",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CavalierProfileScreen"
+                component={CavalierProfileScreen}
+                options={{
+                    title: "Cavaliers",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="AccessoiresProfileScreen"
+                component={AccessoiresProfileScreen}
+                options={{
+                    title: "Accessoires",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="BottesProfileScreen"
+                component={BottesProfileScreen}
+                options={{
+                    title: "Bottes, boots et mini-chaps",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CasquesProfileScreen"
+                component={CasquesProfileScreen}
+                options={{
+                    title: "Casques d’équitation",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EnfantProfileScreen"
+                component={EnfantProfileScreen}
+                options={{
+                    title: "Prêt-à-porter enfant",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="HommeProfileScreen"
+                component={HommeProfileScreen}
+                options={{
+                    title: "Prêt-à-porter homme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="FemmeProfileScreen"
+                component={FemmeProfileScreen}
+                options={{
+                    title: "Prêt-à-porter femme",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="GiletProfileScreen"
+                component={GiletProfileScreen}
+                options={{
+                    title: "Gilets de protection",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="SoinsEtEcuriesProfileScreen"
+                component={SoinsEtEcuriesProfileScreen}
+                options={{
+                    title: "Soins et écuries",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="AlimentsProfileScreen"
+                component={AlimentsProfileScreen}
+                options={{
+                    title: "Aliments",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ProduitsProfileScreen"
+                component={ProduitsProfileScreen}
+                options={{
+                    title: "Produits d'entretien",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MaterielProfileScreen"
+                component={MaterielProfileScreen}
+                options={{
+                    title: "Matériel de pansage",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="TenturesProfileScreen"
+                component={TenturesProfileScreen}
+                options={{
+                    title: "Tentures, housses",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EquipementsProfileScreen"
+                component={EquipementsProfileScreen}
+                options={{
+                    title: "Equipements box",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ClotureProfileScreen"
+                component={ClotureProfileScreen}
+                options={{
+                    title: "Matériels de clôture",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MarechalerieProfileScreen"
+                component={MarechalerieProfileScreen}
+                options={{
+                    title: "Maréchalerie",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EntrainementProfileScreen"
+                component={EntrainementProfileScreen}
+                options={{
+                    title: "Matériels d’entrainement",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ChienProfileScreen"
+                component={ChienProfileScreen}
+                options={{
+                    title: "Chiens et autres animaux",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="TransportProfileScreen"
+                component={TransportProfileScreen}
+                options={{
+                    title: "Transport",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="DeleteAnnonceValidationScreen"
+                component={DeleteAnnonceValidationScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CategoriesChoiceProfileScreen"
+                component={CategoriesChoiceProfileScreen}
+                options={{
+                    title: "Catégories",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EtatChoiceProfileScreen"
+                component={EtatChoiceProfileScreen}
+                options={{
+                    title: "Etat",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MarquesChoiceProfileScreen"
+                component={MarquesChoiceProfileScreen}
+                options={{
+                    title: "Marques",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationPhotoProfileScreen"
+                component={ValidationPhotoProfileScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ContactScreen"
+                component={ContactScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Contactez-nous",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ModifierEmailConfirmationScreen"
+                component={ModifierEmailConfirmationScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationLitigeScreen"
+                component={ValidationLitigeScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="PreAuthScreen"
+                component={PreAuthScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Identification",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CommentCaMarcheScreen"
+                component={CommentCaMarcheScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Comment ca marche",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="PhotoModifierAnnonceScreen"
+                component={PhotoModifierAnnonceScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Photo",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EnterIbanScreen"
+                component={EnterIbanScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Saisissez votre IBAN",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationIBANScreen"
+                component={ValidationIBANScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationAnnonceModifieeScreen"
+                component={ValidationAnnonceModifieeScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ModifierAnnonceScreen"
+                component={ModifierAnnonceScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Modifier votre annonce",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationContactScreen"
+                component={ValidationContactScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Contactez-nous",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ProductDetailProfileScreen"
+                children={ProductDetailProfileScreen}
+                options={{
+                    title: "Details",
+                    headerStyle: {
+                        backgroundColor: "white",
+                    },
+                    headerTitleStyle: {
+                        color: "black",
+                    },
+                    headerBackTitle: "Retour",
+                    headerBackTitleStyle: {
+                        color: "black",
+                    },
+                    headerTitleAlign: "center",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="PortefeuilleScreen"
+                component={PortefeuilleScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Mon portefeuille",
+                    headerTitleStyle: {
+                        marginLeft: 50,
+                    },
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ArticlesEnVenteScreen"
+                component={ArticlesEnVenteScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Mes articles en vente",
+                    headerTitleStyle: {
+                        marginLeft: 50,
+                    },
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="BoosteVenteScreen"
+                component={BoosteVenteScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Booste tes ventes !",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MesCommandesScreen"
+                component={MesCommandesScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Mes commandes",
+                    headerTitleStyle: {
+                        marginLeft: 50,
+                    },
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CommandeDetailScreen"
+                component={CommandeDetailScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Détail de la commande",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="EvaluationScreen"
+                component={EvaluationScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Evaluation",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ValidationEvaluationScreen"
+                component={ValidationEvaluationScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="BoosteVentePaiementScreen"
+                component={BoosteVentePaiementScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Booste tes ventes !",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="InformationsScreen"
+                component={InformationsScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Mes informations",
+                    headerTitleStyle: {
+                        marginLeft: 50,
+                    },
+                }}
+            />
 
-      <ProfileStackNavigator.Screen
-        name="ModifierAdresseScreen"
-        component={ModifierAdresseScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Modifier mon adresse",
-          headerBackTitle: "Retour",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ModifierEmailScreen"
-        component={ModifierEmailScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerTitle: "Modifier mon email",
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="ModifierPseudoScreen"
-        component={ModifierPseudoScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerTitle: "Modifier mon pseudo",
-          headerBackTitle: "Retour",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="SignalerUnLitigeScreen"
-        component={SignalerUnLitigeScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Signaler un litige",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="MentionLegaleScreen"
-        component={MentionLegaleScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Mentions Légales",
-        }}
-      />
-      <ProfileStackNavigator.Screen
-        name="CGUScreen"
-        component={CGUScreen}
-        options={(props) => ({
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackVisible: true,
-          headerBackTitle: "Retour",
-          headerTitle: "CGU & CGV",
-        })}
-      />
-      <ProfileStackNavigator.Screen
-        name="ViePriveeScreen"
-        component={ViePriveeScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerBackTitle: "Retour",
-          headerTitle: "Vie Privée",
-        }}
-      />
-    </ProfileStackNavigator.Navigator>
-  );
+            <ProfileStackNavigator.Screen
+                name="ModifierAdresseScreen"
+                component={ModifierAdresseScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Modifier mon adresse",
+                    headerBackTitle: "Retour",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ModifierEmailScreen"
+                component={ModifierEmailScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerTitle: "Modifier mon email",
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="ModifierPseudoScreen"
+                component={ModifierPseudoScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerTitle: "Modifier mon pseudo",
+                    headerBackTitle: "Retour",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="SignalerUnLitigeScreen"
+                component={SignalerUnLitigeScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Signaler un litige",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="MentionLegaleScreen"
+                component={MentionLegaleScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Mentions Légales",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="CGUScreen"
+                component={CGUScreen}
+                options={(props) => ({
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackVisible: true,
+                    headerBackTitle: "Retour",
+                    headerTitle: "CGU & CGV",
+                })}
+            />
+            <ProfileStackNavigator.Screen
+                name="ViePriveeScreen"
+                component={ViePriveeScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Vie Privée",
+                }}
+            />
+        </ProfileStackNavigator.Navigator>
+    );
 };
 
 export const AccueilNavigator = (props) => {
-  let totalQuantity = 0;
-  const cartItems = useSelector((state) => {
-    const transformedCartItems = [];
-    for (const key in state.cart.items) {
-      transformedCartItems.push({
-        productId: key,
-        productTitle: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
-        quantity: state.cart.items[key].quantity,
-        sum: state.cart.items[key].sum,
-      });
+    let totalQuantity = 0;
+    const cartItems = useSelector((state) => {
+        const transformedCartItems = [];
+        for (const key in state.cart.items) {
+            transformedCartItems.push({
+                productId: key,
+                productTitle: state.cart.items[key].productTitle,
+                productPrice: state.cart.items[key].productPrice,
+                quantity: state.cart.items[key].quantity,
+                sum: state.cart.items[key].sum,
+            });
+        }
+        return transformedCartItems;
+    });
+
+    for (let data in cartItems) {
+        totalQuantity += parseFloat(cartItems[data].quantity);
     }
-    return transformedCartItems;
-  });
+    console.log("totalQuantity", totalQuantity);
+    console.log("cartItems", cartItems);
 
-  for (let data in cartItems) {
-    totalQuantity += parseFloat(cartItems[data].quantity);
-  }
-  console.log("totalQuantity", totalQuantity);
-  console.log("cartItems", cartItems);
-
-  return (
-    <AccueilStackNavigator.Navigator>
-      <AccueilStackNavigator.Screen
-        name="AccueilScreen"
-        component={AccueilScreen}
-        options={{headerShown: false}}
-      />
-      <AccueilStackNavigator.Screen
-        name="ProductDetailScreen"
-        component={ProductDetailScreen}
-        options={{
-          headerRightContainerStyle: {
-            paddingRight: 10,
-          },
-          headerLeftContainerStyle: {
-            paddingLeft: 10,
-          },
-          headerRight: () => (
-            <View>
-              <View
-                style={{
-                  backgroundColor: "#D51317",
-                  borderRadius: 30,
-                  alignItems: "center",
-                  position: "absolute",
-                  width: 20,
-                  bottom: "65%",
-                  right: "55%",
+    return (
+        <AccueilStackNavigator.Navigator>
+            <AccueilStackNavigator.Screen
+                name="AccueilScreen"
+                component={AccueilScreen}
+                options={{headerShown: false}}
+            />
+            <AccueilStackNavigator.Screen
+                name="ProductDetailScreen"
+                component={ProductDetailScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerRight: () => (
+                        <View>
+                            <View
+                                style={{
+                                    backgroundColor: "#D51317",
+                                    borderRadius: 30,
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    width: 20,
+                                    bottom: "65%",
+                                    right: "55%",
+                                }}
+                            >
+                                <Text style={{ color: "white", fontWeight: "bold" }}>
+                                    {totalQuantity}
+                                </Text>
+                            </View>
+                            <Fontisto
+                                name="shopping-basket"
+                                size={24}
+                                color="#D51317"
+                                onPress={() => props.navigation.navigate("FirstCartScreen")}
+                            />
+                        </View>
+                    ),
+                    headerBackTitle: "Retour",
+                    headerTitle: "Details",
                 }}
-              >
-                <Text style={{ color: "white", fontWeight: "bold" }}>
-                  {totalQuantity}
-                </Text>
-              </View>
-              <Fontisto
-                name="shopping-basket"
-                size={24}
-                color="#D51317"
-                onPress={() => props.navigation.navigate("FirstCartScreen")}
-              />
-            </View>
-          ),
-          headerBackTitle: "Retour",
-          headerTitle: "Details",
-        }}
-      />
-    </AccueilStackNavigator.Navigator>
-  );
+            />
+        </AccueilStackNavigator.Navigator>
+    );
 };
 
 const resetStackOnTabPress = ({ navigation, route }) => ({
-  tabPress: (e) => {
-    const state = navigation.dangerouslyGetState();
+    tabPress: (e) => {
+        const state = navigation.dangerouslyGetState();
 
-    if (state) {
-      // Grab all the tabs that are NOT the one we just pressed
-      const nonTargetTabs = state.routes.filter((r) => r.key !== e.target);
+        if (state) {
+            // Grab all the tabs that are NOT the one we just pressed
+            const nonTargetTabs = state.routes.filter((r) => r.key !== e.target);
 
-      nonTargetTabs.forEach((tab) => {
-        // Find the tab we want to reset and grab the key of the nested stack
-        const tabName = tab?.name;
-        const stackKey = tab?.state?.key;
+            nonTargetTabs.forEach((tab) => {
+                // Find the tab we want to reset and grab the key of the nested stack
+                const tabName = tab?.name;
+                const stackKey = tab?.state?.key;
 
-        if (stackKey) {
-          // Pass the stack key that we want to reset and use popToTop to reset it
-          navigation.dispatch({
-            ...StackActions.popToTop(),
-            target: stackKey,
-          });
+                if (stackKey) {
+                    // Pass the stack key that we want to reset and use popToTop to reset it
+                    navigation.dispatch({
+                        ...StackActions.popToTop(),
+                        target: stackKey,
+                    });
+                }
+            });
         }
-      });
-    }
-  },
+    },
 });
 
 export const TabNavigator = (props) => {
-  const { loggedInAsVisit, setLoggedInAsVisit } = props;
+    const { loggedInAsVisit, setLoggedInAsVisit } = props;
 
-  //console.log("auth", firebase.auth().currentUser.uid);
-  const [count, setCount] = useState(0);
-  const { messageLength }  = useContext(authContext)
+    //console.log("auth", firebase.auth().currentUser.uid);
+    const [count, setCount] = useState(0);
+    const { messageLength }  = useContext(authContext)
 
     console.log(messageLength);
-  return (
-    <>
-      {props.loggedInAsVisit ? (
-        <AppTabNavigator.Navigator
-          tabBarOptions={{
-            activeTintColor: "red",
-            activeBackgroundColor: "white",
-            inactiveBackgroundColor: "white",
-          }}
-        >
-          <AppTabNavigator.Screen
-            name="Accueil"
-            component={AccueilNavigator}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="home" size={24} color="black" />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Acheter"
-            children={(props) => (
-              <AchatNavigator
-                {...props}
-                loggedInAsVisit={loggedInAsVisit}
-                setLoggedInAsVisit={setLoggedInAsVisit}
-              />
-            )}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Entypo name="shopping-cart" size={24} color="black" />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Vendre"
-            listeners={resetStackOnTabPress}
-            children={() => <></>}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="md-add-circle" size={24} color="black" />
-              ),
-              tabBarButton: (props) => (
-                <TouchableOpacity
-                  {...props}
-                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
-                />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Message"
-            children={() => <></>}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <View>
-                  <View
-                    style={{
-                      backgroundColor: "#D51317",
-                      borderRadius: 30,
-                      alignItems: "center",
-                      position: "absolute",
-                      width: 20,
-                      bottom: "65%",
-                      right: "55%",
+    return (
+        <>
+            {props.loggedInAsVisit ? (
+                <AppTabNavigator.Navigator
+                    tabBarOptions={{
+                        activeTintColor: "red",
+                        activeBackgroundColor: "white",
+                        inactiveBackgroundColor: "white",
                     }}
-                  >
-                    <Text style={{ color: "white", fontWeight: "bold" }}>
-                      1
-                    </Text>
-                  </View>
-                  <AntDesign name="message1" size={24} color="black" />
-                </View>
-              ),
-              tabBarButton: (props) => (
-                <TouchableOpacity
-                  {...props}
-                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
-                />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Profil"
-            children={() => <></>}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="user" size={24} color="black" />
-              ),
-              tabBarButton: (props) => (
-                <TouchableOpacity
-                  {...props}
-                  onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
-                />
-              ),
-            }}
-          />
-        </AppTabNavigator.Navigator>
-      ) : (
-        <AppTabNavigator.Navigator
-          tabBarOptions={{
-            activeTintColor: "red",
-            activeBackgroundColor: "white",
-            inactiveBackgroundColor: "white",
-          }}
-        >
-          <AppTabNavigator.Screen
-            name="Accueil"
-            component={AccueilNavigator}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="home" size={24} color="black" />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Acheter"
-            children={(props) => (
-              <AchatNavigator
-                {...props}
-                loggedInAsVisit={loggedInAsVisit}
-                setLoggedInAsVisit={setLoggedInAsVisit}
-              />
+                >
+                    <AppTabNavigator.Screen
+                        name="Accueil"
+                        component={AccueilNavigator}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <AntDesign name="home" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Acheter"
+                        children={(props) => (
+                            <AchatNavigator
+                                {...props}
+                                loggedInAsVisit={loggedInAsVisit}
+                                setLoggedInAsVisit={setLoggedInAsVisit}
+                            />
+                        )}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <Entypo name="shopping-cart" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Vendre"
+                        listeners={resetStackOnTabPress}
+                        children={() => <></>}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <Ionicons name="md-add-circle" size={24} color="black" />
+                            ),
+                            tabBarButton: (props) => (
+                                <TouchableOpacity
+                                    {...props}
+                                    onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                                />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Message"
+                        children={() => <></>}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <View>
+                                    <View
+                                        style={{
+                                            backgroundColor: "#D51317",
+                                            borderRadius: 30,
+                                            alignItems: "center",
+                                            position: "absolute",
+                                            width: 20,
+                                            bottom: "65%",
+                                            right: "55%",
+                                        }}
+                                    >
+                                        <Text style={{ color: "white", fontWeight: "bold" }}>
+                                            1
+                                        </Text>
+                                    </View>
+                                    <AntDesign name="message1" size={24} color="black" />
+                                </View>
+                            ),
+                            tabBarButton: (props) => (
+                                <TouchableOpacity
+                                    {...props}
+                                    onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                                />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Profil"
+                        children={() => <></>}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <AntDesign name="user" size={24} color="black" />
+                            ),
+                            tabBarButton: (props) => (
+                                <TouchableOpacity
+                                    {...props}
+                                    onPress={() => setLoggedInAsVisit(!loggedInAsVisit)}
+                                />
+                            ),
+                        }}
+                    />
+                </AppTabNavigator.Navigator>
+            ) : (
+                <AppTabNavigator.Navigator
+                    tabBarOptions={{
+                        activeTintColor: "red",
+                        activeBackgroundColor: "white",
+                        inactiveBackgroundColor: "white",
+                    }}
+                >
+                    <AppTabNavigator.Screen
+                        name="Accueil"
+                        component={AccueilNavigator}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <AntDesign name="home" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Acheter"
+                        children={(props) => (
+                            <AchatNavigator
+                                {...props}
+                                loggedInAsVisit={loggedInAsVisit}
+                                setLoggedInAsVisit={setLoggedInAsVisit}
+                            />
+                        )}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <Entypo name="shopping-cart" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Vendre"
+                        listeners={resetStackOnTabPress}
+                        children={(props) => (
+                            <SellNavigator
+                                {...props}
+                                loggedInAsVisit={loggedInAsVisit}
+                                setLoggedInAsVisit={setLoggedInAsVisit}
+                            />
+                        )}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <Ionicons name="md-add-circle" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Message"
+                        listeners={resetStackOnTabPress}
+                        component={MessageNavigator}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <View>
+                                    {messageLength === 1 ? (
+                                        <View
+                                            style={{
+                                                backgroundColor: "#D51317",
+                                                borderRadius: 30,
+                                                alignItems: "center",
+                                                position: "absolute",
+                                                width: 18,
+                                                bottom: "45%",
+                                                left: "25%",
+                                            }}
+                                        >
+                                            <Text style={{ color: "white", fontWeight: "bold" }}>
+                                                1
+                                            </Text>
+                                        </View>
+                                    ) : (
+                                        <View />
+                                    )}
+                                    <AntDesign name="message1" size={24} color="black" />
+                                </View>
+                            ),
+                        }}
+                    />
+                    <AppTabNavigator.Screen
+                        name="Profil"
+                        component={ProfileNavigator}
+                        listeners={resetStackOnTabPress}
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <AntDesign name="user" size={24} color="black" />
+                            ),
+                        }}
+                    />
+                </AppTabNavigator.Navigator>
             )}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Entypo name="shopping-cart" size={24} color="black" />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Vendre"
-            listeners={resetStackOnTabPress}
-            children={(props) => (
-              <SellNavigator
-                {...props}
-                loggedInAsVisit={loggedInAsVisit}
-                setLoggedInAsVisit={setLoggedInAsVisit}
-              />
-            )}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="md-add-circle" size={24} color="black" />
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Message"
-            listeners={resetStackOnTabPress}
-            component={MessageNavigator}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <View>
-                  {messageLength === 1 ? (
-                    <View
-                      style={{
-                        backgroundColor: "#D51317",
-                        borderRadius: 30,
-                        alignItems: "center",
-                        position: "absolute",
-                        width: 18,
-                        bottom: "45%",
-                        left: "25%",
-                      }}
-                    >
-                      <Text style={{ color: "white", fontWeight: "bold" }}>
-                        1
-                      </Text>
-                    </View>
-                  ) : (
-                    <View />
-                  )}
-                  <AntDesign name="message1" size={24} color="black" />
-                </View>
-              ),
-            }}
-          />
-          <AppTabNavigator.Screen
-            name="Profil"
-            component={ProfileNavigator}
-            listeners={resetStackOnTabPress}
-            options={{
-              tabBarIcon: ({ color, size }) => (
-                <AntDesign name="user" size={24} color="black" />
-              ),
-            }}
-          />
-        </AppTabNavigator.Navigator>
-      )}
-    </>
-  );
+        </>
+    );
 };
 
 const styles = StyleSheet.create({});

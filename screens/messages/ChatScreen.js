@@ -23,8 +23,6 @@ const ChatScreen = (props) => {
     return unsubscribe
   }, [messages])
 
-
-  console.log('receiver', receiver)
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -36,13 +34,13 @@ const ChatScreen = (props) => {
     const id = Math.random() * 30000000;
     try {
       axios.post(`${BASE_URL}/api/messages/thread`, {
-      id: thread._id,
-      text,
-      messageId: id,
-      userId: user._id,
-      userName: user.pseudo,
-      createdAt: new Date(),
-    }, config).then(() => console.log('Message sent'));
+        id: thread._id,
+        text,
+        messageId: id,
+        userId: user._id,
+        userName: user.pseudo,
+        createdAt: new Date(),
+      }, config).then(() => console.log('Message sent'));
 
 
       await fetch("https://exp.host/--/api/v2/push/send", {
@@ -77,9 +75,7 @@ const ChatScreen = (props) => {
     <p>${receiver.pseudo}, <br></p>
     <p>Un message vient d'être déposé à votre attention, vous pouvez le retrouver dans l’application et y répondre.</p>
     <p>Détails du message : </p>
-
     <p>${text}</p>
-
     <p style="margin: 0">L'équipe KVal Occaz</p>
     <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
 </div>`,
@@ -91,11 +87,11 @@ const ChatScreen = (props) => {
 
   function renderSend(props) {
     return (
-      <Send {...props}>
-        <View style={styles.sendingContainer}>
-          <IconButton icon="send-circle" size={32} color="#0d1b3d" />
-        </View>
-      </Send>
+        <Send {...props}>
+          <View style={styles.sendingContainer}>
+            <IconButton icon="send-circle" size={32} color="#0d1b3d" />
+          </View>
+        </Send>
     );
   }
 

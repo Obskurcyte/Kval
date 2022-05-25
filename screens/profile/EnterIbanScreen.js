@@ -11,7 +11,6 @@ import { Formik } from "formik";
 import firebase from "firebase";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import * as userActions from "../../store/actions/users";
 import * as Yup from "yup";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,7 +20,7 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const EnterIbanScreen = (props) => {
-  const dispatch = useDispatch();
+
 
   const { signedIn, setSignedIn } = useContext(authContext);
 
@@ -101,162 +100,162 @@ const EnterIbanScreen = (props) => {
   }
 
   return (
-    <View style={styles.container}>
-      {auth ? <View>
-        <Text style={styles.title}>IBAN</Text>
-        <Formik
-            initialValues={initialValues}
-            validationSchema={IBANSchema}
-            onSubmit={(values) => {
-              setBIC(values.BIC)
-              setIBAN(values.IBAN)
-              setModalVisible(true)
-            }}
-        >
-          {(props) => (
-              <View>
-                <Modal transparent={true} visible={modalVisible}>
-                  <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                      <Text style={styles.modalText}>
-                        Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
-                      </Text>
-                      <TouchableOpacity
-                          style={styles.mettreEnVentePopup}
-                          onPress={async () => {
-                            await askMoney(BIC, IBAN)
-                            setModalVisible(false);
-                            bigProps.navigation.navigate("ValidationIBANScreen");
-                          }}
-                      >
-                        <Text style={styles.mettreEnVenteText}>
-                          Oui
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                          style={styles.reset}
-                          onPress={() => {
-                            setModalVisible(false);
-                          }}
-                      >
-                        <Text style={styles.resetText}>Annuler</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </Modal>
-                <TextInput
-                    placeholder="IBAN"
-                    style={styles.input}
-                    value={props.values.IBAN}
-                    onChangeText={props.handleChange("IBAN")}
-                />
-                {props.errors.IBAN && props.errors.IBAN ? (
-                    <Text style={styles.errors}>{props.errors.IBAN}</Text>
-                ) : null}
-                <Text style={styles.title}>BIC</Text>
-                <TextInput
-                    placeholder="BIC"
-                    style={styles.input}
-                    value={props.values.BIC}
-                    onChangeText={props.handleChange("BIC")}
-                />
-                {props.errors.BIC && props.errors.BIC ? (
-                    <Text style={styles.errors}>{props.errors.BIC}</Text>
-                ) : null}
-                <TouchableOpacity
-                    style={styles.mettreEnVente}
-                    onPress={props.handleSubmit}
-                >
-                  <Text style={styles.mettreEnVenteText}>Soumettre</Text>
-                </TouchableOpacity>
-              </View>
-          )}
-        </Formik>
-      </View> : <View>
-        {!confirmAuth ? <View>
-          <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
-          <TouchableOpacity
-              style={styles.mettreEnVente}
-              onPress={() => setConfirmAuth(true)}
+      <View style={styles.container}>
+        {auth ? <View>
+          <Text style={styles.title}>IBAN</Text>
+          <Formik
+              initialValues={initialValues}
+              validationSchema={IBANSchema}
+              onSubmit={(values) => {
+                setBIC(values.BIC)
+                setIBAN(values.IBAN)
+                setModalVisible(true)
+              }}
           >
-            <Text style={styles.mettreEnVenteText}>
-              M'authentifier
-            </Text>
-          </TouchableOpacity>
-        </View> :    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
-          <KeyboardAvoidingView style={styles.container3} behavior="padding">
-            <Text style={styles.title2}>Se connecter</Text>
-            <Formik
-                initialValues={initialValues2}
-                onSubmit={async (values) => {
-                  console.log(values);
-                  try {
-                    const response = await axios.post(`${BASE_URL}/api/users/login`, {
-                      email: values.email,
-                      password: values.password,
-                    })
-
-                    const token = response.data.token;
-                    console.log('token', token);
-                    await AsyncStorage.setItem("jwt", token)
-                    const decoded = jwt_decode(token)
-                    console.log('decoded', decoded);
-                    await AsyncStorage.setItem("userId", decoded.userId);
-                    setSignedIn(true);
-                    setAuth(true);
-                  } catch (err) {
-                    console.log(err);
-                    setErr(err);
-                  }
-                }}
+            {(props) => (
+                <View>
+                  <Modal transparent={true} visible={modalVisible}>
+                    <View style={styles.centeredView}>
+                      <View style={styles.modalView}>
+                        <Text style={styles.modalText}>
+                          Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
+                        </Text>
+                        <TouchableOpacity
+                            style={styles.mettreEnVentePopup}
+                            onPress={async () => {
+                              await askMoney(BIC, IBAN)
+                              setModalVisible(false);
+                              bigProps.navigation.navigate("ValidationIBANScreen");
+                            }}
+                        >
+                          <Text style={styles.mettreEnVenteText}>
+                            Oui
+                          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.reset}
+                            onPress={() => {
+                              setModalVisible(false);
+                            }}
+                        >
+                          <Text style={styles.resetText}>Annuler</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </Modal>
+                  <TextInput
+                      placeholder="IBAN"
+                      style={styles.input}
+                      value={props.values.IBAN}
+                      onChangeText={props.handleChange("IBAN")}
+                  />
+                  {props.errors.IBAN && props.errors.IBAN ? (
+                      <Text style={styles.errors}>{props.errors.IBAN}</Text>
+                  ) : null}
+                  <Text style={styles.title}>BIC</Text>
+                  <TextInput
+                      placeholder="BIC"
+                      style={styles.input}
+                      value={props.values.BIC}
+                      onChangeText={props.handleChange("BIC")}
+                  />
+                  {props.errors.BIC && props.errors.BIC ? (
+                      <Text style={styles.errors}>{props.errors.BIC}</Text>
+                  ) : null}
+                  <TouchableOpacity
+                      style={styles.mettreEnVente}
+                      onPress={props.handleSubmit}
+                  >
+                    <Text style={styles.mettreEnVenteText}>Soumettre</Text>
+                  </TouchableOpacity>
+                </View>
+            )}
+          </Formik>
+        </View> : <View>
+          {!confirmAuth ? <View>
+            <Text style={styles.authText}>Pour votre sécurité nous vous demandons de vous authentifier</Text>
+            <TouchableOpacity
+                style={styles.mettreEnVente}
+                onPress={() => setConfirmAuth(true)}
             >
-              {(props) => (
-                  <View style={styles.formContainer}>
-                    <View>
-                      <Text style={styles.text4}>Email</Text>
-                      <TextInput
-                          placeholder="Email"
-                          keyboardType="email-address"
-                          autoCompleteType="email"
-                          placeholderTextColor="white"
-                          value={props.values.email}
-                          style={styles.textInput}
-                          onChangeText={props.handleChange("email")}
-                      />
+              <Text style={styles.mettreEnVenteText}>
+                M'authentifier
+              </Text>
+            </TouchableOpacity>
+          </View> :    <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
+            <KeyboardAvoidingView style={styles.container3} behavior="padding">
+              <Text style={styles.title2}>Se connecter</Text>
+              <Formik
+                  initialValues={initialValues2}
+                  onSubmit={async (values) => {
+                    console.log(values);
+                    try {
+                      const response = await axios.post(`${BASE_URL}/api/users/login`, {
+                        email: values.email,
+                        password: values.password,
+                      })
+
+                      const token = response.data.token;
+                      console.log('token', token);
+                      await AsyncStorage.setItem("jwt", token)
+                      const decoded = jwt_decode(token)
+                      console.log('decoded', decoded);
+                      await AsyncStorage.setItem("userId", decoded.userId);
+                      setSignedIn(true);
+                      setAuth(true);
+                    } catch (err) {
+                      console.log(err);
+                      setErr(err);
+                    }
+                  }}
+              >
+                {(props) => (
+                    <View style={styles.formContainer}>
+                      <View>
+                        <Text style={styles.text4}>Email</Text>
+                        <TextInput
+                            placeholder="Email"
+                            keyboardType="email-address"
+                            autoCompleteType="email"
+                            placeholderTextColor="white"
+                            value={props.values.email}
+                            style={styles.textInput}
+                            onChangeText={props.handleChange("email")}
+                        />
+                      </View>
+
+                      <View>
+                        <Text style={styles.text4}>Mot de passe</Text>
+                        <TextInput
+                            placeholder="Mot de passe"
+                            placeholderTextColor="white"
+                            value={props.values.password}
+                            style={styles.textInput}
+                            secureTextEntry={true}
+                            onChangeText={props.handleChange("password")}
+                        />
+                      </View>
+
+                      {err ? (
+                          <Text style={styles.err}>Vos identifiants sont incorrects</Text>
+                      ) : (
+                          <Text />
+                      )}
+                      <TouchableOpacity
+                          style={styles.buttonContainer}
+                          onPress={props.handleSubmit}
+                      >
+                        <Text style={styles.createCompte}>Valider</Text>
+                      </TouchableOpacity>
                     </View>
+                )}
+              </Formik>
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>}
 
-                    <View>
-                      <Text style={styles.text4}>Mot de passe</Text>
-                      <TextInput
-                          placeholder="Mot de passe"
-                          placeholderTextColor="white"
-                          value={props.values.password}
-                          style={styles.textInput}
-                          secureTextEntry={true}
-                          onChangeText={props.handleChange("password")}
-                      />
-                    </View>
+        </View>}
 
-                    {err ? (
-                        <Text style={styles.err}>Vos identifiants sont incorrects</Text>
-                    ) : (
-                        <Text />
-                    )}
-                    <TouchableOpacity
-                        style={styles.buttonContainer}
-                        onPress={props.handleSubmit}
-                    >
-                      <Text style={styles.createCompte}>Valider</Text>
-                    </TouchableOpacity>
-                  </View>
-              )}
-            </Formik>
-          </KeyboardAvoidingView>
-        </TouchableWithoutFeedback>}
-
-      </View>}
-
-    </View>
+      </View>
   );
 };
 

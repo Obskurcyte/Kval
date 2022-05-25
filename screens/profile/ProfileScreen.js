@@ -23,7 +23,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const ProfileScreen = (props) => {
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
   const [userData, setUserData] = useState(null);
@@ -53,18 +52,11 @@ const ProfileScreen = (props) => {
       setUserData(data)
     }
     const unsubscribe = props.navigation.addListener('focus', () => {
-        getUser()
+      getUser()
     });
     return unsubscribe
   }, [props.navigation]);
 
-
-  useEffect(() => {
-    const unsubscribe = props.navigation.addListener('focus', () => {
-      dispatch(messageAction.fetchUnreadMessage())
-    });
-    return unsubscribe
-  }, [props.navigation, dispatch])
 
   const logout = async () => {
     await AsyncStorage.removeItem("userId");
@@ -161,13 +153,13 @@ const ProfileScreen = (props) => {
         task.snapshot.ref
             .getDownloadURL()
             .then(async (snapshot) => {
-                await axios.put(`${BASE_URL}/api/users`, {
-                  id: userData._id,
-                  image: snapshot
-                })
-                console.log('done')
-                resolve();
-              });
+              await axios.put(`${BASE_URL}/api/users`, {
+                id: userData._id,
+                image: snapshot
+              })
+              console.log('done')
+              resolve();
+            });
       }
 
       const taskError = (snapshot) => {
@@ -198,151 +190,151 @@ const ProfileScreen = (props) => {
     );
   } else {
     return (
-      <ScrollView>
-        <View style={styles.container}>
-          <Modal transparent={true} visible={modalVisible}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>
-                  Comment souhaitez-vous choisir votre photo ?
-                </Text>
-                <TouchableOpacity
-                    style={styles.mettreEnVentePopup}
-                    onPress={async () => {
-                      await pickImage();
-                      setModalVisible(false);
-                    }}
-                >
-                  <Text style={styles.mettreEnVenteText}>
-                    Depuis la galerie
+        <ScrollView>
+          <View style={styles.container}>
+            <Modal transparent={true} visible={modalVisible}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Comment souhaitez-vous choisir votre photo ?
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={styles.reset}
-                    onPress={async () => {
-                      await takePicture();
-                    }}
-                >
-                  <Text style={styles.resetText}>Prendre une photo</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                      style={styles.mettreEnVentePopup}
+                      onPress={async () => {
+                        await pickImage();
+                        setModalVisible(false);
+                      }}
+                  >
+                    <Text style={styles.mettreEnVenteText}>
+                      Depuis la galerie
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      style={styles.reset}
+                      onPress={async () => {
+                        await takePicture();
+                      }}
+                  >
+                    <Text style={styles.resetText}>Prendre une photo</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+            <View style={styles.profileHeader}>
+              <View style={styles.imgContainer}>
+                {userData && userData.downloadURL ? (
+                    <View>
+                      <Image
+                          style={styles.image}
+                          source={{ uri: userData.downloadURL }}
+                      />
+                    </View>
+                ) : (
+                    <TouchableOpacity
+                        style={styles.addPhoto}
+                        onPress={() => setModalVisible(true)}
+                    >
+                      <Text style={styles.addPhotoText}>Ajouter une photo</Text>
+                      <MaterialIcons
+                          name="add-a-photo"
+                          size={24}
+                          color="lightgrey"
+                          style={styles.iconPhoto}
+                      />
+                    </TouchableOpacity>
+                )}
+              </View>
+              <View>
+                <Text style={styles.nomText}>
+                  {userData?.firstName} {userData?.lastName}
+                </Text>
               </View>
             </View>
-          </Modal>
-          <View style={styles.profileHeader}>
-            <View style={styles.imgContainer}>
-              {userData && userData.downloadURL ? (
-                <View>
-                  <Image
-                    style={styles.image}
-                    source={{ uri: userData.downloadURL }}
-                  />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  style={styles.addPhoto}
-                  onPress={() => setModalVisible(true)}
-                >
-                  <Text style={styles.addPhotoText}>Ajouter une photo</Text>
-                  <MaterialIcons
-                    name="add-a-photo"
-                    size={24}
-                    color="lightgrey"
-                    style={styles.iconPhoto}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
+
             <View>
-              <Text style={styles.nomText}>
-                {userData?.firstName} {userData?.lastName}
-              </Text>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("MesCommandesScreen", {
+                    user: userData
+                  })}
+              >
+                <Text style={styles.text}>Mes commandes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("ArticlesEnVenteScreen", {
+                    user: userData
+                  })}
+              >
+                <Text style={styles.text}>Mes articles en vente</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("InformationsScreen", {
+                    user: userData
+                  })}
+              >
+                <Text style={styles.text}>Mes informations</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("PortefeuilleScreen", {
+                    user: userData
+                  })}
+              >
+                <Text style={styles.text}>Mon portefeuille</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("CommentCaMarcheScreen")}
+              >
+                <Text style={styles.text}>Comment ça marche</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("ContactScreen")}
+              >
+                <Text style={styles.text}>Nous contacter</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("ViePriveeScreen")}
+              >
+                <Text style={styles.text}>Vie privée</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.boutonList}>
+                <Text
+                    style={styles.text}
+                    onPress={() => props.navigation.navigate("CGUScreen")}
+                >
+                  Conditions générales d'utilisations
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() => props.navigation.navigate("MentionLegaleScreen")}
+              >
+                <Text style={styles.text}>Mentions Légales</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                  style={styles.boutonList}
+                  onPress={() =>
+                      props.navigation.navigate("SignalerUnLitigeScreen")
+                  }
+              >
+                <Text style={styles.text}>Signaler un litige</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                  style={styles.mettreEnVente}
+                  onPress={() => logout()}
+              >
+                <Text style={styles.mettreEnVenteText}>Se déconnecter</Text>
+              </TouchableOpacity>
             </View>
           </View>
-
-          <View>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("MesCommandesScreen", {
-                user: userData
-              })}
-            >
-              <Text style={styles.text}>Mes commandes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("ArticlesEnVenteScreen", {
-                user: userData
-              })}
-            >
-              <Text style={styles.text}>Mes articles en vente</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("InformationsScreen", {
-                user: userData
-              })}
-            >
-              <Text style={styles.text}>Mes informations</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("PortefeuilleScreen", {
-                user: userData
-              })}
-            >
-              <Text style={styles.text}>Mon portefeuille</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.boutonList}
-                onPress={() => props.navigation.navigate("CommentCaMarcheScreen")}
-            >
-              <Text style={styles.text}>Comment ça marche</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={styles.boutonList}
-                onPress={() => props.navigation.navigate("ContactScreen")}
-            >
-              <Text style={styles.text}>Nous contacter</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("ViePriveeScreen")}
-            >
-              <Text style={styles.text}>Vie privée</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.boutonList}>
-              <Text
-                style={styles.text}
-                onPress={() => props.navigation.navigate("CGUScreen")}
-              >
-                Conditions générales d'utilisations
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.boutonList}
-              onPress={() => props.navigation.navigate("MentionLegaleScreen")}
-            >
-              <Text style={styles.text}>Mentions Légales</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.boutonList}
-                onPress={() =>
-                    props.navigation.navigate("SignalerUnLitigeScreen")
-                }
-            >
-              <Text style={styles.text}>Signaler un litige</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.mettreEnVente}
-              onPress={() => logout()}
-            >
-              <Text style={styles.mettreEnVenteText}>Se déconnecter</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
     );
   }
 };

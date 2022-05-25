@@ -40,76 +40,71 @@ const EvaluationScreen = (props) => {
                 behavior="position"
                 style={styles.container}
             >
-               <View>
-                   <Text style={styles.evaluationText}>Evalue {product.pseudoVendeur} !</Text>
-                   <Text style={styles.achatText}>Tu as acheté...</Text>
-                   <EvalueItem
-                       item={product}
-                   />
+                <ScrollView>
+                    <Text style={styles.evaluationText}>Evalue {product.pseudoVendeur} !</Text>
+                    <Text style={styles.achatText}>Tu as acheté...</Text>
+                    <EvalueItem
+                        item={product}
+                    />
 
-                   <Rating
-                       showRating
-                       type='custom'
-                       ratingCount={5}
-                       imageSize={30}
-                       onFinishRating={ratingCompleted}
-                       style={styles.rating}
-                   />
-                        <Formik
-                            initialValues={{
+                    <Rating
+                        showRating
+                        type='custom'
+                        ratingCount={5}
+                        imageSize={30}
+                        onFinishRating={ratingCompleted}
+                        style={styles.rating}
+                    />
+                    <Formik
+                        initialValues={{
                             commentaire: ''
-                            }}
-                            onSubmit={async values => {
-                                await axios.put(`${BASE_URL}/api/users`, {
-                                    id: currentUser._id,
-                                    commentaire: values.commentaire,
-                                    rating,
-                                    rateur: currentUser.pseudo
-                                })
-                                await axios.delete(`${BASE_URL}/api/commandes/${product._id}`);
-                                await axios.put(`${BASE_URL}/api/users`, {
-                                    id: product.vendeur,
-                                    addPortefeuille: Number(product.prix)
-                                })
-                                await axios.post("https://kval-backend.herokuapp.com/send", {
-                                    mail: product.emailVendeur,
-                                    subject: "Confirmation de réception",
-                                    html_output: `<div><p>Bonjour ${product.pseudoVendeur}, <br></p> 
+                        }}
+                        onSubmit={async values => {
+                            await axios.put(`${BASE_URL}/api/users`, {
+                                id: currentUser._id,
+                                commentaire: values.commentaire,
+                                rating,
+                                rateur: currentUser.pseudo
+                            })
+                            await axios.delete(`${BASE_URL}/api/commandes/${product._id}`);
+                            await axios.put(`${BASE_URL}/api/users`, {
+                                id: product.vendeur,
+                                addPortefeuille: Number(product.prix)
+                            })
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: product.emailVendeur,
+                                subject: "Confirmation de réception",
+                                html_output: `<div><p>Bonjour ${product.pseudoVendeur}, <br></p> 
 <p>Votre article vient d’être reçu par ${currentUser.pseudo} et conforme à sa description.</p>
 <p>Résumé de votre article : </p>
-
 <hr>
-
 <div style="display: flex">
     <div style="margin-right: 30px">
         <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
     <div style="margin-top: 20px">
-        <p style="margin: 0">Titre : ${product.productTitle}</p>
+        <p style="margin: 0">Titre : ${product.title}</p>
         <p style="margin: 0">Description : ${product.description}</p>
         <p style="margin: 0">Prix net vendeur: ${product.prix} €</p>
         <p style="margin: 0">Poids: ${product.poids} kgs</p>
         <p style="margin: 0">Catégorie: ${product.categorie}</p>
     </div>
 </div>
-
 <hr>
-
 <p>Votre portefeuille sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <br>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                                });
-                                await axios.post("https://kval-backend.herokuapp.com/send", {
-                                    mail: currentUser.email,
-                                    subject: "Confirmation de réception",
-                                    html_output: `<div><p>${currentUser.pseudo}, <br></p> 
+                            });
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: currentUser.email,
+                                subject: "Confirmation de réception",
+                                html_output: `<div><p>${currentUser.pseudo}, <br></p> 
 <p>Vous venez de déclarer votre article comme étant reçu et conforme à sa description.</p>
 <p>Résumé de votre article : </p>
 <hr>
-
 <div style="display: flex">
     <div style="margin-right: 30px">
         <img src="${product.image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
@@ -124,37 +119,35 @@ const EvaluationScreen = (props) => {
         <p style="font-weight: bold; margin: 0">Total: ${product.total} € payé par ${product.moyenPaiement}</p>
     </div>
 </div>
-
 <hr>
-
 <p>Le vendeur sera crédité de la valeur de l’article d’ici quelques secondes.</p>
 <p>Nous vous remercions pour votre confiance,</p>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-                                });
+                            });
 
-                                props.navigation.navigate('ValidationEvaluationScreen')
-                            }}
-                        >
-                            {props => (
-                                <ScrollView>
-                                    <View style={styles.commentairesContainer}>
-                                        <Text style={styles.commentaireText}>Commentaire</Text>
-                                        <TextInput
-                                            placeholder="Dis nous ce que tu as pensé de ton achat"
-                                            value={props.values.commentaire}
-                                            onChangeText={props.handleChange('commentaire')}
-                                        />
-                                    </View>
+                            props.navigation.navigate('ValidationEvaluationScreen')
+                        }}
+                    >
+                        {props => (
+                            <>
+                                <View style={styles.commentairesContainer}>
+                                    <Text style={styles.commentaireText}>Commentaire</Text>
+                                    <TextInput
+                                        placeholder="Dis nous ce que tu as pensé de ton achat"
+                                        value={props.values.commentaire}
+                                        onChangeText={props.handleChange('commentaire')}
+                                    />
+                                </View>
 
-                                    <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
-                                        <Text style={styles.mettreEnVenteText}>Evaluer</Text>
-                                    </TouchableOpacity>
-                                </ScrollView>
-                            )}
-                        </Formik>
-               </View>
+                                <TouchableOpacity style={styles.mettreEnVente} onPress={props.handleSubmit}>
+                                    <Text style={styles.mettreEnVenteText}>Evaluer</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </Formik>
+                </ScrollView>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

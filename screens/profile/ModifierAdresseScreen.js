@@ -10,9 +10,6 @@ import {
     Keyboard, KeyboardAvoidingView
 } from 'react-native';
 import {Formik} from "formik";
-import firebase from "firebase";
-import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -46,65 +43,65 @@ const ModifierAdresseScreen = (props) => {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.container}>
-            <Text style={styles.title}>Nouvelle adresse</Text>
+                <View style={styles.container}>
+                    <Text style={styles.title}>Nouvelle adresse</Text>
 
-            <Formik
-                initialValues={initialValues}
-                onSubmit={async (values) => {
-                    console.log(values)
-                    try {
-                        await axios.put(`${BASE_URL}/api/users`, {
-                            id: userData._id,
-                            address: values.adresse,
-                            postalCode: values.postalCode,
-                            ville: values.ville,
-                            pays: values.pays
-                        }).then(() => props.navigation.navigate('InformationsScreen'))
-                    } catch (err) {
-                        console.log(err)
-                    }
-                }}
-            >
-                {props => (
-                    <View>
-                        <TextInput
-                            placeholder="Adresse"
-                            style={styles.input}
-                            value={props.values.adresse}
-                            onChangeText={props.handleChange('adresse')}
-                        />
-                        <TextInput
-                            placeholder="Code Postal"
-                            style={styles.input}
-                            keyboardType="numeric"
-                            value={props.values.postalCode}
-                            onChangeText={props.handleChange('postalCode')}
-                        />
-                        <TextInput
-                            placeholder="Ville"
-                            style={styles.input}
-                            value={props.values.ville}
-                            onChangeText={props.handleChange('ville')}
-                        />
-                        <TextInput
-                            placeholder="Pays"
-                            style={styles.input}
-                            value={props.values.pays}
-                            onChangeText={props.handleChange('pays')}
-                        />
+                    <Formik
+                        initialValues={initialValues}
+                        onSubmit={async (values) => {
+                            console.log(values)
+                            try {
+                                await axios.put(`${BASE_URL}/api/users`, {
+                                    id: userData._id,
+                                    address: values.adresse,
+                                    postalCode: values.postalCode,
+                                    ville: values.ville,
+                                    pays: values.pays
+                                }).then(() => props.navigation.navigate('InformationsScreen'))
+                            } catch (err) {
+                                console.log(err)
+                            }
+                        }}
+                    >
+                        {props => (
+                            <View>
+                                <TextInput
+                                    placeholder="Adresse"
+                                    style={styles.input}
+                                    value={props.values.adresse}
+                                    onChangeText={props.handleChange('adresse')}
+                                />
+                                <TextInput
+                                    placeholder="Code Postal"
+                                    style={styles.input}
+                                    keyboardType="numeric"
+                                    value={props.values.postalCode}
+                                    onChangeText={props.handleChange('postalCode')}
+                                />
+                                <TextInput
+                                    placeholder="Ville"
+                                    style={styles.input}
+                                    value={props.values.ville}
+                                    onChangeText={props.handleChange('ville')}
+                                />
+                                <TextInput
+                                    placeholder="Pays"
+                                    style={styles.input}
+                                    value={props.values.pays}
+                                    onChangeText={props.handleChange('pays')}
+                                />
 
-                        <TouchableOpacity
-                            style={styles.mettreEnVente}
-                            onPress={props.handleSubmit}
-                        >
-                            <Text style={styles.mettreEnVenteText}>Confirmer la modification</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            </Formik>
+                                <TouchableOpacity
+                                    style={styles.mettreEnVente}
+                                    onPress={props.handleSubmit}
+                                >
+                                    <Text style={styles.mettreEnVenteText}>Confirmer la modification</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </Formik>
 
-        </View>
+                </View>
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
     );

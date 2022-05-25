@@ -3,7 +3,6 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions} from 'r
 import {Formik} from "formik";
 import firebase from "firebase";
 import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 const windowWidth = Dimensions.get('window').width;
@@ -32,59 +31,59 @@ const ModifierEmailScreen = (props) => {
     }, [dispatch]);
 
 
-  return (
-   <View style={styles.container}>
-        <Text style={styles.title}>Email</Text>
-        <Text style={{fontSize: 18, marginBottom: '10%'}}>Adresse mail actuelle : <Text style={{color: '#D51317', fontSize: 16}}>{userData.email}</Text></Text>
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Email</Text>
+            <Text style={{fontSize: 18, marginBottom: '10%'}}>Adresse mail actuelle : <Text style={{color: '#D51317', fontSize: 16}}>{userData.email}</Text></Text>
 
-       <Formik
-        initialValues={initialValues}
-        onSubmit={async (values) => {
-            console.log(values)
+            <Formik
+                initialValues={initialValues}
+                onSubmit={async (values) => {
+                    console.log(values)
 
-            for (let product of productByEmail) {
-                console.log(product)
-                await axios.put(`${BASE_URL}/api/products`, {
-                    id: userData._id,
-                    emailVendeur: values.initial
-                })
-            }
+                    for (let product of productByEmail) {
+                        console.log(product)
+                        await axios.put(`${BASE_URL}/api/products`, {
+                            id: userData._id,
+                            emailVendeur: values.initial
+                        })
+                    }
 
-            await axios.put(`${BASE_URL}/api/users`, {
-                id: userData._id,
-                email: values.initial
-            }).then(() => props.navigation.navigate('ModifierEmailConfirmationScreen'))
-        }}
-       >
-           {props => (
-               <View>
-                   <Text>Nouvelle adresse mail</Text>
-                   <TextInput
-                   placeholder="Email"
-                   style={styles.input}
-                   value={props.values.initial}
-                   onChangeText={props.handleChange('initial')}
-                   />
-                   <Text>Confirmer votre nouvelle adresse mail</Text>
+                    await axios.put(`${BASE_URL}/api/users`, {
+                        id: userData._id,
+                        email: values.initial
+                    }).then(() => props.navigation.navigate('ModifierEmailConfirmationScreen'))
+                }}
+            >
+                {props => (
+                    <View>
+                        <Text>Nouvelle adresse mail</Text>
+                        <TextInput
+                            placeholder="Email"
+                            style={styles.input}
+                            value={props.values.initial}
+                            onChangeText={props.handleChange('initial')}
+                        />
+                        <Text>Confirmer votre nouvelle adresse mail</Text>
 
-                   <TextInput
-                       style={styles.input}
-                       placeholder="Email"
-                       value={props.values.confirmed}
-                       onChangeText={props.handleChange('confirmed')}
-                   />
-                   <TouchableOpacity
-                       style={styles.mettreEnVente}
-                       onPress={props.handleSubmit}
-                   >
-                       <Text style={styles.mettreEnVenteText}>Confirmer la modification</Text>
-                   </TouchableOpacity>
-               </View>
-           )}
-       </Formik>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            value={props.values.confirmed}
+                            onChangeText={props.handleChange('confirmed')}
+                        />
+                        <TouchableOpacity
+                            style={styles.mettreEnVente}
+                            onPress={props.handleSubmit}
+                        >
+                            <Text style={styles.mettreEnVenteText}>Confirmer la modification</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </Formik>
 
-   </View>
-  );
+        </View>
+    );
 };
 
 

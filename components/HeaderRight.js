@@ -22,15 +22,14 @@ const HeaderRight = (props) => {
   for (let data in cartItems) {
     totalQuantity += parseFloat(cartItems[data].quantity)
   }
-  console.log('totalQuantity', totalQuantity)
-  console.log('cartItems', cartItems)
+
   return (
-    <View>
-      <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
-        <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+      <View>
+        <View style={{backgroundColor: '#D51317', borderRadius: 30, alignItems: 'center', position: 'absolute', width: 20, bottom: '65%', right: '55%'}}>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>{totalQuantity}</Text>
+        </View>
+        <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
       </View>
-      <Fontisto name="shopping-basket" size={24} color="#D51317" onPress={() => props.navigation.navigate('CartScreen')}/>
-    </View>
   );
 };
 

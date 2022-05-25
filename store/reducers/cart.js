@@ -1,6 +1,6 @@
+
 import {ADD_TO_CART, DELETE_CART, REMOVE_FROM_CART} from "../actions/cart";
 import CartItem from "../../models/cart-item";
-import {add} from "react-native-reanimated";
 
 const initialState = {
   items: {},
@@ -11,7 +11,7 @@ const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
-      const categorie = addedProduct.categorie;
+      const categorie = addedProduct.brand;
       const prodPrice = addedProduct.prix;
       const prodTitle = addedProduct.title;
       const pushToken = addedProduct.token;
@@ -23,61 +23,60 @@ const cartReducer = (state = initialState, action) => {
       const livraison = addedProduct.livraison;
       const description = addedProduct.description;
 
-      console.log('addedProduct', addedProduct);
       let updatedOrNewCartItem;
 
-      console.log("PUSHTOKEN", pushToken);
 
-      if (state.items[addedProduct.id]) {
+      if (state.items[addedProduct._id]) {
         // already have item in cart
         updatedOrNewCartItem = new CartItem (
-          state.items[addedProduct.id].quantity + 1,
-          prodPrice,
-          prodTitle,
-          prodImage,
-          pushToken,
-          idVendeur,
-          pseudoVendeur,
-          emailVendeur,
-          categorie,
-          poids,
-          livraison,
-          state.items[addedProduct.id].quantity * prodPrice,
+            state.items[addedProduct._id].quantity + 1,
+            prodPrice,
+            prodTitle,
+            prodImage,
+            pushToken,
+            idVendeur,
+            pseudoVendeur,
+            emailVendeur,
+            categorie,
+            poids,
+            livraison,
+            state.items[addedProduct._id].quantity * prodPrice,
             description,
         );
       } else {
         updatedOrNewCartItem = new CartItem(
-          1,
-          prodPrice,
-          prodTitle,
-          prodImage,
-          pushToken,
+            1,
+            prodPrice,
+            prodTitle,
+            prodImage,
+            pushToken,
             idVendeur,
             pseudoVendeur,
-          emailVendeur,
-          categorie,
-          poids,
-          livraison,
-          prodPrice,
+            emailVendeur,
+            categorie,
+            poids,
+            livraison,
+            prodPrice,
             description,
         )
       }
       return {
         ...state,
-        items: {...state.items, [addedProduct.id] : updatedOrNewCartItem},
+        items: {...state.items, [addedProduct._id] : updatedOrNewCartItem},
         totalAmount: state.totalAmount + prodPrice
       }
+
     case REMOVE_FROM_CART:
       const selectedCartItem = state.items[action.pid]
       const currentQty = selectedCartItem.quantity;
       let updatedCartItems;
       if (currentQty > 1) {
         const updatedCartItem = new CartItem(
-          selectedCartItem.quantity - 1,
-          selectedCartItem.productPrice,
-          selectedCartItem.productTitle,
-          selectedCartItem.image,
-          selectedCartItem.sum - selectedCartItem.productPrice
+            selectedCartItem.quantity - 1,
+            selectedCartItem.productPrice,
+            selectedCartItem.productTitle,
+            selectedCartItem.image,
+            selectedCartItem.sum - selectedCartItem.productPrice
         );
         updatedCartItems = {...state.items, [action.pid] : updatedCartItem}
       } else {

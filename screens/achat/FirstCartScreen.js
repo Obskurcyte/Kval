@@ -3,7 +3,6 @@ import {View, Text, FlatList, TouchableOpacity, ScrollView, StyleSheet, Dimensio
 import CartItem from "../../components/CartItem";
 import * as cartActions from "../../store/actions/cart";
 import {useDispatch, useSelector} from "react-redux";
-import * as userActions from "../../store/actions/users";
 import * as productActions from "../../store/actions/products";
 
 const windowWidth = Dimensions.get("window").width;
@@ -13,7 +12,6 @@ const FirstCartScreen = (props) => {
 
     let cartItems = useSelector((state) => {
         const transformedCartItems = [];
-        console.log('state', state.cart.items)
         for (const key in state.cart.items) {
             transformedCartItems.push({
                 productId: key,
@@ -34,11 +32,9 @@ const FirstCartScreen = (props) => {
         return transformedCartItems;
     });
 
-    console.log('cartItemsFirst', cartItems)
     useEffect(() => {
         const unsubscribe = props.navigation.addListener("focus", () => {
             // The screen is focused
-            dispatch(userActions.getUser());
             cartItems.map((item, index) => {
                 dispatch(productActions.fetchProducts(item.categorie))
             })
@@ -54,10 +50,9 @@ const FirstCartScreen = (props) => {
             parseFloat(cartItems[data].productPrice);
     }
 
-    console.log('itemes', cartItems);
 
     return (
-        <ScrollView style={styles.container}>
+        <View style={styles.container}>
             {cartItems.length !== 0 ? (
                 <View>
                     <FlatList
@@ -94,7 +89,7 @@ const FirstCartScreen = (props) => {
 
                 </View>
             ) : <Text>Vous n'avez pas d'articles dans votre panier</Text>}
-        </ScrollView>
+        </View>
     );
 };
 

@@ -4,7 +4,6 @@ import { AntDesign, Fontisto } from "@expo/vector-icons";
 import { Searchbar } from "react-native-paper";
 import * as productsActions from "../store/actions/products";
 import { useDispatch, useSelector } from "react-redux";
-import { set } from "react-native-reanimated";
 
 const CustomHeader = (props) => {
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -17,13 +16,13 @@ const CustomHeader = (props) => {
     if (typing) {
       clearTimeout(time);
       setTime(
-        setTimeout(() => {
-          props.navigation.navigate("ViewProductsScreen", {
-            categorie: "Recherche Personnalisée",
-            query: searchQuery,
-          });
-          setTyping(false);
-        }, 1000)
+          setTimeout(() => {
+            props.navigation.navigate("ViewProductsScreen", {
+              categorie: "Recherche Personnalisée",
+              query: searchQuery,
+            });
+            setTyping(false);
+          }, 1000)
       );
     }
   }, [searchQuery]);
@@ -34,17 +33,17 @@ const CustomHeader = (props) => {
   };
 
   return (
-    <View style={styles.searchBarContainer}>
-      <TouchableOpacity onPress={() => props.onPress} style={styles.searchBar}>
-        <Searchbar
-          placeholder="Rechercher"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-          style={styles.grey}
-        />
-      </TouchableOpacity>
+      <View style={styles.searchBarContainer}>
+        <TouchableOpacity onPress={() => props.onPress} style={styles.searchBar}>
+          <Searchbar
+              placeholder="Rechercher"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              style={styles.grey}
+          />
+        </TouchableOpacity>
 
-    </View>
+      </View>
   );
 };
 
