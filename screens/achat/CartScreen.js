@@ -1384,9 +1384,8 @@ ${
                                     </KeyboardAvoidingView>
                                 </TouchableWithoutFeedback>}
 
-                            </View> :     <>
-                                {Platform.OS === 'ios' ?
-                                    <>
+                            </View> :
+                                <>
                                         <Text style={{textAlign: "center", fontSize: 18}}>
                                             Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
                                         </Text>
@@ -1411,20 +1410,6 @@ ${
                                                 Annuler Paiement
                                             </Text>
                                         </TouchableOpacity>
-                                    </>
-                                    : <AndroidPaymentView
-                                        amount={newTotal}
-                                        cartItems={cartItems}
-                                        userData={userData}
-                                        newTotal={newTotal}
-                                        toggleCheckBoxPortefeuille={toggleCheckBoxPortefeuille}
-                                        livraison={livraison}
-                                        netVendeur={netVendeur}
-                                        etiquette_url={etiquette_url}
-                                        totalProtectionAcheteur={totalProtectionAcheteur}
-                                        sousTotal={sousTotal}
-                                    />}
-
                             </>}
 
                         </View>
@@ -1432,7 +1417,6 @@ ${
                 } else {
                     return (
                         <>
-                            {Platform.OS === 'ios' ?
                                 <View style={{flex: 1, padding: 10}}>
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
@@ -1458,18 +1442,7 @@ ${
                                             Annuler Paiement
                                         </Text>
                                     </TouchableOpacity>
-                                </View> : <AndroidPaymentView
-                                    amount={sousTotal}
-                                    cartItems={cartItems}
-                                    userData={userData}
-                                    newTotal={newTotal}
-                                    toggleCheckBoxPortefeuille={toggleCheckBoxPortefeuille}
-                                    livraison={livraison}
-                                    netVendeur={netVendeur}
-                                    etiquette_url={etiquette_url}
-                                    totalProtectionAcheteur={totalProtectionAcheteur}
-                                    sousTotal={sousTotal}
-                                />}
+                                </View>
                         </>
 
                     );
