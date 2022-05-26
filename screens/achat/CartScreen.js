@@ -484,6 +484,8 @@ ${
     const cartTotalAmount = useSelector((state) => state.cart.items);
 
     const [errors, setErrors] = useState(false);
+    const [portefeuilleErrors, setPortefeuilleErrors] = useState('');
+
     let enteredAdresse = false;
     if (userData) {
         enteredAdresse = true;
@@ -933,20 +935,24 @@ ${
 
     sousTotal = (Number(sousTotal) + Number(totalLivraison)).toFixed(2);
     let reductionPortefeuille;
-    let goPaymentPortefeuille = userData?.portefeuille >= sousTotal;
+    let goPaymentPortefeuille = userData?.portefeuille >= sousTotal && userData?.portefeuille > 0;
+    let goPaymentPaymentPortefeuilleWithAlsoCard = userData?.portefeuille < sousTotal && userData?.portefeuille > 0;
 
-    if (userData?.portefeuille <= sousTotal) {
+
+    console.log('go', goPaymentPaymentPortefeuilleWithAlsoCard)
+    if (userData?.portefeuille <= sousTotal && userData?.portefeuille > 0) {
         reductionPortefeuille = userData.portefeuille.toFixed(2);
+    } else if (userData?.portefeuille < 0) {
+        reductionPortefeuille = 0
     } else {
         reductionPortefeuille = sousTotal;
     }
     const newTotal = (sousTotal - reductionPortefeuille).toFixed(2);
     const paymentUI = (props) => {
-        if (portefeuillePayment && goPaymentPortefeuille) {
+        if (portefeuillePayment && (goPaymentPortefeuille)) {
             return <ViewPortefeuille />;
         }
 
-        console.log('makePayment', makePayment)
         if (!makePayment) {
             if (!goConfirmation) {
                 return (
@@ -1214,23 +1220,28 @@ ${
                         <TouchableOpacity
                             style={styles.mettreEnVente}
                             onPress={async () => {
-                                if (props.loggedInAsVisit) {
-                                    props.setLoggedInAsVisit(!props.loggedInAsVisit);
-                                } else {
                                     if (!toggleCheckBox) {
                                         setErrors(true);
                                     } else if (toggleCheckBoxPortefeuille && goPaymentPortefeuille) {
                                         setErrors(false);
                                         setPortefeuillePayment(true);
-                                    } else {
+                                    } else if (toggleCheckBoxPortefeuille && goPaymentPaymentPortefeuilleWithAlsoCard) {
+                                        setErrors(false);
+                                        setMakePayment(true);
+                                    } else if (toggleCheckBoxPortefeuille && !goPaymentPortefeuille) {
+                                        setPortefeuilleErrors("Vous n'avez pas assez d'argent sur le portefeuille");
+                                        setPortefeuillePayment(false);
+                                    }else {
                                         setErrors(false);
                                         setMakePayment(true);
                                     }
-                                }
                             }}
                         >
                             <Text style={styles.mettreEnVenteText}>Payer ma commande</Text>
                         </TouchableOpacity>
+                        {portefeuilleErrors ? <Text style={{ textAlign: "center", color: "red" }}>
+                            {portefeuilleErrors}
+                        </Text> : <Text/>}
                     </ScrollView>
                 );
             }
@@ -1386,7 +1397,7 @@ ${
                                         <PaymentView
                                             onCheckStatus={onCheckStatus}
                                             product={"Paiement unique"}
-                                            amount={sousTotal}
+                                            amount={newTotal}
                                         />
                                         <Text style={{textAlign: "center", fontSize: 18}}>
                                             Payment Powered by Stripe
@@ -1406,7 +1417,7 @@ ${
                                         </TouchableOpacity>
                                     </>
                                     : <AndroidPaymentView
-                                        amount={sousTotal}
+                                        amount={newTotal}
                                         cartItems={cartItems}
                                         userData={userData}
                                         newTotal={newTotal}

@@ -29,11 +29,9 @@ const ProfileScreen = (props) => {
 
   const { setSignedIn } = useContext(authContext);
 
-
   const { messageLength, setMessageLength } = useContext(authContext);
 
   const ctx = useContext(authContext);
-  console.log('ctx', ctx);
 
   useEffect(() => {
     const getUser = async () => {

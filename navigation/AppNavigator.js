@@ -3108,7 +3108,6 @@ export const TabNavigator = (props) => {
     const [count, setCount] = useState(0);
     const { messageLength }  = useContext(authContext)
 
-    console.log(messageLength);
     return (
         <>
             {props.loggedInAsVisit ? (
