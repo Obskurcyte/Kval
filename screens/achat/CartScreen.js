@@ -154,6 +154,16 @@ const CartScreen = (props) => {
                 console.log(stripeResponse)
                 const { paid } = stripeResponse.data;
                 if (paid === true) {
+                    if (goPaymentPaymentPortefeuilleWithAlsoCard) {
+                        try {
+                            await axios.put(`${BASE_URL}/api/users`, {
+                                id: userData._id,
+                                minusPortefeuille: Number(sousTotal) - Number(newTotal)
+                            });
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
                     for (const cartItem of cartItems) {
                         await axios.post(`${BASE_URL}/api/commandes`, {
                             title: cartItem.productTitle,
@@ -179,11 +189,7 @@ const CartScreen = (props) => {
                             notificationsTitle: "Un article a été vendu !",
                             notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
                             notificationsImage: cartItem.image,
-                        });
-
-                        await axios.put(`${BASE_URL}/api/users`, {
-                            id: userData._id,
-                            minusPortefeuille: Number(sousTotal)
+                            addPortefeuille: cartItem.productPrice
                         });
 
                         dispatch(cartActions.deleteCart());
@@ -205,16 +211,6 @@ const CartScreen = (props) => {
                         });
 
 
-                        if (toggleCheckBoxPortefeuille) {
-                            try {
-                                await axios.put(`${BASE_URL}/api/users`, {
-                                    id: userData._id,
-                                    portefeuille: 0
-                                });
-                            } catch (err) {
-                                console.log(err);
-                            }
-                        }
 
 
                         if ((livraison == "MondialRelay")) {
@@ -940,7 +936,7 @@ ${
 
 
     console.log('go', goPaymentPaymentPortefeuilleWithAlsoCard)
-    if (userData?.portefeuille <= sousTotal && userData?.portefeuille > 0) {
+    if (userData?.portefeuille <= sousTotal && userData?.portefeuille >= 0) {
         reductionPortefeuille = userData.portefeuille.toFixed(2);
     } else if (userData?.portefeuille < 0) {
         reductionPortefeuille = 0
