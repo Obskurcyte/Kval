@@ -223,6 +223,7 @@ const ProfileScreen = (props) => {
                           style={styles.image}
                           source={{ uri: userData.photo }}
                       />
+                      <Text style={styles.delete}>Supprimer</Text>
                     </View>
                 ) : (
                     <TouchableOpacity
@@ -465,5 +466,8 @@ const styles = StyleSheet.create({
     paddingVertical: "5%",
     marginBottom: 15,
   },
+  delete: {
+    color: "red"
+  }
 });
 export default ProfileScreen;

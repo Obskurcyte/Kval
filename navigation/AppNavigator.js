@@ -234,7 +234,7 @@ export const AuthNavigator = (props) => {
             <AuthStackNavigator.Screen
                 name="PreInscriptionScreen"
                 component={PreInscriptionScreen}
-                options={{ headerShown: false }}
+                options={classes.header}
             />
             <AuthStackNavigator.Screen
                 name="InscriptionScreen"
@@ -2974,17 +2974,16 @@ export const ProfileNavigator = (props) => {
             <ProfileStackNavigator.Screen
                 name="CGUScreen"
                 component={CGUScreen}
-                options={(props) => ({
+                options={{
                     headerRightContainerStyle: {
                         paddingRight: 10,
                     },
                     headerLeftContainerStyle: {
                         paddingLeft: 10,
                     },
-                    headerBackVisible: true,
                     headerBackTitle: "Retour",
                     headerTitle: "CGU & CGV",
-                })}
+                }}
             />
             <ProfileStackNavigator.Screen
                 name="ViePriveeScreen"

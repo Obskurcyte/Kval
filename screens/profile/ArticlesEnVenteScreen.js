@@ -80,6 +80,7 @@ const ArticlesEnVenteScreen = (props) => {
           <FlatList
             data={articles}
             numColumns={2}
+            style={styles.flatlist}
             keyExtractor={(item) => item.title}
             renderItem={(itemData) => {
               return (
@@ -120,6 +121,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     marginTop: "2%",
+  },
+  flatlist: {
+    marginBottom: 200
   },
   noCommandeText: {
     fontSize: 20,
