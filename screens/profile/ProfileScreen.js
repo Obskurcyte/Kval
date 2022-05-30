@@ -18,6 +18,8 @@ import * as messageAction from "../../store/actions/messages";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
 import authContext from "../../context/authContext";
+import ValidationPhotoProfileScreen from "./ValidationPhotoProfileScreen";
+import {useNavigation} from "@react-navigation/core";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -27,11 +29,20 @@ const ProfileScreen = (props) => {
 
   const [userData, setUserData] = useState(null);
 
+  const navigation = useNavigation()
   const { setSignedIn } = useContext(authContext);
 
   const { messageLength, setMessageLength } = useContext(authContext);
 
   const ctx = useContext(authContext);
+
+  const deletePhoto = async () => {
+    await axios.put(`${BASE_URL}/api/users/photo`, {
+      id: userData._id,
+      photo: null
+    })
+    navigation.navigate('ValidationPhotoProfileScreen')
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -45,7 +56,6 @@ const ProfileScreen = (props) => {
   useEffect(() => {
     const getUser = async () => {
       const userId = await AsyncStorage.getItem("userId");
-      console.log('userId', userId);
       const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
       setUserData(data)
     }
@@ -56,6 +66,7 @@ const ProfileScreen = (props) => {
   }, [props.navigation]);
 
 
+  console.log('data', userData)
   const logout = async () => {
     await AsyncStorage.removeItem("userId");
     setSignedIn(false)
@@ -88,9 +99,7 @@ const ProfileScreen = (props) => {
       aspect: [4, 3],
       quality: 0.2,
     });
-    console.log("1")
     imageProfil = result.uri;
-    console.log(imagesTableau)
     if (!result.cancelled) {
       setImage(result.uri);
     }
@@ -112,9 +121,7 @@ const ProfileScreen = (props) => {
     if (!result.cancelled) {
       setImage(result.uri);
     }
-    console.log("wola")
     setIsLoading(true);
-    console.log("imageTableau", imagesTableau)
     await uploadImage(0);
     setIsLoading(false);
     setModalVisible(false);
@@ -125,11 +132,9 @@ const ProfileScreen = (props) => {
     return new Promise(async (resolve) => {
 
       const uri = imageProfil;
-      console.log('uri', uri)
       const response = await fetch(uri);
       const blob = await response.blob();
 
-      console.log("3")
       const task = firebase
           .storage()
           .ref()
@@ -223,7 +228,6 @@ const ProfileScreen = (props) => {
                           style={styles.image}
                           source={{ uri: userData.photo }}
                       />
-                      <Text style={styles.delete}>Supprimer</Text>
                     </View>
                 ) : (
                     <TouchableOpacity
@@ -244,6 +248,11 @@ const ProfileScreen = (props) => {
                 <Text style={styles.nomText}>
                   {userData?.firstName} {userData?.lastName}
                 </Text>
+                {userData && userData.photo &&
+                    <TouchableOpacity onPress={deletePhoto}>
+                      <Text style={styles.delete}>Supprimer la photo de profil</Text>
+                    </TouchableOpacity>
+                }
               </View>
             </View>
 
@@ -467,7 +476,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   delete: {
-    color: "red"
+    color: "red",
+    fontSize: 18,
+    marginTop: 10
   }
 });
 export default ProfileScreen;
