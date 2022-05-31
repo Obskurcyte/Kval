@@ -84,14 +84,56 @@ export default function App() {
       console.log('userId', userId);
       setTimeout(async () => {
         const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
-        setMessageLength(data.unreadMessages)
         setUser(data)
       }, 1000)
     }
     getUser()
-  }, [messageLength]);
+  }, []);
+
+  const [time, setTime] = useState({
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+  });
+
+  useEffect(() => {
+    let isCancelled = false;
+    const advanceTime = () => {
+      setTimeout(async () => {
+        let nSeconds = time.seconds;
+        let nMinutes = time.minutes;
+        let nHours = time.hours;
+
+        nSeconds++;
+
+        if (nSeconds > 59) {
+          nMinutes++;
+          nSeconds = 0;
+        }
+        if (nMinutes > 59) {
+          nHours++;
+          nMinutes = 0;
+        }
+        if (nHours > 24) {
+          nHours = 0;
+        }
+        const getUser = async () => {
+          const userId = await AsyncStorage.getItem("userId");
+          const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+          setMessageLength(data.unreadMessages)
+        }
+        getUser()
+      }, 1000);
+    };
+    advanceTime();
+    return () => {
+      //final time:
+      isCancelled = true;
+    };
+  }, [messageLength, time]);
 
 
+  console.log(messageLength)
   return (
       <AuthContext.Provider value={{
         signedIn: signedIn,

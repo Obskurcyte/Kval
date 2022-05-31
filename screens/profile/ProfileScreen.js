@@ -44,14 +44,52 @@ const ProfileScreen = (props) => {
     navigation.navigate('ValidationPhotoProfileScreen')
   }
 
+  const [time, setTime] = useState({
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+  });
+
   useEffect(() => {
-    const getUser = async () => {
-      const userId = await AsyncStorage.getItem("userId");
-      const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
-      setMessageLength(data.unreadMessages)
-    }
-    getUser()
-  }, [messageLength]);
+    let isCancelled = false;
+    const unsubscribe = props.navigation.addListener('focus', async () => {
+      const advanceTime = () => {
+        setTimeout(async () => {
+          let nSeconds = time.seconds;
+          let nMinutes = time.minutes;
+          let nHours = time.hours;
+
+          nSeconds++;
+
+          if (nSeconds > 59) {
+            nMinutes++;
+            nSeconds = 0;
+          }
+          if (nMinutes > 59) {
+            nHours++;
+            nMinutes = 0;
+          }
+          if (nHours > 24) {
+            nHours = 0;
+          }
+          const getUser = async () => {
+            const userId = await AsyncStorage.getItem("userId");
+            const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+            setMessageLength(data.unreadMessages)
+          }
+          getUser()
+        }, 1000);
+      };
+      advanceTime();
+      return () => {
+        //final time:
+        isCancelled = true;
+      };
+    });
+    return unsubscribe
+  }, [messageLength, time, props.navigation]);
+
+  console.log(messageLength)
 
   useEffect(() => {
     const getUser = async () => {
@@ -66,11 +104,9 @@ const ProfileScreen = (props) => {
   }, [props.navigation]);
 
 
-  console.log('data', userData)
   const logout = async () => {
     await AsyncStorage.removeItem("userId");
     setSignedIn(false)
-    console.log('done')
   };
 
   let data = {};
@@ -177,7 +213,6 @@ const ProfileScreen = (props) => {
   // ----------------- MODAL ---------------- //
   const [modalVisible, setModalVisible] = useState(false);
 
-  console.log('data', userData);
 
   if (isLoading) {
     return (
@@ -250,7 +285,7 @@ const ProfileScreen = (props) => {
                 </Text>
                 {userData && userData.photo &&
                     <TouchableOpacity onPress={deletePhoto}>
-                      <Text style={styles.delete}>Supprimer la photo de profil</Text>
+                      <Text style={styles.delete}>Supprimer la photo</Text>
                     </TouchableOpacity>
                 }
               </View>

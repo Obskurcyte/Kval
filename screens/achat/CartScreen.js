@@ -189,7 +189,6 @@ const CartScreen = (props) => {
                             notificationsTitle: "Un article a été vendu !",
                             notificationsBody: `L'article ${cartItem.productTitle} a été acheté !`,
                             notificationsImage: cartItem.image,
-                            addPortefeuille: cartItem.productPrice
                         });
 
                         dispatch(cartActions.deleteCart());

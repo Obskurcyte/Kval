@@ -9,10 +9,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CardNotif = (props) => {
 
-  console.log(props.image)
-  console.log(props.title)
-  console.log('delete', props.handleDelete());
-
   const notifsList = props.notifsList
   const [visible, setVisible] = useState(true);
 

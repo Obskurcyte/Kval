@@ -982,8 +982,6 @@ export const AchatNavigator = (props) => {
     for (let data in cartItems) {
         totalQuantity += parseFloat(cartItems[data].quantity);
     }
-    console.log("totalQuantity", totalQuantity);
-    console.log("cartItems", cartItems);
     return (
         <AchatStackNavigator.Navigator>
             <AchatStackNavigator.Screen

@@ -79,16 +79,23 @@ const MessageScreen = (props) => {
         <View style={styles.messagesContainer}>
           <TouchableOpacity
               style={messageActive ? styles.messageBorder : styles.message}
-              onPress={() => {
+              onPress={async () => {
                 setMessageActive(true);
+                const userId = await AsyncStorage.getItem("userId");
+                const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+                setMessageLength(data.unreadMessages)
               }}
           >
             <Text style={styles.messageText}>Messagerie</Text>
           </TouchableOpacity>
           <TouchableOpacity
               style={!messageActive ? styles.messageBorder : styles.message}
-              onPress={() => {
+              onPress={async () => {
                 setMessageActive(false);
+                const userId = await AsyncStorage.getItem("userId");
+                await axios.put(`${BASE_URL}/api/users/unreadmessages`, {
+                  id: userId,
+                });
               }}
           >
             <Text style={styles.messageText}>Notifications</Text>
@@ -153,9 +160,6 @@ const MessageScreen = (props) => {
                                   await axios.put(`${BASE_URL}/api/users/unreadmessages`, {
                                     id: userId,
                                   });
-                                  props.navigation.navigate('ArticlesEnVenteScreen', {
-                                    user: user,
-                                  })
                                 }}
                                 handleDelete={() => {
                                   return notifsList[itemData.index]
