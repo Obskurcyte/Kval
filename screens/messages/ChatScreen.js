@@ -42,7 +42,6 @@ const ChatScreen = (props) => {
         createdAt: new Date(),
       }, config).then(() => console.log('Message sent'));
 
-
       await fetch("https://exp.host/--/api/v2/push/send", {
         method: "POST",
         headers: {
