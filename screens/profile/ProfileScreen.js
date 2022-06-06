@@ -27,7 +27,6 @@ const windowHeight = Dimensions.get("window").height;
 const ProfileScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const [userData, setUserData] = useState(null);
 
   const navigation = useNavigation()
   const { setSignedIn } = useContext(authContext);
@@ -90,6 +89,8 @@ const ProfileScreen = (props) => {
   }, [messageLength, time, props.navigation]);
 
   console.log(messageLength)
+
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -251,6 +252,12 @@ const ProfileScreen = (props) => {
                       }}
                   >
                     <Text style={styles.resetText}>Prendre une photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      style={styles.reset}
+                      onPress={ () => setModalVisible(false)}
+                  >
+                    <Text style={styles.resetText}>Annuler</Text>
                   </TouchableOpacity>
                 </View>
               </View>

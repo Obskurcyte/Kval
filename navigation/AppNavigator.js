@@ -186,6 +186,8 @@ import {BASE_URL} from "../constants/baseURL";
 import authContext from "../context/authContext";
 import SupressionNotifValidationScreen from "../screens/messages/SupressionNotifValidationScreen";
 import ValidationPaymentScreen from "../screens/achat/ValidationPaymentScreen";
+import InputNewPasswordScreen from "../screens/inscription/InputNewPasswordScreen";
+import ConfirmationPasswordResetScreen from "../screens/inscription/ConfirmationPasswordResetScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -246,6 +248,16 @@ export const AuthNavigator = (props) => {
             <AuthStackNavigator.Screen
                 name="ForgotPasswordScreen"
                 component={ForgotPasswordScreen}
+                options={classes.header}
+            />
+            <AuthStackNavigator.Screen
+                name="InputNewPasswordScreen"
+                component={InputNewPasswordScreen}
+                options={classes.header}
+            />
+            <AuthStackNavigator.Screen
+                name="ConfirmationPasswordResetScreen"
+                component={ConfirmationPasswordResetScreen}
                 options={classes.header}
             />
             <AuthStackNavigator.Screen

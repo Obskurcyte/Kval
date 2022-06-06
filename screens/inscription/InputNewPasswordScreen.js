@@ -1,53 +1,50 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-    View,
-    StyleSheet,
-    TouchableWithoutFeedback,
     Keyboard,
-    KeyboardAvoidingView,
+    KeyboardAvoidingView, StyleSheet,
     Text,
-    TextInput, TouchableOpacity
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
 import {Formik} from "formik";
+import firebase from "firebase";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 
-const ForgotPasswordScreen = (props) => {
+const InputNewPasswordScreen = (props) => {
+
     const initialValues = {
-        email: "",
+        password: "",
     };
 
-    const [err, setErr] = useState("");
-
+    const email = props.route.params.email
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView style={styles.container} behavior="padding">
-                <Text style={styles.title}>Mot de passe oublié</Text>
+                <Text style={styles.title}>Rentrez votre nouveau mot de passe</Text>
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
-                        try {
-                            await axios.post(`${BASE_URL}/api/users/email`, {
-                                email: values.email
-                            })
-                            props.navigation.navigate('InputNewPasswordScreen', {email: values.email})
-                        } catch( err) {
-                            setErr("Cet utilisateur n'existe pas")
-                        }
+                        await axios.post(`${BASE_URL}/api/users/password`, {
+                            email: email,
+                            password: values.password
+                        })
+                        props.navigation.navigate("ConfirmationPasswordResetScreen")
                     }}
                 >
                     {(props) => (
                         <View style={styles.formContainer}>
                             <View>
-                                <Text style={styles.text}>Veuillez rentrer votre email</Text>
+                                <Text style={styles.text}>Veuillez rentrez votre nouveau mot de passe</Text>
                                 <TextInput
-                                    placeholder="Email"
-                                    keyboardType="email-address"
-                                    autoCompleteType="email"
+                                    placeholder="Mot de passe"
+                                    secureTextEntry={true}
                                     placeholderTextColor="white"
-                                    value={props.values.email}
+                                    value={props.values.password}
                                     style={styles.textInput}
-                                    onChangeText={props.handleChange("email")}
+                                    onChangeText={props.handleChange("password")}
                                 />
                             </View>
 
@@ -55,16 +52,11 @@ const ForgotPasswordScreen = (props) => {
                                 style={styles.buttonContainer}
                                 onPress={props.handleSubmit}
                             >
-                                <Text style={styles.createCompte}>Suivant</Text>
+                                <Text style={styles.createCompte}>Réinitialiser mon mot de passe</Text>
                             </TouchableOpacity>
                         </View>
                     )}
                 </Formik>
-
-                {err ?      <View style={styles.receivedEmail}>
-                    <Text style={styles.receivedText}>{err}</Text>
-                </View> : <Text/>}
-
 
             </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
@@ -82,8 +74,8 @@ const styles = StyleSheet.create({
         width: '80%'
     },
     receivedText: {
-      color: 'white',
-      fontSize: 20,
+        color: 'white',
+        fontSize: 20,
         textAlign: 'center'
     },
     title: {
@@ -143,4 +135,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ForgotPasswordScreen;
+export default InputNewPasswordScreen;

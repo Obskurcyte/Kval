@@ -66,7 +66,7 @@ const InscriptionScreen = (props) => {
                             try {
                                 console.log('token', pushToken)
                                 const response = await axios.post(`${BASE_URL}/api/users/register`, {
-                                    email: values.email,
+                                    email: values.email.trim().toLowerCase(),
                                     password: values.password,
                                     pseudo: values.pseudo,
                                     phone: params.phone,

@@ -34,13 +34,13 @@ const ConnectionScreen = (props) => {
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
-            console.log(values);
             try {
                 const response = await axios.post(`${BASE_URL}/api/users/login`, {
                   email: values.email,
                   password: values.password,
                 })
 
+                console.log('res', response)
                 const token = response.data.token;
                 console.log('token', token);
                 await AsyncStorage.setItem("jwt", token)

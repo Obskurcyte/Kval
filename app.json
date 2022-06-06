@@ -28,8 +28,7 @@
     "android": {
       "useNextNotificationsApi": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#D51317"
+        "foregroundImage": "./assets/icon.png"
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kval.app",

@@ -176,7 +176,7 @@ const ModifierAnnonceScreen = (props) => {
       const stripeResponse = await axios.post(
           "https://kval-backend.herokuapp.com/paymentonetime",
           {
-            email: "hadrien.jaubert@gmail.com",
+            email: userData.email,
             authToken: jsonResponse,
             amount: 999,
           }
@@ -204,19 +204,37 @@ const ModifierAnnonceScreen = (props) => {
             console.log("1");
             try {
               await axios.delete(`${BASE_URL}/api/products/${old_id}`)
-              const { data } = await axios.post(`${BASE_URL}/api/products`, {
-                category: categorie,
-                status: etat,
-                brand: marques,
-                title: titre,
-                description: description,
-                prix: price,
-                poids: poids,
-                pushToken,
-                emailVendeur: userData.email,
-                idVendeur: userData._id,
-                pseudoVendeur: userData.pseudo,
-              })
+              if (propsProduct.boosted) {
+                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                  category: categorie,
+                  status: etat,
+                  brand: marques,
+                  title: titre,
+                  description: description,
+                  prix: price,
+                  poids: poids,
+                  pushToken,
+                  boosted: true,
+                  emailVendeur: userData.email,
+                  idVendeur: userData._id,
+                  pseudoVendeur: userData.pseudo,
+                })
+              } else {
+                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                  category: categorie,
+                  status: etat,
+                  brand: marques,
+                  title: titre,
+                  description: description,
+                  prix: price,
+                  poids: poids,
+                  pushToken,
+                  emailVendeur: userData.email,
+                  idVendeur: userData._id,
+                  pseudoVendeur: userData.pseudo,
+                })
+              }
+
               const uploadImage = async (index) => {
                 return new Promise(async (resolve) => {
                   const uri = imagesTableau[index];
@@ -308,8 +326,6 @@ const ModifierAnnonceScreen = (props) => {
                           initialValues={initialValues}
                           validationSchema={uploadSchema}
                           onSubmit={async (values) => {
-                            console.log('price', values.price)
-                            console.log("price", prix)
                             let data = {};
                             if (imagesTableau.length === 0) {
                               setError("Veuillez uploader des photos");
@@ -369,18 +385,35 @@ const ModifierAnnonceScreen = (props) => {
 
                               console.log('2')
 
-                              const { data } = await axios.post(`${BASE_URL}/api/products`, {
-                                category: categorie,
-                                status: etat,
-                                brand: marques,
-                                title: values.title,
-                                description: values.description,
-                                prix: values.price,
-                                poids: values.poids,
-                                emailVendeur: userData.email,
-                                idVendeur: userData._id,
-                                pseudoVendeur: userData.pseudo
-                              });
+                              if (propsProduct.boosted) {
+                                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                                  category: categorie,
+                                  status: etat,
+                                  brand: marques,
+                                  title: values.title,
+                                  description: values.description,
+                                  prix: values.price,
+                                  poids: values.poids,
+                                  emailVendeur: userData.email,
+                                  idVendeur: userData._id,
+                                  boosted: true,
+                                  pseudoVendeur: userData.pseudo
+                                });
+                              } else {
+                                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                                  category: categorie,
+                                  status: etat,
+                                  brand: marques,
+                                  title: values.title,
+                                  description: values.description,
+                                  prix: values.price,
+                                  poids: values.poids,
+                                  emailVendeur: userData.email,
+                                  idVendeur: userData._id,
+                                  pseudoVendeur: userData.pseudo
+                                });
+                              }
+
 
                               const uploadImage = async (index) => {
                                 return new Promise(async (resolve) => {
@@ -751,7 +784,7 @@ const ModifierAnnonceScreen = (props) => {
               <PaymentView
                   onCheckStatus={onCheckStatus}
                   product={"Paiement unique"}
-                  amount={0.99}
+                  amount={0.0099}
               />
               <TouchableOpacity
                   style={styles.mettreEnVenteOptional}

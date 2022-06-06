@@ -2,14 +2,29 @@ import React, {useContext, useEffect, useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Dimensions} from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import authContext from "../../context/authContext";
+import axios from "axios";
+import {BASE_URL} from "../../constants/baseURL";
 
 const windowWidth = Dimensions.get('window').width;
 
 const PortefeuilleScreen = (props) => {
 
-    const userData = props.route.params.user
     console.log(userData);
     const { setSignedIn } = useContext(authContext);
+
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const userId = await AsyncStorage.getItem("userId");
+            const { data } = await axios.get(`${BASE_URL}/api/users/${userId}`);
+            setUserData(data)
+        }
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            getUser()
+        });
+        return unsubscribe
+    }, [props.navigation]);
 
     const logout = async () => {
         await AsyncStorage.removeItem("userId");
