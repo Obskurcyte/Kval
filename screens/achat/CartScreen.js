@@ -1280,7 +1280,7 @@ ${
                         {paymentStatus ===
                         "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro" ? (
                             <View style={styles.container2}>
-                                <AntDesign name="checkcircleo" size={200} color="white"/>
+                                <AntDesign name="checkcircleo" sixze={200} color="white"/>
                                 <Text style={styles.text3}>
                                     Vous avez bien acheté {cartItems.length > 1 ? "les articles !" : "l'article !"}
                                 </Text>

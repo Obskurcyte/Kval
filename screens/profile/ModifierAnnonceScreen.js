@@ -49,10 +49,6 @@ const ModifierAnnonceScreen = (props) => {
 
   const product_id = props.route.params.product._id;
 
-  console.log('initial',initialValues)
-
-  console.log('props', propsProduct)
-
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(props.route.params.product.category)
   const [marques, setMarques] = useState(props.route.params.product.brand);
@@ -129,7 +125,6 @@ const ModifierAnnonceScreen = (props) => {
     if (!result.cancelled) {
       setImage(result.uri);
     }
-    console.log(imagesTableau);
   };
 
   const takePicture = async () => {
@@ -170,6 +165,7 @@ const ModifierAnnonceScreen = (props) => {
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
 
+    console.log('here')
     let jsonResponse = JSON.parse(paymentResponse);
 
     try {
@@ -178,7 +174,7 @@ const ModifierAnnonceScreen = (props) => {
           {
             email: userData.email,
             authToken: jsonResponse,
-            amount: 999,
+            amount: 0.99,
           }
       );
 
@@ -370,11 +366,9 @@ const ModifierAnnonceScreen = (props) => {
                               }
 
 
-                              console.log(marques, categorie, etat)
                               const old_id = product_id;
 
                               console.log('1')
-                              console.log(old_id)
 
                               try {
                                 console.log('1;1')
@@ -720,11 +714,17 @@ const ModifierAnnonceScreen = (props) => {
             </TouchableOpacity>
           </View>
       );
-    } else {
+    } if (makePayment) {
       if (response !== undefined) {
-        console.log("paimentstatus", paymentStatus);
         return (
-            <View>
+            <View style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              flex: 1,
+            }}
+            >
               {paymentStatus === "Votre paiement est en cours de traitement" ? (
                   <View>
                     <Text style={styles.paymentStatus}>{paymentStatus}</Text>
