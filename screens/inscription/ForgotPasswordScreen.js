@@ -27,9 +27,8 @@ const ForgotPasswordScreen = (props) => {
                     initialValues={initialValues}
                     onSubmit={async (values) => {
                         try {
-                            await axios.post(`${BASE_URL}/api/users/email`, {
-                                email: values.email
-                            })
+                            const { data } = await axios.get(`${BASE_URL}/api/users/${values.email}`)
+                            console.log(data)
                             props.navigation.navigate('InputNewPasswordScreen', {email: values.email})
                         } catch( err) {
                             setErr("Cet utilisateur n'existe pas")
