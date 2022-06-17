@@ -27,9 +27,17 @@ const ForgotPasswordScreen = (props) => {
                     initialValues={initialValues}
                     onSubmit={async (values) => {
                         try {
-                            const { data } = await axios.get(`${BASE_URL}/api/users/${values.email}`)
-                            console.log(data)
-                            props.navigation.navigate('InputNewPasswordScreen', {email: values.email})
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
+                                mail: values.email,
+                                subject: "Réinitialisation de votre mot de passe",
+                                html_output: `<div><p>Bonjour, <br></p> 
+<p>Veuillez suivre ce lien pour <a style="margin: 0" href="https://kval-backend.herokuapp.com/?email=${values.email}">réinitialiser votre mot de passe.</a></p>
+<br>
+<p style="margin: 0">L'équipe KVal Occaz</p>
+<img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
+</div>`,
+                            })
+                            props.navigation.navigate('ConfirmationPasswordResetScreen')
                         } catch( err) {
                             setErr("Cet utilisateur n'existe pas")
                         }

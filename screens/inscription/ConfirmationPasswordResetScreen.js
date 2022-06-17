@@ -11,7 +11,7 @@ const ConfirmationPasswordResetScreen = (props) => {
         <View style={styles.container2}>
             <AntDesign name="checkcircleo" size={200} color="white"/>
             <Text style={styles.text3}>
-                Votre mot de passe a bien été modifié !
+                Un email de réinitialisation vous a été envoyé !
             </Text>
             <TouchableOpacity
                 style={styles.retourContainer}
