@@ -32,7 +32,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kval.app",
-      "versionCode": 34
+      "versionCode": 35
     },
     "web": {
       "favicon": "./assets/favicon.png"
