@@ -357,6 +357,15 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                                     cartItem.pseudoVendeur
                                 },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
+${
+                                    livraison === "MondialRelay"
+                                        ? `<div>
+<p>Voici le lien pour l'étiquette de paiement :</p>
+<br>
+<a href="${etiquette_url}">${etiquette_url}</a>
+</div>`
+                                        : ``
+                                }
 <p>Résumé de votre article : </p>
 <hr>
 <div style="display: flex">
@@ -384,11 +393,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
-${
-                                    livraison === "MondialRelay"
-                                        ? `<a href="${etiquette_url}">ETIQUETTE MONDIAL RELAY A UTILISER POUR L'EXPEDITION</p>`
-                                        : ``
-                                }
+
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
@@ -689,6 +694,15 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                             cartItem.pseudoVendeur
                         },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
+${
+                            livraison === "MondialRelay"
+                                ? `<div>
+<p>Voici le lien pour l'étiquette de paiement :</p>
+<br>
+<a href="${etiquette_url}">${etiquette_url}</a>
+</div>`
+                                : ``
+                        }
 <p>Résumé de votre article : </p>
 <hr>
 <div style="display: flex">
@@ -716,11 +730,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
-${
-                            livraison === "MondialRelay"
-                                ? `<a href="${etiquette_url}">ETIQUETTE MONDIAL RELAY A UTILISER POUR L'EXPEDITION</p>`
-                                : ``
-                        }
+
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,

@@ -26,7 +26,9 @@ const ForgotPasswordScreen = (props) => {
                 <Formik
                     initialValues={initialValues}
                     onSubmit={async (values) => {
+
                         try {
+                            await axios.get(`${BASE_URL}/api/users/email/${values.email.trim()}`)
                             await axios.post("https://kval-backend.herokuapp.com/send", {
                                 mail: values.email,
                                 subject: "Réinitialisation de votre mot de passe",

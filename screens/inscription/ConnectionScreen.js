@@ -36,7 +36,7 @@ const ConnectionScreen = (props) => {
           onSubmit={async (values) => {
             try {
                 const response = await axios.post(`${BASE_URL}/api/users/login`, {
-                  email: values.email,
+                  email: values.email.trim().toLowerCase(),
                   password: values.password,
                 })
 

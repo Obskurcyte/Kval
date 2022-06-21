@@ -69,7 +69,7 @@ const BoosteVentePaiementScreen = (props) => {
       const stripeResponse = await axios.post(
         "https://kval-backend.herokuapp.com/paymentonetime",
         {
-          email: "hadrien.jaubert99@gmail.com",
+          email: currentUser.email,
           product: cartInfo,
           authToken: jsonResponse,
           amount: (price * 100).toFixed(0),
