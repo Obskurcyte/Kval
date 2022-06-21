@@ -155,12 +155,12 @@ const ProfileScreen = (props) => {
     setImagesTableau(result.uri);
     if (!result.cancelled) {
       setImage(result.uri);
+      setIsLoading(true);
+      await uploadImage(0);
+      setIsLoading(false);
+      setModalVisible(false);
+      props.navigation.navigate("ValidationPhotoProfileScreen")
     }
-    setIsLoading(true);
-    await uploadImage(0);
-    setIsLoading(false);
-    setModalVisible(false);
-    props.navigation.navigate("ValidationPhotoProfileScreen")
   };
 
   const uploadImage = async (index) => {
