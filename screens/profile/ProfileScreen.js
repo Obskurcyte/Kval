@@ -88,8 +88,6 @@ const ProfileScreen = (props) => {
     return unsubscribe
   }, [messageLength, time, props.navigation]);
 
-  console.log(messageLength)
-
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -139,11 +137,11 @@ const ProfileScreen = (props) => {
     imageProfil = result.uri;
     if (!result.cancelled) {
       setImage(result.uri);
+      setIsLoading(true);
+      await uploadImage(0)
+      setIsLoading(false);
+      props.navigation.navigate("ValidationPhotoProfileScreen")
     }
-    setIsLoading(true);
-    await uploadImage(0)
-    setIsLoading(false);
-    props.navigation.navigate("ValidationPhotoProfileScreen")
   };
 
   const takePicture = async () => {
