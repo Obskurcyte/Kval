@@ -192,6 +192,7 @@ const ModifierAnnonceScreen = (props) => {
             pushToken = (await Notifications.getExpoPushTokenAsync()).data;
           }
 
+          let responseProduct;
           const old_id = product_id;
           const id = Math.random() * 300000000;
           if (imagesTableau.length === 0) {
@@ -201,7 +202,7 @@ const ModifierAnnonceScreen = (props) => {
             try {
               await axios.delete(`${BASE_URL}/api/products/${old_id}`)
               if (propsProduct.boosted) {
-                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                   category: categorie,
                   status: etat,
                   brand: marques,
@@ -216,7 +217,7 @@ const ModifierAnnonceScreen = (props) => {
                   pseudoVendeur: userData.pseudo,
                 })
               } else {
-                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                   category: categorie,
                   status: etat,
                   brand: marques,
@@ -250,7 +251,7 @@ const ModifierAnnonceScreen = (props) => {
                   const taskCompleted = (snapshot) => {
                     task.snapshot.ref.getDownloadURL().then(async(snapshot) => {
                       const response = await axios.put(`${BASE_URL}/api/products`, {
-                        id: data.product._id,
+                        id: responseProduct.data.product._id,
                         image: snapshot
                       })
                       resolve();
@@ -350,7 +351,9 @@ const ModifierAnnonceScreen = (props) => {
                             } else {
                               setIsLoading(true);
 
-                              let pushToken;
+                              let responseProduct;
+                              console.log('1.0')
+                              /*let pushToken;
                               let statusObj =
                                   await Notifications.getPermissionsAsync();
                               if (statusObj.status !== "granted") {
@@ -364,6 +367,8 @@ const ModifierAnnonceScreen = (props) => {
                                     await Notifications.getExpoPushTokenAsync()
                                 ).data;
                               }
+
+                               */
 
 
                               const old_id = product_id;
@@ -380,7 +385,7 @@ const ModifierAnnonceScreen = (props) => {
                               console.log('2')
 
                               if (propsProduct.boosted) {
-                                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                                   category: categorie,
                                   status: etat,
                                   brand: marques,
@@ -391,10 +396,11 @@ const ModifierAnnonceScreen = (props) => {
                                   emailVendeur: userData.email,
                                   idVendeur: userData._id,
                                   boosted: true,
+                                  //pushToken,
                                   pseudoVendeur: userData.pseudo
                                 });
                               } else {
-                                const { data } = await axios.post(`${BASE_URL}/api/products`, {
+                                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                                   category: categorie,
                                   status: etat,
                                   brand: marques,
@@ -404,6 +410,7 @@ const ModifierAnnonceScreen = (props) => {
                                   poids: values.poids,
                                   emailVendeur: userData.email,
                                   idVendeur: userData._id,
+                                  //pushToken,
                                   pseudoVendeur: userData.pseudo
                                 });
                               }
@@ -433,8 +440,9 @@ const ModifierAnnonceScreen = (props) => {
                                     task.snapshot.ref
                                         .getDownloadURL()
                                         .then(async (snapshot) => {
+                                          console.log('data', data)
                                           const response = await axios.put(`${BASE_URL}/api/products`, {
-                                            id: data.product._id,
+                                            id: responseProduct.data.product._id,
                                             image: snapshot
                                           })
                                           await axios.post(
