@@ -3126,6 +3126,7 @@ export const TabNavigator = (props) => {
                         activeBackgroundColor: "white",
                         inactiveBackgroundColor: "white",
                     }}
+                    screenOptions={{ unmountOnBlur: true }}
                 >
                     <AppTabNavigator.Screen
                         name="Accueil"

@@ -24,7 +24,6 @@ import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import authContext from "../../context/authContext";
-import AndroidPaymentView from "../../components/AndroidPaymentView";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 

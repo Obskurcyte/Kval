@@ -34,7 +34,6 @@ const BoosteVentePaiementScreen = (props) => {
 
   const [goPaiement, setGoPaiement] = useState(false);
 
-  console.log('articles', articles)
   const cartInfo = {
     id: "5eruyt35eggr76476236523t3",
     description: "T Shirt - With react Native Logo",
@@ -44,6 +43,7 @@ const BoosteVentePaiementScreen = (props) => {
   const [makePayment, setMakePayment] = useState(false);
   const [price, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
+  console.log('status', paymentStatus)
 
   const [dureeBoost, setDureeBoost] = useState(0);
   const [numberOfDaysToAdd, setNumberOfDayToAdd] = useState(0);
@@ -57,10 +57,13 @@ const BoosteVentePaiementScreen = (props) => {
   let y = someDate.getFullYear();
   let someFormattedDate = dd + "/" + mm + "/" + y;
 
+
   const onCheckStatus = async (paymentResponse) => {
+    console.log('01')
+
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
-    console.log('01')
+    console.log('02')
     let jsonResponse = JSON.parse(paymentResponse);
     // perform operation to check payment status
 
@@ -247,7 +250,7 @@ const BoosteVentePaiementScreen = (props) => {
         )
       }
 
-      if (paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro') {
+      else if (paymentStatus === 'Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro') {
         return (
             <View
                 style={{
@@ -281,7 +284,7 @@ const BoosteVentePaiementScreen = (props) => {
           <PaymentView
               onCheckStatus={onCheckStatus}
               product={"Paiement unique"}
-              amount={1}
+              amount={(price * 100).toFixed(0)}
           />
         );
       }

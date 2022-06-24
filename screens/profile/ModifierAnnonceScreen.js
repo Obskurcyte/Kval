@@ -16,7 +16,6 @@ import { Formik } from "formik";
 import { AntDesign } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
-import * as Notifications from "expo-notifications";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { PaymentView } from "../../components/PaymentView";
@@ -62,9 +61,9 @@ const ModifierAnnonceScreen = (props) => {
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
   useEffect(() => {
+
     setCategorie(props.route.params.product.category)
   }, [categorie]);
-
 
 
   const [userData, setUserData] = useState(null)
@@ -169,19 +168,26 @@ const ModifierAnnonceScreen = (props) => {
     let jsonResponse = JSON.parse(paymentResponse);
 
     try {
+      console.log('02')
+
       const stripeResponse = await axios.post(
           "https://kval-backend.herokuapp.com/paymentonetime",
           {
             email: userData.email,
             authToken: jsonResponse,
-            amount: 0.99,
+            amount: 0.99 * 100,
           }
       );
 
+      console.log('response', stripeResponse)
+      console.log('01')
       if (stripeResponse) {
+        console.log('03')
+
         const { paid } = stripeResponse.data;
+        console.log('response', stripeResponse)
         if (paid === true) {
-          let pushToken;
+         /* let pushToken;
           let statusObj = await Notifications.getPermissionsAsync();
           if (statusObj.status !== "granted") {
             statusObj = await Notifications.requestPermissionsAsync();
@@ -192,6 +198,9 @@ const ModifierAnnonceScreen = (props) => {
             pushToken = (await Notifications.getExpoPushTokenAsync()).data;
           }
 
+          */
+          console.log('04')
+
           let responseProduct;
           const old_id = product_id;
           const id = Math.random() * 300000000;
@@ -201,6 +210,7 @@ const ModifierAnnonceScreen = (props) => {
             console.log("1");
             try {
               await axios.delete(`${BASE_URL}/api/products/${old_id}`)
+              console.log('06')
               if (propsProduct.boosted) {
                 responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                   category: categorie,
@@ -208,24 +218,25 @@ const ModifierAnnonceScreen = (props) => {
                   brand: marques,
                   title: titre,
                   description: description,
-                  prix: price,
+                  prix: prix,
                   poids: poids,
-                  pushToken,
+                 // pushToken,
                   boosted: true,
                   emailVendeur: userData.email,
                   idVendeur: userData._id,
                   pseudoVendeur: userData.pseudo,
                 })
               } else {
+                console.log('05')
                 responseProduct = await axios.post(`${BASE_URL}/api/products`, {
                   category: categorie,
                   status: etat,
                   brand: marques,
                   title: titre,
                   description: description,
-                  prix: price,
+                  prix: prix,
                   poids: poids,
-                  pushToken,
+                 // pushToken,
                   emailVendeur: userData.email,
                   idVendeur: userData._id,
                   pseudoVendeur: userData.pseudo,
@@ -743,12 +754,18 @@ const ModifierAnnonceScreen = (props) => {
               )}
 
               {paymentStatus === "Le paiement a échoué" ? (
-                  <View>
-                    <Text>Le paiment a échoué</Text>
+                  <View style={styles.container2}>
+                    <Text style={styles.text3}>Le paiment a échoué</Text>
+                    <AntDesign name="close" size={200} color="white"/>
                     <TouchableOpacity
                         style={styles.retourContainer}
                         onPress={() => {
-                          props.navigation.navigate("AccueilScreen");
+                          setPaymentStatus("")
+                          setMakePayment(false)
+                          props.navigation.navigate("ProfileScreen")
+                          props.navigation.navigate("Accueil", {
+                            screen: 'AcceuilScreen'
+                          })
                         }}
                     >
                       <Text style={styles.text2}>Retour au menu principal</Text>
@@ -772,6 +789,8 @@ const ModifierAnnonceScreen = (props) => {
                     <TouchableOpacity
                         style={styles.retourContainer}
                         onPress={() => {
+                          setPaymentStatus("")
+                          setMakePayment(false)
                           props.navigation.navigate("ProfileScreen")
                           props.navigation.navigate("Accueil", {
                             screen: 'AcceuilScreen'
@@ -792,7 +811,7 @@ const ModifierAnnonceScreen = (props) => {
               <PaymentView
                   onCheckStatus={onCheckStatus}
                   product={"Paiement unique"}
-                  amount={0.0099}
+                  amount={0.99}
               />
               <TouchableOpacity
                   style={styles.mettreEnVenteOptional}
@@ -822,9 +841,9 @@ const styles = StyleSheet.create({
   container2: {
     backgroundColor: "#D51317",
     height: "100%",
+    alignItems: "center"
   },
   icon: {
-    marginLeft: "22%",
     marginTop: 20,
   },
   indicator: {

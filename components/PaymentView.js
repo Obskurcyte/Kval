@@ -310,7 +310,7 @@ const PaymentView = (props) => {
       javaScriptEnabled={true}
       style={{ flex: 1, backgroundColor: "black" }}
       originWhitelist={["*"]}
-      source={{ html: htmlContent, baseUrl: 'https://example.com',}}
+      source={{ html: htmlContent, baseUrl: 'https://example.com'}}
       injectedJavaScript={injectedJavaScript}
       onMessage={onMessage}
     />
