@@ -133,7 +133,6 @@ export default function App() {
   }, [messageLength, time]);
 
 
-  console.log(messageLength)
   return (
       <AuthContext.Provider value={{
         signedIn: signedIn,

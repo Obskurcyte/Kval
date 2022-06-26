@@ -47,9 +47,11 @@ const FirstCartScreen = (props) => {
     for (let data in cartItems) {
         total +=
             parseFloat(cartItems[data].quantity) *
-            parseFloat(cartItems[data].productPrice);
+            parseFloat(cartItems[data].productPrice.replace(',', '.'));
     }
 
+
+    console.log('total', total)
 
     return (
         <View style={styles.container}>

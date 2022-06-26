@@ -111,7 +111,7 @@ const CartScreen = (props) => {
     for (let data in cartItems) {
         total +=
             parseFloat(cartItems[data].quantity) *
-            parseFloat(cartItems[data].productPrice);
+            parseFloat(cartItems[data].productPrice.replace(',', '.'));
     }
 
     const cartInfo = {
@@ -121,6 +121,7 @@ const CartScreen = (props) => {
     };
 
 
+    console.log('total', total)
     const [response, setResponse] = useState();
     const [makePayment, setMakePayment] = useState(false);
     const [paymentStatus, setPaymentStatus] = useState("");
@@ -929,7 +930,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
     let totalProtectionAcheteur = 0;
     let totalLivraison = 0;
     for (let item of cartItems) {
-        totalProtectionAcheteur += parseFloat(item.productPrice * 0.05);
+        totalProtectionAcheteur += parseFloat(item.productPrice.replace(',', '.') * 0.05);
         if (item.livraison === "MondialRelay") {
             totalLivraison += Number(get_mondial_relay_price(item.poids));
         }
@@ -962,8 +963,10 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                 return (
                     <ScrollView>
                         {cartItems.map((item, index) => {
-                            const protectionAcheteur = parseFloat(item.productPrice * 0.05);
-                            const price = parseFloat(item.productPrice);
+                            console.log('item', item)
+                            item.productPrice.replace(',', '.')
+                            const protectionAcheteur = parseFloat(item.productPrice.replace(',', '.') * 0.05);
+                            const price = parseFloat(item.productPrice.replace(',', '.'));
                             const sousTotal = (
                                 price +
                                 protectionAcheteur +
@@ -981,7 +984,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
 
                                     <RecapCommandeItem
                                         title={item.productTitle}
-                                        price={item.productPrice}
+                                        price={item.productPrice.replace(',', '.')}
                                         poids={item.poids}
                                         image={item.image}
                                         key={index}
@@ -1070,7 +1073,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
 
                                     <View style={styles.itemForm3}>
                                         <Text style={{ fontSize: 18 }}>Prix de l'article</Text>
-                                        <Text style={{ fontSize: 18 }}>{item.productPrice} €</Text>
+                                        <Text style={{ fontSize: 18 }}>{item.productPrice.replace(',', '.')} €</Text>
                                     </View>
 
                                     {item.livraison === "MondialRelay" && (
@@ -1087,7 +1090,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                     <View style={styles.itemForm3}>
                                         <Text style={{ fontSize: 18 }}>Protection acheteur</Text>
                                         <Text style={{ fontSize: 18 }}>
-                                            {(item.productPrice * 0.05).toFixed(2)} €
+                                            {(item.productPrice.replace(',', '.') * 0.05).toFixed(2)} €
                                         </Text>
                                     </View>
 
@@ -1137,7 +1140,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                             return (
                                 <RecapCommandeItem
                                     title={item.productTitle}
-                                    price={item.productPrice}
+                                    price={item.productPrice.replace(',', '.')}
                                     image={item.image}
                                     poids={item.poids}
                                     key={index}
