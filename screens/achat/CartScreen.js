@@ -140,6 +140,8 @@ const CartScreen = (props) => {
 
         let jsonResponse = JSON.parse(paymentResponse);
 
+        console.log('SOUSTOTAL', sousTotal)
+        console.log('1')
         try {
             const stripeResponse = await axios.post(
                 `${BASE_URL}/paymentonetime`,
@@ -164,6 +166,7 @@ const CartScreen = (props) => {
                             console.log(err);
                         }
                     }
+                    console.log('2')
                     for (const cartItem of cartItems) {
                         await axios.post(`${BASE_URL}/api/commandes`, {
                             title: cartItem.productTitle,
@@ -183,6 +186,7 @@ const CartScreen = (props) => {
                             moyenPaiement: "CB",
                         })
 
+                        console.log('3')
                         await axios.put(`${BASE_URL}/api/users`, {
                             id: cartItem.idVendeur,
                             unreadMessages: 1,
@@ -191,6 +195,7 @@ const CartScreen = (props) => {
                             notificationsImage: cartItem.image,
                         });
 
+                        console.log('4')
                         dispatch(cartActions.deleteCart());
                         const pushToken = cartItem.pushToken;
                         await fetch("https://exp.host/--/api/v2/push/send", {
@@ -209,6 +214,7 @@ const CartScreen = (props) => {
                             }),
                         });
 
+                        console.log('5')
 
 
 
@@ -307,6 +313,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                             );
                         }
 
+                        console.log('6')
                         if (cartItem.adresse) {
                             console.log("yes");
                             await axios.post("https://kval-backend.herokuapp.com/send", {

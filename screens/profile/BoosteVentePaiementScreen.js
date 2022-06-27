@@ -59,15 +59,12 @@ const BoosteVentePaiementScreen = (props) => {
 
 
   const onCheckStatus = async (paymentResponse) => {
-    console.log('01')
 
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
-    console.log('02')
     let jsonResponse = JSON.parse(paymentResponse);
     // perform operation to check payment status
 
-    console.log('0')
     try {
       const stripeResponse = await axios.post(
         "https://kval-backend.herokuapp.com/paymentonetime",
@@ -83,13 +80,10 @@ const BoosteVentePaiementScreen = (props) => {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (let i = 0; i < articles.length; i++) {
-            console.log('1')
-            console.log('data', articles[i])
             await axios.put(`${BASE_URL}/api/products`, {
               id: articles[i]._id,
               boosted: true
             })
-            console.log('2')
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
@@ -106,7 +100,7 @@ const BoosteVentePaiementScreen = (props) => {
     <div style="margin-top: 20px">
         <p style="margin: 0">Titre : ${articles[i].title}</p>
         <p style="margin: 0">Description : ${articles[i].description}</p>
-        <p style="margin: 0">Catégorie : ${articles[i].categorie}</p>
+        <p style="margin: 0">Catégorie : ${articles[i].category}</p>
         <p style="margin: 0">Prix net vendeur: ${articles[i].prix} €</p>
     </div>
 </div>
