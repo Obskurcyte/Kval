@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import {View, StyleSheet, Platform} from "react-native";
 import firebase from "firebase";
 import {WebView} from "react-native-webview";
-
+import PDFReader from 'rn-pdf-reader-js'
 
 const ViePriveeScreen = (props) => {
   const [url, setUrl] = useState(null);
@@ -17,7 +17,7 @@ const ViePriveeScreen = (props) => {
           console.log(url);
           setUrl(url);
         })
-        .catch((error) => {
+        .catch((err) => {
           console.log(err);
         });
   };
@@ -28,9 +28,14 @@ const ViePriveeScreen = (props) => {
 
   return (
       <View style={styles.container}>
-        <WebView
-            bounces={false}
-            source={{ uri: url }} />
+          {Platform.OS === 'android' ? <PDFReader
+              source={{
+                  uri: url,
+              }}
+          /> :   <WebView
+              bounces={false}
+              source={{ uri: url }} />}
+
       </View>
   );
 };

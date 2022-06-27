@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Button } from "react-native";
+import {View, StyleSheet, Button, Platform} from "react-native";
 import firebase from "firebase";
 import { HeaderBackButton } from "@react-navigation/stack";
 
 import ProfileScreen from "./ProfileScreen";
 import {WebView} from "react-native-webview";
+import PDFReader from "rn-pdf-reader-js";
 
 const CGUScreen = (props) => {
     const [url, setUrl] = useState(null);
@@ -63,9 +64,13 @@ const CGUScreen = (props) => {
 
     return (
         <View style={styles.container}>
-            <WebView
+            {Platform.OS === 'android' ? <PDFReader
+                source={{
+                    uri: url,
+                }}
+            /> :   <WebView
                 bounces={false}
-                source={{ uri: url }} />
+                source={{ uri: url }} />}
         </View>
     );
 };
