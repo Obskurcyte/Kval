@@ -22,7 +22,7 @@ import axios from 'axios';
 import authContext from "../../context/authContext";
 import ValidationPhotoProfileScreen from "./ValidationPhotoProfileScreen";
 import {useNavigation} from "@react-navigation/core";
-import * as WebBrowser from 'expo-web-browser';
+import * as Linking from 'expo-linking';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -334,7 +334,9 @@ const ProfileScreen = (props) => {
               </TouchableOpacity>
               <TouchableOpacity
                   style={styles.boutonList}
-                  onPress={() => props.navigation.navigate("CommentCaMarcheScreen")}
+                  onPress={() => {
+                    Platform.OS === "android" ? Linking.openURL("https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Fcomment_ca_marche.pdf?alt=media&token=b63b51a3-a9b8-46ed-9221-16b32f19cd9f") : props.navigation.navigate("CommentCaMarcheScreen")
+                  }}
               >
                 <Text style={styles.text}>Comment ça marche</Text>
               </TouchableOpacity>
@@ -347,7 +349,7 @@ const ProfileScreen = (props) => {
               <TouchableOpacity
                   style={styles.boutonList}
                   onPress={() => {
-                    Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FPolitique-de-confidentialit%C3%A9.pdf?alt=media&token=9f0aacc6-f005-4985-ac04-dda0848a8d0a') : props.navigation.navigate("ViePriveeScreen")
+                    Platform.OS === "android" ? Linking.openURL('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FPolitique-de-confidentialit%C3%A9.pdf?alt=media&token=9f0aacc6-f005-4985-ac04-dda0848a8d0a') : props.navigation.navigate("ViePriveeScreen")
                   }}
               >
                 <Text style={styles.text}>Vie privée</Text>
@@ -356,7 +358,7 @@ const ProfileScreen = (props) => {
                 <Text
                     style={styles.text}
                     onPress={() => {
-                      Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FCGV.pdf?alt=media&token=bd394f6e-4590-4e1d-af3c-ed7ec0c38827') : props.navigation.navigate("CGUScreen")
+                      Platform.OS === "android" ? Linking.openURL('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FCGV.pdf?alt=media&token=bd394f6e-4590-4e1d-af3c-ed7ec0c38827') : props.navigation.navigate("CGUScreen")
                     }}
                 >
                   Conditions générales d'utilisations
@@ -365,7 +367,7 @@ const ProfileScreen = (props) => {
               <TouchableOpacity
                   style={styles.boutonList}
                   onPress={() => {
-                    Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FMentions-l%C3%A9gales.pdf?alt=media&token=ec362f88-8cbc-4ba3-b70f-f5302cb9592d') : props.navigation.navigate("MentionLegaleScreen")
+                    Platform.OS === "android" ? Linking.openURL('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FMentions-l%C3%A9gales.pdf?alt=media&token=ec362f88-8cbc-4ba3-b70f-f5302cb9592d') : props.navigation.navigate("MentionLegaleScreen")
                   }}
               >
                 <Text style={styles.text}>Mentions Légales</Text>

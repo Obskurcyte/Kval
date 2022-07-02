@@ -64,7 +64,8 @@
     "redux-thunk": "^2.3.0",
     "yup": "^0.32.9",
     "expo-screen-orientation": "~3.3.0",
-    "expo-web-browser": "~9.1.0"
+    "expo-web-browser": "~9.1.0",
+    "expo-linking": "~2.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
