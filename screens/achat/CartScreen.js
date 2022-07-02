@@ -140,6 +140,8 @@ const CartScreen = (props) => {
 
         let jsonResponse = JSON.parse(paymentResponse);
 
+        console.log('SOUSTOTAL', sousTotal)
+        console.log('1')
         try {
             const stripeResponse = await axios.post(
                 `${BASE_URL}/paymentonetime`,
@@ -164,6 +166,7 @@ const CartScreen = (props) => {
                             console.log(err);
                         }
                     }
+                    console.log('2')
                     for (const cartItem of cartItems) {
                         await axios.post(`${BASE_URL}/api/commandes`, {
                             title: cartItem.productTitle,
@@ -183,6 +186,7 @@ const CartScreen = (props) => {
                             moyenPaiement: "CB",
                         })
 
+                        console.log('3')
                         await axios.put(`${BASE_URL}/api/users`, {
                             id: cartItem.idVendeur,
                             unreadMessages: 1,
@@ -191,6 +195,7 @@ const CartScreen = (props) => {
                             notificationsImage: cartItem.image,
                         });
 
+                        console.log('4')
                         dispatch(cartActions.deleteCart());
                         const pushToken = cartItem.pushToken;
                         await fetch("https://exp.host/--/api/v2/push/send", {
@@ -209,6 +214,7 @@ const CartScreen = (props) => {
                             }),
                         });
 
+                        console.log('5')
 
 
 
@@ -307,6 +313,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                             );
                         }
 
+                        console.log('6')
                         if (cartItem.adresse) {
                             console.log("yes");
                             await axios.post("https://kval-backend.herokuapp.com/send", {
@@ -393,7 +400,6 @@ ${
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
-
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
@@ -730,7 +736,6 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
 <br>
-
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
@@ -1227,21 +1232,21 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                         <TouchableOpacity
                             style={styles.mettreEnVente}
                             onPress={async () => {
-                                    if (!toggleCheckBox) {
-                                        setErrors(true);
-                                    } else if (toggleCheckBoxPortefeuille && goPaymentPortefeuille) {
-                                        setErrors(false);
-                                        setPortefeuillePayment(true);
-                                    } else if (toggleCheckBoxPortefeuille && goPaymentPaymentPortefeuilleWithAlsoCard) {
-                                        setErrors(false);
-                                        setMakePayment(true);
-                                    } else if (toggleCheckBoxPortefeuille && !goPaymentPortefeuille) {
-                                        setPortefeuilleErrors("Vous n'avez pas assez d'argent sur le portefeuille");
-                                        setPortefeuillePayment(false);
-                                    }else {
-                                        setErrors(false);
-                                        setMakePayment(true);
-                                    }
+                                if (!toggleCheckBox) {
+                                    setErrors(true);
+                                } else if (toggleCheckBoxPortefeuille && goPaymentPortefeuille) {
+                                    setErrors(false);
+                                    setPortefeuillePayment(true);
+                                } else if (toggleCheckBoxPortefeuille && goPaymentPaymentPortefeuilleWithAlsoCard) {
+                                    setErrors(false);
+                                    setMakePayment(true);
+                                } else if (toggleCheckBoxPortefeuille && !goPaymentPortefeuille) {
+                                    setPortefeuilleErrors("Vous n'avez pas assez d'argent sur le portefeuille");
+                                    setPortefeuillePayment(false);
+                                }else {
+                                    setErrors(false);
+                                    setMakePayment(true);
+                                }
                             }}
                         >
                             <Text style={styles.mettreEnVenteText}>Payer ma commande</Text>
@@ -1321,121 +1326,89 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                     return (
                         <View style={{flex: 1, padding: 10}}>
                             {!auth ? <View>
-                                {!confirmAuth ? <View>
-                                    <Text style={styles.authText}>Pour l'utilisation de votre portefeuille et pour votre
-                                        sécurité nous vous demandons de vous authentifier</Text>
-                                    <TouchableOpacity
-                                        style={styles.mettreEnVente}
-                                        onPress={() => setConfirmAuth(true)}
-                                    >
-                                        <Text style={styles.mettreEnVenteText}>
-                                            M'authentifier
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View> : <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
-                                    <KeyboardAvoidingView style={styles.container3} behavior="padding">
-                                        <Text style={styles.title}>Se connecter</Text>
-                                        <Formik
-                                            initialValues={initialValues}
-                                            onSubmit={async (values) => {
-
-                                                try {
-                                                    await axios.post(`${BASE_URL}/api/users/login`, {
-                                                        email: values.email,
-                                                        password: values.password,
-                                                    })
-                                                    setAuth(true);
-                                                } catch (err) {
-                                                    console.log(err);
-                                                    setErr(err);
-                                                }
-                                            }}
-                                        >
-                                            {(props) => (
-                                                <View style={styles.formContainer}>
-                                                    <View>
-                                                        <Text style={styles.text4}>Email</Text>
-                                                        <TextInput
-                                                            placeholder="Email"
-                                                            keyboardType="email-address"
-                                                            autoCompleteType="email"
-                                                            placeholderTextColor="white"
-                                                            value={props.values.email}
-                                                            style={styles.textInput}
-                                                            onChangeText={props.handleChange("email")}
-                                                        />
-                                                    </View>
-
-                                                    <View>
-                                                        <Text style={styles.text4}>Mot de passe</Text>
-                                                        <TextInput
-                                                            placeholder="Mot de passe"
-                                                            placeholderTextColor="white"
-                                                            value={props.values.password}
-                                                            style={styles.textInput}
-                                                            secureTextEntry={true}
-                                                            onChangeText={props.handleChange("password")}
-                                                        />
-                                                    </View>
-
-                                                    {err ? (
-                                                        <Text style={styles.err}>Vos identifiants sont incorrects</Text>
-                                                    ) : (
-                                                        <Text/>
-                                                    )}
-                                                    <TouchableOpacity
-                                                        style={styles.buttonContainer}
-                                                        onPress={props.handleSubmit}
-                                                    >
-                                                        <Text style={styles.createCompte}>Valider</Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            )}
-                                        </Formik>
-                                    </KeyboardAvoidingView>
-                                </TouchableWithoutFeedback>}
-
-                            </View> :
-                                <>
-                                        <Text style={{textAlign: "center", fontSize: 18}}>
-                                            Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
-                                        </Text>
-                                        <PaymentView
-                                            onCheckStatus={onCheckStatus}
-                                            product={"Paiement unique"}
-                                            amount={newTotal}
-                                        />
-                                        <Text style={{textAlign: "center", fontSize: 18}}>
-                                            Payment Powered by Stripe
-                                        </Text>
+                                    {!confirmAuth ? <View>
+                                        <Text style={styles.authText}>Pour l'utilisation de votre portefeuille et pour votre
+                                            sécurité nous vous demandons de vous authentifier</Text>
                                         <TouchableOpacity
-                                            style={styles.mettreEnVenteOptional}
-                                            onPress={() => {
-                                                adresse = null;
-                                                enteredAdresse = null;
-                                                setToggleCheckBox(false);
-                                                setMakePayment(!makePayment);
-                                            }}
+                                            style={styles.mettreEnVente}
+                                            onPress={() => setConfirmAuth(true)}
                                         >
-                                            <Text style={styles.mettreEnVenteTextOptional}>
-                                                Annuler Paiement
+                                            <Text style={styles.mettreEnVenteText}>
+                                                M'authentifier
                                             </Text>
                                         </TouchableOpacity>
-                            </>}
+                                    </View> : <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={styles.container3}>
+                                        <KeyboardAvoidingView style={styles.container3} behavior="padding">
+                                            <Text style={styles.title}>Se connecter</Text>
+                                            <Formik
+                                                initialValues={initialValues}
+                                                onSubmit={async (values) => {
 
-                        </View>
-                    )
-                } else {
-                    return (
-                        <>
-                                <View style={{flex: 1, padding: 10}}>
+                                                    try {
+                                                        await axios.post(`${BASE_URL}/api/users/login`, {
+                                                            email: values.email,
+                                                            password: values.password,
+                                                        })
+                                                        setAuth(true);
+                                                    } catch (err) {
+                                                        console.log(err);
+                                                        setErr(err);
+                                                    }
+                                                }}
+                                            >
+                                                {(props) => (
+                                                    <View style={styles.formContainer}>
+                                                        <View>
+                                                            <Text style={styles.text4}>Email</Text>
+                                                            <TextInput
+                                                                placeholder="Email"
+                                                                keyboardType="email-address"
+                                                                autoCompleteType="email"
+                                                                placeholderTextColor="white"
+                                                                value={props.values.email}
+                                                                style={styles.textInput}
+                                                                onChangeText={props.handleChange("email")}
+                                                            />
+                                                        </View>
+
+                                                        <View>
+                                                            <Text style={styles.text4}>Mot de passe</Text>
+                                                            <TextInput
+                                                                placeholder="Mot de passe"
+                                                                placeholderTextColor="white"
+                                                                value={props.values.password}
+                                                                style={styles.textInput}
+                                                                secureTextEntry={true}
+                                                                onChangeText={props.handleChange("password")}
+                                                            />
+                                                        </View>
+
+                                                        {err ? (
+                                                            <Text style={styles.err}>Vos identifiants sont incorrects</Text>
+                                                        ) : (
+                                                            <Text/>
+                                                        )}
+                                                        <TouchableOpacity
+                                                            style={styles.buttonContainer}
+                                                            onPress={props.handleSubmit}
+                                                        >
+                                                            <Text style={styles.createCompte}>Valider</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                )}
+                                            </Formik>
+                                        </KeyboardAvoidingView>
+                                    </TouchableWithoutFeedback>}
+
+                                </View> :
+                                <>
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
                                     </Text>
                                     <PaymentView
                                         onCheckStatus={onCheckStatus}
                                         product={"Paiement unique"}
-                                        amount={sousTotal}
+                                        amount={newTotal}
                                     />
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Payment Powered by Stripe
@@ -1453,7 +1426,39 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                             Annuler Paiement
                                         </Text>
                                     </TouchableOpacity>
-                                </View>
+                                </>}
+
+                        </View>
+                    )
+                } else {
+                    return (
+                        <>
+                            <View style={{flex: 1, padding: 10}}>
+                                <Text style={{textAlign: "center", fontSize: 18}}>
+                                    Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
+                                </Text>
+                                <PaymentView
+                                    onCheckStatus={onCheckStatus}
+                                    product={"Paiement unique"}
+                                    amount={sousTotal}
+                                />
+                                <Text style={{textAlign: "center", fontSize: 18}}>
+                                    Payment Powered by Stripe
+                                </Text>
+                                <TouchableOpacity
+                                    style={styles.mettreEnVenteOptional}
+                                    onPress={() => {
+                                        adresse = null;
+                                        enteredAdresse = null;
+                                        setToggleCheckBox(false);
+                                        setMakePayment(!makePayment);
+                                    }}
+                                >
+                                    <Text style={styles.mettreEnVenteTextOptional}>
+                                        Annuler Paiement
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                         </>
 
                     );

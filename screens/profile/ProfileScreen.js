@@ -7,7 +7,9 @@ import {
   Dimensions,
   Image,
   ActivityIndicator,
-  ScrollView, Modal,
+  ScrollView,
+  Modal,
+  Platform
 } from "react-native";
 import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
@@ -20,6 +22,7 @@ import axios from 'axios';
 import authContext from "../../context/authContext";
 import ValidationPhotoProfileScreen from "./ValidationPhotoProfileScreen";
 import {useNavigation} from "@react-navigation/core";
+import * as WebBrowser from 'expo-web-browser';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -343,21 +346,27 @@ const ProfileScreen = (props) => {
               </TouchableOpacity>
               <TouchableOpacity
                   style={styles.boutonList}
-                  onPress={() => props.navigation.navigate("ViePriveeScreen")}
+                  onPress={() => {
+                    Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FPolitique-de-confidentialit%C3%A9.pdf?alt=media&token=9f0aacc6-f005-4985-ac04-dda0848a8d0a') : props.navigation.navigate("ViePriveeScreen")
+                  }}
               >
                 <Text style={styles.text}>Vie privée</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.boutonList}>
                 <Text
                     style={styles.text}
-                    onPress={() => props.navigation.navigate("CGUScreen")}
+                    onPress={() => {
+                      Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FCGV.pdf?alt=media&token=bd394f6e-4590-4e1d-af3c-ed7ec0c38827') : props.navigation.navigate("CGUScreen")
+                    }}
                 >
                   Conditions générales d'utilisations
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
                   style={styles.boutonList}
-                  onPress={() => props.navigation.navigate("MentionLegaleScreen")}
+                  onPress={() => {
+                    Platform.OS === "android" ? WebBrowser.openBrowserAsync('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FMentions-l%C3%A9gales.pdf?alt=media&token=ec362f88-8cbc-4ba3-b70f-f5302cb9592d') : props.navigation.navigate("MentionLegaleScreen")
+                  }}
               >
                 <Text style={styles.text}>Mentions Légales</Text>
               </TouchableOpacity>

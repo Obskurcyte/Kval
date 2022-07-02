@@ -216,6 +216,8 @@ const ProductDetailScreen = (props) => {
   //-----------------------------------MESSAGES---------------------//
 
 
+  let errorAddedRealTime = "";
+
   const onMessagePressed = async () => {
     try {
       await axios.post(`${BASE_URL}/api/messages`, {
@@ -239,6 +241,7 @@ const ProductDetailScreen = (props) => {
   // ----------------- MODAL ---------------- //
   const [modalVisible, setModalVisible] = useState(false);
 
+  let arrayOfProductsIds = []
   return (
       <View>
         {userData &&
@@ -405,10 +408,11 @@ const ProductDetailScreen = (props) => {
                               style={styles.mettreEnVente}
                               onPress={() => {
                                 if (cartItems.length !== 0) {
-                                  console.log('ITEMS', cartItems)
                                   for (const key in cartItems) {
-                                    console.log('product', product)
-                                    if (product._id == cartItems[key].productId) {
+                                    arrayOfProductsIds.push(cartItems[key].productId)
+                                  }
+                                  for (const key2 in cartItems) {
+                                    if (arrayOfProductsIds.indexOf(product._id) > -1) {
                                       setErrorAdded(
                                           "Ce produit est déjà présent dans votre panier"
                                       );
