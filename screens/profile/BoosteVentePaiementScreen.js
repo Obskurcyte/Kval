@@ -10,7 +10,7 @@ import {
   ScrollView,
   Image,
   TextInput,
-    Button,
+  Button,
 } from "react-native";
 import RoundedCheckbox from "react-native-rounded-checkbox";
 import { AntDesign, Entypo } from "@expo/vector-icons";
@@ -59,37 +59,31 @@ const BoosteVentePaiementScreen = (props) => {
 
 
   const onCheckStatus = async (paymentResponse) => {
-    console.log('01')
 
     setPaymentStatus("Votre paiement est en cours de traitement");
     setResponse(paymentResponse);
-    console.log('02')
     let jsonResponse = JSON.parse(paymentResponse);
     // perform operation to check payment status
 
-    console.log('0')
     try {
       const stripeResponse = await axios.post(
-        "https://kval-backend.herokuapp.com/paymentonetime",
-        {
-          email: currentUser.email,
-          product: cartInfo,
-          authToken: jsonResponse,
-          amount: (price * 100).toFixed(0),
-        }
+          "https://kval-backend.herokuapp.com/paymentonetime",
+          {
+            email: currentUser.email,
+            product: cartInfo,
+            authToken: jsonResponse,
+            amount: (price * 100).toFixed(0),
+          }
       );
 
       if (stripeResponse) {
         const { paid } = stripeResponse.data;
         if (paid === true) {
           for (let i = 0; i < articles.length; i++) {
-            console.log('1')
-            console.log('data', articles[i])
             await axios.put(`${BASE_URL}/api/products`, {
               id: articles[i]._id,
               boosted: true
             })
-            console.log('2')
             await axios.post("https://kval-backend.herokuapp.com/send", {
               mail: currentUser.email,
               subject: "Confirmation de mise en avant première",
@@ -97,34 +91,29 @@ const BoosteVentePaiementScreen = (props) => {
 <p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours jusqu'au ${someFormattedDate} à ${hours}:${minutes}.</p>
 <p>Résumé de votre article : </p>
 <hr>
-
 <div style="display: flex">
     <div style="margin-right: 30px">
         <img src="${articles[i].images[0]}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
     </div>
-
     <div style="margin-top: 20px">
         <p style="margin: 0">Titre : ${articles[i].title}</p>
         <p style="margin: 0">Description : ${articles[i].description}</p>
-        <p style="margin: 0">Catégorie : ${articles[i].categorie}</p>
+        <p style="margin: 0">Catégorie : ${articles[i].category}</p>
         <p style="margin: 0">Prix net vendeur: ${articles[i].prix} €</p>
     </div>
 </div>
-
 <hr>
-
 <p>Vous pouvez retrouver cet article dans la page d’accueil dans la catégorie : Annonces en avant première</p>
 <p>A savoir : Si vous boostez de nouveau votre annonce avant la fin de la période ci-dessus mentionnée, la durée du nouveau boost partira de cette nouvelle date. S'il restait du temps sur le boost initial, il sera définitivement perdu.</p>
 <br>
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
-
 </div>`,
             });
           }
 
           setPaymentStatus(
-            "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
+              "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
           );
         } else {
           setPaymentStatus("Le paiement a échoué");
@@ -281,11 +270,11 @@ const BoosteVentePaiementScreen = (props) => {
       }
       else {
         return (
-          <PaymentView
-              onCheckStatus={onCheckStatus}
-              product={"Paiement unique"}
-              amount={(price * 100).toFixed(0)}
-          />
+            <PaymentView
+                onCheckStatus={onCheckStatus}
+                product={"Paiement unique"}
+                amount={(price * 100).toFixed(0)}
+            />
         );
       }
     }
