@@ -25,14 +25,17 @@ const MentionLegaleScreen = (props) => {
     downloadFile();
   }, []);
 
-  return (
-      <View style={styles.container}>
-        <WebView
-            bounces={false}
-            scrollEnabled={false}
-            source={{ uri: url }} />
-      </View>
-  );
+    const androidURL = "https://drive.google.com/file/d/1TDmESY7QKONuQ_oD4I2lOHfkrDgLOeAS/view?usp=sharing"
+    return (
+        <View style={styles.container}>
+            {Platform.OS === "android" ? <WebView
+                bounces={false}
+                source={{ uri: androidURL }} /> : <WebView
+                bounces={false}
+                source={{ uri: url }} /> }
+
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({

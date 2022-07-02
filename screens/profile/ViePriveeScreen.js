@@ -26,13 +26,17 @@ const ViePriveeScreen = (props) => {
     downloadFile();
   }, []);
 
-  return (
-      <View style={styles.container}>
-        <WebView
-            bounces={false}
-            source={{ uri: url }} />
-      </View>
-  );
+    const androidURL = "https://drive.google.com/file/d/1JHEMUgUR7l2jUD1CrpvoEIJZw0skwvIg/view?usp=sharing"
+    return (
+        <View style={styles.container}>
+            {Platform.OS === "android" ? <WebView
+                bounces={false}
+                source={{ uri: androidURL }} /> : <WebView
+                bounces={false}
+                source={{ uri: url }} /> }
+
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({

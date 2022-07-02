@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Button } from "react-native";
+import { View, StyleSheet, Button, Platform } from "react-native";
 import firebase from "firebase";
 import { HeaderBackButton } from "@react-navigation/stack";
 
@@ -61,11 +61,15 @@ const CGUScreen = (props) => {
         downloadFile();
     }, []);
 
+    const androidURL = "https://drive.google.com/file/d/1tti9XhRPzNMuKYOIkJYbGuacXyq3FNVf/view?usp=sharing"
     return (
         <View style={styles.container}>
-            <WebView
+            {Platform.OS === "android" ? <WebView
                 bounces={false}
-                source={{ uri: url }} />
+                source={{ uri: androidURL }} /> : <WebView
+                bounces={false}
+                source={{ uri: url }} /> }
+
         </View>
     );
 };

@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text} from "react-native";
+import {View, StyleSheet, Text, Platform} from "react-native";
 import firebase from "firebase";
 import {WebView} from "react-native-webview";
-
 
 const CommentCaMarcheScreen = () => {
     const [url, setUrl] = useState(null);
@@ -26,11 +25,15 @@ const CommentCaMarcheScreen = () => {
         downloadFile();
     }, []);
 
+    const androidURL = "https://drive.google.com/file/d/1UZ8Q6PsPAqsuD7UtHYfr8qrGbHC3zDSD/view?usp=sharing"
     return (
         <View style={styles.container}>
-            <WebView
+            {Platform.OS === "android" ? <WebView
                 bounces={false}
-                source={{ uri: url }} />
+                source={{ uri: androidURL }} /> : <WebView
+                bounces={false}
+                source={{ uri: url }} /> }
+
         </View>
     );
 };
