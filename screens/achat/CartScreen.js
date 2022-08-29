@@ -9,6 +9,7 @@ import {
     Platform,
     ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput,
 } from "react-native";
+import PaymentCard from '../../components/PaymentCard'
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
 import * as cartActions from "../../store/actions/cart";
@@ -1405,10 +1406,15 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
                                     </Text>
-                                    <PaymentView
-                                        onCheckStatus={onCheckStatus}
-                                        product={"Paiement unique"}
+                                    <PaymentCard
                                         amount={newTotal}
+                                        netVendeur={netVendeur}
+                                        sousTotal={sousTotal}
+                                        totalProtectionAcheteur={totalProtectionAcheteur}
+                                        livraison={livraison}
+                                        goPaymentPaymentPortefeuilleWithAlsoCard={goPaymentPaymentPortefeuilleWithAlsoCard}
+                                        cartItems={cartItems}
+                                        userData={userData}
                                     />
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Payment Powered by Stripe
@@ -1437,10 +1443,15 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                 <Text style={{textAlign: "center", fontSize: 18}}>
                                     Montant à régler : {toggleCheckBoxPortefeuille ? `${newTotal} €` : `${sousTotal}€ `}
                                 </Text>
-                                <PaymentView
-                                    onCheckStatus={onCheckStatus}
-                                    product={"Paiement unique"}
+                                <PaymentCard
                                     amount={sousTotal}
+                                    netVendeur={netVendeur}
+                                    sousTotal={sousTotal}
+                                    livraison={livraison}
+                                    totalProtectionAcheteur={totalProtectionAcheteur}
+                                    goPaymentPaymentPortefeuilleWithAlsoCard={goPaymentPaymentPortefeuilleWithAlsoCard}
+                                    cartItems={cartItems}
+                                    userData={userData}
                                 />
                                 <Text style={{textAlign: "center", fontSize: 18}}>
                                     Payment Powered by Stripe

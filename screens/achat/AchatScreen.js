@@ -10,7 +10,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar } from "@rneui/themed";
 import { Fontisto } from '@expo/vector-icons';
 import CardVente from "../../components/CardVente";
 import { Feather } from '@expo/vector-icons';

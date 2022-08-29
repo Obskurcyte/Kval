@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity, Dimensions,
 } from "react-native";
-import { SearchBar } from "react-native-elements";
+import { SearchBar } from "@rneui/themed";
 import { AntDesign, Fontisto } from "@expo/vector-icons";
 import firebase from "firebase";
 import * as productsActions from "../../store/actions/products";

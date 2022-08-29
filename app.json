@@ -3,7 +3,7 @@
     "name": "KvalOccaz",
     "slug": "kvaloccaz",
     "platforms": ["ios", "android"],
-    "version": "1.0.41",
+    "version": "1.0.42",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -32,7 +32,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kval.app",
-      "versionCode": 41
+      "versionCode": 42
     },
     "web": {
       "favicon": "./assets/favicon.png"

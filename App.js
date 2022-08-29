@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import firebase from "firebase/app";
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { TabNavigator, AuthNavigator } from "./navigation/AppNavigator";
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider, useSelector } from "react-redux";
@@ -133,6 +134,7 @@ export default function App() {
   }, [messageLength, time]);
 
 
+
   return (
       <AuthContext.Provider value={{
         signedIn: signedIn,
@@ -143,24 +145,24 @@ export default function App() {
         loggedIn: loggedIn,
         user: user
       }}>
-        <Provider store={store}>
-          <NavigationContainer>
-            {loggedIn && signedIn ? (
-              <TabNavigator
-                loggedInAsVisit={loggedInAsVisit}
-                setLoggedInAsVisit={setLoggedInAsVisit}
-              />
-            ) : (
-              <AuthNavigator
-                firstLaunch={firstLaunch}
-                setFirstLaunch={setFirstLaunch}
-                loggedInAsVisit={loggedInAsVisit}
-                setIsLoggedIn={setIsLoggedIn}
-                setLoggedInAsVisit={setLoggedInAsVisit}
-              />
-            )}
-          </NavigationContainer>
-        </Provider>
+          <Provider store={store}>
+            <NavigationContainer>
+              {loggedIn && signedIn ? (
+                  <TabNavigator
+                      loggedInAsVisit={loggedInAsVisit}
+                      setLoggedInAsVisit={setLoggedInAsVisit}
+                  />
+              ) : (
+                  <AuthNavigator
+                      firstLaunch={firstLaunch}
+                      setFirstLaunch={setFirstLaunch}
+                      loggedInAsVisit={loggedInAsVisit}
+                      setIsLoggedIn={setIsLoggedIn}
+                      setLoggedInAsVisit={setLoggedInAsVisit}
+                  />
+              )}
+            </NavigationContainer>
+          </Provider>
       </AuthContext.Provider>
   );
 }

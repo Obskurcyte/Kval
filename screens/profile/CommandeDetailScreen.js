@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView} from "react-native";
 import {AntDesign, Fontisto} from "@expo/vector-icons";
-import { Avatar } from "react-native-elements";
+import { Avatar } from "@rneui/themed";
 
 
 const windowWidth = Dimensions.get('window').width;
