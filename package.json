@@ -27,7 +27,7 @@
     "@stripe/stripe-react-native": "0.13.1",
     "algoliasearch": "^4.11.0",
     "axios": "^0.21.1",
-    "eas-cli": "^0.50.0",
+    "eas-cli": "^1.2.0",
     "expo": "^46.0.9",
     "expo-cli": "^6.0.5",
     "expo-image-picker": "~13.3.1",
