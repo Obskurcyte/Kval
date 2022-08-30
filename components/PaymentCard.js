@@ -315,7 +315,7 @@ ${
                             console.log("7")
                             console.log(cartItem)
                             console.log(userData)
-                            await axios.post("http://localhost:8000/send", {
+                            await axios.post("https://kval-backend.herokuapp.com/send", {
                                 mail: userData.email,
                                 subject: "Confirmation d'achat",
                                 html_output: `
