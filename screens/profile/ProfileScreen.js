@@ -14,15 +14,12 @@ import {
 import firebase from "firebase";
 import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as messageAction from "../../store/actions/messages";
 import {BASE_URL} from "../../constants/baseURL";
 import axios from 'axios';
 import authContext from "../../context/authContext";
 import ValidationPhotoProfileScreen from "./ValidationPhotoProfileScreen";
 import {useNavigation} from "@react-navigation/core";
-import * as Linking from 'expo-linking';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -336,7 +333,6 @@ const ProfileScreen = (props) => {
                   style={styles.boutonList}
                   onPress={() => {
                     props.navigation.navigate("CommentCaMarcheScreen")
-                   // Platform.OS === "android" ? Linking.openURL("https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Fcomment_ca_marche.pdf?alt=media&token=b63b51a3-a9b8-46ed-9221-16b32f19cd9f") : props.navigation.navigate("CommentCaMarcheScreen")
                   }}
               >
                 <Text style={styles.text}>Comment ça marche</Text>
@@ -351,7 +347,6 @@ const ProfileScreen = (props) => {
                   style={styles.boutonList}
                   onPress={() => {
                     props.navigation.navigate("ViePriveeScreen")
-                   // Platform.OS === "android" ? Linking.openURL('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FPolitique-de-confidentialit%C3%A9.pdf?alt=media&token=9f0aacc6-f005-4985-ac04-dda0848a8d0a') : props.navigation.navigate("ViePriveeScreen")
                   }}
               >
                 <Text style={styles.text}>Vie privée</Text>
@@ -361,7 +356,6 @@ const ProfileScreen = (props) => {
                     style={styles.text}
                     onPress={() => {
                       props.navigation.navigate("CGUScreen")
-                     // Platform.OS === "android" ? Linking.openURL('https://firebasestorage.googleapis.com/v0/b/kval-c264a.appspot.com/o/documents%2FCGV.pdf?alt=media&token=bd394f6e-4590-4e1d-af3c-ed7ec0c38827') : props.navigation.navigate("CGUScreen")
                     }}
                 >
                   Conditions générales d'utilisations
