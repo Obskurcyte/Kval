@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Dimensions,
+  Image,
   Keyboard,
   ScrollView,
-  Image,
-  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextInput,
   TouchableOpacity,
-  Dimensions,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { Formik } from "formik";
-import { AntDesign } from "@expo/vector-icons";
+import {Formik} from "formik";
+import {AntDesign} from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase";
-import { useDispatch, useSelector } from "react-redux";
+import {useDispatch} from "react-redux";
 import * as Yup from "yup";
-import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import PaymentCard from "../../components/PaymentCard";
+import * as Notifications from "expo-notifications";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -160,152 +161,120 @@ const ModifierAnnonceScreen = (props) => {
 
   const date = new Date();
 
-  const onCheckStatus = async (paymentResponse) => {
-    setPaymentStatus("Votre paiement est en cours de traitement");
-    setResponse(paymentResponse);
+  const [pushToken, setPushToken] = useState(null);
+  useEffect(() => {
+    const getToken = async () => {
+      let statusObj = await Notifications.getPermissionsAsync();
+      if (statusObj.status !== "granted") {
+        statusObj = await Notifications.requestPermissionsAsync();
+      }
+      if (statusObj.status !== "granted") {
+        setPushToken(null);
+      } else {
+        setPushToken(await Notifications.getExpoPushTokenAsync());
+      }
+    }
+    getToken();
+  }, []);
 
-    console.log('here')
-    let jsonResponse = JSON.parse(paymentResponse);
+  const handlePay = async () => {
 
     try {
       console.log('02')
+      console.log('04')
 
-      const stripeResponse = await axios.post(
-          "https://kval-backend.herokuapp.com/paymentonetime",
-          {
-            email: userData.email,
-            authToken: jsonResponse,
-            amount: 0.99 * 100,
-          }
-      );
-
-      console.log('response', stripeResponse)
-      console.log('01')
-      if (stripeResponse) {
-        console.log('03')
-
-        const { paid } = stripeResponse.data;
-        console.log('response', stripeResponse)
-        if (paid === true) {
-         /* let pushToken;
-          let statusObj = await Notifications.getPermissionsAsync();
-          if (statusObj.status !== "granted") {
-            statusObj = await Notifications.requestPermissionsAsync();
-          }
-          if (statusObj.status !== "granted") {
-            pushToken = null;
+      let responseProduct;
+      if (imagesTableau.length === 0) {
+        setError("Veuillez uploader des photos");
+      } else {
+        console.log("1");
+        try {
+          await axios.delete(`${BASE_URL}/api/products/${product_id}`)
+          console.log('06')
+          if (propsProduct.boosted) {
+            responseProduct = await axios.post(`${BASE_URL}/api/products`, {
+              category: categorie,
+              status: etat,
+              brand: marques,
+              title: titre,
+              description: description,
+              prix: prix,
+              poids: poids,
+              token: pushToken.data,
+              boosted: true,
+              emailVendeur: userData.email,
+              idVendeur: userData._id,
+              pseudoVendeur: userData.pseudo,
+            })
           } else {
-            pushToken = (await Notifications.getExpoPushTokenAsync()).data;
+            console.log('05')
+            responseProduct = await axios.post(`${BASE_URL}/api/products`, {
+              category: categorie,
+              status: etat,
+              brand: marques,
+              title: titre,
+              description: description,
+              prix: prix,
+              poids: poids,
+              token: pushToken.data,
+              emailVendeur: userData.email,
+              idVendeur: userData._id,
+              pseudoVendeur: userData.pseudo,
+            })
           }
 
-          */
-          console.log('04')
+          const uploadImage = async (index) => {
+            return new Promise(async (resolve) => {
+              const uri = imagesTableau[index];
+              const response = await fetch(uri);
+              const blob = await response.blob();
 
-          let responseProduct;
-          const old_id = product_id;
-          const id = Math.random() * 300000000;
-          if (imagesTableau.length === 0) {
-            setError("Veuillez uploader des photos");
-          } else {
-            console.log("1");
-            try {
-              await axios.delete(`${BASE_URL}/api/products/${old_id}`)
-              console.log('06')
-              if (propsProduct.boosted) {
-                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-                  category: categorie,
-                  status: etat,
-                  brand: marques,
-                  title: titre,
-                  description: description,
-                  prix: prix,
-                  poids: poids,
-                 // pushToken,
-                  boosted: true,
-                  emailVendeur: userData.email,
-                  idVendeur: userData._id,
-                  pseudoVendeur: userData.pseudo,
-                })
-              } else {
-                console.log('05')
-                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-                  category: categorie,
-                  status: etat,
-                  brand: marques,
-                  title: titre,
-                  description: description,
-                  prix: prix,
-                  poids: poids,
-                 // pushToken,
-                  emailVendeur: userData.email,
-                  idVendeur: userData._id,
-                  pseudoVendeur: userData.pseudo,
-                })
-              }
+              const task = firebase
+                  .storage()
+                  .ref()
+                  .child(`${categorie}/${Math.random().toString(36)}`)
+                  .put(blob);
 
-              const uploadImage = async (index) => {
-                return new Promise(async (resolve) => {
-                  const uri = imagesTableau[index];
-                  const response = await fetch(uri);
-                  const blob = await response.blob();
+              const taskProgress = (snapshot) => {
+                console.log(`transferred: ${snapshot.bytesTransferred}`);
+              };
 
-                  const task = firebase
-                      .storage()
-                      .ref()
-                      .child(`${categorie}/${Math.random().toString(36)}`)
-                      .put(blob);
-
-                  const taskProgress = (snapshot) => {
-                    console.log(`transferred: ${snapshot.bytesTransferred}`);
-                  };
-
-                  const taskCompleted = (snapshot) => {
-                    task.snapshot.ref.getDownloadURL().then(async(snapshot) => {
-                      const response = await axios.put(`${BASE_URL}/api/products`, {
-                        id: responseProduct.data.product._id,
-                        image: snapshot
-                      })
-                      resolve();
-                    });
-                  };
-
-                  const taskError = (snapshot) => {
-                    console.log(snapshot);
-                  };
-
-                  task.on(
-                      "state_changed",
-                      taskProgress,
-                      taskError,
-                      taskCompleted
-                  );
+              const taskCompleted = (snapshot) => {
+                task.snapshot.ref.getDownloadURL().then(async (snapshot) => {
+                  const response = await axios.put(`${BASE_URL}/api/products`, {
+                    id: responseProduct.data.product._id,
+                    image: snapshot
+                  })
+                  resolve();
                 });
               };
 
-              console.log("6");
-              await Promise.all(
-                  imagesTableau.map(async (image, index) => {
-                    console.log("test");
-                    await uploadImage(index);
-                  })
+              const taskError = (snapshot) => {
+                console.log(snapshot);
+              };
+
+              task.on(
+                  "state_changed",
+                  taskProgress,
+                  taskError,
+                  taskCompleted
               );
-            } catch (err) {
-              console.log(err);
-            }
+            });
+          };
 
-
-            setPaymentStatus(
-                "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
-            );
-          }
-        } else {
-          setPaymentStatus("Le paiement a échoué");
+          console.log("6");
+          await Promise.all(
+              imagesTableau.map(async (image, index) => {
+                console.log("test");
+                await uploadImage(index);
+              })
+          );
+        } catch (err) {
+          console.log(err);
         }
-      } else {
-        setPaymentStatus("Le paiement a échoué");
       }
-    } catch (error) {
-      setPaymentStatus("Le paiement a échoué");
+    } catch (err) {
+      console.log(err)
     }
   };
 
@@ -808,10 +777,11 @@ const ModifierAnnonceScreen = (props) => {
       } else {
         return (
             <View style={styles.container}>
-              <PaymentView
-                  onCheckStatus={onCheckStatus}
-                  product={"Paiement unique"}
+              <PaymentCard
+                  handlePay={handlePay}
                   amount={0.99}
+                  userData={userData}
+                  modify={true}
               />
               <TouchableOpacity
                   style={styles.mettreEnVenteOptional}

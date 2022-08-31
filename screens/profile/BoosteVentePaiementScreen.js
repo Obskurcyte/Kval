@@ -17,6 +17,7 @@ import { AntDesign, Entypo } from "@expo/vector-icons";
 import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import {BASE_URL} from "../../constants/baseURL";
+import PaymentCard from "../../components/PaymentCard";
 
 
 const windowWidth = Dimensions.get("window").width;
@@ -58,36 +59,19 @@ const BoosteVentePaiementScreen = (props) => {
   let someFormattedDate = dd + "/" + mm + "/" + y;
 
 
-  const onCheckStatus = async (paymentResponse) => {
-
-    setPaymentStatus("Votre paiement est en cours de traitement");
-    setResponse(paymentResponse);
-    let jsonResponse = JSON.parse(paymentResponse);
-    // perform operation to check payment status
-
+  const handlePay = async () => {
+    console.log('1')
     try {
-      const stripeResponse = await axios.post(
-          "https://kval-backend.herokuapp.com/paymentonetime",
-          {
-            email: currentUser.email,
-            product: cartInfo,
-            authToken: jsonResponse,
-            amount: (price * 100).toFixed(0),
-          }
-      );
-
-      if (stripeResponse) {
-        const { paid } = stripeResponse.data;
-        if (paid === true) {
-          for (let i = 0; i < articles.length; i++) {
-            await axios.put(`${BASE_URL}/api/products`, {
-              id: articles[i]._id,
-              boosted: true
-            })
-            await axios.post("https://kval-backend.herokuapp.com/send", {
-              mail: currentUser.email,
-              subject: "Confirmation de mise en avant première",
-              html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
+      for (let i = 0; i < articles.length; i++) {
+        await axios.put(`${BASE_URL}/api/products`, {
+          id: articles[i]._id,
+          boosted: true
+        })
+        console.log('2')
+        await axios.post("https://kval-backend.herokuapp.com/send", {
+          mail: currentUser.email,
+          subject: "Confirmation de mise en avant première",
+          html_output: `<div><p>Félicitations ${currentUser.pseudo}, <br></p> 
 <p>Votre article vient d'être boosté pour une durée de ${dureeBoost} jours jusqu'au ${someFormattedDate} à ${hours}:${minutes}.</p>
 <p>Résumé de votre article : </p>
 <hr>
@@ -109,21 +93,10 @@ const BoosteVentePaiementScreen = (props) => {
 <p style="margin: 0">L'équipe KVal Occaz</p>
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
-            });
-          }
-
-          setPaymentStatus(
-              "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
-          );
-        } else {
-          setPaymentStatus("Le paiement a échoué");
-        }
-      } else {
-        setPaymentStatus("Le paiement a échoué");
+        });
       }
-    } catch (error) {
-      console.log(error);
-      setPaymentStatus("Le paiement a échoué");
+    } catch(err) {
+      console.log(err)
     }
   };
 
@@ -270,10 +243,11 @@ const BoosteVentePaiementScreen = (props) => {
       }
       else {
         return (
-            <PaymentView
-                onCheckStatus={onCheckStatus}
-                product={"Paiement unique"}
-                amount={(price * 100).toFixed(0)}
+            <PaymentCard
+                handlePay={handlePay}
+                userData={currentUser}
+                boost={true}
+                amount={price.toFixed(0)}
             />
         );
       }

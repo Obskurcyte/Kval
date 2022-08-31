@@ -14,10 +14,8 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { useSelector, useDispatch } from "react-redux";
 import * as cartActions from "../../store/actions/cart";
 import * as productActions from "../../store/actions/products";
-import { PaymentView } from "../../components/PaymentView";
 import axios from "axios";
 import { AntDesign } from "@expo/vector-icons";
-import firebase from "firebase";
 import RecapCommandeItem from "../../components/RecapCommandeItem";
 import { get_mondial_relay_price } from "../../components/MondialRelayShippingPrices";
 import {Formik} from "formik";
@@ -135,28 +133,7 @@ const CartScreen = (props) => {
 
     let etiquette_url = "";
 
-    const onCheckStatus = async (paymentResponse) => {
-        setPaymentStatus("Votre paiement est en cours de traitement");
-        setResponse(paymentResponse);
-
-        let jsonResponse = JSON.parse(paymentResponse);
-
-        console.log('SOUSTOTAL', sousTotal)
-        console.log('1')
-        try {
-            const stripeResponse = await axios.post(
-                `${BASE_URL}/paymentonetime`,
-                {
-                    email: `${userData.email}`,
-                    product: cartInfo,
-                    authToken: jsonResponse,
-                    amount: toggleCheckBoxPortefeuille ? newTotal * 100 : sousTotal * 100,
-                }
-            );
-            if (stripeResponse) {
-                console.log(stripeResponse)
-                const { paid } = stripeResponse.data;
-                if (paid === true) {
+    const handlePay = async () => {
                     if (goPaymentPaymentPortefeuilleWithAlsoCard) {
                         try {
                             await axios.put(`${BASE_URL}/api/users`, {
@@ -474,18 +451,7 @@ ${
                             });
                         }
                     }
-                }
-                setPaymentStatus(
-                    "Votre paiement a été validé ! Les utilisateurs vont pouvoir désormais voir votre numéro"
-                );
-            } else {
-                setPaymentStatus("Le paiement a échoué");
-            }
-        } catch (error) {
-            console.log(error);
-            setPaymentStatus("Le paiement a échoué");
-        }
-    };
+    }
 
 
     const cartTotalAmount = useSelector((state) => state.cart.items);
@@ -1415,6 +1381,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                         goPaymentPaymentPortefeuilleWithAlsoCard={goPaymentPaymentPortefeuilleWithAlsoCard}
                                         cartItems={cartItems}
                                         userData={userData}
+                                        handlePay={handlePay}
                                     />
                                     <Text style={{textAlign: "center", fontSize: 18}}>
                                         Payment Powered by Stripe
@@ -1452,6 +1419,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                     goPaymentPaymentPortefeuilleWithAlsoCard={goPaymentPaymentPortefeuilleWithAlsoCard}
                                     cartItems={cartItems}
                                     userData={userData}
+                                    handlePay={handlePay}
                                 />
                                 <Text style={{textAlign: "center", fontSize: 18}}>
                                     Payment Powered by Stripe

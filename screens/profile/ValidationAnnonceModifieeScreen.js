@@ -8,10 +8,12 @@ const windowHeight = Dimensions.get('window').height;
 
 const ValidationAnnonceModifieeScreen = (props) => {
 
+    const boost = props.route.params.boost
+
     return (
         <View style={styles.container}>
             <AntDesign name="checkcircleo" size={200} color="white" />
-            <Text style={styles.text}>Votre modification est effectuée !</Text>
+            {boost ?  <Text style={styles.text}>Votre boost est effectué !</Text> : <Text style={styles.text}>Votre modification est effectuée !</Text>}
             <TouchableOpacity style={styles.retourContainer} onPress={() => {
                 props.navigation.navigate("ProfileScreen")
                 props.navigation.navigate("Accueil", {
