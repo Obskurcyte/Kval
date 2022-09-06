@@ -45,14 +45,13 @@ const ModifierAnnonceScreen = (props) => {
 
 
   let propsProduct = props.route.params.product;
-  let price = props.route.params.prix;
 
   const product_id = props.route.params.product._id;
 
   const [etat, setEtat] = useState(null);
-  const [categorie, setCategorie] = useState(props.route.params.product.category)
-  const [marques, setMarques] = useState(props.route.params.product.brand);
-  const [titre, setTitre] = useState(props.route.params.product.title);
+  const [categorie, setCategorie] = useState(null)
+  const [marques, setMarques] = useState(null);
+  const [titre, setTitre] = useState(null);
   const [description, setDescription] = useState("");
   const [prix, setPrix] = useState(props.route.params.product.prix);
   const [poids, setPoids] = useState("");
@@ -61,10 +60,7 @@ const ModifierAnnonceScreen = (props) => {
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
-  useEffect(() => {
-
-    setCategorie(props.route.params.product.category)
-  }, [categorie]);
+  console.log("categorie", categorie)
 
 
   const [userData, setUserData] = useState(null)
@@ -81,18 +77,23 @@ const ModifierAnnonceScreen = (props) => {
     return unsubscribe
   }, [props.navigation]);
 
+
+  console.log('params', props.route.params)
   useEffect(() => {
-    if (props.route.params) {
-      setEtat(props.route.params.product.status);
-      setCategorie(props.route.params.product.category);
-      setMarques(props.route.params.product.brand);
-      setImagesTableau(props.route.params.product.images);
+    if (props.route.params.etat) {
+      setEtat(props.route.params.etat);
+    }
+    if (props.route.params.categorie) {
+      setCategorie(props.route.params.categorie);
+    }
+    if (props.route.params.marques) {
+      setMarques(props.route.params.marques);
     }
   }, [props.route.params]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
-  const [imagesTableau, setImagesTableau] = useState([]);
+  const [imagesTableau, setImagesTableau] = useState(propsProduct.images);
 
   const removePicture = (index) => {
     imagesTableau.splice(index, 1);
@@ -159,8 +160,6 @@ const ModifierAnnonceScreen = (props) => {
   const [error, setError] = useState("");
 
 
-  const date = new Date();
-
   const [pushToken, setPushToken] = useState(null);
   useEffect(() => {
     const getToken = async () => {
@@ -176,6 +175,8 @@ const ModifierAnnonceScreen = (props) => {
     }
     getToken();
   }, []);
+
+
 
   const handlePay = async () => {
 
@@ -333,22 +334,7 @@ const ModifierAnnonceScreen = (props) => {
 
                               let responseProduct;
                               console.log('1.0')
-                              /*let pushToken;
-                              let statusObj =
-                                  await Notifications.getPermissionsAsync();
-                              if (statusObj.status !== "granted") {
-                                statusObj =
-                                    await Notifications.requestPermissionsAsync();
-                              }
-                              if (statusObj.status !== "granted") {
-                                pushToken = null;
-                              } else {
-                                pushToken = (
-                                    await Notifications.getExpoPushTokenAsync()
-                                ).data;
-                              }
 
-                               */
 
 
                               const old_id = product_id;
@@ -376,7 +362,7 @@ const ModifierAnnonceScreen = (props) => {
                                   emailVendeur: userData.email,
                                   idVendeur: userData._id,
                                   boosted: true,
-                                  //pushToken,
+                                  token: pushToken.data,
                                   pseudoVendeur: userData.pseudo
                                 });
                               } else {
@@ -390,12 +376,13 @@ const ModifierAnnonceScreen = (props) => {
                                   poids: values.poids,
                                   emailVendeur: userData.email,
                                   idVendeur: userData._id,
-                                  //pushToken,
+                                  token: pushToken.data,
                                   pseudoVendeur: userData.pseudo
                                 });
                               }
 
 
+                              console.log('3')
                               const uploadImage = async (index) => {
                                 return new Promise(async (resolve) => {
                                   const uri = imagesTableau[index];

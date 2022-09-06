@@ -18,9 +18,9 @@ const PaymentCard = ({amount, cartItems, userData, handlePay, modify, boost}) =>
     const { confirmPayment, loading } = useConfirmPayment();
 
 
-    console.log('amount', amount)
+    console.log('amount', (amount * 100).toFixed(0))
     const params = {
-        amount: amount * 100,
+        amount: (amount * 100).toFixed(0),
         email: userData.email
     };
 

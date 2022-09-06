@@ -8,7 +8,7 @@ const windowHeight = Dimensions.get('window').height;
 
 const ValidationAnnonceModifieeScreen = (props) => {
 
-    const boost = props.route.params.boost
+    const boost = props.route?.params?.boost
 
     return (
         <View style={styles.container}>

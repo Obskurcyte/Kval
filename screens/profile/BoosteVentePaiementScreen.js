@@ -35,17 +35,13 @@ const BoosteVentePaiementScreen = (props) => {
 
   const [goPaiement, setGoPaiement] = useState(false);
 
-  const cartInfo = {
-    id: "5eruyt35eggr76476236523t3",
-    description: "T Shirt - With react Native Logo",
-    amount: 1,
-  };
   const [response, setResponse] = useState();
   const [makePayment, setMakePayment] = useState(false);
   const [price, setPrice] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("");
   console.log('status', paymentStatus)
 
+  console.log('price', price.toFixed(2))
   const [dureeBoost, setDureeBoost] = useState(0);
   const [numberOfDaysToAdd, setNumberOfDayToAdd] = useState(0);
 
@@ -247,7 +243,7 @@ const BoosteVentePaiementScreen = (props) => {
                 handlePay={handlePay}
                 userData={currentUser}
                 boost={true}
-                amount={price.toFixed(0)}
+                amount={price.toFixed(2)}
             />
         );
       }
