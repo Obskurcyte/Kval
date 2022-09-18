@@ -48,10 +48,11 @@ const ModifierAnnonceScreen = (props) => {
 
   const product_id = props.route.params.product._id;
 
+  console.log('id', product_id)
   const [etat, setEtat] = useState(null);
   const [categorie, setCategorie] = useState(null)
   const [marques, setMarques] = useState(null);
-  const [titre, setTitre] = useState(null);
+  const [titre, setTitre] = useState(props.route.params.product.title);
   const [description, setDescription] = useState("");
   const [prix, setPrix] = useState(props.route.params.product.prix);
   const [poids, setPoids] = useState("");
@@ -60,7 +61,7 @@ const ModifierAnnonceScreen = (props) => {
   const [response, setResponse] = useState();
   const [goMessagePayment, setGoMessagePayment] = useState(false);
 
-  console.log("categorie", categorie)
+  console.log("product", propsProduct)
 
 
   const [userData, setUserData] = useState(null)
@@ -78,7 +79,6 @@ const ModifierAnnonceScreen = (props) => {
   }, [props.navigation]);
 
 
-  console.log('params', props.route.params)
   useEffect(() => {
     if (props.route.params.etat) {
       setEtat(props.route.params.etat);
@@ -95,7 +95,11 @@ const ModifierAnnonceScreen = (props) => {
   const [image, setImage] = useState(null);
   const [imagesTableau, setImagesTableau] = useState(propsProduct.images);
 
+  console.log('images', imagesTableau)
+  const [changedImage, setChangedImage] = useState(false);
+
   const removePicture = (index) => {
+    setChangedImage(true)
     imagesTableau.splice(index, 1);
     setImagesTableau([...imagesTableau]);
   };
@@ -124,6 +128,7 @@ const ModifierAnnonceScreen = (props) => {
     });
     setImagesTableau((oldImage) => [...oldImage, result.uri]);
     if (!result.cancelled) {
+      setChangedImage(true)
       setImage(result.uri);
     }
   };
@@ -137,6 +142,7 @@ const ModifierAnnonceScreen = (props) => {
     });
     setImagesTableau((oldImage) => [...oldImage, result.uri]);
     if (!result.cancelled) {
+      setChangedImage(true)
       setImage(result.uri);
     }
   };
@@ -162,6 +168,9 @@ const ModifierAnnonceScreen = (props) => {
 
   const [pushToken, setPushToken] = useState(null);
   useEffect(() => {
+    setImagesTableau(propsProduct.images)
+    setGoMessagePayment(false)
+    setMakePayment(false)
     const getToken = async () => {
       let statusObj = await Notifications.getPermissionsAsync();
       if (statusObj.status !== "granted") {
@@ -177,106 +186,126 @@ const ModifierAnnonceScreen = (props) => {
   }, []);
 
 
+  const sendEmail = async (image, title, description, prix, poids, categorie) => {
+    await axios.post(
+        "https://kval-backend.herokuapp.com/send",
+        {
+          mail: userData.email,
+          subject: "Confirmation de modification ",
+          html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
+<p>Nous vous confirmons la modification de votre article comme suit :</p>
+<hr>
+    <div style="display: flex">
+        <div style="margin-right: 30px">
+            <img src="${image}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
+        </div>
+                
+        <div style="margin-top: 20px">
+            <p style="margin: 0">${title}</p>
+            <p style="margin: 0">${description}</p>
+            <p style="margin: 0">Prix net vendeur: ${prix} €</p>
+            <p style="margin: 0">Poids : ${poids} kgs</p>
+            <p style="margin: 0">Catégorie: ${categorie}</p>
+        </div>
+    </div>
+<hr>
+<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
+<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
+<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
+</p>
+<br>
+    <p style="margin: 0">L'équipe KVal Occaz</p>
+    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
+</div>`,
+        }
+    );
+  }
+
+  const uploadImage = async (index, title, description, prix, poids, categorie) => {
+    return new Promise(async (resolve) => {
+      const uri = imagesTableau[index];
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const task = firebase
+          .storage()
+          .ref()
+          .child(
+              `${categorie}/${Math.random().toString(36)}`
+          )
+          .put(blob);
+
+      const taskProgress = (snapshot) => {
+        console.log(
+            `transferred: ${snapshot.bytesTransferred}`
+        );
+      };
+
+      const taskCompleted = (snapshot) => {
+        task.snapshot.ref
+            .getDownloadURL()
+            .then(async (snapshot) => {
+              try {
+                const response = await axios.put(`${BASE_URL}/api/products`, {
+                  id: product_id,
+                  image: snapshot,
+                })
+                await sendEmail(snapshot, title, description, prix, poids, categorie)
+              } catch(err) {
+                console.log(err)
+              }
+              resolve();
+            });
+      };
+
+      const taskError = (snapshot) => {
+        console.log(snapshot);
+      };
+
+      task.on(
+          "state_changed",
+          taskProgress,
+          taskError,
+          taskCompleted
+      );
+    });
+  };
+
 
   const handlePay = async () => {
-
-    try {
-      console.log('02')
-      console.log('04')
-
-      let responseProduct;
       if (imagesTableau.length === 0) {
         setError("Veuillez uploader des photos");
       } else {
         console.log("1");
         try {
-          await axios.delete(`${BASE_URL}/api/products/${product_id}`)
-          console.log('06')
-          if (propsProduct.boosted) {
-            responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-              category: categorie,
-              status: etat,
-              brand: marques,
-              title: titre,
-              description: description,
-              prix: prix,
-              poids: poids,
-              token: pushToken.data,
-              boosted: true,
-              emailVendeur: userData.email,
-              idVendeur: userData._id,
-              pseudoVendeur: userData.pseudo,
-            })
-          } else {
-            console.log('05')
-            responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-              category: categorie,
-              status: etat,
-              brand: marques,
-              title: titre,
-              description: description,
-              prix: prix,
-              poids: poids,
-              token: pushToken.data,
-              emailVendeur: userData.email,
-              idVendeur: userData._id,
-              pseudoVendeur: userData.pseudo,
-            })
-          }
-
-          const uploadImage = async (index) => {
-            return new Promise(async (resolve) => {
-              const uri = imagesTableau[index];
-              const response = await fetch(uri);
-              const blob = await response.blob();
-
-              const task = firebase
-                  .storage()
-                  .ref()
-                  .child(`${categorie}/${Math.random().toString(36)}`)
-                  .put(blob);
-
-              const taskProgress = (snapshot) => {
-                console.log(`transferred: ${snapshot.bytesTransferred}`);
-              };
-
-              const taskCompleted = (snapshot) => {
-                task.snapshot.ref.getDownloadURL().then(async (snapshot) => {
-                  const response = await axios.put(`${BASE_URL}/api/products`, {
-                    id: responseProduct.data.product._id,
-                    image: snapshot
-                  })
-                  resolve();
-                });
-              };
-
-              const taskError = (snapshot) => {
-                console.log(snapshot);
-              };
-
-              task.on(
-                  "state_changed",
-                  taskProgress,
-                  taskError,
-                  taskCompleted
-              );
-            });
-          };
-
-          console.log("6");
-          await Promise.all(
-              imagesTableau.map(async (image, index) => {
-                console.log("test");
-                await uploadImage(index);
-              })
-          );
-        } catch (err) {
-          console.log(err);
+          const response = await axios.put(`${BASE_URL}/api/products`, {
+            id: product_id,
+            category: categorie,
+            status: etat,
+            brand: marques,
+            title: titre,
+            description: description,
+            prix: prix,
+            poids: poids,
+          })
+        } catch(err) {
+          console.log(err)
         }
+          console.log("6");
+
+          if (changedImage) {
+            await Promise.all(
+                imagesTableau.map(async (image, index) => {
+                  console.log("test");
+                  await uploadImage(index, titre, description, prix, poids, categorie);
+                })
+            );
+          } else {
+            setTimeout(async () => {
+              await sendEmail(imagesTableau[0], titre, description, prix, poids, categorie)
+            }, 2000)
+          }
       }
-    } catch (err) {
-      console.log(err)
-    }
   };
 
   const paymentUI = (props) => {
@@ -304,6 +333,12 @@ const ModifierAnnonceScreen = (props) => {
                           initialValues={initialValues}
                           validationSchema={uploadSchema}
                           onSubmit={async (values) => {
+                            console.log('titre', titre)
+                            console.log('values', values)
+                            setDescription(values.description);
+                            setPrix(values.price);
+                            setPoids(values.poids);
+                            setTitre(values.title);
                             let data = {};
                             if (imagesTableau.length === 0) {
                               setError("Veuillez uploader des photos");
@@ -323,156 +358,48 @@ const ModifierAnnonceScreen = (props) => {
                             } else {
                               setMarques(propsProduct.brand)
                             }
+                            if (titre !== values.title) {
+                              setGoMessagePayment(true);
+                            }
                             if (prix !== values.price) {
                               setGoMessagePayment(true);
-                              setTitre(values.title);
-                              setDescription(values.description);
-                              setPrix(values.price);
-                              setPoids(values.poids);
-                            } else {
+                            } if (prix === values.price && titre === values.title) {
                               setIsLoading(true);
 
-                              let responseProduct;
                               console.log('1.0')
-
-
-
-                              const old_id = product_id;
-
-                              console.log('1')
-
                               try {
-                                console.log('1;1')
-                                await axios.delete(`${BASE_URL}/api/products/${old_id}`)
-                              } catch (err) {
-                                console.log(err);
+                                const response = await axios.put(`${BASE_URL}/api/products`, {
+                                  id: product_id,
+                                  category: categorie,
+                                  status: etat,
+                                  brand: marques,
+                                  title: values.title,
+                                  description: values.description,
+                                  prix: values.price,
+                                  poids: values.poids,
+                                })
+                              } catch(err) {
+                                console.log(err)
                               }
 
                               console.log('2')
-
-                              if (propsProduct.boosted) {
-                                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-                                  category: categorie,
-                                  status: etat,
-                                  brand: marques,
-                                  title: values.title,
-                                  description: values.description,
-                                  prix: values.price,
-                                  poids: values.poids,
-                                  emailVendeur: userData.email,
-                                  idVendeur: userData._id,
-                                  boosted: true,
-                                  token: pushToken.data,
-                                  pseudoVendeur: userData.pseudo
-                                });
+                              if (changedImage) {
+                                await Promise.all(
+                                    imagesTableau.map(async (image, index) => {
+                                      console.log("test");
+                                      await uploadImage(index, values.title, values.description, values.price, values.poids, categorie || propsProduct.category);
+                                    })
+                                );
                               } else {
-                                responseProduct = await axios.post(`${BASE_URL}/api/products`, {
-                                  category: categorie,
-                                  status: etat,
-                                  brand: marques,
-                                  title: values.title,
-                                  description: values.description,
-                                  prix: values.price,
-                                  poids: values.poids,
-                                  emailVendeur: userData.email,
-                                  idVendeur: userData._id,
-                                  token: pushToken.data,
-                                  pseudoVendeur: userData.pseudo
-                                });
+                                await sendEmail(imagesTableau[0], values.title, values.description, values.price, values.poids, categorie || propsProduct.category)
                               }
 
 
-                              console.log('3')
-                              const uploadImage = async (index) => {
-                                return new Promise(async (resolve) => {
-                                  const uri = imagesTableau[index];
-                                  const response = await fetch(uri);
-                                  const blob = await response.blob();
-
-                                  const task = firebase
-                                      .storage()
-                                      .ref()
-                                      .child(
-                                          `${categorie}/${Math.random().toString(36)}`
-                                      )
-                                      .put(blob);
-
-                                  const taskProgress = (snapshot) => {
-                                    console.log(
-                                        `transferred: ${snapshot.bytesTransferred}`
-                                    );
-                                  };
-
-                                  const taskCompleted = (snapshot) => {
-                                    task.snapshot.ref
-                                        .getDownloadURL()
-                                        .then(async (snapshot) => {
-                                          console.log('data', data)
-                                          const response = await axios.put(`${BASE_URL}/api/products`, {
-                                            id: responseProduct.data.product._id,
-                                            image: snapshot
-                                          })
-                                          await axios.post(
-                                              "https://kval-backend.herokuapp.com/send",
-                                              {
-                                                mail: userData.email,
-                                                subject: "Confirmation de modification ",
-                                                html_output: `<div><p>Félicitations ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons la modification de votre article comme suit :</p>
-<hr>
-    <div style="display: flex">
-        <div style="margin-right: 30px">
-            <img src="${snapshot}" alt="" style="width: 150px; height: 150px; margin-top: 20px"/>
-        </div>
-                
-        <div style="margin-top: 20px">
-            <p style="margin: 0">${values.title}</p>
-            <p style="margin: 0">${values.description}</p>
-            <p style="margin: 0">Prix net vendeur: ${values.price} €</p>
-            <p style="margin: 0">Poids : ${values.poids} kgs</p>
-            <p style="margin: 0">Catégorie: ${categorie}</p>
-        </div>
-    </div>
-<hr>
-<p style="margin: 0">Vous pouvez retrouver cet article dans votre profil dans la rubrique « Mes articles en vente »</p>
-<p style="margin: 0">où vous pourrez également booster cet article pour le rendre encore plus visible et le placer dans la catégorie </p>
-<p style="margin: 0">« Annonces en avant première » du menu d’accueil de l’application.
-</p>
-<br>
-    <p style="margin: 0">L'équipe KVal Occaz</p>
-    <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="">
-</div>`,
-                                              }
-                                          );
-                                          resolve();
-                                        });
-                                  };
-
-                                  const taskError = (snapshot) => {
-                                    console.log(snapshot);
-                                  };
-
-                                  task.on(
-                                      "state_changed",
-                                      taskProgress,
-                                      taskError,
-                                      taskCompleted
-                                  );
-                                });
-                              };
-
-                              console.log("6");
-
-                              await Promise.all(
-                                  imagesTableau.map(async (image, index) => {
-                                    console.log("test");
-                                    await uploadImage(index);
-                                  })
-                              );
                               setIsLoading(false);
+                              setMakePayment(false);
+                              setGoMessagePayment(false);
                               setImagesTableau([]);
                               setImage(null);
-
 
                               props.navigation.navigate(
                                   "ValidationAnnonceModifieeScreen"
@@ -673,8 +600,8 @@ const ModifierAnnonceScreen = (props) => {
       return (
           <View style={styles.container}>
             <Text style={styles.intermediateMessage}>
-              Vous avez changé le prix de votre annonce. Vous devez en conséquence
-              payer 0.99€.
+              Vous avez changé le prix de votre annonce.
+              <Text> Le coût de cette opération représente 0.99€.</Text>
             </Text>
             <TouchableOpacity
                 style={styles.mettreEnVenteIntermediate}

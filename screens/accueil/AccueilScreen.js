@@ -129,10 +129,10 @@ const AccueilScreen = (props) => {
       const { data } = await axios.get(`${BASE_URL}/api/products`);
       setProductsUne(data);
       setProductsFiltered(data.sort(function(a,b){
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
+        return new Date(b.createdAt) - new Date(a.createdAt);
       }));
       setProductsBoosted(data.filter(product => product.boosted === true).sort(function(a,b){
-        return new Date(b.updatedAt) - new Date(a.updatedAt);
+        return new Date(b.createdAt) - new Date(a.createdAt);
       }));
       await Notifications.setBadgeCountAsync(0)
     });
