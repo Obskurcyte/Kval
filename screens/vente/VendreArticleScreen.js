@@ -241,6 +241,7 @@ const VendreArticleScreen = (props) => {
   const [imageEmail, setImageMail] = useState("");
 
   const [pushToken, setPushToken] = useState(null);
+
   useEffect(() => {
     const getToken = async () => {
       let statusObj = await Notifications.getPermissionsAsync();
@@ -256,7 +257,6 @@ const VendreArticleScreen = (props) => {
     getToken();
   }, []);
 
-  console.log('pushtoken', pushToken)
   return (
       <View style={{ flex: 1 }}>
         <ScrollView style={{ flex: 1 }}>

@@ -59,10 +59,21 @@ const BoosteVentePaiementScreen = (props) => {
     console.log('1')
     try {
       for (let i = 0; i < articles.length; i++) {
-        await axios.put(`${BASE_URL}/api/products`, {
-          id: articles[i]._id,
-          boosted: true
-        })
+        if (dureeBoost === 3) {
+          await axios.put(`${BASE_URL}/api/products`, {
+            id: articles[i]._id,
+            boosted: true,
+            boostedDuration: 3,
+            boostedTime: Date.now()
+          })
+        } else {
+          await axios.put(`${BASE_URL}/api/products`, {
+            id: articles[i]._id,
+            boosted: true,
+            boostedDuration: 7,
+            boostedTime: Date.now()
+          })
+        }
         console.log('2')
         await axios.post("https://kval-backend.herokuapp.com/send", {
           mail: currentUser.email,

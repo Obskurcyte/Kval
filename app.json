@@ -6,7 +6,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.45",
+    "version": "1.0.47",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -37,7 +37,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.kval.app",
-      "versionCode": 45
+      "versionCode": 47
     },
     "web": {
       "favicon": "./assets/favicon.png"
