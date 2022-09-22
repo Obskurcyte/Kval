@@ -386,6 +386,13 @@ const ProfileScreen = (props) => {
               >
                 <Text style={styles.mettreEnVenteText}>Se déconnecter</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                  style={styles.mettreEnVente}
+                  onPress={() => navigation.navigate('DeleteAccountScreen')}
+              >
+                <Text style={styles.mettreEnVenteText}>Supprimer mon compte</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>

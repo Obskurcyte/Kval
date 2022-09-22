@@ -188,6 +188,7 @@ import SupressionNotifValidationScreen from "../screens/messages/SupressionNotif
 import ValidationPaymentScreen from "../screens/achat/ValidationPaymentScreen";
 import InputNewPasswordScreen from "../screens/inscription/InputNewPasswordScreen";
 import ConfirmationPasswordResetScreen from "../screens/inscription/ConfirmationPasswordResetScreen";
+import DeleteAccountScreen from "../screens/profile/DeleteAccountScreen";
 
 const AppTabNavigator = createBottomTabNavigator();
 
@@ -3007,6 +3008,20 @@ export const ProfileNavigator = (props) => {
                     },
                     headerBackTitle: "Retour",
                     headerTitle: "Vie Privée",
+                }}
+            />
+            <ProfileStackNavigator.Screen
+                name="DeleteAccountScreen"
+                component={DeleteAccountScreen}
+                options={{
+                    headerRightContainerStyle: {
+                        paddingRight: 10,
+                    },
+                    headerLeftContainerStyle: {
+                        paddingLeft: 10,
+                    },
+                    headerBackTitle: "Retour",
+                    headerTitle: "Supprimer mon compte",
                 }}
             />
         </ProfileStackNavigator.Navigator>
