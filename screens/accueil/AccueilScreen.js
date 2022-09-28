@@ -127,6 +127,7 @@ const AccueilScreen = (props) => {
     const unsubscribe = props.navigation.addListener('focus', async () => {
       setFocus(false)
       const { data } = await axios.get(`${BASE_URL}/api/products`);
+      console.log('data', data)
       setProductsUne(data);
       setProductsFiltered(data.sort(function(a,b){
         return new Date(b.createdAt) - new Date(a.createdAt);

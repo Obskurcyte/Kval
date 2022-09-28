@@ -20,6 +20,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import authContext from "../../context/authContext";
+import * as Yup from 'yup';
 
 const InscriptionScreen = (props) => {
     const initialValues = {
@@ -27,6 +28,11 @@ const InscriptionScreen = (props) => {
         email: "",
         password: "",
     };
+
+    const SignupSchema = Yup.object().shape({
+        pseudo: Yup.string().required('Ce champ est requis'),
+        email: Yup.string().email('Veuillez rentrer un email valide').required('Ce champ est requis'),
+    });
 
     const params = props.route.params;
 
@@ -61,6 +67,7 @@ const InscriptionScreen = (props) => {
                     <Text style={styles.title}>Inscription</Text>
                     <Formik
                         initialValues={initialValues}
+                        validationSchema={SignupSchema}
                         onSubmit={async (values) => {
                             setIsLoading(true)
                             try {
@@ -120,6 +127,8 @@ const InscriptionScreen = (props) => {
                                         onChangeText={props.handleChange("pseudo")}
                                     />
                                 </View>
+                                {props.errors.pseudo && props.touched.pseudo ?  <Text style={styles.err}>{props.errors.pseudo}</Text> : null}
+
                                 <View>
                                     <Text style={styles.text}>Email</Text>
                                     <TextInput
@@ -130,6 +139,8 @@ const InscriptionScreen = (props) => {
                                         onChangeText={props.handleChange("email")}
                                     />
                                 </View>
+
+                                {props.errors.email && props.touched.email ?  <Text style={styles.err}>{props.errors.email}</Text> : null}
 
                                 <View>
                                     <Text style={styles.text}>Mot de passe</Text>

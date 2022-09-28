@@ -192,11 +192,8 @@ const CartScreen = (props) => {
                             }),
                         });
 
-                        console.log('5')
 
-
-
-                        if ((livraison == "MondialRelay")) {
+                        if ((cartItem.livraison === "MondialRelay")) {
                             const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Request">
@@ -216,7 +213,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <OrderNo></OrderNo>
             <CustomerNo></CustomerNo>
             <ParcelCount>1</ParcelCount>
-            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
+            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse}" />
             <CollectionMode Mode="REL" Location="" />
             <Parcels>
                 <Parcel>
@@ -441,6 +438,7 @@ ${
                 </div>
 </div>
 <hr>
+
 <p>Vous avez 5 jours pour expédier votre article et l’acheteur à 2 jours dès réception de l’article en conformité avec sa description, pour le signalé reçu et conforme via l’application.</p>
 <p>Ce signalement donnera immédiatement lieu au crédit dans votre portefeuille.</p>
 <p>Si l’article n’est pas conforme, le crédit de la vente ne sera pas porté dans votre portefeuille et donnera lieu à une enquête de notre part.</p>
@@ -476,6 +474,7 @@ ${
 
         const PaymentPortefeuille = async () => {
             for (const cartItem of cartItems) {
+                console.log('cartItem', cartItem)
                 await axios.post(`${BASE_URL}/api/commandes`, {
                     title: cartItem.productTitle,
                     prix: cartItem.productPrice,
@@ -524,7 +523,8 @@ ${
                     }),
                 });
 
-                if ((livraison == "MondialRelay")) {
+                if ((cartItem.livraison === "MondialRelay")) {
+                    console.log("mondial", cartItem.adresse)
                     const data = `<?xml version="1.0" encoding="utf-8"?>
 <ShipmentCreationRequest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Request">
@@ -544,7 +544,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <OrderNo></OrderNo>
             <CustomerNo></CustomerNo>
             <ParcelCount>1</ParcelCount>
-            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
+            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.Adresse1}" />
             <CollectionMode Mode="REL" Location="" />
             <Parcels>
                 <Parcel>
@@ -826,7 +826,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                             onSubmit={async (values) => {
                                                 try {
                                                     const response = await axios.post(`${BASE_URL}/api/users/login`, {
-                                                        email: values.email,
+                                                        email: values.email.trim().toLowerCase(),
                                                         password: values.password,
                                                     })
 

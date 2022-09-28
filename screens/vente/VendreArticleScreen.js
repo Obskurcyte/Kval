@@ -287,7 +287,7 @@ const VendreArticleScreen = (props) => {
                           const id = Math.random() * 300000000;
 
                           if (imagesTableau.length === 0) {
-                            setError("Veuillez uploader des photos");
+                            setError("Veuillez remplir tous les champs");
                           } else {
                             try {
                               setIsLoading(true);
