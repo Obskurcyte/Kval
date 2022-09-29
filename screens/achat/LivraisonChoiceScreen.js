@@ -15,20 +15,27 @@ const LivraisonChoiceScreen = (props) => {
   const [livraison, setLivraison] = useState("");
 
   const handleMondialRelay = (data) => {
-      console.log("item", cartItems[index].image)
+      console.log("Mondial Relay", cartItems[index])
       let product = cartItems[index]
       console.log('product')
-      product.address = data
+      product.adresse = data
       product.livraison = "MondialRelay"
       product.images = [product.image]
+      product.token = product.pushToken
+      product.title = product.productTitle
+      product.prix = product.productPrice
+      product.brand = product.categorie
+      product._id = product.productId
+      console.log("new product", product)
       dispatch(cartActions.removeFromCart(cartItems[index].productId))
       dispatch(cartActions.addToCart(product));
       console.log('YESS')
-    props.navigation.navigate("CartScreen", {
-      cartItems: cartItems,
-      adresse: data,
-      index: index,
-    });
+      props.navigation.navigate("CartScreen", {
+          cartItems: cartItems,
+          adresse: data,
+          index: index,
+        });
+
 
 
   };

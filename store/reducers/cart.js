@@ -22,7 +22,7 @@ const cartReducer = (state = initialState, action) => {
       const poids = addedProduct.poids;
       const livraison = addedProduct.livraison;
       const description = addedProduct.description;
-      const address = addedProduct.address
+      const adresse = addedProduct.adresse
       let updatedOrNewCartItem;
 
       if (state.items[addedProduct._id]) {
@@ -41,7 +41,7 @@ const cartReducer = (state = initialState, action) => {
             livraison,
             state.items[addedProduct._id].quantity * prodPrice,
             description,
-            address
+            adresse
         );
       } else {
         updatedOrNewCartItem = new CartItem(
@@ -58,7 +58,7 @@ const cartReducer = (state = initialState, action) => {
             livraison,
             prodPrice,
             description,
-            address
+            adresse
         )
       }
       return {

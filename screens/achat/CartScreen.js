@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     ScrollView,
     Dimensions,
-    Platform,
     ActivityIndicator, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput,
 } from "react-native";
 import PaymentCard from '../../components/PaymentCard'
@@ -69,6 +68,7 @@ const CartScreen = (props) => {
     let cartItems = useSelector((state) => {
         const transformedCartItems = [];
         for (const key in state.cart.items) {
+            console.log('here', state.cart.items[key])
             transformedCartItems.push({
                 productId: key,
                 productTitle: state.cart.items[key].productTitle,
@@ -84,12 +84,14 @@ const CartScreen = (props) => {
                 pushToken: state.cart.items[key].pushToken,
                 sum: state.cart.items[key].sum,
                 description: state.cart.items[key].description,
+                adresse: state.cart.items[key].adresse,
             });
         }
         return transformedCartItems;
     });
 
 
+    console.log('cartItems', cartItems)
     if (cartItems2) {
         cartItems = cartItems2;
     }
@@ -201,7 +203,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <OrderNo></OrderNo>
             <CustomerNo></CustomerNo>
             <ParcelCount>1</ParcelCount>
-            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse}" />
+            <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
             <CollectionMode Mode="REL" Location="" />
             <Parcels>
                 <Parcel>
@@ -233,8 +235,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
             <Recipient>
                 <Address>
                     <Title></Title>
-                    <Firstname>${userData.prenom}</Firstname>
-                    <Lastname>${userData.nom}</Lastname>
+                    <Firstname>${userData.firstName}</Firstname>
+                    <Lastname>${userData.lastName}</Lastname>
                     <Streetname></Streetname>
                     <HouseNo></HouseNo>
                     <CountryCode>FR</CountryCode>
@@ -328,7 +330,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                                 },<br></p> 
 <p>Votre article vient d'être acheté par ${userData.pseudo}.</p>
 ${
-                                    livraison === "MondialRelay"
+                                    cartItem.livraison === "MondialRelay"
                                         ? `<div>
 <p>Voici le lien pour l'étiquette de paiement :</p>
 <br>
@@ -449,6 +451,7 @@ ${
     }
 
 
+    console.log('user', userData)
     const ViewPortefeuille = () => {
         const initialValues = {
             email: "",
@@ -489,7 +492,6 @@ ${
                 minusPortefeuille: Number(sousTotal)
             });
 
-            dispatch(cartActions.deleteCart());
             const pushToken = cartItem.pushToken;
             await fetch("https://exp.host/--/api/v2/push/send", {
                 method: "POST",
@@ -527,7 +529,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         <OrderNo></OrderNo>
         <CustomerNo></CustomerNo>
         <ParcelCount>1</ParcelCount>
-        <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.Adresse1}" />
+        <DeliveryMode Mode="24R" Location="FR-${cartItem.adresse.ID}" />
         <CollectionMode Mode="REL" Location="" />
         <Parcels>
             <Parcel>
@@ -559,8 +561,8 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
         <Recipient>
             <Address>
                 <Title></Title>
-                <Firstname>${userData.prenom}</Firstname>
-                <Lastname>${userData.nom}</Lastname>
+                <Firstname>${userData.firstName}</Firstname>
+                <Lastname>${userData.lastName}</Lastname>
                 <Streetname></Streetname>
                 <HouseNo></HouseNo>
                 <CountryCode>FR</CountryCode>
@@ -602,7 +604,7 @@ xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.example.org/Reque
                 );
             }
 
-            if (cartItem.adresse) {
+            if (cartItem.address) {
                 console.log("yes");
                 await axios.post("https://kval-backend.herokuapp.com/send", {
                     mail: userData.email,
@@ -758,6 +760,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                 });
             }
         }
+        dispatch(cartActions.deleteCart());
         props.navigation.navigate("PortefeuilleThankYouScreen", {
             length: cartItems.length
         });
@@ -1009,7 +1012,7 @@ ${cartItems.length > 1 ? <p></p> : <p style="font-weight: bold; margin: 0">Total
                                                         <Text />
                                                     )}
 
-                                                    {item.adresse || enteredAdresse ? (
+                                                    {!item.adresse || enteredAdresse ? (
                                                         <TouchableOpacity
                                                             onPress={() =>
                                                                 props.navigation.navigate("AdresseChoiceScreen")
