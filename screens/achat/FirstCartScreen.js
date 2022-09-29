@@ -32,6 +32,7 @@ const FirstCartScreen = (props) => {
         return transformedCartItems;
     });
 
+    console.log('cart', cartItems)
     useEffect(() => {
         const unsubscribe = props.navigation.addListener("focus", () => {
             // The screen is focused
@@ -46,8 +47,7 @@ const FirstCartScreen = (props) => {
     let total = 0;
     for (let data in cartItems) {
         total +=
-            parseFloat(cartItems[data].quantity) *
-            parseFloat(cartItems[data].productPrice.replace(',', '.'));
+            parseFloat(cartItems[data].quantity) * parseFloat(cartItems[data].productPrice);
     }
 
 

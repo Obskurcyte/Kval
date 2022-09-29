@@ -101,8 +101,6 @@ const VendreArticleScreen = (props) => {
   }, [messageLength, time, props.navigation]);
 
 
-  console.log(messageLength)
-
   let initialValues = {
     title: "",
     description: "",
@@ -237,7 +235,6 @@ const VendreArticleScreen = (props) => {
   };
 
   const [error, setError] = useState("");
-  const [errors, setErrors] = useState(false);
   const [imageEmail, setImageMail] = useState("");
 
   const [pushToken, setPushToken] = useState(null);
@@ -276,17 +273,8 @@ const VendreArticleScreen = (props) => {
                       initialValues={initialValues}
                       validationSchema={uploadSchema}
                       onSubmit={async (values) => {
-                        let data = {};
-                        setErrors(false);
-                        if (!etat || !categorie || !marques) {
-                          setErrors(true);
-                        }
-
-                        if (!errors) {
-
-                          const id = Math.random() * 300000000;
-
-                          if (imagesTableau.length === 0) {
+                          setError(null)
+                          if (imagesTableau.length === 0 || !etat || !categorie || !marques) {
                             setError("Veuillez remplir tous les champs");
                           } else {
                             try {
@@ -404,7 +392,6 @@ const VendreArticleScreen = (props) => {
                               modify: false,
                             });
                           }
-                        }
                       }}
                   >
                     {(props) => (
