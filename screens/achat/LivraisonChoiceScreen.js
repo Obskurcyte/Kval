@@ -92,7 +92,7 @@ const LivraisonChoiceScreen = (props) => {
             <Text style={styles.text}>Livraison par un transporteur de mon choix</Text>
         </TouchableOpacity>
 
-      <TouchableOpacity
+        {/*  <TouchableOpacity
         style={styles.itemForm3}
         onPress={async () => {
             handleLivraison("Livraison Article Lourd")
@@ -100,6 +100,8 @@ const LivraisonChoiceScreen = (props) => {
       >
         <Text style={styles.text}>Livraison article "lourd"</Text>
       </TouchableOpacity>
+      */}
+
       {livraison === "MondialRelay" && (
         <View
           style={{

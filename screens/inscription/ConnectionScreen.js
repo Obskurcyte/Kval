@@ -16,12 +16,18 @@ import {BASE_URL} from "../../constants/baseURL";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwt_decode from "jwt-decode";
 import authContext from "../../context/authContext";
+import * as Yup from "yup";
 
 const ConnectionScreen = (props) => {
   const initialValues = {
     email: "",
     password: "",
   };
+
+  const ConnectionSchema = Yup.object().shape({
+    email: Yup.string().email('Veuillez rentrer un email valide').required('Ce champ est requis'),
+    password: Yup.string().required('Ce champ est requis'),
+  });
 
   const [err, setErr] = useState(null);
   const { setSignedIn } = useContext(authContext);
@@ -32,6 +38,7 @@ const ConnectionScreen = (props) => {
         <Text style={styles.title}>Se connecter</Text>
         <Formik
           initialValues={initialValues}
+          validationSchema={ConnectionSchema}
           onSubmit={async (values) => {
             try {
                 const response = await axios.post(`${BASE_URL}/api/users/login`, {
@@ -67,7 +74,7 @@ const ConnectionScreen = (props) => {
                   onChangeText={props.handleChange("email")}
                 />
               </View>
-
+              {props.errors.email && props.touched.email ?  <Text style={styles.err}>{props.errors.email}</Text> : null}
               <View>
                 <Text style={styles.text}>Mot de passe</Text>
                 <TextInput
@@ -79,6 +86,8 @@ const ConnectionScreen = (props) => {
                   onChangeText={props.handleChange("password")}
                 />
               </View>
+
+              {props.errors.password && props.touched.password ?  <Text style={styles.err}>{props.errors.password}</Text> : null}
 
               {err ? (
                 <Text style={styles.err}>Vos identifiants sont incorrects</Text>
