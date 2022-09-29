@@ -164,7 +164,7 @@ const CartScreen = (props) => {
                         });
 
                         console.log('4')
-                        dispatch(cartActions.deleteCart());
+
                         const pushToken = cartItem.pushToken;
                         await fetch("https://exp.host/--/api/v2/push/send", {
                             method: "POST",

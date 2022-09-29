@@ -7,6 +7,7 @@ import {BASE_URL} from "../constants/baseURL";
 
 
 import { useDispatch } from "react-redux";
+import * as cartActions from "../store/actions/cart";
 const windowWidth = Dimensions.get("window").width;
 
 const PaymentCard = ({amount, cartItems, userData, handlePay, modify, boost}) => {
@@ -68,6 +69,7 @@ const PaymentCard = ({amount, cartItems, userData, handlePay, modify, boost}) =>
                     console.log('ici435')
                     handlePay()
                     console.log('ici2')
+                    dispatch(cartActions.deleteCart());
                     setIsLoading(false)
                     if (modify) {
                         navigation.navigate("ValidationAnnonceModifieeScreen", {
