@@ -31,6 +31,7 @@ const InscriptionScreen = (props) => {
 
     const SignupSchema = Yup.object().shape({
         pseudo: Yup.string().required('Ce champ est requis'),
+        password: Yup.string().required('Ce champ est requis'),
         email: Yup.string().email('Veuillez rentrer un email valide').required('Ce champ est requis'),
     });
 
@@ -153,6 +154,9 @@ const InscriptionScreen = (props) => {
                                         onChangeText={props.handleChange("password")}
                                     />
                                 </View>
+
+                                {props.errors.password && props.touched.password ?  <Text style={styles.err}>{props.errors.password}</Text> : null}
+
                                 {err ? (
                                     <Text style={styles.err}>Cet utilisateur existe déjà</Text>
                                 ) : (
