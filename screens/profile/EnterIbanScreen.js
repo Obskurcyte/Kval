@@ -66,7 +66,7 @@ const EnterIbanScreen = (props) => {
           mail: userData.email,
           subject: "Confirmation de virement",
           html_output: `<div><p>Bonjour, ${userData.pseudo}, <br></p> 
-<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille} € a bien été prise en compte.</p>
+<p>Nous vous confirmons que votre demande de transfert de ${userData.portefeuille.toFixed(2)} € a bien été prise en compte.</p>
 <p>Les fonds seront disponibles d’ici 72h00 sur le compte bancaire suivant :
 </p>
         <div style="margin-top: 20px">
@@ -118,7 +118,7 @@ const EnterIbanScreen = (props) => {
                     <View style={styles.centeredView}>
                       <View style={styles.modalView}>
                         <Text style={styles.modalText}>
-                          Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
+                          Vous êtes sur le point de faire un virement bancaire pour {userData.portefeuille.toFixed(2)} €, confirmez-vous cette demande ? Si oui, une confirmation supplémentaire par le service client sera demandée.
                         </Text>
                         <TouchableOpacity
                             style={styles.mettreEnVentePopup}

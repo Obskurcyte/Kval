@@ -24,8 +24,6 @@ const MesCommandesScreen = (props) => {
         getCommandes()
     }, []);
 
-    console.log('articles', articles)
-    console.log(articles)
 
     const renderItem = ({item}) => {
         return (

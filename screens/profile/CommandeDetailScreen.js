@@ -12,7 +12,7 @@ const CommandeDetailScreen = (props) => {
     const product = props.route.params.product;
     const userData = props.route.params.user;
 
-    console.log(product)
+    console.log('hey', product)
 
     const FourStar = () => {
         return (

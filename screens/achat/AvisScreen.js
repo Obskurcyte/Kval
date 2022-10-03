@@ -3,10 +3,10 @@ import {View, Text, StyleSheet, ScrollView, FlatList} from 'react-native';
 import * as articlesActions from "../../store/actions/articlesCommandes";
 import {useDispatch, useSelector} from "react-redux";
 import AvisCard from "../../components/AvisCard";
-import CardVente from "../../components/CardVente";
 
 
 const AvisScreen = ({navigation, route}) => {
+
 
     const product = route.params.product
     const dispatch = useDispatch();
@@ -17,11 +17,12 @@ const AvisScreen = ({navigation, route}) => {
 
     let commentaires = useSelector(state => state.commandes.commentaires);
 
+    console.log('comm', commentaires)
 
     return (
            <FlatList
                 data={commentaires}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item._id}
                 renderItem={itemData => {
                     return (
                         <AvisCard

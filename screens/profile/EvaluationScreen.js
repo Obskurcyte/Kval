@@ -31,9 +31,8 @@ const EvaluationScreen = (props) => {
 
     const currentUser = props.route.params.user
 
-    console.log('user', currentUser)
     const product = props.route.params.product;
-    console.log('product', product);
+    console.log('product', product.vendeur);
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <KeyboardAvoidingView
@@ -60,13 +59,14 @@ const EvaluationScreen = (props) => {
                             commentaire: ''
                         }}
                         onSubmit={async values => {
+                            console.log('values', values)
                             await axios.put(`${BASE_URL}/api/users`, {
-                                id: currentUser._id,
+                                id: product.vendeur,
                                 commentaire: values.commentaire,
                                 rating,
                                 rateur: currentUser.pseudo
                             })
-                            await axios.delete(`${BASE_URL}/api/commandes/${product._id}`);
+                           await axios.delete(`${BASE_URL}/api/commandes/${product._id}`);
                             await axios.put(`${BASE_URL}/api/users`, {
                                 id: product.vendeur,
                                 addPortefeuille: Number(product.prix)
@@ -126,7 +126,6 @@ const EvaluationScreen = (props) => {
 <img style="width: 150px" src="https://firebasestorage.googleapis.com/v0/b/kval-occaz.appspot.com/o/documents%2Flogo_email.jpg?alt=media&token=6b82d695-231f-405f-84dc-d885312ee4da" alt="" >
 </div>`,
                             });
-
                             props.navigation.navigate('ValidationEvaluationScreen')
                         }}
                     >

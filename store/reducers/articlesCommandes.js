@@ -1,4 +1,3 @@
-import {GET_ARTICLES} from "../actions/articlesEnVente";
 import {GET_AVIS, GET_COMMANDES} from "../actions/articlesCommandes";
 
 
@@ -15,7 +14,7 @@ const articleCommandeReducer = (state= initialState, action) => {
             }
         case GET_AVIS :
             return {
-                commentaires : action.commentaires
+                commentaires : action.avis
             }
     }
     return state;

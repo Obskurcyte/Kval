@@ -1,46 +1,17 @@
-import firebase from "firebase";
 export const GET_COMMANDES = 'GET_COMMANDES';
 export const GET_AVIS = 'GET_AVIS';
-
-export const getCommandes = () => {
-    return async dispatch => {
-        await firebase.firestore()
-            .collection('commandes')
-            .doc(firebase.auth().currentUser.uid)
-            .collection('userCommandes')
-            .get()
-            .then(snapshot => {
-                let mesCommandes = snapshot.docs.map(doc => {
-                    const data = doc.data()
-                    const id = doc.id;
-                    return { id, ...data}
-                })
-                dispatch({type: GET_COMMANDES, mesCommandes})
-            })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
-    }
-};
+import axios from 'axios';
+import {BASE_URL} from "../../constants/baseURL";
 
 export const getAvis = (idVendeur) => {
     return async dispatch => {
-        await firebase.firestore()
-            .collection('commentaires')
-            .doc(`${idVendeur}`)
-            .collection('userCommentaires')
-            .get()
-            .then(snapshot => {
-                let commentaires = snapshot.docs.map(doc => {
-                    const data = doc.data()
-                    const id = doc.id;
-                    return { id, ...data}
-                })
-                dispatch({type: GET_AVIS, commentaires})
-            })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
+        try {
+            const { data } = await axios.get(`${BASE_URL}/api/users/${idVendeur}`);
+            let avis = data.avis
+            dispatch({type: GET_AVIS, avis})
+        } catch(err) {
+            console.log("Error getting documents: ", error);
+        }
     }
 };
 
