@@ -1781,6 +1781,7 @@ export const AchatNavigator = (props) => {
                     headerLeftContainerStyle: {
                         paddingLeft: 10,
                     },
+                    unmountOnBlur: true,
                     headerBackTitle: "Retour",
                     headerLeft: () => (
                         <View>
@@ -3067,6 +3068,7 @@ export const AccueilNavigator = (props) => {
                     headerLeftContainerStyle: {
                         paddingLeft: 10,
                     },
+                    unmountOnBlur: true,
                     headerRight: () => (
                         <View>
                             <View

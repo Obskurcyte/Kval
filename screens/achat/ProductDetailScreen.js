@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   Pressable,
   ScrollView,
-  Modal, ActivityIndicator,
+  Modal, ActivityIndicator, InteractionManager,
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { AntDesign } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import * as cartActions from "../../store/actions/cart";
@@ -21,6 +22,7 @@ import { get_mondial_relay_price } from "../../components/MondialRelayShippingPr
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {BASE_URL} from "../../constants/baseURL";
+import { useIsFocused } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,9 +33,11 @@ const SEPARATOR_WIDTH = 10;
 const ProductDetailScreen = (props) => {
   const product = props.route.params.product;
 
+  const isFocused = useIsFocused();
 
   const dispatch = useDispatch()
   const [userData, setUserData] = useState(null)
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -45,9 +49,18 @@ const ProductDetailScreen = (props) => {
       getUser()
     });
     return unsubscribe
-  }, [props.navigation]);
+  }, [userData]);
+
+  useEffect(() => {
+      if (isFocused) {
+        dispatch(articlesActions.getAvis(product.idVendeur))
+      }
+  }, [isFocused])
+
+  let commentaires = useSelector(state => state.commandes.commentaires);
 
 
+  console.log('pdocut', commentaires)
   //-------------CAROUSEL----------------//
 
   let testData = [];
@@ -114,26 +127,19 @@ const ProductDetailScreen = (props) => {
   //-----------------COMMENTAIRES-----------------//
 
 
-
-  let commentaires = userData?.avis
-
-
   let ratings = [];
-  for (let data in commentaires) {
-    ratings.push(commentaires[data].rating);
-  }
-
   let overallRating = 0;
-  for (let data in ratings) {
-    overallRating += parseInt(ratings[data]);
-  }
-
   let trueRating;
-  if (commentaires) {
-    trueRating = Math.ceil(overallRating / commentaires?.length);
+
+  if (commentaires.length !== 0) {
+    for (let data in commentaires) {
+      ratings.push(commentaires[data].rating);
+    }
+    for (let data in ratings) {
+      overallRating += parseInt(ratings[data]);
+    }
+    trueRating = Math.ceil(overallRating / commentaires.length);
   }
-
-
 
   const [search, setSearch] = useState("");
   const [errorAdded, setErrorAdded] = useState("");
@@ -332,12 +338,12 @@ const ProductDetailScreen = (props) => {
                       {product.imageURL ? (
                           <Image source={require("../../assets/photoProfile.png")} />
                       ) : (
-                          <UserAvatar size={50} name={'djd'} />
+                          <UserAvatar size={50} name={product.pseudoVendeur} />
                       )}
 
                       <View>
                         <Text style={styles.pseudoVendeur}>{product.pseudoVendeur}</Text>
-                        {commentaires?.length ? (
+                        {commentaires.length !== 0 ? (
                             <View>
                               {trueRating === 1 && <OneStar />}
                               {trueRating === 2 && <TwoStar />}
@@ -350,7 +356,7 @@ const ProductDetailScreen = (props) => {
                         )}
                       </View>
 
-                      {commentaires?.length ? (
+                      {commentaires.length !== 0 ? (
                           <TouchableOpacity
                               onPress={() =>
                                   props.navigation.navigate("AvisScreen", {
